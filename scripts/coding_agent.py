@@ -285,6 +285,14 @@ class LocalModel:
                                 )
                             )
                         )
+                    allocation = (
+                        self.output
+                        / f"request-{self.calls + 1:03d}.reasoning-budget.json"
+                    )
+                    if allocation.exists():
+                        allocation.rename(
+                            self.output / (pressure_prefix + ".reasoning-budget.json")
+                        )
                     return self.query(messages)
             if self.handoff_phase is not None and self.handoff_phase.maybe_enter(
                 messages, self, context_report
