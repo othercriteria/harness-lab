@@ -1,0 +1,34 @@
+{
+  "id": "lease-pool-focused",
+  "version": 1,
+  "kind": "repository-debugging",
+  "origin": "authored",
+  "split": "development",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 6,
+    "acceptance": 14
+  },
+  "baseline_public_passes": false,
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted: blind review, sealed first solution, unchanged reference and graders pass isolated controls; exact-ID routing and canonical counts verified.",
+  "human_duration": {
+    "minutes": null,
+    "status": "No human-duration calibration"
+  },
+  "exposure": "Development derivative of exposed guided task; not heldout.",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-focused-lease-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-focused-lease-001/manifest.json",
+    "findings": "No inconsistencies or correctable ambiguity identified; independent sealed first solution passed unchanged isolated evaluators."
+  },
+  "derived_from": "lease-pool-guided",
+  "revision_note": "Public brief states one or two focused valid-input regressions are sufficient; implementation requirements, starter, supplied tests, reference and private graders unchanged.",
+  "scaffolding": {
+    "kind": "focused-regression-obligation",
+    "proposal": "results/focused-regression-proposal-001.json",
+    "count_semantics": "One or two sufficient; not an exact-count acceptance constraint. Extra valid tests are not alone disqualifying.",
+    "expected_effect": "Reduce test-authoring burden and invalid-test risk; latency and reliability unmeasured until screen."
+  },
+  "admission": "results/focused-regression-admission-001.json"
+}

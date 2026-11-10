@@ -1,0 +1,24 @@
+{
+  "id": "build-flow-engine",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 27
+  },
+  "entrypoint": "public/task.md",
+  "baseline_public_passes": false,
+  "derived_from": "build-flow-artifacts",
+  "provided_implementations": {
+    "buildflow/spec.py": {
+      "sha256": "1a0806a91a41f90eb295b565acd687a624f3eeffd9c31586e308a189f22aa9a5",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/spec.py"
+    },
+    "buildflow/state.py": {
+      "sha256": "d45d7ee17ba77dc2fadc363cb445aeeead1be0be7f7235489a9246e0a1bab548",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/state.py"
+    }
+  },
+  "calibration_note": "User-directed narrower implementation task. Same private27 and external behavioral gate; full spec/state supplied, clarified interfaces and two public integration examples. New exposed development variant, not comparable original-task pass scores."
+}

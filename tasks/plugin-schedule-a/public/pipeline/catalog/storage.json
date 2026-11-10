@@ -1,0 +1,11 @@
+[
+  {
+    "id": "store",
+    "dependencies": [
+      {
+        "plugin": "redact",
+        "when": []
+      }
+    ]
+  }
+]

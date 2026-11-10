@@ -1,0 +1,171 @@
+{
+  "api": {
+    "storage_workers": [
+      "atlas",
+      "birch",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "audit": {
+    "storage_workers": [
+      "birch",
+      "cedar",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "billing": {
+    "storage_workers": [
+      "atlas",
+      "cedar",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "cache": {
+    "storage_workers": [
+      "cedar",
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "catalog": {
+    "storage_workers": [
+      "birch",
+      "cedar",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "dispatch": {
+    "storage_workers": [
+      "atlas",
+      "birch",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "exports": {
+    "storage_workers": [
+      "cedar",
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "gateway": {
+    "storage_workers": [
+      "atlas",
+      "cedar",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "index": {
+    "storage_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "ingest": {
+    "storage_workers": [
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "ledger": {
+    "storage_workers": [
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "metrics": {
+    "storage_workers": [
+      "atlas",
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "notify": {
+    "storage_workers": [
+      "birch",
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "reports": {
+    "storage_workers": [
+      "cedar",
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "search": {
+    "storage_workers": [
+      "cedar",
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "session": {
+    "storage_workers": [
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "sync": {
+    "storage_workers": [
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  },
+  "traces": {
+    "storage_workers": [
+      "drift",
+      "ember",
+      "fjord",
+      "grove",
+      "harbor"
+    ]
+  }
+}

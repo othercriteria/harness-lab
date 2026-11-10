@@ -1,0 +1,9 @@
+{
+  "expected": "completed_implementation",
+  "proof_obligations": [
+    "Return valid lexicographically greedy order for all20supported API configurations.",
+    "Preserve fixed catalog/contracts and input set; implement CLI output and usage errors.",
+    "All edges respect decode<audit<redact<store<export; no supported cycle."
+  ],
+  "finite_tests": "Canonical code checks alone never establish a supported blocker; outer adjudication required. Expected values generated independently by enumerating all permutations of each selected closure."
+}

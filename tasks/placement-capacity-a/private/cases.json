@@ -1,0 +1,2626 @@
+[
+  {
+    "profile": "standard",
+    "services": [],
+    "expected": {}
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "catalog",
+      "dispatch",
+      "gateway",
+      "index"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "gateway": "cedar",
+      "index": "cedar"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "gateway",
+      "index"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "gateway": "cedar",
+      "index": "cedar"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api"
+    ],
+    "expected": {
+      "api": "atlas"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "audit"
+    ],
+    "expected": {
+      "audit": "birch"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "billing"
+    ],
+    "expected": {
+      "billing": "atlas"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "cache"
+    ],
+    "expected": {
+      "cache": "cedar"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "catalog"
+    ],
+    "expected": {
+      "catalog": "birch"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "dispatch"
+    ],
+    "expected": {
+      "dispatch": "atlas"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "exports"
+    ],
+    "expected": {
+      "exports": "drift"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "gateway"
+    ],
+    "expected": {
+      "gateway": "atlas"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "index"
+    ],
+    "expected": {
+      "index": "atlas"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "ingest"
+    ],
+    "expected": {
+      "ingest": "drift"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "ledger"
+    ],
+    "expected": {
+      "ledger": "ember"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "metrics"
+    ],
+    "expected": {
+      "metrics": "atlas"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "notify"
+    ],
+    "expected": {
+      "notify": "birch"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "reports"
+    ],
+    "expected": {
+      "reports": "cedar"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "search"
+    ],
+    "expected": {
+      "search": "drift"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "session"
+    ],
+    "expected": {
+      "session": "ember"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "sync"
+    ],
+    "expected": {
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "traces"
+    ],
+    "expected": {
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "reports": "grove",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "ember",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "drift",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "cache",
+      "catalog",
+      "index",
+      "ingest",
+      "metrics",
+      "search",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "cache": "cedar",
+      "catalog": "birch",
+      "index": "atlas",
+      "ingest": "drift",
+      "metrics": "ember",
+      "search": "drift",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "catalog",
+      "exports",
+      "index",
+      "ingest",
+      "notify",
+      "reports",
+      "search",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "catalog": "birch",
+      "exports": "drift",
+      "index": "atlas",
+      "ingest": "drift",
+      "notify": "fjord",
+      "reports": "cedar",
+      "search": "drift",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "billing",
+      "cache",
+      "reports",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "billing": "atlas",
+      "cache": "cedar",
+      "reports": "cedar",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "audit",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ledger",
+      "metrics",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "audit": "birch",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "gateway": "atlas",
+      "index": "cedar",
+      "ledger": "ember",
+      "metrics": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "cache",
+      "dispatch",
+      "exports",
+      "ledger",
+      "metrics",
+      "reports",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "cache": "cedar",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "reports": "cedar",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "billing",
+      "cache",
+      "catalog",
+      "exports",
+      "index",
+      "ingest",
+      "reports",
+      "search",
+      "sync"
+    ],
+    "expected": {
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "exports": "drift",
+      "index": "atlas",
+      "ingest": "drift",
+      "reports": "cedar",
+      "search": "drift",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "audit",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "ingest",
+      "ledger",
+      "reports",
+      "search",
+      "session",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "gateway": "cedar",
+      "ingest": "drift",
+      "ledger": "ember",
+      "reports": "cedar",
+      "search": "drift",
+      "session": "ember",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "gateway",
+      "ledger",
+      "metrics",
+      "reports",
+      "session",
+      "sync"
+    ],
+    "expected": {
+      "api": "atlas",
+      "gateway": "atlas",
+      "ledger": "ember",
+      "metrics": "ember",
+      "reports": "cedar",
+      "session": "ember",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "audit",
+      "billing",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "notify",
+      "search",
+      "session",
+      "traces"
+    ],
+    "expected": {
+      "audit": "birch",
+      "billing": "atlas",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "gateway": "cedar",
+      "index": "birch",
+      "notify": "fjord",
+      "search": "drift",
+      "session": "ember",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "ledger",
+      "metrics",
+      "notify",
+      "search",
+      "session",
+      "sync"
+    ],
+    "expected": {
+      "api": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "drift",
+      "gateway": "cedar",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "birch",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "api",
+      "cache",
+      "catalog",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "index": "atlas",
+      "ingest": "drift",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "birch",
+      "reports": "cedar",
+      "search": "drift",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "standard",
+    "services": [
+      "audit",
+      "billing",
+      "index",
+      "ingest",
+      "metrics",
+      "notify",
+      "reports",
+      "session"
+    ],
+    "expected": {
+      "audit": "birch",
+      "billing": "atlas",
+      "index": "atlas",
+      "ingest": "drift",
+      "metrics": "ember",
+      "notify": "birch",
+      "reports": "cedar",
+      "session": "ember"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [],
+    "expected": {}
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "harbor"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "catalog",
+      "dispatch",
+      "gateway",
+      "index"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "gateway": "cedar",
+      "index": "cedar"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "gateway",
+      "index"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "gateway": "cedar",
+      "index": "cedar"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api"
+    ],
+    "expected": {
+      "api": "atlas"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "audit"
+    ],
+    "expected": {
+      "audit": "birch"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "billing"
+    ],
+    "expected": {
+      "billing": "atlas"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "cache"
+    ],
+    "expected": {
+      "cache": "cedar"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "catalog"
+    ],
+    "expected": {
+      "catalog": "birch"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "dispatch"
+    ],
+    "expected": {
+      "dispatch": "atlas"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "exports"
+    ],
+    "expected": {
+      "exports": "ember"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "gateway"
+    ],
+    "expected": {
+      "gateway": "atlas"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "index"
+    ],
+    "expected": {
+      "index": "atlas"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "ingest"
+    ],
+    "expected": {
+      "ingest": "fjord"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "ledger"
+    ],
+    "expected": {
+      "ledger": "ember"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "metrics"
+    ],
+    "expected": {
+      "metrics": "atlas"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "notify"
+    ],
+    "expected": {
+      "notify": "birch"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "reports"
+    ],
+    "expected": {
+      "reports": "cedar"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "search"
+    ],
+    "expected": {
+      "search": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "session"
+    ],
+    "expected": {
+      "session": "ember"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "sync"
+    ],
+    "expected": {
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "traces"
+    ],
+    "expected": {
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "harbor"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "metrics": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "harbor"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "reports": "grove",
+      "session": "harbor",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "sync": "fjord",
+      "traces": "harbor"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "traces": "harbor"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "billing",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "billing": "atlas",
+      "cache": "ember",
+      "catalog": "cedar",
+      "dispatch": "birch",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "grove",
+      "notify": "fjord",
+      "reports": "grove",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "cache",
+      "catalog",
+      "index",
+      "ingest",
+      "metrics",
+      "search",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "cache": "cedar",
+      "catalog": "birch",
+      "index": "atlas",
+      "ingest": "fjord",
+      "metrics": "ember",
+      "search": "grove",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "catalog",
+      "exports",
+      "index",
+      "ingest",
+      "notify",
+      "reports",
+      "search",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "catalog": "birch",
+      "exports": "ember",
+      "index": "atlas",
+      "ingest": "fjord",
+      "notify": "fjord",
+      "reports": "cedar",
+      "search": "grove",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "billing",
+      "cache",
+      "reports",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "billing": "atlas",
+      "cache": "cedar",
+      "reports": "cedar",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "audit",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "ledger",
+      "metrics",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "audit": "birch",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "gateway": "atlas",
+      "index": "cedar",
+      "ledger": "ember",
+      "metrics": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "cache",
+      "dispatch",
+      "exports",
+      "ledger",
+      "metrics",
+      "reports",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "cache": "cedar",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "ledger": "ember",
+      "metrics": "ember",
+      "reports": "cedar",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "billing",
+      "cache",
+      "catalog",
+      "exports",
+      "index",
+      "ingest",
+      "reports",
+      "search",
+      "sync"
+    ],
+    "expected": {
+      "billing": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "exports": "ember",
+      "index": "atlas",
+      "ingest": "fjord",
+      "reports": "cedar",
+      "search": "grove",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "audit",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "ingest",
+      "ledger",
+      "reports",
+      "search",
+      "session",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "audit": "birch",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "gateway": "cedar",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "reports": "cedar",
+      "search": "grove",
+      "session": "ember",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "gateway",
+      "ledger",
+      "metrics",
+      "reports",
+      "session",
+      "sync"
+    ],
+    "expected": {
+      "api": "atlas",
+      "gateway": "atlas",
+      "ledger": "ember",
+      "metrics": "ember",
+      "reports": "cedar",
+      "session": "ember",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "audit",
+      "billing",
+      "dispatch",
+      "exports",
+      "gateway",
+      "index",
+      "notify",
+      "search",
+      "session",
+      "traces"
+    ],
+    "expected": {
+      "audit": "birch",
+      "billing": "atlas",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "gateway": "cedar",
+      "index": "birch",
+      "notify": "fjord",
+      "search": "grove",
+      "session": "ember",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "cache",
+      "catalog",
+      "dispatch",
+      "exports",
+      "gateway",
+      "ledger",
+      "metrics",
+      "notify",
+      "search",
+      "session",
+      "sync"
+    ],
+    "expected": {
+      "api": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "dispatch": "atlas",
+      "exports": "ember",
+      "gateway": "cedar",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "birch",
+      "search": "grove",
+      "session": "harbor",
+      "sync": "fjord"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "api",
+      "cache",
+      "catalog",
+      "index",
+      "ingest",
+      "ledger",
+      "metrics",
+      "notify",
+      "reports",
+      "search",
+      "session",
+      "sync",
+      "traces"
+    ],
+    "expected": {
+      "api": "atlas",
+      "cache": "cedar",
+      "catalog": "birch",
+      "index": "atlas",
+      "ingest": "fjord",
+      "ledger": "ember",
+      "metrics": "ember",
+      "notify": "birch",
+      "reports": "cedar",
+      "search": "grove",
+      "session": "ember",
+      "sync": "fjord",
+      "traces": "grove"
+    }
+  },
+  {
+    "profile": "reserve",
+    "services": [
+      "audit",
+      "billing",
+      "index",
+      "ingest",
+      "metrics",
+      "notify",
+      "reports",
+      "session"
+    ],
+    "expected": {
+      "audit": "birch",
+      "billing": "atlas",
+      "index": "atlas",
+      "ingest": "fjord",
+      "metrics": "ember",
+      "notify": "birch",
+      "reports": "cedar",
+      "session": "ember"
+    }
+  }
+]

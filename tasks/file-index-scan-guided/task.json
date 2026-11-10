@@ -1,0 +1,23 @@
+{
+  "id": "file-index-scan-guided",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 12
+  },
+  "entrypoint": "public/task.md",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; original harder task remains diagnostic. No heldout or calibrated human-duration claim.",
+  "derived_from": "file-index",
+  "admission_status": "Admitted after fresh blind review, corrected public-contract review and isolated starter/reference/sealed-first-solution controls.",
+  "revision_note": "Supply working catalog and CLI modules; focus implementation on scanner, with positive approach guidance and two public contract examples. Full behavior and private checks retained. Blind review clarified rejection of unrepresentable regular-file metadata/paths and allowed root-ancestor symlinks; reference validates final catalog, two private contract checks added.",
+  "admission": "results/file-index-scan-guided-admission-001.json",
+  "specification_alignment": {
+    "independent_first_solution": "/bulk/dlk/local-harness/reviews/blind-file-index-scan-guided-001/solution.sha256",
+    "first_interpretation": "/bulk/dlk/local-harness/reviews/blind-file-index-scan-guided-001/review.json",
+    "revised_public_review": "/bulk/dlk/local-harness/reviews/blind-file-index-scan-wording-001/review.json",
+    "replay": "Independent sealed implementation and added tests unchanged; revised supplied brief/tests are task inputs. No feedback repair."
+  }
+}

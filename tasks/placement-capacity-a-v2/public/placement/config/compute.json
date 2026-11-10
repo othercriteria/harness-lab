@@ -1,0 +1,164 @@
+{
+  "api": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "audit": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "billing": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "cache": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "catalog": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "dispatch": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "exports": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "drift",
+      "ember",
+      "fjord"
+    ]
+  },
+  "gateway": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "index": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "ember"
+    ]
+  },
+  "ingest": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "drift",
+      "fjord"
+    ]
+  },
+  "ledger": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "ember",
+      "fjord"
+    ]
+  },
+  "metrics": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "ember",
+      "grove"
+    ]
+  },
+  "notify": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "fjord",
+      "grove"
+    ]
+  },
+  "reports": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "grove",
+      "harbor"
+    ]
+  },
+  "search": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "drift",
+      "grove",
+      "harbor"
+    ]
+  },
+  "session": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "ember",
+      "harbor"
+    ]
+  },
+  "sync": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "fjord",
+      "harbor"
+    ]
+  },
+  "traces": {
+    "compute_workers": [
+      "atlas",
+      "birch",
+      "cedar",
+      "grove",
+      "harbor"
+    ]
+  }
+}

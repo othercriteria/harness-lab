@@ -1,0 +1,28 @@
+{
+  "id": "pagination-focused",
+  "version": 1,
+  "kind": "api-edge-cases",
+  "split": "development",
+  "test_counts": {
+    "public": 4,
+    "acceptance": 9
+  },
+  "entrypoint": "public/task.md",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-focused-pagination-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-focused-pagination-001/manifest.json",
+    "findings": "No inconsistencies or correctable ambiguity identified; independent sealed first solution passed unchanged isolated evaluators."
+  },
+  "derived_from": "pagination-guided",
+  "admission_status": "Admitted: blind review, sealed first solution, unchanged reference and graders pass isolated controls; exact-ID routing and canonical counts verified.",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed guided task; not heldout.",
+  "revision_note": "Public brief states one or two focused valid-input regressions are sufficient; implementation requirements, starter, supplied tests, reference and private graders unchanged.",
+  "scaffolding": {
+    "kind": "focused-regression-obligation",
+    "proposal": "results/focused-regression-proposal-001.json",
+    "count_semantics": "One or two sufficient; not an exact-count acceptance constraint. Extra valid tests are not alone disqualifying.",
+    "expected_effect": "Reduce test-authoring burden and invalid-test risk; latency and reliability unmeasured until screen."
+  },
+  "admission": "results/focused-regression-admission-001.json"
+}

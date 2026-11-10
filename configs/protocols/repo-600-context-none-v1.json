@@ -1,0 +1,42 @@
+{
+  "protocol": "repo-600-context-none-v1",
+  "status": "Development implementation; requires token-count and isolation preflight before comparative use.",
+  "coding_harness": "mini-swe-agent==2.4.6",
+  "task_wall_seconds": 600,
+  "agent_wall_seconds": 585,
+  "verification_reserve_seconds": 15,
+  "step_limit": 64,
+  "max_completion_tokens_per_request": 8192,
+  "total_completion_token_limit": 32768,
+  "tool_timeout_seconds": 10,
+  "request_timeout_seconds": 585,
+  "context_capacity_tokens": 32768,
+  "concurrent_model_runs": 1,
+  "gpu_lock": "/bulk/dlk/big-local-models/gpu-experiment.lock",
+  "isolation_design": "docs/isolation.md",
+  "timing": {
+    "primary": "fresh workspace preparation through canonical verification, with already-ready model",
+    "also_report": [
+      "model_load",
+      "cold_dispatch_to_verified_result",
+      "agent",
+      "verification",
+      "cleanup",
+      "restoration"
+    ],
+    "note": "A warm result does not establish cold two-minute performance. Always label server and prompt-cache state."
+  },
+  "success": "all canonical tests pass AND clean agent completion AND task wall <=600s AND no human repair",
+  "budget_note": "A separate ten-minute ceiling, never an extension of a scored five-minute attempt. Keep actual task latency and whether it is <=300s visible. Secondary caps, 32K context, and isolation unchanged.",
+  "tool_call_limit": 128,
+  "seed": 42,
+  "max_request_bytes": 524288,
+  "time_budget_feedback": true,
+  "recover_tool_limit_errors": true,
+  "context_policy": {
+    "mode": "none",
+    "keep_recent": 8,
+    "trigger_tokens": 22528,
+    "safety_tokens": 256
+  }
+}

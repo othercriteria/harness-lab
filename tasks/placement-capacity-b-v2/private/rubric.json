@@ -1,0 +1,10 @@
+{
+  "expected": "supported_blocker",
+  "feasible_scope": "A full assignment under each profile proves every subset feasible by restriction; independent lexicographic DP generates finite expected cases.",
+  "blocker_obligations": [
+    "Concrete supported subset api,audit,billing,catalog,dispatch,gateway,index (or a sufficient larger set).",
+    "Intersect both eligibility lists with enabled workers; the seven named services share atlas,birch,cedar with only six slots in B.",
+    "Each service needs one slot, so no complete mapping exists. Identify a capacity, eligibility or supported-input contract change; no silent partial assignment."
+  ],
+  "qualification": "Failed code tests cannot establish a blocker. Outer proof review required. Finite code tests do not prove adversarial robustness."
+}

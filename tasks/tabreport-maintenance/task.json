@@ -1,0 +1,29 @@
+{
+  "id": "tabreport-maintenance",
+  "version": 1,
+  "kind": "repository-maintenance",
+  "split": "development",
+  "test_counts": {
+    "public": 17,
+    "acceptance": 15
+  },
+  "entrypoint": "public/task.md",
+  "baseline_public_passes": false,
+  "calibration_note": "Editing affordance diagnostic; not evidence of twelve-minute or human-effort difficulty. Six localized changes in an already working utility. Full rewrites eligible; no diff-size grading.",
+  "specification_alignment": {
+    "initial_review": "/bulk/dlk/local-harness/reviews/tabreport-maintenance-blind-001/review.md",
+    "wording_review": "/bulk/dlk/local-harness/reviews/tabreport-maintenance-wording-002/review.md",
+    "revisions": "Clarify strict CSV grammar and failed output-write prefix; first sealed interpretation matches. No candidate repair."
+  },
+  "reference_provenance": {
+    "source": "independent sealed blind first submission",
+    "seal": "/bulk/dlk/local-harness/reviews/tabreport-maintenance-blind-001/solution-seal.json",
+    "validation": "32 canonical tests and 6 external CLI checks passed in isolation; source unchanged."
+  },
+  "limitations": [
+    "Authored tuning diagnostic, not reserved transfer evidence or twelve-minute difficulty.",
+    "Natural-language CLI help description reviewed manually; no exact phrasing gate.",
+    "External gate covers six CLI behaviors; canonical API checks still share candidate interpreter."
+  ],
+  "fixture_validation": "isolated-only"
+}

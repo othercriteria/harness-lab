@@ -1,0 +1,10 @@
+{
+  "expected": "supported_blocker",
+  "proof_obligations": [
+    "Exhibit two allowed histories with the same worker-visible durable state and zero versus one inaccessible remote application.",
+    "Explain why retrying creates a duplicate in one history, whereas withholding application violates truthful/eventual completion in the other.",
+    "Keep the argument scoped to the documented non-deduplicating, write-only API and allowed crash/uncertainty model.",
+    "Necessary change restores a missing capability (durable deduplication/shared transaction/outcome query) or explicitly weakens safety/liveness."
+  ],
+  "finite_tests": "A pass is not an impossibility proof or completed-code success; assess the full public contract and source."
+}

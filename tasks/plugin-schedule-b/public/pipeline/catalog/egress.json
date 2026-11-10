@@ -1,0 +1,30 @@
+[
+  {
+    "id": "audit",
+    "dependencies": [
+      {
+        "plugin": "decode",
+        "when": []
+      },
+      {
+        "plugin": "decode",
+        "when": [
+          "durable"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "export",
+    "dependencies": [
+      {
+        "plugin": "store",
+        "when": []
+      },
+      {
+        "plugin": "audit",
+        "when": []
+      }
+    ]
+  }
+]

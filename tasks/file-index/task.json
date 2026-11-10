@@ -1,0 +1,13 @@
+{
+  "id": "file-index",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "fixture_validation": "isolated-only",
+  "exposure": "Five historical local-model trials; reserved was a stale catalogue label. See results/reliability-task-exposure-audit-001.json. Not eligible as a held-out task."
+}

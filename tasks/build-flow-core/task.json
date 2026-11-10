@@ -1,0 +1,28 @@
+{
+  "id": "build-flow-core",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 27
+  },
+  "entrypoint": "public/task.md",
+  "baseline_public_passes": false,
+  "derived_from": "build-flow-engine-v2",
+  "provided_implementations": {
+    "buildflow/spec.py": {
+      "sha256": "1a0806a91a41f90eb295b565acd687a624f3eeffd9c31586e308a189f22aa9a5",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/spec.py"
+    },
+    "buildflow/state.py": {
+      "sha256": "d45d7ee17ba77dc2fadc363cb445aeeead1be0be7f7235489a9246e0a1bab548",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/state.py"
+    },
+    "buildflow/cli.py": {
+      "sha256": "6d2b89f7e966c3e37e2bc06a7ef29803d892eb3c581ec248ae3528bf078df7be",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/cli.py"
+    }
+  },
+  "calibration_note": "Supplies authored CLI integration in addition to parsing/state; planner and runner remain substantive implementation work. Same private/public tests and external checks, unchanged600s protocol. This is a scope reduction, not a model improvement."
+}

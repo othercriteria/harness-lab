@@ -1,0 +1,53 @@
+{
+  "protocol": "triage-300-64k-native-finish-edit-literal-batch8-v1",
+  "status": "First BTL-4 shorter-task screen; native thinking with no phase-specific override.",
+  "coding_harness": "mini-swe-agent==2.4.6",
+  "task_wall_seconds": 300,
+  "agent_wall_seconds": 285,
+  "verification_reserve_seconds": 15,
+  "step_limit": 64,
+  "max_completion_tokens_per_request": 32768,
+  "total_completion_token_limit": 65536,
+  "tool_timeout_seconds": 10,
+  "request_timeout_seconds": 285,
+  "context_capacity_tokens": 65536,
+  "concurrent_model_runs": 1,
+  "gpu_lock": "/bulk/dlk/big-local-models/gpu-experiment.lock",
+  "isolation_design": "docs/isolation.md",
+  "timing": {
+    "primary": "fresh workspace preparation through canonical verification, with already-ready model",
+    "also_report": [
+      "model_load",
+      "cold_dispatch_to_verified_result",
+      "agent",
+      "verification",
+      "cleanup",
+      "restoration"
+    ],
+    "note": "A warm result does not establish cold two-minute performance. Always label server and prompt-cache state."
+  },
+  "success": "No automatic full success. Separate supported blockers, verified feasible implementation, clean handoff, finite checks and outer adjudication.",
+  "budget_note": "300s total/285s agent/15s verification reserve.32Kreply/64Kcumulative completion limits,64Kcontext. Native thinking; no per-thinking-block override, reset, masking or extensions. Triage outer review/probes timed separately.",
+  "tool_call_limit": 128,
+  "seed": 91,
+  "max_request_bytes": 524288,
+  "time_budget_feedback": true,
+  "recover_tool_limit_errors": true,
+  "context_policy": {
+    "mode": "none",
+    "keep_recent": 8,
+    "trigger_tokens": 22528,
+    "safety_tokens": 256
+  },
+  "max_command_bytes": 32768,
+  "workspace_persistence_feedback": true,
+  "work_policy_feedback": true,
+  "context_budget_feedback": true,
+  "structured_finalization": true,
+  "concise_finalization": true,
+  "exact_text_edit": true,
+  "plain_tool_observations": true,
+  "max_tool_calls_per_response": 8,
+  "spec_blocker_exit": true,
+  "open_problem_policy": "report_blocker"
+}

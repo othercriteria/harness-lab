@@ -1,0 +1,17 @@
+{
+  "id": "plugin-schedule-b",
+  "version": 1,
+  "kind": "contract-triage",
+  "split": "development",
+  "requires_outer_adjudication": true,
+  "test_counts": {
+    "public": 3,
+    "acceptance": 5
+  },
+  "entrypoint": "public/task.md",
+  "human_duration": {
+    "minutes": null,
+    "status": "uncalibrated"
+  },
+  "admission": "Admitted for development contract triage; results/plugin-schedule-admission-001.json. Requires outer adjudication; no model latency yet."
+}

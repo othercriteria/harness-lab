@@ -1,0 +1,12 @@
+{
+  "id": "sqlite-migrations-v2",
+  "version": 2,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 17
+  },
+  "entrypoint": "public/task.md",
+  "exposure_note": "Previously reserved; eight retained model trials expose this task. Root metadata corrected during reliability audit; frozen historical fixtures and results remain unchanged."
+}

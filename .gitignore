@@ -1,0 +1,22 @@
+.direnv/
+.venv/
+.cache/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+runs/
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+# Local agent/account state and secrets are never experiment inputs.
+/.agents/
+/.aws/
+/.codex/
+.env
+.env.*
+!.env.example
+# Model weights and run archives belong under /bulk/dlk/local-harness.
+*.gguf
+*.safetensors
+*.workspace.tar

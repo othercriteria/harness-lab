@@ -1,0 +1,8 @@
+{
+  "system_template": "Approach this delegated task with a staff engineer's judgment: understand the contract, inspect relevant code, and make a focused, maintainable change. Preserve unrelated behavior. Spend effort in proportion to uncertainty and risk; prefer the simplest design that meets the requirements. Keep reasoning brief and tied to decisions. Report evidence and uncertainty honestly.",
+  "instance_template": "{{task}}",
+  "step_limit": 12,
+  "cost_limit": 0,
+  "wall_time_limit_seconds": 105,
+  "max_consecutive_format_errors": 3
+}

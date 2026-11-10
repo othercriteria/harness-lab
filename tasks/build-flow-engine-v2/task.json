@@ -1,0 +1,24 @@
+{
+  "id": "build-flow-engine-v2",
+  "version": 2,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 27
+  },
+  "entrypoint": "public/task.md",
+  "baseline_public_passes": false,
+  "derived_from": "build-flow-engine",
+  "provided_implementations": {
+    "buildflow/spec.py": {
+      "sha256": "1a0806a91a41f90eb295b565acd687a624f3eeffd9c31586e308a189f22aa9a5",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/spec.py"
+    },
+    "buildflow/state.py": {
+      "sha256": "d45d7ee17ba77dc2fadc363cb445aeeead1be0be7f7235489a9246e0a1bab548",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/state.py"
+    }
+  },
+  "calibration_note": "Same supplied implementation, public5/private27 checks and full engine contract as build-flow-engine; new test authorship explicitly optional for concrete uncovered bugs. Paired with visible600s protocol, combined stopping treatment."
+}

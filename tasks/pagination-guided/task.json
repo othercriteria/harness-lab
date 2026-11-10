@@ -1,0 +1,28 @@
+{
+  "id": "pagination-guided",
+  "version": 1,
+  "kind": "api-edge-cases",
+  "split": "development",
+  "test_counts": {
+    "public": 4,
+    "acceptance": 9
+  },
+  "entrypoint": "public/task.md",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-guided-pagination-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-guided-pagination-001/manifest.json",
+    "findings": "No blocking ambiguity or contradiction; public coverage gaps remain explicit in the contract and independent regressions."
+  },
+  "derived_from": "pagination",
+  "admission_status": "Admitted: blind public review, sealed independent solution, unchanged original reference and graders pass isolated controls; new task ID routing and canonical counts verified.",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development variant derived from already-exposed task. Added public examples intentionally expose known failure classes; not heldout.",
+  "revision_note": "Two additional public test methods plus a positive invitation to use the executable examples. Starter and semantic contract unchanged.",
+  "scaffolding": {
+    "kind": "public-contract-examples",
+    "additional_test_methods": 2,
+    "proposal": "results/scaffolded-ladder-proposal-001.json",
+    "expected_effect": "Improved reliability and reduced verified-result latency; unmeasured until local-model comparison."
+  },
+  "admission": "results/scaffolded-ladder-admission-001.json"
+}

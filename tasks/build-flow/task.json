@@ -1,0 +1,11 @@
+{
+  "id": "build-flow",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 15
+  },
+  "entrypoint": "public/task.md"
+}

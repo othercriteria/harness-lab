@@ -1,0 +1,33 @@
+{
+  "id": "tabreport-diff",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "reserved",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 21,
+    "acceptance": 9
+  },
+  "baseline_public_passes": false,
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after public-only blind review, sealed independent solution and isolated canonical/external validation. See results/tabreport-diff-staged-validation-001.json. No local-model exposure yet.",
+  "human_duration": {
+    "minutes": null,
+    "status": "Uncalibrated authored feature on an exposed package."
+  },
+  "calibration_note": "Breadth diagnostic; no twelve-minute difficulty or fresh-package claim.",
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/reviews/tabreport-diff-blind-001/solution-seal.json",
+    "repair_after_feedback": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/tabreport-diff-blind-001/review.json",
+    "gaps": [],
+    "public_changed_after_review": false
+  },
+  "limitations": [
+    "Feature on a previously exposed package; not a fresh-package holdout.",
+    "Human duration and local model task difficulty unmeasured; no twelve-minute scope claim.",
+    "Finite canonical and external coverage; no full adversarial robustness claim."
+  ]
+}

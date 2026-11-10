@@ -1,0 +1,30 @@
+{
+  "id": "build-flow-persistence",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 27
+  },
+  "entrypoint": "public/task.md",
+  "baseline_public_passes": false,
+  "derived_from": "build-flow-core",
+  "provided_implementations": {
+    "buildflow/spec.py": {
+      "sha256": "1a0806a91a41f90eb295b565acd687a624f3eeffd9c31586e308a189f22aa9a5",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/spec.py"
+    },
+    "buildflow/cli.py": {
+      "sha256": "6d2b89f7e966c3e37e2bc06a7ef29803d892eb3c581ec248ae3528bf078df7be",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/cli.py"
+    }
+  },
+  "calibration_note": "Compared with build-flow-core, delegates state validation, detached normalization and atomic persistence alongside the unchanged planner/runner scaffolds; specification parsing and complete CLI remain supplied. Same five public and twenty-seven private checks, reference and external behaviors. Prospective scope increase; no model exposure or local/human duration calibration yet.",
+  "scaffold_provenance": {
+    "buildflow/state.py": {
+      "sha256": "5578300a69fd02ebd24084fee075fc1affb4b037cf417c8af7acecd84f299a3a",
+      "source": "tasks/build-flow-artifacts/public/buildflow/state.py"
+    }
+  }
+}

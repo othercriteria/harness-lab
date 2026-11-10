@@ -1,0 +1,11 @@
+{
+  "id": "build-flow-artifacts",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 27
+  },
+  "entrypoint": "public/task.md"
+}
