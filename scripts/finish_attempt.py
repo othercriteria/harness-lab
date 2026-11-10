@@ -59,6 +59,7 @@ TOOL = {
                 "summary": TEXT,
                 "evidence": {
                     "type": "array",
+                    "description": "Cite each observation_id at most once; combine claims supported by the same observation into one entry's supports text.",
                     "maxItems": 4,
                     "items": {
                         "anyOf": [
@@ -230,7 +231,10 @@ def validate(value, history):
                     f"{label}.observation_id: observation not from this attempt; cite an ID already shown in a tool result"
                 )
             if identifier in seen:
-                raise ValueError("Duplicate observation citation")
+                raise ValueError(
+                    "Duplicate observation citation; combine claims supported by the"
+                    " same observation into one evidence entry's supports text"
+                )
             seen.add(identifier)
         elif kind == "public_contract":
             require_fields(
