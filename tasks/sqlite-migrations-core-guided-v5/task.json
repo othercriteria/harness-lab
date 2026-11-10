@@ -1,0 +1,30 @@
+{
+  "id": "sqlite-migrations-core-guided-v5",
+  "version": 4,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 10,
+    "acceptance": 22
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-core-guided-v4",
+  "revision_note": "Supplied suite satisfies regression deliverable and final observed result is primary handoff evidence; additional tests/checks optional. All implementation requirements, starter modules and test bytes unchanged.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "specification_alignment": {
+    "independent_first_solution": "/bulk/dlk/local-harness/reviews/blind-sqlite-test-support-001/manifest.json",
+    "first_interpretation": "/bulk/dlk/local-harness/reviews/blind-sqlite-test-support-001/review.json"
+  },
+  "evaluator_revision": 1,
+  "evaluator_revision_note": "Original22private checks retained;10public tests participate in32canonical tests. Zero-target example derives from unchanged public contract.",
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after public-only blind review, sealed independent first solution and isolated starter/reference/blind controls.",
+  "blind_review": "/bulk/dlk/local-harness/reviews/blind-sqlite-zero-target-001/review.json",
+  "sealed_first_submission": "/bulk/dlk/local-harness/reviews/blind-sqlite-zero-target-001/manifest.json",
+  "admission": "results/sqlite-core-guided-v5-admission-001.json"
+}
