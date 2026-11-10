@@ -150,6 +150,9 @@ class LocalModel:
             if self.fresh_context is not None
             else False
         )
+        reset_applied = reset_applied or bool(
+            self.fresh_context and self.fresh_context.measurement_pending
+        )
         checkpoint_request = bool(
             self.fresh_context and self.fresh_context.checkpoint_pending
         )
@@ -243,7 +246,7 @@ class LocalModel:
                     {
                         **payload,
                         "messages": self.history.wire(
-                            messages[: self.fresh_context.boundary]
+                            self.fresh_context.pre_reset_messages
                         ),
                     },
                     "reset-before",
@@ -254,6 +257,35 @@ class LocalModel:
                 self.count_tokens,
                 self.limits["context_capacity_tokens"],
             )
+            if (
+                self.fresh_context is not None
+                and not checkpoint_request
+                and not reset_applied
+            ):
+                recovered = self.fresh_context.consider_pressure(
+                    messages, self, context_report
+                )
+                if recovered or self.fresh_context.checkpoint_pending:
+                    # No inference was sent and no allowances were charged. Rebuild
+                    # the payload after the new checkpoint notice or archive reset.
+                    pressure_prefix = f"context-{self.calls + 1:03d}.pressure"
+                    write_json(
+                        self.output / (pressure_prefix + ".json"), context_report
+                    )
+                    write_json(
+                        self.output / (pressure_prefix + ".request.json"), payload
+                    )
+                    for evidence in self.output.glob(
+                        f"context-{self.calls + 1:03d}.before.*"
+                    ):
+                        evidence.rename(
+                            evidence.with_name(
+                                evidence.name.replace(
+                                    ".before.", ".pressure.before.", 1
+                                )
+                            )
+                        )
+                    return self.query(messages)
             if self.handoff_phase is not None and self.handoff_phase.maybe_enter(
                 messages, self, context_report
             ):
@@ -558,7 +590,11 @@ class LocalModel:
                                 "min_remaining_agent_seconds": self.fresh_context.minimum_remaining,
                                 "decision": self.fresh_context.decision,
                                 **(
-                                    {"trigger": self.fresh_context.trigger}
+                                    {
+                                        "trigger": self.fresh_context.trigger,
+                                        "reset_count": self.fresh_context.reset_count,
+                                        "max_resets": self.fresh_context.max_resets,
+                                    }
                                     if self.fresh_context.trigger != "elapsed"
                                     else {}
                                 ),

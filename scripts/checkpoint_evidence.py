@@ -27,18 +27,54 @@ def read(path):
 def verify_checkpoint_evidence(directory, limits):
     """Raise on mismatches; retain explicit unknown usage on interrupted requests."""
     root = Path(directory)
-    artifacts = list(root.glob("context-checkpoint-*.json"))
+    policy = limits.get("fresh_context") or {}
+    maximum = policy.get("max_resets", 1)
+    sequences = sorted(
+        {
+            int(p.stem.rsplit("-", 1)[1])
+            for p in root.glob("context-checkpoint-request-*.json")
+        }
+    )
     allowed = {
-        "context-checkpoint-request-001.json",
-        "context-checkpoint-response-001.json",
-        "context-checkpoint-001.json",
+        f"{stem}-{n:03d}.json"
+        for n in sequences
+        for stem in (
+            "context-checkpoint-request",
+            "context-checkpoint-response",
+            "context-checkpoint",
+        )
     }
-    require(all(p.name in allowed for p in artifacts), "Unexpected checkpoint attempt")
+    require(
+        all(p.name in allowed for p in root.glob("context-checkpoint-*.json")),
+        "Unexpected checkpoint artifact",
+    )
+    require(
+        all(1 <= n <= maximum for n in sequences), "Checkpoint reset bound exceeded"
+    )
+    indices = {
+        read(root / f"context-checkpoint-request-{n:03d}.json")["model_calls"] + 1
+        for n in sequences
+    }
+    require(len(indices) == len(sequences), "Duplicate checkpoint request")
+    rows = [_verify_checkpoint(root, limits, n, indices) for n in sequences or [1]]
+    if policy.get("trigger") == "context_headroom":
+        return {
+            "status": "repeated_policy",
+            "checkpoints": rows if sequences else [],
+            "checkpoint_requests": sorted(indices),
+            "known_completion_tokens": rows[0]["known_completion_tokens"],
+            "all_usage_known": rows[0]["all_usage_known"],
+        }
+    return rows[0]
+
+
+def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
+    artifacts = list(root.glob(f"context-checkpoint*-{sequence:03d}.json"))
     enabled = (limits.get("fresh_context") or {}).get("summary_checkpoint", False)
     require(enabled or not artifacts, "Checkpoint artifacts without enabled policy")
     requests = sorted(root.glob("request-*.request.json"))
     require(len(requests) <= limits["step_limit"], "Model-call allowance exceeded")
-    offer_path = root / "context-checkpoint-request-001.json"
+    offer_path = root / f"context-checkpoint-request-{sequence:03d}.json"
     offer = read(offer_path) if offer_path.exists() else None
     checkpoint_index = offer["model_calls"] + 1 if offer else None
     total = 0
@@ -66,9 +102,10 @@ def verify_checkpoint_evidence(directory, limits):
             - context["input_tokens_after"]
             - limits["context_policy"]["safety_tokens"],
         )
+        if index in checkpoint_indices:
+            cap = min(cap, REPLY_TOKENS)
         if index == checkpoint_index:
             before_tokens = total
-            cap = min(cap, REPLY_TOKENS)
             require(
                 offer["completion_tokens"] == total, "Checkpoint offer renewed tokens"
             )
@@ -82,8 +119,22 @@ def verify_checkpoint_evidence(directory, limits):
         )
         if "reasoning_budget_tokens" in limits:
             expected = limits["reasoning_budget_tokens"]
-            if index == checkpoint_index:
+            if index in checkpoint_indices:
                 expected = min(expected, THINK_TOKENS)
+            if "reasoning_deadline" in limits:
+                from reasoning_deadline import allocate
+
+                allocation = read(root / f"request-{index:03d}.reasoning-budget.json")
+                expected_allocation = allocate(
+                    limits["reasoning_deadline"],
+                    expected,
+                    allocation["agent_deadline_monotonic"],
+                    allocation["allocated_at_monotonic"],
+                )
+                require(
+                    allocation == expected_allocation, "Reasoning allocation differs"
+                )
+                expected = allocation["effective_reasoning_cap"]
             require(
                 payload["reasoning_budget_tokens"] == expected, "Thinking cap differs"
             )
@@ -124,7 +175,7 @@ def verify_checkpoint_evidence(directory, limits):
         }
     if checkpoint_response is None:
         require(
-            not (root / "context-checkpoint-response-001.json").exists(),
+            not (root / f"context-checkpoint-response-{sequence:03d}.json").exists(),
             "Response without request",
         )
         return {
@@ -143,7 +194,7 @@ def verify_checkpoint_evidence(directory, limits):
         )[0]
     except FormatError:
         accepted = None
-    receipt = read(root / "context-checkpoint-response-001.json")
+    receipt = read(root / f"context-checkpoint-response-{sequence:03d}.json")
     require(
         receipt["model_calls"] == checkpoint_index,
         "Checkpoint response request mismatch",
@@ -160,7 +211,7 @@ def verify_checkpoint_evidence(directory, limits):
     require(receipt["executed"] is False, "Response claimed command execution")
     tool_index = offer["tool_calls"] + 1
     control_path = root / f"tool-{tool_index:03d}.request.json"
-    saved_path = root / "context-checkpoint-001.json"
+    saved_path = root / f"context-checkpoint-{sequence:03d}.json"
     saved = read(saved_path) if saved_path.exists() else None
     if saved:
         require(accepted is not None, "Rejected response produced saved memory")
@@ -194,7 +245,7 @@ def verify_checkpoint_evidence(directory, limits):
             read(control_path).get("name") != "checkpoint_context",
             "Checkpoint control without saved memory",
         )
-    reset_path = root / "fresh-context-reset-001.json"
+    reset_path = root / f"fresh-context-reset-{sequence:03d}.json"
     if reset_path.exists():
         reset = read(reset_path)
         expected = {

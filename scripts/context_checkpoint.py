@@ -11,7 +11,7 @@ SUMMARY_BYTES = 4096
 REPLY_TOKENS = 2048
 THINK_TOKENS = 256
 INSTRUCTION = (
-    " The harness may request one context checkpoint before a fresh-session reset."
+    " The harness may request context checkpoints before fresh-session resets."
     " Only when requested, call checkpoint_context alone with a concise continuation"
     " note. This saves unverified memory; it does not submit work or execute commands."
     " Summary generation consumes your existing time, token and call allowances."

@@ -1,4 +1,4 @@
-"""One forced same-attempt request-view reset; no agent or budget recreation."""
+"""Bounded same-attempt request-view recovery; no agent or budget recreation."""
 
 import copy
 import hashlib
@@ -136,11 +136,13 @@ def validate_policy(limits):
     if not isinstance(policy, dict):
         raise ValueError("Unsupported fresh-context policy")
     trigger = policy.get("trigger", "elapsed")
-    if trigger not in ("elapsed", "first_submission"):
+    if trigger not in ("elapsed", "first_submission", "context_headroom"):
         raise ValueError("Unsupported fresh-context trigger")
     required = {"min_remaining_agent_seconds"}
     if trigger == "elapsed":
         required.add("after_elapsed_agent_fraction")
+    if trigger == "context_headroom":
+        required.update({"headroom_tokens", "max_resets"})
     if (
         not isinstance(policy, dict)
         or not required <= policy.keys()
@@ -158,10 +160,13 @@ def validate_policy(limits):
     summarize = policy.get("summary_checkpoint", False)
     if type(summarize) is not bool or (
         summarize
-        and (trigger != "elapsed" or limits.get("structured_finalization") is not True)
+        and (
+            trigger not in ("elapsed", "context_headroom")
+            or limits.get("structured_finalization") is not True
+        )
     ):
         raise ValueError(
-            "Summary checkpoint requires elapsed reset and structured tools"
+            "Summary checkpoint requires elapsed/headroom reset and structured tools"
         )
     if trigger == "first_submission" and (
         limits.get("structured_finalization") is not True
@@ -170,6 +175,20 @@ def validate_policy(limits):
         raise ValueError(
             "Submission review requires structured finalization and review mode"
         )
+    if trigger == "context_headroom":
+        if (
+            not summarize
+            or type(policy["max_resets"]) is not int
+            or not 1 <= policy["max_resets"] <= 8
+            or type(policy["headroom_tokens"]) is not int
+            or policy["headroom_tokens"] < 4096
+        ):
+            raise ValueError(
+                "Headroom recovery requires summaries, 1..8 resets and >=4096 headroom tokens"
+            )
+        capacity = limits.get("context_capacity_tokens")
+        if capacity is not None and policy["headroom_tokens"] >= capacity:
+            raise ValueError("Recovery headroom must be below context capacity")
     fraction = policy.get("after_elapsed_agent_fraction")
     minimum = policy["min_remaining_agent_seconds"]
     if trigger == "elapsed" and (
@@ -192,8 +211,12 @@ def validate_policy(limits):
 def validate_history_archive(history, prefix):
     """Data-only admission before every tool mount; never mount an attempt root."""
     archive = Path(history)
-    expected = Path(prefix).parent / "history"
-    if archive.is_symlink() or archive.resolve() != expected.resolve():
+    expected = Path(prefix).parent
+    if (
+        archive.is_symlink()
+        or archive.parent.resolve() != expected.resolve()
+        or not re.fullmatch(r"history(?:-00[2-8])?", archive.name)
+    ):
         raise ValueError("History archive must belong to this attempt")
     entries = []
     for entry in archive.iterdir():
@@ -305,6 +328,23 @@ class FreshContext:
         self.boundary = None
         self.prefix = None
         self.measurement_pending = False
+        self.headroom_tokens = policy.get("headroom_tokens")
+        self.max_resets = policy.get("max_resets", 1)
+        self.sequence = 1
+        self.reset_count = 0
+        self.last_reset_cycle = None
+        self.checkpoint_tools = set()
+        self.pressure = None
+        self.pre_reset_messages = None
+
+    def artifact(self, stem):
+        return self.output / f"{stem}-{self.sequence:03d}.json"
+
+    def consider_pressure(self, messages, model, report):
+        """Called on the actual rendered view, before sending a model request."""
+        if self.trigger != "context_headroom" or self.checkpoint_requested:
+            return False
+        return self.before_query(messages, model, context_report=report)
 
     @property
     def checkpoint_pending(self):
@@ -324,7 +364,7 @@ class FreshContext:
             "error": error,
             "executed": False,
         }
-        with (self.output / "context-checkpoint-response-001.json").open("x") as stream:
+        with self.artifact("context-checkpoint-response").open("x") as stream:
             json.dump(record, stream, indent=2)
 
     def accept_checkpoint(self, value):
@@ -341,6 +381,7 @@ class FreshContext:
             raise ValueError("Checkpoint is not awaiting acceptance")
         self.checkpoint = copy.deepcopy(validate(value))
         self.checkpoint_tool = self.environment.calls
+        self.checkpoint_tools.add(self.checkpoint_tool)
         record = {
             "status": "unverified_model_memory",
             "summary": self.checkpoint["summary"],
@@ -349,7 +390,7 @@ class FreshContext:
             "timing": self.timing(time.monotonic()),
             "executed": False,
         }
-        with (self.output / "context-checkpoint-001.json").open("x") as stream:
+        with self.artifact("context-checkpoint").open("x") as stream:
             json.dump(record, stream, indent=2)
 
     def start(self, deadline, budget):
@@ -390,7 +431,7 @@ class FreshContext:
 
     def bypass(self, timing, phase, reason="minimum remaining time"):
         self.decision = "bypassed"
-        with (self.output / "fresh-context-bypassed-001.json").open("x") as stream:
+        with self.artifact("fresh-context-bypassed").open("x") as stream:
             json.dump(
                 {
                     "status": "bypassed",
@@ -466,7 +507,7 @@ class FreshContext:
             return messages
         return [*self.prefix, *messages[self.boundary :]]
 
-    def before_query(self, messages, model):
+    def before_query(self, messages, model, *, context_report=None):
         # A terminal adapter spawns no process and has no cleanup receipt. It must
         # never become a reset cycle or permit another reset/query after acceptance.
         if (
@@ -476,6 +517,29 @@ class FreshContext:
         ):
             raise ValueError("Cannot reset/query a terminal attempt")
         self.project(messages)
+        if (
+            self.trigger == "context_headroom"
+            and self.attempted
+            and self.decision == "applied"
+            and self.sequence < self.max_resets
+            and self.cycles > self.last_reset_cycle
+        ):
+            self.sequence += 1
+            self.attempted = False
+            self.decision = "pending"
+            self.checkpoint_requested = self.checkpoint_attempted = False
+            self.checkpoint_valid_response = False
+            self.checkpoint_tool = self.checkpoint = None
+            self.pressure = None
+        if (
+            self.trigger == "context_headroom"
+            and not self.checkpoint_requested
+            and (
+                context_report is None
+                or context_report["available_completion_tokens"] > self.headroom_tokens
+            )
+        ):
+            return False
         if self.attempted or (
             self.cycles == self.checked_cycles and not self.checkpoint_attempted
         ):
@@ -494,12 +558,21 @@ class FreshContext:
             and timing["actual_elapsed_seconds"] < timing["nominal_elapsed_seconds"]
         ):
             return False
+        if self.trigger == "context_headroom" and self.pressure is None:
+            self.pressure = {
+                "input_tokens": context_report["input_tokens_after"],
+                "available_completion_tokens": context_report[
+                    "available_completion_tokens"
+                ],
+                "threshold_tokens": self.headroom_tokens,
+                "model_calls": model.calls,
+            }
         env = self.environment
         # Snapshot return alone is insufficient: cleanup must be authoritative.
         for number in range(1, env.calls + 1):
-            if number in (self.submission_tool, self.checkpoint_tool):
+            if number == self.submission_tool or number in self.checkpoint_tools:
                 # The outer adapter's provisional handoff starts no process.
-                checkpoint = number == self.checkpoint_tool
+                checkpoint = number in self.checkpoint_tools
                 try:
                     records = []
                     for suffix in ("result", "request"):
@@ -546,7 +619,13 @@ class FreshContext:
         if timing["remaining_agent_seconds"] < self.minimum_remaining:
             self.attempted = True
             return self.bypass(timing, "query_boundary")
-        if self.summary_enabled and not self.checkpoint_requested:
+        # A large observation can jump across the summary reserve. Recover via
+        # the archive without sending an impossible/truncated checkpoint request.
+        summary_fits = (
+            self.pressure is None
+            or self.pressure["available_completion_tokens"] >= 2560
+        )
+        if self.summary_enabled and not self.checkpoint_requested and summary_fits:
             from context_checkpoint import REQUEST
 
             if (
@@ -571,15 +650,15 @@ class FreshContext:
                 "boundary_messages": len(messages),
                 "notice": notice,
             }
-            with (self.output / "context-checkpoint-request-001.json").open(
-                "x"
-            ) as stream:
+            if self.pressure is not None:
+                record["context_pressure"] = self.pressure
+            with self.artifact("context-checkpoint-request").open("x") as stream:
                 json.dump(record, stream, indent=2)
             messages.append(notice)
             self.checkpoint_requested = True
             return False
         self.attempted = True
-        pending = self.output / "history.pending"
+        pending = self.output / f"history-{self.sequence:03d}.pending"
         created = False
         try:
             visible = [visible_message(message) for message in messages]
@@ -615,7 +694,9 @@ class FreshContext:
                 or sum(map(len, blobs.values())) > MAX_TOTAL_BYTES
             ):
                 raise ValueError("History archive byte bound")
-            archive = self.output / "history"
+            archive = self.output / (
+                "history" if self.sequence == 1 else f"history-{self.sequence:03d}"
+            )
             if archive.exists() or archive.is_symlink():
                 raise ValueError("History destination already exists")
             pending.mkdir()
@@ -629,7 +710,7 @@ class FreshContext:
         except (OSError, ValueError) as error:
             if created:
                 shutil.rmtree(pending)
-            with (self.output / "fresh-context-refused-001.json").open("x") as stream:
+            with self.artifact("fresh-context-refused").open("x") as stream:
                 json.dump(
                     {
                         "status": "refused",
@@ -664,7 +745,7 @@ class FreshContext:
         notice = {
             "role": "user",
             "content": (
-                "Context reset 1 of 1. Continue the same task with the remaining budgets"
+                f"Context reset {self.sequence} of {self.max_resets}. Continue the same task with the remaining budgets"
                 " listed below. /workspace contains your current files."
                 f" Prior conversation records through m{len(visible):04d} are read-only at"
                 " /history/manifest.json. Those records describe historical state, not current"
@@ -698,6 +779,13 @@ class FreshContext:
             "tool_calls": env.calls,
             "notice": notice,
         }
+        if self.pressure is not None:
+            event["trigger"] = (
+                "measured context headroom at a completed tool-cycle boundary"
+            )
+            event["context_pressure"] = self.pressure
+            event["summary_skipped_insufficient_headroom"] = not summary_fits
+            event["archive_directory"] = archive.name
         if self.trigger == "first_submission":
             event["trigger"] = (
                 "first valid submitted handoff at a completed tool-cycle boundary"
@@ -715,9 +803,12 @@ class FreshContext:
                 if self.checkpoint is not None
                 else None,
             }
-        with (self.output / "fresh-context-reset-001.json").open("x") as stream:
+        with self.artifact("fresh-context-reset").open("x") as stream:
             json.dump(event, stream, indent=2)
         self.decision = "applied"
+        self.reset_count += 1
+        self.pre_reset_messages = copy.deepcopy(self.project(messages))
+        self.last_reset_cycle = self.cycles
         self.boundary = len(messages)
         messages.append(notice)
         env.history_archive = archive
@@ -727,7 +818,7 @@ class FreshContext:
     def measured(self, before, report):
         if not self.measurement_pending:
             return
-        with (self.output / "fresh-context-measurement-001.json").open("x") as stream:
+        with self.artifact("fresh-context-measurement").open("x") as stream:
             json.dump(
                 {
                     "input_tokens_before_reset": before,
