@@ -1,0 +1,23 @@
+{
+  "id": "event-import-guided-v3",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 6,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v2",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after public-only blind review, sealed independent first solution, wording-only clarification review and isolated starter/reference/blind controls.",
+  "admission": "results/event-import-guided-v3-admission-001.json",
+  "revision_note": "Supplied suite explicitly satisfies regression deliverable; extra tests optional. Source open/read OSError wording clarified. Starter modules/tests/private checks unchanged.",
+  "specification_alignment": {
+    "independent_first_solution": "/bulk/dlk/local-harness/reviews/blind-event-test-support-001/manifest.json",
+    "first_interpretation": "/bulk/dlk/local-harness/reviews/blind-event-test-support-001/review.json",
+    "revised_public_review": "/bulk/dlk/local-harness/reviews/blind-event-test-support-001/addendum.json",
+    "replay": "Original sealed solution modules unchanged; use revised supplied brief for wording-only clarification accepted before feedback."
+  }
+}
