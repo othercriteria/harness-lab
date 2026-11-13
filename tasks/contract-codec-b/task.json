@@ -1,5 +1,5 @@
 {
-  "admission": "results/codec-scaffold-v4-admission-001.json",
+  "admission": "results/codec-direct-proof-v5-admission-001.json",
   "entrypoint": "public/task.md",
   "human_duration": {
     "minutes": null,
@@ -13,5 +13,5 @@
     "acceptance": 5,
     "public": 5
   },
-  "version": 4
+  "version": 5
 }
