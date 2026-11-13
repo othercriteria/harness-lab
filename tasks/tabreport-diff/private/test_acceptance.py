@@ -137,3 +137,29 @@ class SnapshotDiffTests(unittest.TestCase):
                 self.assertEqual(code, 2)
                 self.assertEqual(out, '')
                 self.assertTrue(err)
+
+    def test_stdout_write_error_returns_2_and_preserves_caller_streams(self):
+        # The optional stdout is an output destination too. A valid comparison
+        # must report its write failure through main's documented return value.
+        class FailingOutput(io.StringIO):
+            def __init__(self, error_type):
+                super().__init__()
+                self.error_type = error_type
+
+            def write(self, text):
+                raise self.error_type('destination write failed')
+
+        with tempfile.TemporaryDirectory() as directory:
+            after = Path(directory) / 'after.csv'
+            after.write_text('team,item,minutes,status\nA,x,2,done\n', encoding='utf-8')
+            for format in ('json', 'csv'):
+                for error_type in (OSError, BrokenPipeError):
+                    with self.subTest(format=format, error_type=error_type):
+                        source = io.StringIO('team,item,minutes,status\nA,x,1,open\n')
+                        out, err = FailingOutput(error_type), io.StringIO()
+                        code = main(['-', str(after), '--format', format],
+                                    stdin=source, stdout=out, stderr=err)
+                        self.assertEqual(code, 2)
+                        self.assertTrue(err.getvalue())
+                        self.assertEqual(out.getvalue(), '')
+                        self.assertFalse(source.closed or out.closed or err.closed)

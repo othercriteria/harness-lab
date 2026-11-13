@@ -1,16 +1,16 @@
 {
   "id": "tabreport-diff",
-  "version": 1,
+  "version": 2,
   "kind": "repository-feature",
   "split": "reserved",
   "entrypoint": "public/task.md",
   "test_counts": {
     "public": 21,
-    "acceptance": 9
+    "acceptance": 10
   },
   "baseline_public_passes": false,
   "fixture_validation": "isolated-only",
-  "admission_status": "Admitted after public-only blind review, sealed independent solution and isolated canonical/external validation. See results/tabreport-diff-staged-validation-001.json. No local-model exposure yet.",
+  "admission_status": "Public contract and sealed blind solution unchanged. Evaluator revision2 adds stdout write failure coverage after Qwen3.6 green-canonical/source-failed run; isolated replay recorded in results/tabreport-diff-evaluator-v2-validation-001.json. This is an exposed development task.",
   "human_duration": {
     "minutes": null,
     "status": "Uncalibrated authored feature on an exposed package."
@@ -29,5 +29,12 @@
     "Feature on a previously exposed package; not a fresh-package holdout.",
     "Human duration and local model task difficulty unmeasured; no twelve-minute scope claim.",
     "Finite canonical and external coverage; no full adversarial robustness claim."
-  ]
+  ],
+  "evaluator_revision": {
+    "version": 2,
+    "public_contract_changed": false,
+    "change": "OSError/BrokenPipeError on supplied stdout must return2, diagnose and preserve caller streams, for JSON and CSV.",
+    "prior_evidence": "results/success-freeze-225.json",
+    "validation": "results/tabreport-diff-evaluator-v2-validation-001.json"
+  }
 }
