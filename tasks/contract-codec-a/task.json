@@ -1,17 +1,17 @@
 {
-  "id": "contract-codec-a",
-  "version": 2,
-  "kind": "contract-triage",
-  "split": "development",
-  "requires_outer_adjudication": true,
-  "test_counts": {
-    "public": 2,
-    "acceptance": 5
-  },
+  "admission": "results/codec-public-tests-v3-admission-001.json",
   "entrypoint": "public/task.md",
   "human_duration": {
     "minutes": null,
     "status": "uncalibrated"
   },
-  "admission": "results/codec-payload-v2-admission-001.json"
+  "id": "contract-codec-a",
+  "kind": "contract-triage",
+  "requires_outer_adjudication": true,
+  "split": "development",
+  "test_counts": {
+    "acceptance": 5,
+    "public": 5
+  },
+  "version": 3
 }
