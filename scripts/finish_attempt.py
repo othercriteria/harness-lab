@@ -442,6 +442,8 @@ def compact_handoff(envelope):
         "observations_artifact": "final-handoff.json",
         "note": "Model claims are unverified; full historical observations are attached in the fixed artifact.",
     }
+    if "public_interface" in envelope:
+        projection["public_interface"] = envelope["public_interface"]
     if len(json.dumps(projection).encode()) > 65536:
         raise ValueError("Compact handoff exceeds summary contribution bound")
     return projection

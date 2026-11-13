@@ -20,7 +20,15 @@ FIELDS = ("role", "content", "reasoning_content", "tool_calls", "tool_call_id")
 # Archive execution calls and provisional review handoffs as inert data. Accepted
 # terminal handoffs still end the attempt and cannot be a reset boundary.
 HISTORICAL_EXECUTION_TOOLS = frozenset(
-    {"bash", "edit_file", "write_file", "finish_attempt", "checkpoint_context"}
+    {
+        "bash",
+        "edit_file",
+        "write_file",
+        "finish_attempt",
+        "submit_attempt",
+        "report_blocker",
+        "checkpoint_context",
+    }
 )
 MAX_HISTORY_TOOL_CALLS = 8
 REVIEW_INSTRUCTION = (

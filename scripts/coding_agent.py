@@ -220,9 +220,9 @@ class LocalModel:
             payload["reasoning_budget_tokens"] = self.limits["reasoning_budget_tokens"]
             payload["reasoning_budget_message"] = ""
         if self.limits.get("structured_finalization", False):
-            from finish_attempt import TOOL
+            from finalization_api import tools
 
-            payload["tools"].append(TOOL)
+            payload["tools"].extend(tools(self.limits))
             if self.limits.get("exact_text_edit", False):
                 from edit_file import TOOL as EDIT_TOOL
 
@@ -484,13 +484,14 @@ class LocalModel:
                 raise
             self.fresh_context.checkpoint_response(accepted=True)
         elif self.limits.get("structured_finalization", False):
-            from finish_attempt import actions as parse_finish_actions
+            from finalization_api import actions as parse_finish_actions
 
             try:
                 actions = parse_finish_actions(
                     message,
                     response,
                     self.history,
+                    split_enabled=self.limits.get("split_finalization", False),
                     finish_reason=choice.get("finish_reason"),
                     edit_file_enabled=self.limits.get("exact_text_edit", False),
                     write_file_enabled=self.limits.get("whole_file_write", False),
@@ -573,7 +574,8 @@ class LocalModel:
             for observation, action in zip(observations, actions, strict=True):
                 self.history.record(
                     observation,
-                    "finish_attempt (provisional review; no command execution)"
+                    action.get("api_tool", "finish_attempt")
+                    + " (provisional review; no command execution)"
                     if action.get("tool") == "finish_attempt"
                     else "checkpoint_context (unverified memory; no command execution)"
                     if action.get("tool") == "checkpoint_context"
@@ -747,6 +749,12 @@ class IsolatedEnvironment:
                 try:
                     value = validate(action["payload"], self.history)
                     handoff = envelope(value, self.history)
+                    if "api_tool" in action:
+                        handoff["public_interface"] = {
+                            "tool": action["api_tool"],
+                            "arguments": action["api_payload"],
+                            "normalization_note": "Internal summary/evidence fields may be derived; original model claims are these public arguments. Selected checks do not certify their result or scope.",
+                        }
                     projection = compact_handoff(handoff)
                 except (
                     ValueError,
@@ -765,6 +773,11 @@ class IsolatedEnvironment:
                         "mode": "adapter-control",
                         "executed": False,
                         "name": NAME,
+                        **(
+                            {"public_interface": handoff["public_interface"]}
+                            if "public_interface" in handoff
+                            else {}
+                        ),
                         "arguments": value,
                         "raw_arguments": action.get("raw_arguments"),
                     },
@@ -781,6 +794,9 @@ class IsolatedEnvironment:
                         " concrete gaps and run focused checks, then call finish_attempt again."
                         " If reset is unavailable, continue review in the current context."
                     )
+                    from finalization_api import adapt_notice
+
+                    notice = adapt_notice(notice, "api_tool" in action)
                     write_json(self.output / "review-handoff.json", handoff)
                     write_json(
                         prefix.with_suffix(".result.json"),

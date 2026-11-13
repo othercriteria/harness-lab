@@ -49,6 +49,7 @@ def load_protocol(name, root=PROJECT):
         "self_test_feedback",
         "spec_blocker_exit",
         "structured_finalization",
+        "split_finalization",
         "concise_finalization",
         "terminal_semantics_feedback",
         "exact_text_edit",
@@ -58,6 +59,10 @@ def load_protocol(name, root=PROJECT):
     ):
         if type(data.get(flag, False)) is not bool:
             raise ValueError(f"Invalid {flag}")
+    if data.get("split_finalization", False) and not data.get(
+        "structured_finalization", False
+    ):
+        raise ValueError("split_finalization requires structured_finalization")
     if data.get("exact_text_edit", False):
         if not data.get("structured_finalization", False):
             raise ValueError("exact_text_edit requires structured_finalization")

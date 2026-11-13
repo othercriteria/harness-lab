@@ -574,8 +574,12 @@ class Evidence:
                     "checkpoint_context",
                 )
                 record.update(
-                    tool_name=req.get("name", "bash"),
-                    arguments=req.get("arguments")
+                    tool_name=req.get("public_interface", {}).get(
+                        "tool", req.get("name", "bash")
+                    ),
+                    arguments=req.get("public_interface", {}).get(
+                        "arguments", req.get("arguments")
+                    )
                     if typed or req.get("name") in ("edit_file", "write_file")
                     else None,
                     adapter_control=typed,

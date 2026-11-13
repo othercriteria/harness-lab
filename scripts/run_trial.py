@@ -70,7 +70,8 @@ class ReferenceModel(LocalModel):
             self.limits.get("structured_finalization", False)
             and command == "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"
         ):
-            from finish_attempt import NAME, actions
+            from finalization_api import SUBMIT, actions, split
+            from finish_attempt import NAME
 
             value = {
                 "disposition": "submitted",
@@ -81,6 +82,14 @@ class ReferenceModel(LocalModel):
                 ],
                 "blocker": None,
             }
+            name = NAME
+            if split(self.limits):
+                name = SUBMIT
+                value = {
+                    "summary": value["summary"],
+                    "checks": [],
+                    "remaining": value["unverified"],
+                }
             message = {
                 "role": "assistant",
                 "content": "Trusted integration control",
@@ -88,14 +97,18 @@ class ReferenceModel(LocalModel):
                     {
                         "id": identifier,
                         "type": "function",
-                        "function": {"name": NAME, "arguments": json.dumps(value)},
+                        "function": {"name": name, "arguments": json.dumps(value)},
                     }
                 ],
             }
             message["extra"] = {
                 "cost": 0,
                 "actions": actions(
-                    message, None, self.history, finish_reason="tool_calls"
+                    message,
+                    None,
+                    self.history,
+                    finish_reason="tool_calls",
+                    split_enabled=split(self.limits),
                 ),
             }
             return message
@@ -387,21 +400,30 @@ def configure_agent(config, limits, protocol):
             limits["open_problem_policy"]
         ]
     if limits.get("structured_finalization", False):
+        from finalization_api import (
+            INSTRUCTION as SPLIT_INSTRUCTION,
+        )
+        from finalization_api import (
+            adapt_notice,
+            split,
+        )
         from finish_attempt import INSTRUCTION
 
-        config["system_template"] += INSTRUCTION
+        config["system_template"] += SPLIT_INSTRUCTION if split(limits) else INSTRUCTION
         review_policy = limits.get("fresh_context") or {}
         if review_policy.get("trigger") == "first_submission" and review_policy.get(
             "announce_review", True
         ):
             from fresh_context import SUBMISSION_REVIEW_INSTRUCTION
 
-            config["system_template"] += SUBMISSION_REVIEW_INSTRUCTION
-        if limits.get("terminal_semantics_feedback", False):
+            config["system_template"] += adapt_notice(
+                SUBMISSION_REVIEW_INSTRUCTION, split(limits)
+            )
+        if limits.get("terminal_semantics_feedback", False) and not split(limits):
             from finish_attempt import TERMINAL_SEMANTICS_INSTRUCTION
 
             config["system_template"] += TERMINAL_SEMANTICS_INSTRUCTION
-        if limits.get("concise_finalization", False):
+        if limits.get("concise_finalization", False) and not split(limits):
             from finish_attempt import CONCISE_INSTRUCTION
 
             config["system_template"] += CONCISE_INSTRUCTION
@@ -423,9 +445,10 @@ def configure_agent(config, limits, protocol):
 
         config["system_template"] += WRITE_INSTRUCTION
     if "handoff_phase" in limits:
+        from finalization_api import adapt_notice, split
         from handoff_phase import INSTRUCTION as HANDOFF_INSTRUCTION
 
-        config["system_template"] += HANDOFF_INSTRUCTION
+        config["system_template"] += adapt_notice(HANDOFF_INSTRUCTION, split(limits))
     if limits.get("self_test_feedback", False):
         config["system_template"] += (
             " Keep added checks rerunnable in the workspace. Use small checks with"
