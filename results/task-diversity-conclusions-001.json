@@ -1,0 +1,51 @@
+{
+  "scope": "Interpretation of completed development comparisons; final panel acceptance recorded separately.",
+  "new_coverage": [
+    "tabreport-diff adds a realistic package/CLI extension with compatibility, one-shot iterables, serialization, stream ownership and filesystem error handling. Blind independent implementation and isolated controls admitted it; current final recipe has two reviewed successes at 255.27 and 364.08 seconds under a 450-second ceiling.",
+    "The codec pair exercises feasibility triage: implement an eight-flag bijection or report the nine-flag one-octet contradiction. Selected v5 has 3/3 development passes per branch plus 2/2 final confirmation passes per branch. These are exposed, adaptively developed tasks, not population reliability estimates.",
+    "Task relaxation helped: public validation coverage, supplied validators, a 120-second ceiling, and explicit direct-proof deliverable. Earlier variants/failures remain diagnostics. We did not isolate the effect of each change or establish a human-effort horizon."
+  ],
+  "adopted": [
+    {
+      "change": "mktemp, cmp, cut and md5sum aliases for already mounted runtime binaries",
+      "evidence": "results/diversity-utility-isolation-001.json",
+      "conclusion": "Eleven isolated containment checks and unchanged runtime closure. Convenience/compatibility evidence, no causal speed benefit measured. Scratch lifetime remains call-local."
+    },
+    {
+      "change": "Prompt and tool-interface clarification",
+      "evidence": "results/prompt-interface-audit-002.json",
+      "conclusion": "Clarified blocker precedence, bounded regression writing, truthful final handoffs, batching, edit mismatch recovery and actual tool limits. Blind reviews and focused parser/prompt tests informed changes. Prompt grew rather than shrank; no token-economy or causal speed gain established."
+    },
+    {
+      "change": "Qwen27 2304 MiB reserve for this selected recipe",
+      "evidence": "results/diversity-ladder-fit2304-consolidation-001.json",
+      "conclusion": "Development launches completed after an earlier preserved OOM. Larger reserve moved about 522 MiB of main-model weights off GPU, sacrificing potential throughput for margin; no universal stability guarantee. Historical 1792 MiB reliability recipes remain intact."
+    },
+    {
+      "change": "Two-thousand-token reasoning cap for short codec triage; established four-thousand cap and summary recovery for coding",
+      "evidence": "results/diversity-codec-direct-proof-v5-repeat-consolidation-001.json",
+      "conclusion": "Task-specific configuration, not evidence that one cap fits the ladder. No new context-recovery mechanism was needed in this campaign."
+    },
+    {
+      "change": "Canonical work-log evaluator adds stdout write-error/stream-ownership coverage",
+      "evidence": "results/tabreport-diff-evaluator-v2-validation-001.json",
+      "conclusion": "Isolated controls and sealed independent solution pass; genuine Qwen3.6 submission flaw exposed. Earlier evaluator-v1 raw greens preserved and qualified, not rewritten."
+    }
+  ],
+  "not_promoted": [
+    "Qwen3.6: faster decoding and an accepted short-task win, but work-log semantic failure in small matched deployment screens; not the default selected recipe.",
+    "Qwen3.6 fit3072: about 432 MiB more GPU weights, modest decode gain but no accepted-result latency gain; keep as development candidate without a broader headroom sweep.",
+    "Separate submit_attempt/report_blocker tools: implemented opt-in and tested, without demonstrated acceptance benefit. Combined finish_attempt remains selected; interface is not permanently frozen.",
+    "bundle-reader retains first-attempt and efficiency-screen failures; no general claim that it is solved."
+  ],
+  "followups": [
+    "Further task diversity and larger confirmation batches only where the decision warrants their cost.",
+    "Keep optional demonstrations/test generation proportional: even accepted blockers can spend time on irrelevant lossy examples.",
+    "Persistent scratch semantics and prompt density remain open; do not infer success from adding more instructions.",
+    "Continue independent semantic handoff review and adversarial evaluator hardening; canonical green alone remains insufficient."
+  ],
+  "test_addition_review": "The final feasible codec seed5303 inserted one new test method into the supplied file. Original bytes outside the insertion are unchanged and the public contract permits additional tests. The outer review helper's stricter file-hash assumption was corrected with an exact removable-addition check; no task/runtime/canonical-evaluator change or retroactive failure waiver.",
+  "at": "2026-11-13T22:55:37.575030+00:00",
+  "final_panel": "results/diversity-final-panel-consolidation-001.json",
+  "final_panel_passed": true
+}
