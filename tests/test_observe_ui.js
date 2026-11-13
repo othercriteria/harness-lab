@@ -350,3 +350,10 @@ async function paginationRefreshChecks(){
   console.log('Refresh preserves pages/selection, queues navigation, searches globally and resumes newest.');
 }
 paginationRefreshChecks().catch(error=>{console.error(error);process.exitCode=1;});
+
+// A supported impossibility argument does not excuse a materially false handoff.
+assert.equal(vm.runInContext("statusClass('supported blocker / handoff failed')",context),'bad');
+assert.match(vm.runInContext("runOutcomeSummary({kind:'coding',trials:[{state:'supported blocker / handoff failed',adjudication:{status:'adjudicated',task_handling_correctness:false}}]})",context),/1 failed trial/);
+
+assert.equal(vm.runInContext("statusClass('correct code / handoff failed')",context),'bad');
+assert.match(vm.runInContext("runOutcomeSummary({kind:'coding',trials:[{state:'correct code / handoff failed',correct:true,adjudication:{status:'adjudicated',task_handling_correctness:false}}]})",context),/1 failed trial/);

@@ -508,6 +508,17 @@ class ObservatoryTests(unittest.TestCase):
         trial = self.data.run("campaign")["trials"][0]
         self.assertTrue(trial["correct"])
         self.assertEqual(trial["state"], "passed")
+        verdict.update(
+            disposition="verified_coding_bad_handoff",
+            task_handling_correctness=False,
+        )
+        review.write_text(json.dumps(verdict))
+        trial = self.data.run("campaign")["trials"][0]
+        self.assertTrue(trial["correct"])
+        self.assertFalse(trial["passed"])
+        self.assertEqual(trial["state"], "correct code / handoff failed")
+        verdict.update(disposition="verified_coding", task_handling_correctness=True)
+        review.write_text(json.dumps(verdict))
         self.assertFalse(
             self.data.trace("campaign", "trial-00-task")["summary"]["success"]
         )
@@ -527,6 +538,19 @@ class ObservatoryTests(unittest.TestCase):
         self.assertIsNone(trial["correct"])
         self.assertIsNone(trial["passed"])
         self.assertFalse(trial["clean"])
+        verdict.update(
+            disposition="supported_blocker_bad_handoff",
+            task_handling_correctness=False,
+        )
+        review.write_text(json.dumps(verdict))
+        trial = self.data.run("campaign")["trials"][0]
+        self.assertEqual(trial["state"], "supported blocker / handoff failed")
+        self.assertIsNone(trial["correct"])
+        self.assertFalse(trial["passed"])
+        self.assertFalse(trial["adjudication"]["task_handling_correctness"])
+        verdict["task_handling_correctness"] = True
+        review.write_text(json.dumps(verdict))
+        self.assertIsNone(self.data.outer_adjudication(self.trial, summary))
         summary["unsafe_cleanup"] = "fatal"
         path.write_text(json.dumps(summary))
         verdict["raw_summary_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()

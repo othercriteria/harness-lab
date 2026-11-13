@@ -4,7 +4,7 @@ const state={run:null,trial:null,runs:[],paused:false,busy:false,signature:'',vi
 function node(tag,text,className){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;}
 function json(value){return JSON.stringify(value,null,2);}
 function secs(n){return typeof n==='number'?`${n.toFixed(1)}s`:'—';}
-function statusClass(s){return ['passed','complete'].includes(s)?'good':['failed','runtime nonconformance','unsupported blocker','stopped with error','attempt deadline reached','request timed out','attempt ended / response unavailable'].includes(s)?'bad':['live','in progress','executing','awaiting response'].includes(s)?'live':'';}
+function statusClass(s){return ['passed','complete'].includes(s)?'good':['failed','runtime nonconformance','correct code / handoff failed','supported blocker / handoff failed','unsupported blocker','stopped with error','attempt deadline reached','request timed out','attempt ended / response unavailable'].includes(s)?'bad':['live','in progress','executing','awaiting response'].includes(s)?'live':'';}
 function badge(s){return node('span',s,`badge ${statusClass(s)}`);}
 async function api(path,args={}){const r=await fetch(`/api/${path}?${new URLSearchParams(args)}`,{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);return d;}
 function requestRefresh(){state.revision++;refresh(true);}
@@ -19,7 +19,7 @@ function runOutcomeSummary(run){
     if(t.state==='passed')counts.coding++;
     else if(t.state==='supported blocker')counts.blocker++;
     else if(t.state==='runtime nonconformance')counts.rejected++;
-    else if(t.state==='failed'||t.state==='unsupported blocker')counts.failed++;
+    else if(t.state==='failed'||t.state==='unsupported blocker'||t.state==='supported blocker / handoff failed'||t.state==='correct code / handoff failed')counts.failed++;
     else if(/unsafe cleanup|cancelled|stopped/.test(t.state))counts.stopped++;
     else if(t.adjudication?.status==='pending_outer_rubric')counts.pending++;
     else if(t.state==='in progress')counts.live++;

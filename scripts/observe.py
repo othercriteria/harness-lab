@@ -125,7 +125,9 @@ class Evidence:
         disposition = verdict.get("disposition")
         expected = {
             "verified_coding": (True, True, "Submitted"),
+            "verified_coding_bad_handoff": (True, False, "Submitted"),
             "supported_blocker": (None, True, "Blocked"),
+            "supported_blocker_bad_handoff": (None, False, "Blocked"),
             "unsupported_blocker": (False, False, "Blocked"),
             "failed_coding": (False, False, "Submitted"),
             "nonconforming_run": (None, False, "Submitted"),
@@ -301,7 +303,9 @@ class Evidence:
             if adjudication:
                 trial_state = {
                     "verified_coding": "passed",
+                    "verified_coding_bad_handoff": "correct code / handoff failed",
                     "supported_blocker": "supported blocker",
+                    "supported_blocker_bad_handoff": "supported blocker / handoff failed",
                     "unsupported_blocker": "unsupported blocker",
                     "failed_coding": "failed",
                     "reviewed_diagnostic": "diagnostic reviewed",
@@ -309,7 +313,12 @@ class Evidence:
                 }[adjudication["disposition"]]
                 passed = (
                     False
-                    if adjudication["disposition"] == "nonconforming_run"
+                    if adjudication["disposition"]
+                    in {
+                        "nonconforming_run",
+                        "verified_coding_bad_handoff",
+                        "supported_blocker_bad_handoff",
+                    }
                     else adjudication["coding_correctness"]
                 )
             trials.append(
