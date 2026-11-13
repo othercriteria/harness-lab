@@ -19,6 +19,9 @@ class AcceptanceTests(unittest.TestCase):
             with self.assertRaises(ValueError): pack_flags(v)
         for p in [None, '', bytearray([0]), b'', b'aa', 0]:
             with self.assertRaises(ValueError): unpack_flags(p)
+    def test_bytes_subclass_is_invalid(self):
+        class Payload(bytes): pass
+        with self.assertRaises(ValueError): unpack_flags(Payload(b"\x00"))
     def test_tuple_subclass(self):
         class Flags(tuple): pass
         v=Flags((False,)*N)

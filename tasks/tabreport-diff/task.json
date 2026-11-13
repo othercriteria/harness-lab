@@ -2,7 +2,9 @@
   "id": "tabreport-diff",
   "version": 2,
   "kind": "repository-feature",
-  "split": "reserved",
+  "split": "development",
+  "maturity": "active-development",
+  "freeze_policy": "Task specification, starter and canonical tests remain open to revision. Per-experiment snapshots preserve reproducibility; they do not establish a settled task or complete evaluator. Preserve historical scores under their exact evaluator revision.",
   "entrypoint": "public/task.md",
   "test_counts": {
     "public": 21,

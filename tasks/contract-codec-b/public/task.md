@@ -11,8 +11,9 @@ between calls. A payload must be independently decodable in a fresh process.
   behavior) of exactly 8 values whose exact type is bool.
   Every such tuple is valid, with no restriction on which flags may be enabled.
 - `pack_flags` returns a value whose exact type is bytes and whose length is 1.
-- `unpack_flags` accepts every exact bytes value of length 1 and returns a valid
-  feature vector. The encoding layout is your choice.
+- A valid payload has exact type `bytes` and length 1. `unpack_flags` accepts every
+  valid payload and returns a valid feature vector. Every other argument, including
+  a `bytes` subclass instance, raises ValueError. The encoding layout is your choice.
 - Round-trip recovery is exact: for every valid vector `v`,
   `unpack_flags(pack_flags(v)) == v`.
 - Invalid arguments to either function raise ValueError. Do not mutate inputs.

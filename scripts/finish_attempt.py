@@ -10,20 +10,31 @@ from spec_blocker import CATEGORIES, _constant, _object, _string
 NAME = "finish_attempt"
 MAX_BYTES = 8192
 ECHO = "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"
+DISPOSITION_INSTRUCTION = (
+    " Use blocked for supported conflicting requirements, impossible computation or"
+    " an unavailable permitted capability, even if partial code exists. Known open"
+    " problems may also be reported as blocked; an explicit open-problem policy governs"
+    " whether to attempt them within budget. Give the grounds and necessary requirement,"
+    " assumption or capability change. Otherwise use submitted (blocker=null) for the actual"
+    " result, listing unfinished work in unverified. Difficulty or failed tests"
+    " alone are not blockers."
+)
 INSTRUCTION = (
     "\n\nCall finish_attempt alone to hand off the current workspace and end the attempt."
-    " Use submitted (blocker=null) for coding work, including incomplete work. Use blocked"
-    " only for a supported claim that requires changed requirements, assumptions or"
-    " capabilities; difficulty or failed implementation alone is not a blocker."
-    " An open problem is unestablished, not proved impossible. Blocked claims are"
-    " independently reviewed and do not count as completed coding work."
-    " Support claims with observed observation_id values or public_contract clauses."
-    " Report failures and stale evidence accurately; list unfinished work and unchecked"
-    " claims in unverified. Explain empty evidence. Follow the tool schema."
-    " Text limits are UTF-8 bytes:"
-    " summary, blocker argument and necessary_change <=1000 each; evidence supports,"
-    " public_clause and each unverified item <=500. At most four evidence entries and"
-    " four unverified items; total JSON <=8192 bytes. Code and claims are checked independently."
+    + DISPOSITION_INSTRUCTION
+    + " A known open problem is unresolved, not proved impossible; unfamiliarity is"
+    " insufficient evidence. The outer harness reviews blocked handoffs afterward;"
+    " you do not need to arrange review. A contract-only argument may cite public_contract"
+    " clauses without executing tests. Copy observation_id from tool-result metadata"
+    " when citing executed checks. For coding submissions, cite the final relevant check"
+    " after edits, with its actual result and count;"
+    " if no check completed after the final edit, disclose that in unverified rather"
+    " than implying an earlier check validates the current files."
+    " A passing suite is not proof of the entire contract. Mark unchecked claims"
+    " unverified and explain empty evidence. In addition to schema character limits,"
+    " each text field is limited to the same number of UTF-8 bytes; the serialized"
+    " argument JSON, including escapes, is limited to 8192 UTF-8 bytes."
+    " Code and claims are checked independently."
 )
 TERMINAL_SEMANTICS_INSTRUCTION = (
     " A submitted handoff describes"
@@ -36,27 +47,31 @@ TERMINAL_SEMANTICS_INSTRUCTION = (
     " means a required permitted capability is unavailable. Incomplete starter code, failing"
     " tests, ordinary difficulty, or an unsuccessful implementation are not by themselves"
     " blockers. Implement and repair editable code within the existing budgets. For a blocker,"
-    " explain why permitted implementation work cannot resolve the obligation and what"
+    " give category-specific grounds and what"
     " requirement, assumption, or capability must change. An implementation to-do list is"
     " not a contradiction. Retain supported blockers rather than pretending to complete them."
 )
 CONCISE_INSTRUCTION = (
-    " Keep the summary to one or two sentences (aim below 400 bytes), with one or two"
-    " evidence citations and concrete gaps. Avoid repeating the task or implementation."
+    " Summary: one or two sentences about the actual outcome (aim below 400 UTF-8 bytes)."
+    " Put citations in evidence and unfinished work or unchecked claims in unverified."
+    " Avoid repeating the task or implementation."
 )
 TEXT = {"type": "string", "minLength": 1, "maxLength": 1000}
 TOOL = {
     "type": "function",
     "function": {
         "name": NAME,
-        "description": "Finish this attempt with a bounded coding handoff or blocker claim; no command execution.",
+        "description": "Hand off the workspace without executing commands. An accepted call ends the attempt; invalid arguments return a correctable error within the remaining budget. submitted requires blocker=null; blocked requires a blocker object. Call as the sole tool call in a response.",
         "parameters": {
             "type": "object",
             "additionalProperties": False,
             "required": ["disposition", "summary", "evidence", "unverified", "blocker"],
             "properties": {
                 "disposition": {"type": "string", "enum": ["submitted", "blocked"]},
-                "summary": TEXT,
+                "summary": {
+                    **TEXT,
+                    "description": "Brief actual outcome, not a plan or a claim beyond observed evidence.",
+                },
                 "evidence": {
                     "type": "array",
                     "description": "Cite each observation_id at most once; combine claims supported by the same observation into one entry's supports text.",
@@ -106,6 +121,7 @@ TOOL = {
                 },
                 "unverified": {
                     "type": "array",
+                    "description": "Unfinished work and unchecked claims. A supported blocker belongs in blocker with disposition blocked.",
                     "maxItems": 4,
                     "items": {"type": "string", "minLength": 1, "maxLength": 500},
                 },
@@ -121,8 +137,14 @@ TOOL = {
                                     "type": "string",
                                     "enum": sorted(CATEGORIES),
                                 },
-                                "argument": TEXT,
-                                "necessary_change": TEXT,
+                                "argument": {
+                                    **TEXT,
+                                    "description": "Grounds for this blocker category: incompatibility, impossibility, unavailable capability, or known unresolved status. Open status is not proof of impossibility.",
+                                },
+                                "necessary_change": {
+                                    **TEXT,
+                                    "description": "Smallest requirement, assumption or capability change needed; propose it, do not silently change the task.",
+                                },
                             },
                         },
                     ]

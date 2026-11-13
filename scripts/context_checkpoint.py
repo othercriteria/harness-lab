@@ -19,8 +19,9 @@ INSTRUCTION = (
 REQUEST = (
     "Context checkpoint requested. Your next response must call checkpoint_context"
     " alone; no implementation tools will execute in this checkpoint response."
-    " Aim for 150-250 words, comfortably below the hard limit of 4096 UTF-8 bytes."
-    " Lead with unfinished deliverables and concrete next actions. Then list changed"
+    " Use only the space needed, up to 250 words and below 4096 UTF-8 bytes; shorter is fine."
+    " Lead with unfinished deliverables, any established blocker and concrete next actions."
+    " Then list changed"
     " file paths, observed checks/failures with observation IDs, and decisions needed"
     " to continue. Distinguish observations from assumptions. Do not recap function"
     " implementations, API schemas or the public task; the files remain available."
@@ -44,6 +45,7 @@ TOOL = {
                     "type": "string",
                     "minLength": 1,
                     "maxLength": SUMMARY_BYTES,
+                    "description": "Unverified continuation note; at most 4096 UTF-8 bytes as well as the schema character limit. Use only the space needed.",
                 }
             },
         },

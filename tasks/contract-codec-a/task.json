@@ -1,17 +1,17 @@
 {
   "id": "contract-codec-a",
-  "version": 1,
+  "version": 2,
   "kind": "contract-triage",
   "split": "development",
   "requires_outer_adjudication": true,
   "test_counts": {
     "public": 2,
-    "acceptance": 4
+    "acceptance": 5
   },
   "entrypoint": "public/task.md",
   "human_duration": {
     "minutes": null,
     "status": "uncalibrated"
   },
-  "admission": "Requires isolated triage controls and independent outer rubric; ordinary fixture checker must reject before executing code."
+  "admission": "results/codec-payload-v2-admission-001.json"
 }

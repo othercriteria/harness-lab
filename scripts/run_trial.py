@@ -247,7 +247,7 @@ def configure_agent(config, limits, protocol):
     )
     if limits.get("workspace_persistence_feedback", False):
         config["system_template"] += (
-            " Only /workspace files persist between calls. /tmp (including HOME),"
+            " Only file changes under /workspace persist between calls. /tmp (including HOME),"
             " shell variables, working-directory changes and background processes do not."
             " Keep reusable scratch files in /workspace."
         )
@@ -258,6 +258,17 @@ def configure_agent(config, limits, protocol):
 
         validate(limits["python_test_library"])
         config["system_template"] += INSTRUCTION
+    blocker_available = limits.get("structured_finalization") or limits.get(
+        "spec_blocker_exit"
+    )
+    if blocker_available:
+        config["system_template"] += (
+            "\n\nCheck that the public requirements can hold together before implementing."
+            " An established blocker takes priority over implementation and test writing,"
+            " except where an explicit open-problem policy permits a bounded attempt."
+            " Passing examples cannot override a contradictory requirement. Investigate"
+            " uncertainty; uncertainty alone is not a blocker."
+        )
     config["instance_template"] += (
         f"\n\nTotal task ceiling: {limits['task_wall_seconds']} seconds, including verification."
         f" Agent allowance: {limits['agent_wall_seconds']} seconds."
@@ -279,7 +290,8 @@ def configure_agent(config, limits, protocol):
         else:
             config["system_template"] += (
                 "\n\nForm a brief checklist of the public requirements; implement and run the"
-                " supplied tests. Add focused regressions for uncovered risks, using"
+                " supplied tests. Add regressions when required or when a specific"
+                " uncovered risk warrants a small check, using"
                 " expected results derived from the contract, not your implementation."
                 " Do not impose expectations on explicitly excluded inputs. When a check"
                 " fails, inspect both the code and the test's assumptions before changing either."
@@ -319,8 +331,8 @@ def configure_agent(config, limits, protocol):
         finishing_seconds = min(60, max(5, (limits["task_wall_seconds"] + 9) // 10))
         config["system_template"] += (
             " Tool results report remaining_agent_seconds, excluding the verifier reserve."
-            f" With under {finishing_seconds} seconds left, finish checks and submit an"
-            " accurate handoff, listing unfinished work."
+            f" With under {finishing_seconds} seconds left, prioritize an accurate final"
+            " handoff over more optional work. Include unresolved work and observed failures."
             f" Bash commands are limited to {limits.get('max_command_bytes', 8192)} bytes."
         )
     if limits.get("progress_reminder") is not None:
@@ -341,6 +353,11 @@ def configure_agent(config, limits, protocol):
         config["system_template"] += (
             " Use at most four tool calls per response; each bash call requires a string command."
             " Calls in a batch execute in order; you see their results afterward."
+        )
+    if limits.get("max_tool_calls_per_response", 4) > 1:
+        config["system_template"] += (
+            " Ordinary command/edit failures do not cancel later queued calls. Put a"
+            " dependent step in a later response when you need to inspect the earlier result."
         )
     policy = limits.get("context_policy")
     if policy is not None and policy["mode"] != "none":

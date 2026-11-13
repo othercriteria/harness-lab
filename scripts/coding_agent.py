@@ -1,5 +1,6 @@
 """mini-SWE-agent adapters: local HTTP model and isolated execution only."""
 
+import copy
 import hashlib
 import json
 import time
@@ -17,6 +18,28 @@ from mini_bootstrap import (
     parse_toolcall_actions,
 )
 from sandbox import perform_tool, write_json
+
+TOOL_OUTPUT_CHARS = 12000
+
+
+def bash_tool(limits):
+    """Describe this runtime without mutating the upstream tool schema."""
+    tool = copy.deepcopy(BASH_TOOL)
+    tool["function"]["description"] = (
+        "Run bash in a fresh shell in /workspace. "
+        f"At most {limits.get('tool_timeout_seconds', 10)} seconds per call, "
+        "within remaining agent time. "
+        f"Output is stdout then stderr, limited to {TOOL_OUTPUT_CHARS} characters "
+        "(truncated=true omits the tail). Save long output under /workspace and read "
+        "selected lines. Check output as well as returncode; pipelines can hide failures."
+        " The command time limit reports exception_info=tool_wall_limit and stops the command and"
+        " descendants; it cannot continue in a later call."
+    )
+    tool["function"]["parameters"]["properties"]["command"]["description"] = (
+        "Bash source, including any quoting needed by the shell; at most "
+        f"{limits.get('max_command_bytes', 8192)} UTF-8 bytes."
+    )
+    return tool
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -170,7 +193,7 @@ class LocalModel:
         payload = {
             "model": self.model,
             "messages": wire_messages,
-            "tools": [BASH_TOOL],
+            "tools": [bash_tool(self.limits)],
             "stream": False,
             "cache_prompt": True,
             "seed": self.limits.get("seed", 42),
@@ -199,7 +222,7 @@ class LocalModel:
         if self.limits.get("structured_finalization", False):
             from finish_attempt import TOOL
 
-            payload["tools"] = [BASH_TOOL, TOOL]
+            payload["tools"].append(TOOL)
             if self.limits.get("exact_text_edit", False):
                 from edit_file import TOOL as EDIT_TOOL
 
@@ -897,8 +920,8 @@ class IsolatedEnvironment:
         text = result.get("stdout", "") + result.get("stderr", "")
         output = {
             "returncode": result.get("returncode", -1),
-            "output": text[:12000],
-            "truncated": len(text) > 12000,
+            "output": text[:TOOL_OUTPUT_CHARS],
+            "truncated": len(text) > TOOL_OUTPUT_CHARS,
             "exception_info": result.get("stopped_by") or result.get("error") or "",
         }
         if self.agent_deadline is not None:

@@ -34,9 +34,11 @@ REVIEW_INSTRUCTION = (
     " Finish missing implementation and repair specific discrepancies."
     " Check requested deliverables too: required regression tests must be saved in"
     " the repository, not only run as inline diagnostics."
-    " Run focused checks for those changes within the remaining budget, then submit."
+    " Run useful focused checks and the task's required final checks after the last edit."
+    " If time prevents a required check, report it as unverified in the final handoff."
     " Avoid speculative rewrites or a large new test suite. If inspection finds no"
-    " concrete gap, perform proportionate final checks and submit."
+    " concrete gap, perform proportionate final checks and hand off. A supported"
+    " blocker still uses the blocker exit; partial implementation does not resolve it."
 )
 SUBMISSION_REVIEW_INSTRUCTION = (
     " Review policy: when sufficient time and call/token budget remain, your first"
@@ -751,8 +753,10 @@ class FreshContext:
                 " /history/manifest.json. Those records describe historical state, not current"
                 f" files. Allowances at notice creation: {json.dumps(remaining, sort_keys=True)}."
                 " Archive/retrieval and later work consume those allowances. Inspect current"
-                " files and retrieve historical records only as needed. Continue the task"
-                " and submit explicitly when finished."
+                " files and retrieve historical records only as needed, using bash to read"
+                " the manifest and referenced files. Original observation IDs remain valid"
+                " for historical results; check whether later edits made them stale. Continue the task"
+                " and make an explicit final handoff when finished."
             ),
         }
         if self.continuation_mode == "review":

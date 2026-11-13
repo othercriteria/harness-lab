@@ -9,6 +9,7 @@ NAME = "edit_file"
 _CORE_INSTRUCTION = (
     "\n\nUse edit_file for focused replacements in existing UTF-8 workspace files."
     " old_text must match exactly once, including whitespace; otherwise nothing changes."
+    " On a mismatch, reread the relevant current file region before retrying."
     " Combined old/new text"
     " <=32768 UTF-8 bytes; file <=262144 bytes."
 )
