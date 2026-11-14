@@ -220,6 +220,12 @@ def require_task_protocol(metadata, limits):
         raise ValueError(
             "This task requires an opt-in spec_blocker_exit protocol and outer rubric"
         )
+    if (
+        metadata.get("origin") == "imported"
+        or "upstream" in metadata
+        or "evaluator" in metadata
+    ) and limits.get("behavioral_gate") != "cli-state-v1":
+        raise ValueError("Imported task requires independent behavioral verification")
 
 
 def admit_tasks(names, split, root=PROJECT):
