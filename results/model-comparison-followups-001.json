@@ -1,0 +1,127 @@
+{
+  "at": "2026-11-14T10:53:27.937290+00:00",
+  "status": "Bounded-exploration follow-ups; current final champion confirmations remain incomplete",
+  "scope": "Explicit unresolved possibilities, not added requirements or authorization for another tuning campaign. Current task is to finish the already-declared final panels and consolidate them.",
+  "items": [
+    {
+      "topic": "Full delivery from fast Flint implementations",
+      "observed": "Frame confirmation stopped at4/5 when saved regressions were omitted; worklog stopped at1/2 after timeout without final handoff despite correct implementation and evaluator greens.",
+      "open_question": "Can a task-local completion aid or more economical verification make this speed useful without weakening the regression or finalization obligations?",
+      "next_test": "Change one declared aid on development seeds, preserve the failed panels, then use fresh confirmation seeds if the hypothesis survives.",
+      "evidence": [
+        {
+          "path": "results/model-comparison-confirmation-decisions-001.json",
+          "sha256": "84e57353cba3d1e9533addca34a7ebaadae0d59099f7bf477a6ac54b1798c95d"
+        }
+      ]
+    },
+    {
+      "topic": "Coder semantic failures versus context and call limits",
+      "observed": "Coder initial mapping accepted3/7. Long-task revisions did not establish a general improvement; some failures were semantic and one SQLite revision exhausted the64-call limit before600seconds.",
+      "open_question": "Which failures are improved by a more direct work plan or context recovery, and which require stronger model reasoning? Larger contexts and additional recipes remain unexhausted.",
+      "next_test": "Choose a specific failure mechanism from the retained trace; compare one intervention under the same public contract and include correctness, final delivery and context overhead.",
+      "evidence": [
+        {
+          "path": "results/model-comparison-coder-initial-consolidation-001.json",
+          "sha256": "437321efa3e77f53e11ee3a220ee0df9dcd450d96ec8779f38281f744d08236e"
+        },
+        {
+          "path": "results/model-comparison-coder-context48k-consolidation-001.json",
+          "sha256": "fe1dc555da831259740a00af9f9cdad1d4cec8c44f9000813b0181713a805a40"
+        },
+        {
+          "path": "results/model-comparison-coder-temp06-consolidation-001.json",
+          "sha256": "fbe1c89bbae3717668def14a4bcd3ce4909232c6b55a7be65eadeb5ee735df1b"
+        }
+      ]
+    },
+    {
+      "topic": "Routing and cold-start economics",
+      "observed": "Codec comparisons support task-specific selection. Official final-panel times use a ready server and explicit prefix warm-up; loading and warming are separate costs. Coder weights and startup costs are larger than the other selected models.",
+      "open_question": "Does switching to a specialized champion pay off for a single small request, given the currently resident model, prefix availability and host memory pressure?",
+      "next_test": "Use recorded load/warm costs for a simple dispatch estimate before building a router; validate prospective warm and cold measurements separately.",
+      "evidence": [
+        {
+          "path": "results/model-comparison-codec-confirmation-001.json",
+          "sha256": "b50d2b4c34bcf6a60ebdf9a9c57c460a5199b23208ab6e8c40ce8422f6424d73"
+        },
+        {
+          "path": "results/model-comparison-blocker-confirmation-001.json",
+          "sha256": "aa6f0b2a4ddcdedcb1cb736d515657f74754439d96c35f890d4c20c49a477b4f"
+        },
+        {
+          "path": "results/model-comparison-final-resource-costs-001.json",
+          "sha256": "e8a6b17e47dc9ebd7b79287b93cd87f1abc52b3115c71e1692ed0eb9094ec6a9"
+        }
+      ]
+    },
+    {
+      "topic": "Warm timing and causal comparisons",
+      "observed": "Selective comparison panels preceded the explicit prefix-warm protocol. Final panels use it, and the blocker final recipe also changed temperature after a retained failure.",
+      "open_question": "How much of any later latency change is due to caching, sampling, task assistance or other recipe differences? Existing combined results do not isolate each contribution.",
+      "next_test": "Only run matched ablations for an actionable decision; do not relabel old mixed-cache panels as fully warmed or attribute assisted-task gains to the model.",
+      "evidence": [
+        {
+          "path": "results/model-comparison-codec-confirmation-001.json",
+          "sha256": "b50d2b4c34bcf6a60ebdf9a9c57c460a5199b23208ab6e8c40ce8422f6424d73"
+        },
+        {
+          "path": "results/model-comparison-blocker-confirmation-001.json",
+          "sha256": "aa6f0b2a4ddcdedcb1cb736d515657f74754439d96c35f890d4c20c49a477b4f"
+        },
+        {
+          "path": "results/model-comparison-final-blocker-correction-001.json",
+          "sha256": "cd31cc0356d5bec968d722261cabddcf86ec0ffc3655e07aee28c3f8615e1ee9"
+        },
+        {
+          "path": "results/model-comparison-final-event-acquisition-correction-001.json",
+          "sha256": "005610baf157a58cfdd6174904ee67871850e18d8e9140908cfdf06b82530205"
+        },
+        {
+          "path": "results/model-comparison-final-sqlite-correction-001.json",
+          "sha256": "757faf2ba5c32b695313f31177a69890ab0f776216a71d01e8507ce1f8d21b83"
+        }
+      ]
+    },
+    {
+      "topic": "Automating full-result judgment",
+      "observed": "Canonical greens have coexisted with missing deliverables, resource-cleanup defects and forbidden behavior. Current acceptance also uses source/handoff review and targeted isolated probes; subsidiary citation qualifications remain recorded.",
+      "open_question": "Which recurring review findings can become mechanical checks without granting evaluated models access to evaluator authority?",
+      "next_test": "Derive a narrow independent check from a demonstrated failure, preserve separate isolation, and compare it with sealed prior review decisions. Strong-model judging remains a future option, not a demonstrated replacement.",
+      "evidence": [
+        {
+          "path": "results/model-comparison-final-review-policy-001.json",
+          "sha256": "f6eaea5db5e29e43352ac4b58bcec73666031c0886f0404ed850ede4b133437a"
+        },
+        {
+          "path": "results/model-comparison-final-sqlite-correction-001.json",
+          "sha256": "757faf2ba5c32b695313f31177a69890ab0f776216a71d01e8507ce1f8d21b83"
+        },
+        {
+          "path": "results/model-comparison-final-event-acquisition-correction-001.json",
+          "sha256": "005610baf157a58cfdd6174904ee67871850e18d8e9140908cfdf06b82530205"
+        },
+        {
+          "path": "results/model-comparison-codec-confirmation-001.json",
+          "sha256": "b50d2b4c34bcf6a60ebdf9a9c57c460a5199b23208ab6e8c40ce8422f6424d73"
+        }
+      ]
+    },
+    {
+      "topic": "Generalization beyond exposed tasks",
+      "observed": "The final champion panels test repeated seeds on exposed task families. Retired Markdown and bundle-reader diagnostics failed for the tested recipes; task labels such as reserved no longer imply fresh exposure.",
+      "open_question": "Do selected champions transfer to fresh tasks, and do future improvements also recover these preserved diagnostics?",
+      "next_test": "Blind-review and seal new public tasks and independent solutions before evaluator feedback. Keep retired diagnostics separate and avoid treating task assistance as a model-only improvement.",
+      "evidence": [
+        {
+          "path": "results/model-comparison-flint-retired-consolidation-001.json",
+          "sha256": "9732928fd2cfe1c88bb5b9f0180d8d7b4c0d7fbdd6727dea796eff080d19e907"
+        },
+        {
+          "path": "results/model-comparison-coder-screen-retired-consolidation-001.json",
+          "sha256": "e97f1b4fdcc99379ea6f89630f085a5532ce9ec936c79bbca29367014994e839"
+        }
+      ]
+    }
+  ]
+}
