@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v8",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 10,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v7",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after blind wording review and isolated replay of matching sealed independent solution; all starter and test bytes unchanged.",
+  "revision_note": "Positive Python control-flow guidance for the existing commit-failure rollback requirement; starter and all public/private tests unchanged fromv7."
+}
