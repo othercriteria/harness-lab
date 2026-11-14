@@ -43,6 +43,7 @@ def summarize(root):
                 "model",
                 "success",
                 "canonical_correctness",
+                "delivery_correctness",
                 "clean_agent_completion",
                 "human_interventions",
                 "within_budget",

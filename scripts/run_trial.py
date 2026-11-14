@@ -145,6 +145,10 @@ def freeze(output, task):
 
 def verify(runtime, workspace, task, output, remaining):
     metadata = json.loads((task / "task.json").read_text())
+    if metadata.get("kind") == "git-backport":
+        from verify_git import verify as verify_git
+
+        return verify_git(runtime, workspace, task, output, remaining)
     evaluator = metadata.get("evaluator")
     if evaluator == "hcast-orm-unittest-v1":
         from imported_orm import verify as verify_orm
@@ -533,6 +537,17 @@ def run(args):
         if "python_test_library" in limits
         else Runtime()
     )
+    if metadata.get("kind") == "git-backport":
+        from git_task import prepare
+
+        bootstrap = output / "git-bootstrap"
+        bootstrap.mkdir()
+        bootstrap_input = bootstrap / "workspaces/0000"
+        shutil.copytree(task / "public", bootstrap_input)
+        with cancellation(), deadline(end - time.monotonic()):
+            prepared = prepare(runtime, bootstrap_input, task, bootstrap)
+        # Preserve bootstrap receipts; model scratch starts at generation0000.
+        shutil.copytree(prepared, workspace, dirs_exist_ok=True)
     env = IsolatedEnvironment(
         runtime,
         workspace,
@@ -627,13 +642,22 @@ def run(args):
                     runtime, env.workspace, task, output, end - time.monotonic()
                 )
                 report["canonical_correctness"] = report["verification"]["passed"]
+                if metadata.get("kind") == "git-backport":
+                    report["delivery_correctness"] = report["verification"]["delivery"][
+                        "passed"
+                    ]
                 if limits.get("behavioral_gate"):
                     from behavioral_grade import verify_behavior
 
-                    with deadline(end - time.monotonic()):
-                        report["behavioral_verification"] = verify_behavior(
-                            runtime, env.workspace, args.task, output / "behavioral"
-                        )
+                    if metadata.get("kind") == "git-backport":
+                        report["behavioral_verification"] = report["verification"][
+                            "behavioral"
+                        ]
+                    else:
+                        with deadline(end - time.monotonic()):
+                            report["behavioral_verification"] = verify_behavior(
+                                runtime, env.workspace, args.task, output / "behavioral"
+                            )
                     report["behavioral_correctness"] = report[
                         "behavioral_verification"
                     ]["passed"]
@@ -662,6 +686,7 @@ def run(args):
         )
         report["success"] = (
             report["verified_correctness"]
+            and report.get("delivery_correctness") is not False
             and report["clean_agent_completion"]
             and report["within_budget"]
             and "cancelled" not in report

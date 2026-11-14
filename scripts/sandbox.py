@@ -133,6 +133,7 @@ class Runtime:
             "mkdir",
             "find",
             "grep",
+            "git",
             "sed",
             "diff",
             "cmp",
@@ -518,6 +519,14 @@ class Runtime:
             "PYTHONDONTWRITEBYTECODE": "1",
             "PYTHONHASHSEED": "0",
             "LC_ALL": "C.UTF-8",
+            "GIT_CONFIG_NOSYSTEM": "1",
+            "GIT_CONFIG_GLOBAL": "/dev/null",
+            "GIT_TERMINAL_PROMPT": "0",
+            "GIT_PAGER": "cat",
+            "GIT_AUTHOR_NAME": "Local Developer",
+            "GIT_AUTHOR_EMAIL": "developer@example.invalid",
+            "GIT_COMMITTER_NAME": "Local Developer",
+            "GIT_COMMITTER_EMAIL": "developer@example.invalid",
         }.items():
             command.extend(("--setenv", name, value))
         command.extend((self.python, "-I", "-S", "/worker.py"))
@@ -602,6 +611,9 @@ def _unpack_snapshot(archive_path, destination):
             target.parent.mkdir(parents=True, exist_ok=True)
             with archive.extractfile(member) as source, target.open("xb") as output:
                 shutil.copyfileobj(source, output, length=65536)
+            # Git tracks executability. Preserve that ordinary file property,
+            # while retaining safe permissions and discarding setuid/setgid bits.
+            target.chmod(0o644 | (member.mode & 0o111))
     return destination
 
 

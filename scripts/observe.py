@@ -287,6 +287,11 @@ class Evidence:
                 else ("in progress" if state == "live" else "unfinished")
             )
             if (
+                summary.get("verified_correctness") is True
+                and summary.get("delivery_correctness") is False
+            ):
+                trial_state = "correct code / delivery failed"
+            if (
                 summary.get("task_adjudication", {}).get("status")
                 == "pending_outer_rubric"
             ):
@@ -351,6 +356,7 @@ class Evidence:
                         "verified_correctness", summary.get("canonical_correctness")
                     ),
                     "clean": summary.get("clean_agent_completion"),
+                    "delivery": summary.get("delivery_correctness"),
                     **(
                         {
                             "clean_halt": summary.get("clean_agent_halt"),

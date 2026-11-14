@@ -250,6 +250,11 @@ def requires_outer_adjudication(metadata):
 
 
 def require_task_protocol(metadata, limits):
+    if metadata.get("kind") == "git-backport":
+        if metadata.get("admission_status") != "admitted":
+            raise ValueError("Git task blind admission is not complete")
+        if limits.get("behavioral_gate") != "cli-state-v1":
+            raise ValueError("Git task requires independent behavioral verification")
     if (
         requires_outer_adjudication(metadata)
         and limits.get("spec_blocker_exit") is not True
