@@ -459,28 +459,28 @@ def run_command(argv, timeout):
     return result
 
 
-def export_workspace():
+def export_tree(root, destination):
     files = []
     total = 0
-    for directory, directories, names in os.walk("/workspace", followlinks=False):
+    for directory, directories, names in os.walk(root, followlinks=False):
         for name in sorted(directories + names):
             path = Path(directory) / name
             mode = path.lstat().st_mode
             if not (stat.S_ISREG(mode) or stat.S_ISDIR(mode)):
-                raise ValueError(
-                    "Workspace snapshots allow only regular files/directories"
-                )
+                raise ValueError("Snapshots allow only regular files/directories")
             if stat.S_ISREG(mode):
                 total += path.stat().st_size
             files.append(path)
             if len(files) > MAX_FILES or total > WORK_BYTES:
-                raise ValueError("Workspace snapshot size/file-count limit exceeded")
-    with tarfile.open("/export.tar", "w", format=tarfile.USTAR_FORMAT) as archive:
+                raise ValueError("Snapshot size/file-count limit exceeded")
+    with tarfile.open(destination, "w", format=tarfile.USTAR_FORMAT) as archive:
         for path in files:
-            archive.add(
-                path, arcname=str(path.relative_to("/workspace")), recursive=False
-            )
+            archive.add(path, arcname=str(path.relative_to(root)), recursive=False)
     return {"files": len(files), "file_bytes": total}
+
+
+def export_workspace():
+    return export_tree("/workspace", "/export.tar")
 
 
 def main():
@@ -491,8 +491,15 @@ def main():
     resource.setrlimit(resource.RLIMIT_AS, (2 * 1024 * 1024 * 1024,) * 2)
     request = json.loads(Path("/request.json").read_text())
     mode = request["mode"]
+    persistent_scratch = request.get("persistent_scratch", False)
+    if type(persistent_scratch) is not bool or (persistent_scratch and mode != "tool"):
+        raise ValueError("Invalid trusted scratch policy")
     if mode == "tool":
         shutil.copytree("/input", "/workspace", dirs_exist_ok=True, symlinks=False)
+        if persistent_scratch:
+            shutil.copytree(
+                "/scratch-input", "/tmp", dirs_exist_ok=True, symlinks=False
+            )
     restrict_syscalls()
     started = time.monotonic()
     result = {"ok": False}
@@ -568,6 +575,10 @@ def main():
         if mode == "tool":
             try:
                 result["snapshot"] = export_workspace()
+                if persistent_scratch:
+                    result["scratch_snapshot"] = export_tree(
+                        "/tmp", "/scratch-export.tar"
+                    )
             except BaseException as error:  # noqa: BLE001
                 result["ok"] = False
                 result["snapshot_error"] = {

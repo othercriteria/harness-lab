@@ -258,7 +258,14 @@ def configure_agent(config, limits, protocol):
         " There is no network or package installation. Every response must include"
         " a tool call. Bash commands start fresh shells in /workspace."
     )
-    if limits.get("workspace_persistence_feedback", False):
+    if limits.get("persistent_scratch", False):
+        config["system_template"] += (
+            " Files under /workspace and /tmp (including HOME) persist between calls"
+            " within this attempt. /tmp is scratch storage, limited to 16 MiB and"
+            " 2048 regular-file/directory entries; it is not submitted to the evaluator."
+            " Shell variables, working-directory changes and background processes do not persist."
+        )
+    elif limits.get("workspace_persistence_feedback", False):
         config["system_template"] += (
             " Only file changes under /workspace persist between calls. /tmp (including HOME),"
             " shell variables, working-directory changes and background processes do not."
@@ -549,6 +556,7 @@ def run(args):
         structured_finalization=limits.get("structured_finalization", False),
         exact_text_edit=limits.get("exact_text_edit", False),
         whole_file_write=limits.get("whole_file_write", False),
+        persistent_scratch=limits.get("persistent_scratch", False),
     )
     model_class = ReferenceModel if args.mode == "reference" else LocalModel
     extra_args = (task,) if args.mode == "reference" else ()

@@ -17,7 +17,7 @@ from mini_bootstrap import (
     format_toolcall_observation_messages,
     parse_toolcall_actions,
 )
-from sandbox import perform_tool, write_json
+from sandbox import ScratchState, perform_tool, write_json
 
 TOOL_OUTPUT_CHARS = 12000
 
@@ -39,6 +39,11 @@ def bash_tool(limits):
         "Bash source, including any quoting needed by the shell; at most "
         f"{limits.get('max_command_bytes', 8192)} UTF-8 bytes."
     )
+    if limits.get("persistent_scratch", False):
+        tool["function"]["description"] += (
+            " Files in /tmp persist between calls within this attempt;"
+            " scratch files are not part of the submitted workspace."
+        )
     return tool
 
 
@@ -675,10 +680,14 @@ class IsolatedEnvironment:
         structured_finalization=False,
         exact_text_edit=False,
         whole_file_write=False,
+        persistent_scratch=False,
     ):
         self.runtime = runtime
         self.workspace = workspace
         self.output = output
+        if type(persistent_scratch) is not bool:
+            raise ValueError("Invalid persistent_scratch")
+        self.scratch = ScratchState(output / "scratch") if persistent_scratch else None
         self.timeout = timeout
         self.tool_call_limit = tool_call_limit
         self.max_command_bytes = max_command_bytes
@@ -929,6 +938,8 @@ class IsolatedEnvironment:
         options = {"observations": self.observations} if self.observations else {}
         if self.history_archive is not None:
             options["history_archive"] = self.history_archive
+        if self.scratch is not None:
+            options["scratch"] = self.scratch
         editing = self.exact_text_edit and action.get("tool") == "edit_file"
         writing = self.whole_file_write and action.get("tool") == "write_file"
         if editing:

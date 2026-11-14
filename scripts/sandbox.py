@@ -382,7 +382,16 @@ class Runtime:
         evaluation=None,
         observations=None,
         history_archive=None,
+        scratch=None,
     ):
+        if scratch is not None and (
+            request["mode"] != "tool" or evaluation is not None
+        ):
+            raise ValueError("Attempt scratch must not enter the evaluator")
+        if request.get("persistent_scratch", False):
+            raise ValueError("Scratch policy is owned by the runtime")
+        if scratch is not None:
+            request = {**request, "persistent_scratch": True}
         if history_archive is not None and request["mode"] != "tool":
             raise ValueError("Conversation history must not enter the evaluator")
         timeout = request["timeout"] + 5
@@ -446,10 +455,23 @@ class Runtime:
                 str(64 * 1024 * 1024),
                 "--tmpfs",
                 "/tmp",
-                "--dir",
-                "/tmp/home",
             )
         )
+        if scratch is None:
+            command.extend(("--dir", "/tmp/home"))
+        else:
+            scratch_export = prefix.with_suffix(".scratch.tar")
+            scratch_export.touch(exist_ok=False)
+            command.extend(
+                (
+                    "--ro-bind",
+                    str(scratch),
+                    "/scratch-input",
+                    "--bind",
+                    str(scratch_export),
+                    "/scratch-export.tar",
+                )
+            )
         export_path = None
         if request["mode"] == "tool":
             if observations is not None:
@@ -594,6 +616,37 @@ def unpack_snapshot(archive_path, destination):
     return destination
 
 
+class ScratchState:
+    """Outer-owned, attempt-local scratch generations; never evaluator input."""
+
+    def __init__(self, root):
+        self.current = root / "0000"
+        self.current.mkdir(parents=True, exist_ok=False)
+        (self.current / "home").mkdir()
+
+
+def import_tool_snapshots(archive, updated, scratch_archive, scratch):
+    """Validate both states before advancing either caller-visible generation."""
+    scratch_updated = scratch.current.parent / updated.name
+    if updated.exists() or scratch_updated.exists():
+        raise ValueError("Tool snapshot generation already exists")
+    workspace_pending = updated.with_name(".pending-" + uuid.uuid4().hex)
+    scratch_pending = scratch_updated.with_name(".pending-" + uuid.uuid4().hex)
+    published = []
+    try:
+        _unpack_snapshot(archive, workspace_pending)
+        _unpack_snapshot(scratch_archive, scratch_pending)
+        workspace_pending.rename(updated)
+        published.append(updated)
+        scratch_pending.rename(scratch_updated)
+        published.append(scratch_updated)
+    except BaseException:
+        for path in [workspace_pending, scratch_pending, *published]:
+            shutil.rmtree(path, ignore_errors=True)
+        raise
+    scratch.current = scratch_updated
+
+
 def perform_tool(
     runtime,
     workspace,
@@ -605,12 +658,20 @@ def perform_tool(
     observations=None,
     history_archive=None,
     max_command_bytes=8192,
+    scratch=None,
 ):
     if type(max_command_bytes) is not int or not 8192 <= max_command_bytes <= 32768:
         raise ValueError("Invalid trusted max_command_bytes")
     options = {"observations": observations} if observations is not None else {}
     if history_archive is not None:
         options["history_archive"] = history_archive
+    if scratch is not None:
+        if (
+            not isinstance(scratch, ScratchState)
+            or scratch.current.name != workspace.name
+        ):
+            raise ValueError("Scratch and workspace generations must match")
+        options["scratch"] = scratch.current
     result, archive = runtime.sandbox(
         workspace,
         {
@@ -628,5 +689,12 @@ def perform_tool(
             "Invalid workspace snapshot; preserving last valid snapshot and stopping"
         )
     updated = workspace.parent / f"{int(workspace.name) + 1:04d}"
-    unpack_snapshot(archive, updated)
+    if scratch is None:
+        unpack_snapshot(archive, updated)
+    else:
+        if not result.get("scratch_snapshot"):
+            raise RuntimeError("Missing scratch snapshot; preserving last valid states")
+        import_tool_snapshots(
+            archive, updated, prefix.with_suffix(".scratch.tar"), scratch
+        )
     return result, updated

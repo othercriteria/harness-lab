@@ -56,6 +56,7 @@ def load_protocol(name, root=PROJECT):
         "plain_tool_observations",
         "require_tool_call",
         "whole_file_write",
+        "persistent_scratch",
     ):
         if type(data.get(flag, False)) is not bool:
             raise ValueError(f"Invalid {flag}")
