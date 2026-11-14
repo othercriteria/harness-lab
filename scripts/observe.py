@@ -481,6 +481,7 @@ class Evidence:
             for case in summary.get("cases", [])
             if isinstance(case, dict) and isinstance(case.get("name"), str)
         }
+        total_requests = len(files)
         files = sorted(files, key=lambda p: (p.stat().st_mtime, p.name))[-80:]
         last_model_request = {}
         for path in files:
@@ -608,6 +609,8 @@ class Evidence:
                         + str(result.get("terminal_control", "unknown"))
                     )
                     if typed and result
+                    else "attempt ended / tool receipt unavailable"
+                    if not result and summary
                     else "adapter pending"
                     if typed
                     else "read returned"
@@ -636,6 +639,11 @@ class Evidence:
             records.append(record)
         return {
             "events": records,
+            "event_window": {
+                "total_requests": total_requests,
+                "older_requests_omitted": max(0, total_requests - len(files)),
+                "unreadable_requests": len(files) - len(records),
+            },
             "summary": summary or None,
             "outer_adjudication": self.outer_adjudication(root, summary),
             "kind": "diagnostic"

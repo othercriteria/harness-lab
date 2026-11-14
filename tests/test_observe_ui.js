@@ -254,7 +254,7 @@ context.provisional={id:'tool-001',kind:'tool',adapter_control:true,tool_name:'f
 const reviewCard=vm.runInContext('eventCard(provisional,true)',context);
 assert.match(text(reviewCard),/REVIEW/);
 assert.match(text(reviewCard),/review requested; not submitted/);
-assert.match(text(reviewCard),/"accepted": false/);
+assert.match(text(reviewCard),/"request_accepted": true/);
 assert.doesNotMatch(text(reviewCard),/FINALIZE|adapter terminal/);
 console.log('Provisional review control is not displayed as terminal acceptance.');
 
@@ -316,6 +316,31 @@ assert.match(text(writeRequest),/Empty string/);
 assert.equal(context.pwned,undefined);
 console.log('Whole-file writes preserve literal contents and empty files in the trace display.');
 
+// Checkpoint acceptance is distinct from submission, including pending calls.
+for(const saved of [false,true]){
+  context.polishCheckpoint={id:'tool-checkpoint',kind:'tool',tool_name:'checkpoint_context',adapter_control:true,arguments:{summary:hostile,evidence:[{observation_id:'o0010',supports:hostile}]},executed:false,state:saved?'checkpoint saved / unverified memory':'adapter pending',checkpoint_control:saved?'summary_saved':null,result:saved?{ok:true,stdout:'Budgets continue unchanged.'}:null};
+  const card=vm.runInContext('eventCard(polishCheckpoint,true)',context);
+  assert.match(text(card),/CHECKPOINT/);
+  assert.doesNotMatch(text(card),/FINALIZE/);
+  assert.match(text(card),/not submitted/);
+  assert.match(text(card),saved? /"request_accepted": true/:/"request_accepted": null/);
+  if(saved)assert.match(text(card),/Budgets continue unchanged/);
+  assert.ok(text(card).includes(hostile));
+}
+context.snapshotEvent={id:'tool-scratch',kind:'tool',tool_name:'bash',state:'returned',result:{ok:true,snapshot:{files:14,file_bytes:46245},scratch_snapshot:{files:5,file_bytes:417}}};
+const snapshotCard=vm.runInContext('eventCard(snapshotEvent,true)',context);
+assert.match(text(snapshotCard),/Workspace snapshot/);
+assert.match(text(snapshotCard),/Attempt scratch snapshot/);
+assert.match(text(snapshotCard),/417/);
+assert.match(text(snapshotCard),/excluded from the submitted workspace and evaluator/);
+trace.event_window={total_requests:83,older_requests_omitted:3,unreadable_requests:1};
+vm.runInContext('render(input.run,input.trace)',context);
+assert.match(elements.get('trace-hint').textContent,/3 older requests omitted/);
+assert.match(elements.get('trace-hint').textContent,/1 unreadable request artifacts/);
+for(const state of ['read failed','transport stopped','attempt ended / tool receipt unavailable'])assert.equal(vm.runInContext(`statusClass('${state}')`,context),'bad');
+assert.equal(vm.runInContext("statusClass('reading')",context),'live');
+console.log('Checkpoint acceptance, scratch scope and incomplete timelines are explicit.');
+
 // Exercise real asynchronous refresh/navigation, including stale responses.
 async function paginationRefreshChecks(){
   const calls=[];
@@ -370,7 +395,24 @@ async function paginationRefreshChecks(){
   assert.equal(vm.runInContext('state.run',context),'newest');
   assert.equal(vm.runInContext('state.query',context),'');
   assert.equal(vm.runInContext('state.page',context),1);
-  console.log('Refresh preserves pages/selection, queues navigation, searches globally and resumes newest.');
+  // A late raw-artifact success or failure cannot populate a different selection.
+  for(const reject of [false,true]){
+    let deliver;
+    context.fetch=()=>new Promise(resolve=>{deliver=resolve;});
+    vm.runInContext("state.run='old';state.trial='trial-old'",context);
+    elements.get('artifact').value='summary.json';
+    const pending=elements.get('load-artifact').onclick();
+    vm.runInContext("state.run='new';state.trial='trial-new';resetArtifact()",context);
+    deliver({ok:!reject,json:async()=>reject?{error:'OLD ERROR'}:{text:'OLD EVIDENCE'}});
+    await pending;
+    assert.doesNotMatch(elements.get('raw').textContent,/OLD/);
+  }
+  context.fetch=async()=>({ok:true,json:async()=>({text:'CURRENT EVIDENCE'})});
+  await elements.get('load-artifact').onclick();
+  assert.equal(elements.get('raw').textContent,'CURRENT EVIDENCE');
+  elements.get('artifact').value='changes.diff';elements.get('artifact').onchange();
+  assert.doesNotMatch(elements.get('raw').textContent,/CURRENT EVIDENCE/);
+  console.log('Refresh navigation and raw artifact selection reject stale replies.');
 }
 paginationRefreshChecks().catch(error=>{console.error(error);process.exitCode=1;});
 

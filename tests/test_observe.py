@@ -198,6 +198,45 @@ class ObservatoryTests(unittest.TestCase):
         self.assertIsNone(event["cleanup"])
         self.assertIsNone(self.data.run("campaign")["trials"][0]["correct"])
 
+    def test_closed_tools_without_receipts_are_not_still_running(self):
+        for index, (mode, name) in enumerate(
+            [
+                ("adapter-control", "checkpoint_context"),
+                ("adapter-read", "read_file"),
+                ("tool", "bash"),
+            ],
+            1,
+        ):
+            (self.trial / f"tool-{index:03}.request.json").write_text(
+                json.dumps({"mode": mode, "name": name, "arguments": {}})
+            )
+        events = self.data.trace("campaign", "trial-00-task")["events"]
+        self.assertEqual(
+            {e["state"] for e in events}, {"adapter pending", "reading", "executing"}
+        )
+        (self.trial / "summary.json").write_text(json.dumps({"success": False}))
+        events = self.data.trace("campaign", "trial-00-task")["events"]
+        self.assertEqual(
+            {e["state"] for e in events}, {"attempt ended / tool receipt unavailable"}
+        )
+
+    def test_trace_reports_omitted_and_unreadable_requests(self):
+        for index in range(83):
+            path = self.trial / f"request-{index:03}.request.json"
+            path.write_text("{}" if index < 82 else "{")
+            os.utime(path, (index + 1, index + 1))
+        trace = self.data.trace("campaign", "trial-00-task")
+        self.assertEqual(
+            trace["event_window"],
+            {
+                "total_requests": 83,
+                "older_requests_omitted": 3,
+                "unreadable_requests": 1,
+            },
+        )
+        self.assertEqual(len(trace["events"]), 79)
+        self.assertIn("request-000.request.json", trace["artifacts"])
+
     def test_posthoc_contract_failure_qualifies_but_does_not_rewrite_frozen_pass(self):
         summary = {
             "task": "sample",
