@@ -1,7 +1,6 @@
 """Opt-in typed terminal handoff. All model fields are bounded untrusted data."""
 
 import json
-import re
 from types import SimpleNamespace
 
 from mini_bootstrap import FormatError, parse_toolcall_actions
@@ -227,47 +226,9 @@ def validate(value, history):
         raise ValueError("At most four evidence and four unverified entries")
     if not evidence and not gaps:
         raise ValueError("Empty evidence requires an explicit unverified explanation")
-    seen = set()
-    for index, entry in enumerate(evidence):
-        label = f"evidence[{index}]"
-        if not isinstance(entry, dict):
-            raise ValueError(f"{label} must be an object")
-        kind = entry.get("kind")
-        if kind == "observation":
-            require_fields(
-                entry, ("kind", "observation_id", "supports"), label + " (observation)"
-            )
-            identifier = entry["observation_id"]
-            if not isinstance(identifier, str) or not re.fullmatch(
-                r"o[0-9]{4}", identifier
-            ):
-                raise ValueError(
-                    f"{label}.observation_id must be an attempt-local ID such as o0001 from a previous tool result"
-                )
-            if (
-                history is None
-                or not history.expose_ids
-                or identifier not in history.records
-            ):
-                raise ValueError(
-                    f"{label}.observation_id: observation not from this attempt; cite an ID already shown in a tool result"
-                )
-            if identifier in seen:
-                raise ValueError(
-                    "Duplicate observation citation; combine claims supported by the"
-                    " same observation into one evidence entry's supports text"
-                )
-            seen.add(identifier)
-        elif kind == "public_contract":
-            require_fields(
-                entry,
-                ("kind", "public_clause", "supports"),
-                label + " (public_contract)",
-            )
-            bounded_text(entry["public_clause"], 500, "public_clause")
-        else:
-            raise ValueError(f"{label}.kind must be observation or public_contract")
-        bounded_text(entry["supports"], 500, "supports")
+    from evidence import validate_evidence
+
+    validate_evidence(evidence, history)
     for gap in gaps:
         bounded_text(gap, 500, "unverified")
     blocker = value["blocker"]
@@ -411,18 +372,9 @@ def actions(
 
 def envelope(value, history):
     validate(value, history)
-    citations = []
-    for entry in value["evidence"]:
-        if entry["kind"] == "observation":
-            identifier = entry["observation_id"]
-            record = history.records[identifier]
-            # These are trusted attempt-local records; no model-selected filesystem path.
-            citations.append(
-                {
-                    "record": dict(record),
-                    "original_visible": history.visible_messages[identifier],
-                }
-            )
+    from evidence import resolve
+
+    citations = resolve(value["evidence"], history)
     return {
         "status": "unverified_model_handoff",
         "source": "model",

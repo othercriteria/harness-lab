@@ -6,9 +6,11 @@ isolation, cleanup and evaluator outcomes. No candidate code is imported here.
 
 import hashlib
 import json
+import re
 from pathlib import Path
+from types import SimpleNamespace
 
-from context_checkpoint import REPLY_TOKENS, REQUEST, THINK_TOKENS, TOOL, action
+from context_checkpoint import REPLY_TOKENS, THINK_TOKENS, action, request, tool
 from mini_bootstrap import FormatError
 
 
@@ -76,6 +78,40 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
     require(len(requests) <= limits["step_limit"], "Model-call allowance exceeded")
     offer_path = root / f"context-checkpoint-request-{sequence:03d}.json"
     offer = read(offer_path) if offer_path.exists() else None
+    shared = limits.get("shared_evidence", False)
+    history = None
+    if offer is not None and shared:
+        pointer = offer["observation_manifest"]
+        require(
+            re.fullmatch(r"observations-[0-9]{3}\.manifest\.json", pointer["name"]),
+            "Invalid observation manifest pointer",
+        )
+        manifest_path = root / pointer["name"]
+        require(
+            hashlib.sha256(manifest_path.read_bytes()).hexdigest() == pointer["sha256"],
+            "Observation manifest changed",
+        )
+        records = read(manifest_path)["observations"]
+        visible = {}
+        for item in records:
+            identifier = item["id"]
+            require(re.fullmatch(r"o[0-9]{4}", identifier), "Invalid observation ID")
+            require(
+                item["message_file"]
+                in (identifier + ".json", identifier + ".message.txt"),
+                "Invalid observation message filename",
+            )
+            path = root / "observations" / item["message_file"]
+            require(
+                path.stat().st_size <= 131072 and not path.is_symlink(),
+                "Invalid observation message file",
+            )
+            visible[identifier] = path.read_text()
+        history = SimpleNamespace(
+            expose_ids=True,
+            records={r["id"]: r for r in records},
+            visible_messages=visible,
+        )
     checkpoint_index = offer["model_calls"] + 1 if offer else None
     total = 0
     tools = None
@@ -91,7 +127,7 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
             tools = payload["tools"]
         require(payload["tools"] == tools, "Tool prefix changed during attempt")
         require(
-            sum(t == TOOL for t in tools) == int(enabled),
+            sum(t == tool(shared) for t in tools) == int(enabled),
             "Checkpoint schema differs from enabled policy",
         )
         context = read(root / f"context-{index:03d}.json")
@@ -109,7 +145,7 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
             require(
                 offer["completion_tokens"] == total, "Checkpoint offer renewed tokens"
             )
-            notice = {"role": "user", "content": REQUEST}
+            notice = {"role": "user", "content": request(shared)}
             require(offer["notice"] == notice, "Checkpoint instructions changed")
             require(
                 notice in payload["messages"], "Checkpoint request lacks invitation"
@@ -191,6 +227,8 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
             checkpoint_response,
             choice.get("finish_reason"),
             requested=True,
+            shared=shared,
+            history=history,
         )[0]
     except FormatError:
         accepted = None
@@ -219,6 +257,17 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
             saved["summary"] == accepted["payload"]["summary"],
             "Saved memory differs from response",
         )
+        if shared:
+            from evidence import resolve
+
+            expected = accepted["payload"].get("evidence", [])
+            require(
+                saved["evidence"] == expected, "Saved evidence differs from response"
+            )
+            require(
+                saved["observations"] == resolve(expected, history),
+                "Saved observations differ from historical evidence",
+            )
         require(
             saved["tool_call"] == tool_index
             and saved["model_call"] == checkpoint_index,
@@ -259,10 +308,15 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
             reset["summary_checkpoint"] == expected, "Reset memory provenance differs"
         )
         if saved:
+            suffix = json.dumps(accepted["payload"], ensure_ascii=False)
+            if shared:
+                from evidence import render
+
+                suffix += "\nHistorical evidence:\n" + render(
+                    accepted["payload"].get("evidence", []), history
+                )
             require(
-                reset["notice"]["content"].endswith(
-                    json.dumps(accepted["payload"], ensure_ascii=False)
-                ),
+                reset["notice"]["content"].endswith(suffix),
                 "Reset omitted/changed saved memory",
             )
         require(

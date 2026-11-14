@@ -389,7 +389,10 @@ class FreshContext:
             and not self.attempted
         ):
             raise ValueError("Checkpoint is not awaiting acceptance")
-        self.checkpoint = copy.deepcopy(validate(value))
+        shared = self.model.limits.get("shared_evidence", False)
+        self.checkpoint = copy.deepcopy(
+            validate(value, shared=shared, history=self.model.history)
+        )
         self.checkpoint_tool = self.environment.calls
         self.checkpoint_tools.add(self.checkpoint_tool)
         record = {
@@ -400,6 +403,11 @@ class FreshContext:
             "timing": self.timing(time.monotonic()),
             "executed": False,
         }
+        if shared:
+            from evidence import resolve
+
+            record["evidence"] = self.checkpoint.get("evidence", [])
+            record["observations"] = resolve(record["evidence"], self.model.history)
         with self.artifact("context-checkpoint").open("x") as stream:
             json.dump(record, stream, indent=2)
 
@@ -636,7 +644,7 @@ class FreshContext:
             or self.pressure["available_completion_tokens"] >= 2560
         )
         if self.summary_enabled and not self.checkpoint_requested and summary_fits:
-            from context_checkpoint import REQUEST
+            from context_checkpoint import request
 
             if (
                 model.calls + 1 >= model.limits["step_limit"]
@@ -650,7 +658,10 @@ class FreshContext:
                     "checkpoint_offer",
                     "no allowance for checkpoint and continuation",
                 )
-            notice = {"role": "user", "content": REQUEST}
+            notice = {
+                "role": "user",
+                "content": request(model.limits.get("shared_evidence", False)),
+            }
             record = {
                 "status": "requested",
                 "timing": timing,
@@ -662,6 +673,15 @@ class FreshContext:
             }
             if self.pressure is not None:
                 record["context_pressure"] = self.pressure
+            if model.limits.get("shared_evidence", False):
+                evidence_manifest = (
+                    self.output
+                    / f"observations-{len(model.history.records):03d}.manifest.json"
+                )
+                record["observation_manifest"] = {
+                    "name": evidence_manifest.name,
+                    "sha256": digest(evidence_manifest.read_bytes()),
+                }
             with self.artifact("context-checkpoint-request").open("x") as stream:
                 json.dump(record, stream, indent=2)
             messages.append(notice)
@@ -776,6 +796,12 @@ class FreshContext:
                 " and original observations when needed.\n"
                 + json.dumps(self.checkpoint, ensure_ascii=False)
             )
+            if model.limits.get("shared_evidence", False):
+                from evidence import render
+
+                notice["content"] += "\nHistorical evidence:\n" + render(
+                    self.checkpoint.get("evidence", []), model.history
+                )
         event = {
             "status": "applied",
             "trigger": "predeclared elapsed-agent fraction at a completed tool-cycle boundary",

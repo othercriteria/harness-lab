@@ -215,6 +215,85 @@ class CheckpointTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Saved memory differs"):
             verify_checkpoint_evidence(self.root, self.limits)
 
+    def test_shared_evidence_survives_reset_with_original_outcome_and_same_budgets(
+        self,
+    ):
+        from evidence import resolve
+        from finish_attempt import envelope
+
+        self.limits["shared_evidence"] = True
+        evidence = [
+            {
+                "kind": "observation",
+                "observation_id": "o0001",
+                "supports": "The diagnostic command printed its output.",
+            }
+        ]
+        self.run_sequence(
+            checkpoint=call(
+                "checkpoint_context",
+                {
+                    "summary": SUMMARY,
+                    "evidence": evidence,
+                },
+                "call-2",
+            )
+        )
+        saved = self.read("context-checkpoint-001.json")
+        self.assertEqual(saved["observations"], resolve(evidence, self.model.history))
+        terminal = envelope(
+            {
+                "disposition": "submitted",
+                "summary": "Done",
+                "evidence": evidence,
+                "unverified": [],
+                "blocker": None,
+            },
+            self.model.history,
+        )
+        self.assertEqual(terminal["observations"], saved["observations"])
+        resumed = self.requests[2]["messages"][-1]["content"]
+        self.assertIn('"status": "historical_only"', resumed)
+        self.assertIn("o0001", resumed)
+        self.assertIn("diagnostic", resumed)
+        self.assertEqual((self.model.calls, self.env.calls), (4, 4))
+        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(
+            verify_checkpoint_evidence(self.root, self.limits)["status"], "saved"
+        )
+        saved["observations"][0]["record"]["returncode"] = 7
+        (self.root / "context-checkpoint-001.json").write_text(json.dumps(saved))
+        with self.assertRaisesRegex(ValueError, "Saved observations differ"):
+            verify_checkpoint_evidence(self.root, self.limits)
+
+    def test_unknown_shared_reference_uses_existing_fallback_without_extra_execution(
+        self,
+    ):
+        self.limits["shared_evidence"] = True
+        self.run_sequence(
+            checkpoint=call(
+                "checkpoint_context",
+                {
+                    "summary": SUMMARY,
+                    "evidence": [
+                        {
+                            "kind": "observation",
+                            "observation_id": "o0099",
+                            "supports": "Unknown result",
+                        }
+                    ],
+                },
+                "call-2",
+            )
+        )
+        self.assertFalse((self.root / "context-checkpoint-001.json").exists())
+        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(
+            self.read("fresh-context-reset-001.json")["summary_checkpoint"]["status"],
+            "fallback_without_summary",
+        )
+        verify_checkpoint_evidence(self.root, self.limits)
+
     def test_wrong_tool_is_charged_but_not_executed_then_plain_reset(self):
         self.run_sequence(
             checkpoint=call("bash", {"command": "must not execute"}, "call-2")

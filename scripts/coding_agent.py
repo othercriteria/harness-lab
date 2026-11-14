@@ -244,10 +244,12 @@ class LocalModel:
                 payload["tools"].append(WRITE_TOOL)
         if self.fresh_context and self.fresh_context.summary_enabled:
             from context_checkpoint import REPLY_TOKENS, THINK_TOKENS
-            from context_checkpoint import TOOL as CHECKPOINT_TOOL
+            from context_checkpoint import tool as checkpoint_tool
 
             # Keep the tool prefix stable on every request in this treatment.
-            payload["tools"].append(CHECKPOINT_TOOL)
+            payload["tools"].append(
+                checkpoint_tool(self.limits.get("shared_evidence", False))
+            )
             if checkpoint_request:
                 payload["max_tokens"] = min(payload["max_tokens"], REPLY_TOKENS)
                 if "reasoning_budget_tokens" in payload:
@@ -500,6 +502,8 @@ class LocalModel:
                     response,
                     choice.get("finish_reason"),
                     requested=checkpoint_request,
+                    shared=self.limits.get("shared_evidence", False),
+                    history=self.history,
                 )
             except FormatError as error:
                 if checkpoint_request:

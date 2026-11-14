@@ -1,5 +1,6 @@
 """Bounded model-authored memory; never executable or verified evidence."""
 
+import copy
 import json
 
 from mini_bootstrap import FormatError
@@ -53,8 +54,36 @@ TOOL = {
 }
 
 
-def validate(value):
-    if not isinstance(value, dict) or set(value) != {"summary"}:
+def tool(shared=False):
+    if not shared:
+        return TOOL
+    from finish_attempt import TOOL as FINISH_TOOL
+
+    result = copy.deepcopy(TOOL)
+    properties = result["function"]["parameters"]["properties"]
+    properties["evidence"] = copy.deepcopy(
+        FINISH_TOOL["function"]["parameters"]["properties"]["evidence"]
+    )
+    properties["evidence"]["description"] = (
+        "Optional historical evidence to carry into the next context, using the same"
+        " observation/public-contract references as final handoff. At most four;"
+        " cite failures as well as successes when useful."
+    )
+    return result
+
+
+def request(shared=False):
+    return REQUEST + (
+        " Optionally include evidence using the same references as final handoff;"
+        " selected historical tool results will accompany your continuation note."
+        if shared
+        else ""
+    )
+
+
+def validate(value, *, shared=False, history=None):
+    allowed = {"summary", "evidence"} if shared else {"summary"}
+    if not isinstance(value, dict) or "summary" not in value or set(value) - allowed:
         raise ValueError("Checkpoint requires only a summary field")
     summary = value["summary"]
     if (
@@ -63,6 +92,12 @@ def validate(value):
         or len(summary.encode()) > SUMMARY_BYTES
     ):
         raise ValueError("Checkpoint summary must be 1..4096 UTF-8 bytes")
+    if shared:
+        from evidence import validate_evidence
+
+        validate_evidence(value.get("evidence", []), history)
+    if len(json.dumps(value, ensure_ascii=False).encode()) > MAX_BYTES:
+        raise ValueError("Checkpoint arguments exceed 8192 bytes")
     return value
 
 
@@ -78,7 +113,7 @@ def failure(error, response):
     )
 
 
-def action(message, response, finish_reason, *, requested):
+def action(message, response, finish_reason, *, requested, shared=False, history=None):
     try:
         if not requested:
             raise ValueError(
@@ -108,7 +143,9 @@ def action(message, response, finish_reason, *, requested):
         if not isinstance(raw, str) or len(raw.encode()) > MAX_BYTES:
             raise ValueError("Checkpoint arguments exceed 8192 bytes or are not text")
         value = validate(
-            json.loads(raw, object_pairs_hook=_object, parse_constant=_constant)
+            json.loads(raw, object_pairs_hook=_object, parse_constant=_constant),
+            shared=shared,
+            history=history,
         )
         return [
             {

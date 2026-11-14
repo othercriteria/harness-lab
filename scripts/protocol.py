@@ -57,9 +57,14 @@ def load_protocol(name, root=PROJECT):
         "require_tool_call",
         "whole_file_write",
         "persistent_scratch",
+        "shared_evidence",
     ):
         if type(data.get(flag, False)) is not bool:
             raise ValueError(f"Invalid {flag}")
+    if data.get("shared_evidence", False) and not data.get(
+        "structured_finalization", False
+    ):
+        raise ValueError("shared_evidence requires structured_finalization")
     if data.get("split_finalization", False) and not data.get(
         "structured_finalization", False
     ):
