@@ -8,6 +8,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+from observe_costs import CostProjection
+
 PROJECT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = Path("/bulk/dlk/local-harness/runs")
 NAME = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_.-]{0,180}\Z")
@@ -45,6 +47,7 @@ RECOVERY_ARTIFACT = re.compile(
 class Evidence:
     def __init__(self, root=DEFAULT_ROOT):
         self.root = root.resolve()
+        self.costs = CostProjection()
 
     def child(self, parent, name):
         if not NAME.fullmatch(name) or name in (".", ".."):
@@ -653,6 +656,7 @@ class Evidence:
             records.append(record)
         return {
             "events": records,
+            "cost_breakdown": self.costs.get(self, root) if not control else None,
             "event_window": {
                 "total_requests": total_requests,
                 "start": start,

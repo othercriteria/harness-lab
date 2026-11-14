@@ -26,6 +26,23 @@ const context=vm.createContext({document,window:{innerHeight:800,scrollY:0,scrol
   fetch:()=>new Promise(()=>{}),setInterval(){},setTimeout,clearTimeout,URLSearchParams});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'../observatory/app.js'),'utf8'),context);
 const text=e=>[e.textContent??'',...e.children.map(text)].join(' ');
+context.costSample={status:'recorded trial',task_seconds:120,model_request_seconds:100,
+  checkpoint_request_seconds:12,finalization_request_seconds:8,backend_prompt_seconds:15,
+  backend_predicted_seconds:78,first_structured_edit_seconds_approx:32,
+  after_last_structured_edit_seconds_approx:24,verification_seconds:2,context_resets:2,
+  read_calls:5,checkpoint_calls:3,coverage:{requests:18,timed_requests:17,responses:17,
+    backend_prompt_reports:16,backend_decode_reports:16,trajectory_available:true},
+  note:'Subsets overlap. <script>text remains inert</script>'};
+vm.runInContext('costBreakdown(costSample)',context);
+assert.equal(elements.get('cost-breakdown').hidden,false);
+assert.match(text(elements.get('cost-metrics')),/12\.0s Recovery requests · within model time/);
+assert.match(text(elements.get('cost-metrics')),/15\.0s Backend prefill · overlaps model time/);
+assert.match(text(elements.get('cost-metrics')),/32\.0s First structured edit attempt/);
+assert.match(elements.get('cost-coverage').textContent,/17\/18 request timings/);
+assert.match(elements.get('cost-note').textContent,/<script>text remains inert<\/script>/);
+vm.runInContext('costBreakdown(null)',context);
+assert.equal(elements.get('cost-breakdown').hidden,true);
+console.log('Whole-trial cost labels, partial coverage and inert rendering passed.');
 const run={name:'parser-control',kind:'control',state:'complete',restored:true,trials:[{
   name:'trial-00-control',kind:'control',passed:true,commands_executed:0,seconds:203.7,
   state:'passed',control_kind:'inert long-prefix control',task:'probe',

@@ -4,3 +4,4 @@ aside{min-width:0}.artifact-bar{flex-wrap:wrap}@media(max-width:850px){.shell{gr
 .pagination{display:flex;justify-content:space-between;gap:8px}.pagination button{font-size:12px}button:disabled{cursor:default;opacity:.45}button:disabled:hover{border-color:#35445b}#page-info,#selected-campaign,#page-warning{font-size:11px;overflow-wrap:anywhere}
 
 .event-pagination{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.event-pagination button{font-size:12px}.event-pagination .hint{margin-left:8px}
+.cost-breakdown{border:1px solid var(--line);border-radius:7px;padding:14px;margin-bottom:24px;background:var(--panel)}.cost-breakdown>summary{cursor:pointer;font-size:13px}.cost-breakdown>summary .hint{margin-left:12px}.cost-breakdown .metrics{margin-top:16px;margin-bottom:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.cost-breakdown .metric{padding:12px}.cost-breakdown .metric strong{font-size:19px}
