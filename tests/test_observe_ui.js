@@ -333,13 +333,36 @@ assert.match(text(snapshotCard),/Workspace snapshot/);
 assert.match(text(snapshotCard),/Attempt scratch snapshot/);
 assert.match(text(snapshotCard),/417/);
 assert.match(text(snapshotCard),/excluded from the submitted workspace and evaluator/);
-trace.event_window={total_requests:83,older_requests_omitted:3,unreadable_requests:1};
+trace.event_window={total_requests:83,start:3,end:83,limit:80,latest:true,older_start:0,newer_start:null,unreadable_requests:1};
 vm.runInContext('render(input.run,input.trace)',context);
-assert.match(elements.get('trace-hint').textContent,/3 older requests omitted/);
+assert.match(elements.get('event-page-info').textContent,/Requests 4–83 of 83/);
+assert.match(elements.get('event-page-info').textContent,/Latest/);
+assert.equal(elements.get('older-events').disabled,false);
+assert.equal(elements.get('newer-events').disabled,true);
+assert.equal(elements.get('latest-events').disabled,true);
 assert.match(elements.get('trace-hint').textContent,/1 unreadable request artifacts/);
 for(const state of ['read failed','transport stopped','attempt ended / tool receipt unavailable'])assert.equal(vm.runInContext(`statusClass('${state}')`,context),'bad');
 assert.equal(vm.runInContext("statusClass('reading')",context),'live');
 console.log('Checkpoint acceptance, scratch scope and incomplete timelines are explicit.');
+
+// Open rows and nested details survive a round trip through another history page,
+// but never carry over to another attempt with the same request IDs.
+context.expansionTrace={events:[{id:'keep-open',kind:'model',state:'returned',tool_calls:[]}],artifacts:[]};
+vm.runInContext('render(input.run,expansionTrace)',context);
+let expansionRows=[{dataset:{event:'keep-open'},open:true}];
+let expansionNested=[{open:true,closest:()=>expansionRows[0],querySelector:()=>({textContent:'Reasoning emitted by model'})}];
+const originalQuery=document.querySelectorAll;
+document.querySelectorAll=selector=>selector==='details.event'?expansionRows:selector==='details.event details'?expansionNested:[];
+vm.runInContext('render(input.run,expansionTrace)',context);
+assert.equal(elements.get('events').children[0].open,true);
+expansionRows=[];expansionNested=[];
+vm.runInContext('render(input.run,{events:[],artifacts:[]});render(input.run,expansionTrace)',context);
+assert.equal(elements.get('events').children[0].open,true);
+assert.equal(vm.runInContext('state.eventNested.get(json(["keep-open","Reasoning emitted by model"]))',context),true);
+vm.runInContext('resetEvents();render(input.run,expansionTrace)',context);
+assert.equal(elements.get('events').children[0].open,false);
+document.querySelectorAll=originalQuery;
+console.log('Timeline expansions survive history navigation and reset across attempts.');
 
 // Exercise real asynchronous refresh/navigation, including stale responses.
 async function paginationRefreshChecks(){
@@ -356,6 +379,7 @@ async function paginationRefreshChecks(){
     }
     return {ok:true,json:async()=>({name:parsed.searchParams.get('run'),trials:[]})};
   };
+  context.realRender=vm.runInContext('render',context);
   context.rendered=[];
   vm.runInContext("render=(run)=>rendered.push(run.name);state.busy=false;state.pending=false;state.paused=false;state.run='selected-older';state.trial=null;state.signature='';state.page=2;state.query='';state.revision=0;",context);
   elements.get('follow').checked=false;
@@ -412,7 +436,56 @@ async function paginationRefreshChecks(){
   assert.equal(elements.get('raw').textContent,'CURRENT EVIDENCE');
   elements.get('artifact').value='changes.diff';elements.get('artifact').onchange();
   assert.doesNotMatch(elements.get('raw').textContent,/CURRENT EVIDENCE/);
-  console.log('Refresh navigation and raw artifact selection reject stale replies.');
+  // Trace windows use absolute positions; polling history must not advance them.
+  let total=205,selectedTrial='trial-events';
+  const traceCalls=[];
+  context.fetch=async url=>{
+    const parsed=new URL(url,'http://localhost');let data;
+    if(parsed.pathname==='/api/runs')data={runs:[],total:1,matching:1,page:1,pages:1,page_size:20,query:'',newest:'events',unavailable:[]};
+    else if(parsed.pathname==='/api/run')data={name:parsed.searchParams.get('run'),trials:[{name:selectedTrial,kind:'coding'}]};
+    else if(parsed.pathname==='/api/trace'){
+      traceCalls.push(parsed.searchParams.get('start'));
+      const latest=!parsed.searchParams.has('start');
+      const start=latest?Math.max(0,total-80):Number(parsed.searchParams.get('start'));
+      const end=Math.min(total,start+80);
+      data={events:[],artifacts:[],event_window:{total_requests:total,start,end,limit:80,latest,older_start:start?Math.max(0,start-80):null,newer_start:end<total?end:null,unreadable_requests:0}};
+    }
+    return {ok:true,json:async()=>data};
+  };
+  vm.runInContext("render=realRender;state.busy=false;state.pending=false;state.paused=false;state.run='events';state.trial='trial-events';state.signature='';resetEvents()",context);
+  elements.get('follow').checked=true;
+  const settled=async()=>{for(let i=0;i<30&&vm.runInContext('state.busy',context);i++)await new Promise(resolve=>setImmediate(resolve));};
+  await vm.runInContext('refresh()',context);
+  assert.equal(traceCalls.at(-1),null);
+  assert.match(elements.get('event-page-info').textContent,/126–205/);
+  elements.get('older-events').onclick();await settled();
+  assert.equal(traceCalls.at(-1),'45');
+  assert.equal(elements.get('follow').checked,false);
+  assert.match(elements.get('event-page-info').textContent,/46–125/);
+  assert.match(elements.get('event-page-info').textContent,/position held/);
+  total=206;await vm.runInContext('refresh()',context);
+  assert.equal(traceCalls.at(-1),'45');
+  assert.match(elements.get('event-page-info').textContent,/46–125 of 206/);
+  elements.get('older-events').onclick();await settled();
+  assert.equal(traceCalls.at(-1),'0');
+  assert.equal(elements.get('older-events').disabled,true);
+  elements.get('newer-events').onclick();await settled();
+  assert.equal(traceCalls.at(-1),'80');
+  elements.get('latest-events').onclick();await settled();
+  assert.equal(traceCalls.at(-1),null);
+  total=207;await vm.runInContext('refresh()',context);
+  assert.match(elements.get('event-page-info').textContent,/128–207/);
+  elements.get('older-events').onclick();await settled();
+  vm.runInContext("select('other-campaign','trial-events')",context);await settled();
+  assert.equal(traceCalls.at(-1),null,'campaign selection resets trace history');
+  elements.get('older-events').onclick();await settled();
+  selectedTrial='trial-next';
+  vm.runInContext("select('other-campaign','trial-next')",context);await settled();
+  assert.equal(traceCalls.at(-1),null,'trial selection resets trace history');
+  elements.get('older-events').onclick();await settled();
+  elements.get('follow').checked=true;elements.get('follow').onchange();await settled();
+  assert.equal(traceCalls.at(-1),null,'follow newest resets trace history');
+  console.log('Refresh, raw artifacts and bounded trace history navigation passed.');
 }
 paginationRefreshChecks().catch(error=>{console.error(error);process.exitCode=1;});
 

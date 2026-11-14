@@ -230,12 +230,86 @@ class ObservatoryTests(unittest.TestCase):
             trace["event_window"],
             {
                 "total_requests": 83,
-                "older_requests_omitted": 3,
+                "start": 3,
+                "end": 83,
+                "limit": 80,
+                "latest": True,
+                "older_start": 0,
+                "newer_start": None,
                 "unreadable_requests": 1,
             },
         )
         self.assertEqual(len(trace["events"]), 79)
         self.assertIn("request-000.request.json", trace["artifacts"])
+
+    def test_event_pagination_is_bounded_and_stable_on_append(self):
+        def append(index):
+            path = self.trial / f"request-{index:03}.request.json"
+            path.write_text("{}")
+            os.utime(path, (index + 1, index + 1))
+
+        for index in range(205):
+            append(index)
+        with patch.object(self.data, "read", wraps=self.data.read) as read:
+            latest = self.data.trace("campaign", "trial-00-task")
+        requests_read = [
+            c for c in read.call_args_list if c.args[0].name.endswith(".request.json")
+        ]
+        self.assertEqual(len(requests_read), 80)
+        self.assertEqual(latest["events"][0]["id"], "request-125")
+        older_start = latest["event_window"]["older_start"]
+        older = self.data.trace("campaign", "trial-00-task", start=older_start)
+        self.assertEqual(older["events"][0]["id"], "request-045")
+        self.assertEqual(older["events"][-1]["id"], "request-124")
+        append(205)
+        refreshed = self.data.trace("campaign", "trial-00-task", start=older_start)
+        self.assertEqual(older["events"], refreshed["events"])
+        self.assertFalse(refreshed["event_window"]["latest"])
+        self.assertEqual(refreshed["event_window"]["total_requests"], 206)
+        latest = self.data.trace("campaign", "trial-00-task")
+        self.assertEqual(latest["events"][0]["id"], "request-126")
+        self.assertEqual(latest["events"][-1]["id"], "request-205")
+        first = self.data.trace("campaign", "trial-00-task", start=0)
+        self.assertIsNone(first["event_window"]["older_start"])
+        seen = [e["id"] for e in first["events"]]
+        while first["event_window"]["newer_start"] is not None:
+            first = self.data.trace(
+                "campaign", "trial-00-task", start=first["event_window"]["newer_start"]
+            )
+            seen.extend(e["id"] for e in first["events"])
+        self.assertEqual(seen, [f"request-{i:03}" for i in range(206)])
+        self.assertEqual(len(first["events"]), 46)
+        beyond = self.data.trace("campaign", "trial-00-task", start=999)
+        self.assertEqual(beyond["event_window"]["start"], 205)
+        self.assertEqual(len(beyond["events"]), 1)
+
+    def test_event_pagination_validates_start_and_handles_empty_trial(self):
+        for invalid in [-1, True, 1.5, "0", 10**9 + 1]:
+            with self.subTest(start=invalid), self.assertRaises(ValueError):
+                self.data.trace("campaign", "trial-00-task", start=invalid)
+        for start in [None, 0, 80]:
+            trace = self.data.trace("campaign", "trial-00-task", start=start)
+            self.assertEqual(trace["events"], [])
+            self.assertEqual(trace["event_window"]["start"], 0)
+            self.assertEqual(trace["event_window"]["end"], 0)
+            self.assertIsNone(trace["event_window"]["newer_start"])
+            self.assertIsNone(trace["event_window"]["older_start"])
+
+    def test_history_page_does_not_misattribute_final_request_timeout(self):
+        for index in range(81):
+            path = self.trial / f"request-{index:03}.request.json"
+            path.write_text("{}")
+            os.utime(path, (index + 1, index + 1))
+        (self.trial / "summary.json").write_text(
+            json.dumps({"success": False, "agent_error": {"type": "TimeoutError"}})
+        )
+        older = self.data.trace("campaign", "trial-00-task", start=0)
+        self.assertEqual(
+            {e["state"] for e in older["events"]},
+            {"attempt ended / response unavailable"},
+        )
+        latest = self.data.trace("campaign", "trial-00-task")
+        self.assertEqual(latest["events"][-1]["state"], "request timed out")
 
     def test_posthoc_contract_failure_qualifies_but_does_not_rewrite_frozen_pass(self):
         summary = {

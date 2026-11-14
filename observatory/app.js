@@ -1,6 +1,6 @@
 'use strict';
 const $=id=>document.getElementById(id);
-const state={run:null,trial:null,runs:[],paused:false,busy:false,signature:'',view:'timeline',page:1,pageSize:20,query:'',pagination:null,listSignature:'',revision:0,pending:false,artifactScope:'',artifactRevision:0};
+const state={run:null,trial:null,runs:[],paused:false,busy:false,signature:'',view:'timeline',page:1,pageSize:20,query:'',pagination:null,listSignature:'',revision:0,pending:false,artifactScope:'',artifactRevision:0,eventStart:null,eventWindow:null,eventScope:'',eventOpen:new Map(),eventNested:new Map()};
 function node(tag,text,className){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;}
 function json(value){return JSON.stringify(value,null,2);}
 function secs(n){return typeof n==='number'?`${n.toFixed(1)}s`:'—';}
@@ -8,8 +8,22 @@ function statusClass(s){return ['passed','complete'].includes(s)?'good':['failed
 function badge(s){return node('span',s,`badge ${statusClass(s)}`);}
 async function api(path,args={}){const r=await fetch(`/api/${path}?${new URLSearchParams(args)}`,{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);return d;}
 function requestRefresh(){state.revision++;refresh(true);}
-function select(run,trial=null){state.run=run;state.trial=trial;state.signature='';resetArtifact();$('follow').checked=false;runList();requestRefresh();}
+function select(run,trial=null){state.run=run;state.trial=trial;state.signature='';resetEvents();resetArtifact();$('follow').checked=false;runList();requestRefresh();}
 function changePage(page){if(!state.pagination)return;state.page=Math.max(1,Math.min(page,state.pagination.pages));$('follow').checked=false;requestRefresh();}
+function resetEvents(){state.eventStart=null;state.eventWindow=null;state.eventScope='';state.eventOpen.clear();state.eventNested.clear();}
+function changeEventPage(direction){
+  const page=state.eventWindow;if(!page)return;
+  const start=direction==='older'?page.older_start:direction==='newer'?page.newer_start:null;
+  if(direction!=='latest'&&start==null)return;
+  state.eventStart=start;$('follow').checked=false;requestRefresh();
+}
+function eventNavigation(trace){
+  const page=trace?.event_window;state.eventWindow=page??null;
+  $('older-events').disabled=page?.older_start==null;
+  $('newer-events').disabled=page?.newer_start==null;
+  $('latest-events').disabled=!page||page.latest;
+  $('event-page-info').textContent=page?`Requests ${page.total_requests?page.start+1:0}–${page.end} of ${page.total_requests} · ${page.latest?'Latest (updates as requests arrive)':'History (position held)'} · up to ${page.limit} per view`:'';
+}
 function runOutcomeSummary(run){
   const trials=run.trials;
   if(run.kind==='diagnostic')return `${trials.filter(t=>t.state==='diagnostic reviewed').length}/${trials.length} diagnostics reviewed`;
@@ -111,11 +125,11 @@ function eventCard(e,open){const d=node('details',undefined,`event ${e.kind}`);d
   block(body,visible?.file_read?.contents_returned===false?'Existing context reference':'Returned text',visible?.output);
   if(e.cleanup)block(body,'Unexpected cleanup artifact (inspect raw evidence)',e.cleanup);
 }else{if(e.tool_name==='edit_file'){block(body,'Tool','edit_file');editText(body,e.arguments||{});rawDetails(body,'Exact edit arguments (API representation)',e.arguments);}else if(e.tool_name==='write_file'){block(body,'Tool','write_file');writeText(body,e.arguments||{});rawDetails(body,'File write arguments (API representation)',e.arguments);}else{block(body,'Tool',e.tool_name);block(body,'Command',e.command);if(!e.command)block(body,'Arguments',e.arguments);}const result=e.result;block(body,'Tool status',result?{returncode:result.returncode,stopped_by:result.stopped_by,seconds:result.wall_seconds,ok:result.ok}:{state:e.state,timeout:e.timeout});block(body,'stdout',result?.stdout||e.transport_stdout);block(body,'stderr',result?.stderr||e.transport_stderr);block(body,'Workspace snapshot',result?.snapshot);if(result?.scratch_snapshot){block(body,'Attempt scratch snapshot',result.scratch_snapshot);block(body,'Scratch scope','Files preserved between tools in this attempt; excluded from the submitted workspace and evaluator. This receipt does not establish task correctness.');}block(body,'Cleanup',e.cleanup?{verified:e.cleanup.verified,active_state:e.cleanup.active_state}:null);}d.append(body);return d;}
-function render(run,trace){const scope=json([run.name,state.trial]);if(scope!==state.artifactScope){resetArtifact();state.artifactScope=scope;}const beforeOpen=new Set([...document.querySelectorAll('details.event[open]')].map(e=>e.dataset.event));const nestedOpen=[...document.querySelectorAll('details.event details[open]')].map(e=>[e.closest('.event').dataset.event,e.querySelector('summary').textContent]);const closeToBottom=state.signature&&window.innerHeight+window.scrollY>=document.body.scrollHeight-160;const scroll=window.scrollY;$('title').textContent=run.name;$('subtitle').textContent=[run.model||'Preparing model',run.protocol||(run.kind==='control'?'Parser-only control':'Original MVP protocol'),run.budget?`${run.budget}s task ceiling`:''].filter(Boolean).join(' · ');$('run-state').textContent=run.state;$('run-state').className=`badge ${statusClass(run.state)}`;
+function render(run,trace){const scope=json([run.name,state.trial]);if(scope!==state.artifactScope){resetArtifact();state.artifactScope=scope;}if(scope===state.eventScope){for(const row of document.querySelectorAll('details.event'))state.eventOpen.set(row.dataset.event,row.open);for(const d of document.querySelectorAll('details.event details'))state.eventNested.set(json([d.closest('.event').dataset.event,d.querySelector('summary').textContent]),d.open);}else{state.eventOpen.clear();state.eventNested.clear();state.eventScope=scope;}const beforeOpen=new Set([...state.eventOpen].filter(([,open])=>open).map(([id])=>id));const nestedOpen=[...state.eventNested].filter(([,open])=>open).map(([key])=>JSON.parse(key));eventNavigation(trace);const closeToBottom=state.signature&&window.innerHeight+window.scrollY>=document.body.scrollHeight-160;const scroll=window.scrollY;$('title').textContent=run.name;$('subtitle').textContent=[run.model||'Preparing model',run.protocol||(run.kind==='control'?'Parser-only control':'Original MVP protocol'),run.budget?`${run.budget}s task ceiling`:''].filter(Boolean).join(' · ');$('run-state').textContent=run.state;$('run-state').className=`badge ${statusClass(run.state)}`;
 const current=run.trials.find(t=>t.name===state.trial);const summary=trace?.summary;const control=current?.kind==='control';const adjudication=current?.adjudication??trace?.outer_adjudication??summary?.task_adjudication;const pending=adjudication?.status==='pending_outer_rubric';const reviewed=adjudication?.status==='adjudicated';const blocker=reviewed&&adjudication?.disposition==='supported_blocker';const rejectedBlocker=reviewed&&adjudication?.disposition==='unsupported_blocker';const nonconforming=reviewed&&adjudication?.disposition==='nonconforming_run';const metrics=current?.kind==='diagnostic'?diagnosticMetrics(current,adjudication):control?[['Control result',current?.passed===true?'PASS':current?.passed===false?'FAIL':'PENDING'],['Commands executed',current?.commands_executed??'PENDING'],['Control time',secs(current?.seconds)],['Service restoration',run.restored===true?'VERIFIED':run.restored===false?'FAILED':'PENDING']]:[[(blocker||rejectedBlocker)?'Blocker review':'Verified correctness',blocker?'SUPPORTED':rejectedBlocker?'UNSUPPORTED':nonconforming?'UNQUALIFIED':pending?'PENDING OUTER REVIEW':current?.correct===true?'PASS':current?.correct===false?'FAIL':'PENDING'],...(nonconforming?[['Runtime conformance','FAIL']]:[]),...((pending||reviewed)?[['Canonical checks'+(summary?.agent_outcome?.exit_status==='Blocked'?' (diagnostic)':''),summary?.canonical_correctness===true?'PASS':summary?.canonical_correctness===false?'FAIL':'PENDING']]:[]),[(pending||reviewed)&&summary?.agent_outcome?.exit_status==='Blocked'?'Clean halt':'Clean completion',(pending||reviewed)&&summary?.agent_outcome?.exit_status==='Blocked'?(summary?.clean_agent_halt===true?'YES':'NO'):current?.clean===true?'YES':current?.clean===false?'NO':'PENDING'],['Task time',secs(current?.seconds)],['Service restoration',run.restored===true?'VERIFIED':run.restored===false?'FAILED':'PENDING']];$('metrics').replaceChildren(...metrics.map(([label,value])=>{const m=node('div',undefined,'metric');m.append(node('strong',value),node('span',label));return m;}));
 $('trials').replaceChildren(...run.trials.map(t=>{const b=node('button',undefined,`trial ${t.name===state.trial?'selected':''}`);b.append(node('span',t.kind==='control'?(t.control_kind||t.task):`${t.task} · seed ${t.seed??'pending'}`),badge(t.state),node('span',secs(t.seconds),'meta'));b.onclick=()=>select(run.name,t.name);return b;}));
 $('events').replaceChildren(...(trace?.events.length?trace.events.map(e=>eventCard(e,beforeOpen.has(e.id))):[node('div','No model/tool events yet. Setup and server loading are visible in the Setup & restoration tab.','empty')]));for(const [id,title]of nestedOpen){for(const d of document.querySelectorAll('details.event details'))if(d.closest('.event').dataset.event===id&&d.querySelector('summary').textContent===title)d.open=true;}
-$('trace-hint').textContent=trace?`${trace.events.length} displayed events${trace.event_window?.older_requests_omitted?` · ${trace.event_window.older_requests_omitted} older requests omitted (latest 80 only; raw artifacts remain available)`:''}${trace.event_window?.unreadable_requests?` · ${trace.event_window.unreadable_requests} unreadable request artifacts`:''} · ${control?(current.commands_executed===0?'parser control; commands were not executed':'parser control; see execution count'):(trace.events.some(e=>e.adapter_control)?'shell commands use disposable sandboxes; adapter controls execute no commands':'commands run in disposable sandboxes')} · click a row to inspect`:'Awaiting the first trial.';
+$('trace-hint').textContent=trace?`${trace.events.length} displayed events${trace.event_window?.unreadable_requests?` · ${trace.event_window.unreadable_requests} unreadable request artifacts`:''} · ${control?(current.commands_executed===0?'parser control; commands were not executed':'parser control; see execution count'):(trace.events.some(e=>e.adapter_control)?'shell commands use disposable sandboxes; adapter controls execute no commands':'commands run in disposable sandboxes')} · click a row to inspect`:'Awaiting the first trial.';
 $('outcome').textContent=summary?json(control?summary:{success:reviewed?(blocker?null:current?.passed):pending?null:summary.success,correct:reviewed?adjudication.coding_correctness:pending?null:summary.verified_correctness??summary.canonical_correctness,...((pending||reviewed)?{adjudication,raw_success:summary.success,raw_verified_correctness:summary.verified_correctness,blocker_claim:summary.spec_blocker_claim,clean_halt:summary.clean_agent_halt}:{}),model_handoff:summary.final_handoff,canonical_suite:summary.canonical_correctness,external_behavior:summary.behavioral_correctness,clean:summary.clean_agent_completion,interventions:summary.human_interventions,elapsed_seconds:summary.task_wall_seconds,outcome:summary.agent_outcome,error:summary.agent_error,verification:summary.verification,behavioral_verification:summary.behavioral_verification,verification_error:summary.verification_error}):'No verified result yet.';$('diff').textContent=control?'Parser controls do not produce a coding patch.':(trace?.diff||'No final patch yet.');const picked=$('artifact').value;$('artifact').replaceChildren(node('option','Choose an artifact…'),...(trace?.artifacts||[]).map(a=>{const o=node('option',a);o.value=a;return o;}));$('artifact').firstChild.value='';if((trace?.artifacts||[]).includes(picked))$('artifact').value=picked;$('config').textContent=json(run.config);$('lifecycle').textContent=json(run.lifecycle);$('server').textContent=run.server_tail||'Server log not available yet.';$('source').textContent=`/bulk/dlk/local-harness/runs/${run.name}${state.trial?'/experiment/'+state.trial:''}`;if($('follow').checked&&closeToBottom&&state.view==='timeline')window.scrollTo(0,document.body.scrollHeight);else window.scrollTo(0,scroll);}
 async function refresh(force=false){
   if(state.busy){if(force)state.pending=true;return;}
@@ -125,12 +139,12 @@ async function refresh(force=false){
     const page=await api('runs',{page:state.page,page_size:state.pageSize,q:state.query});
     if(revision!==state.revision)return;
     state.pagination=page;state.page=page.page;state.runs=page.runs;
-    if($('follow').checked||!state.run)state.run=page.newest;
+    if($('follow').checked||!state.run){if(state.run!==page.newest)resetEvents();state.run=page.newest;}
     runList();
     if(state.run){
       const run=await api('run',{run:state.run});if(revision!==state.revision)return;
-      if($('follow').checked||!run.trials.some(t=>t.name===state.trial))state.trial=run.trials.at(-1)?.name||null;
-      const trace=state.trial?await api('trace',{run:state.run,trial:state.trial}):null;
+      if($('follow').checked||!run.trials.some(t=>t.name===state.trial)){const trial=run.trials.at(-1)?.name||null;if(trial!==state.trial)resetEvents();state.trial=trial;}
+      const trace=state.trial?await api('trace',{run:state.run,trial:state.trial,...(state.eventStart===null?{}:{start:state.eventStart})}):null;
       if(revision!==state.revision)return;
       const signature=json([run,trace]);if(signature!==state.signature){render(run,trace);state.signature=signature;}
     }
@@ -147,10 +161,13 @@ $('filter').addEventListener('input',()=>{
   clearTimeout(filterTimer);state.revision++;
   filterTimer=setTimeout(()=>{state.query=$('filter').value;state.page=1;requestRefresh();},200);
 });
+$('older-events').onclick=()=>changeEventPage('older');
+$('newer-events').onclick=()=>changeEventPage('newer');
+$('latest-events').onclick=()=>changeEventPage('latest');
 $('previous-page').onclick=()=>changePage(state.page-1);
 $('next-page').onclick=()=>changePage(state.page+1);
 $('pause').onclick=()=>{state.paused=!state.paused;$('pause').textContent=state.paused?'Resume updates':'Pause updates';if(state.paused)$('connection').textContent='Updates paused';else refresh();};
-$('follow').onchange=()=>{state.signature='';if($('follow').checked){state.page=1;state.query='';$('filter').value='';clearTimeout(filterTimer);}requestRefresh();};
+$('follow').onchange=()=>{state.signature='';if($('follow').checked){resetEvents();state.page=1;state.query='';$('filter').value='';clearTimeout(filterTimer);}requestRefresh();};
 for(const tab of document.querySelectorAll('.tab'))tab.onclick=()=>{state.view=tab.dataset.tab;for(const b of document.querySelectorAll('.tab')){b.classList.toggle('active',b===tab);b.setAttribute('aria-selected',String(b===tab));}for(const id of ['timeline','result','setup'])$(id).hidden=id!==state.view;};function resetArtifact(){state.artifactRevision++;$('raw').textContent='Select a recorded artifact. Display is bounded; complete evidence remains on disk.';}
 $('artifact').onchange=()=>resetArtifact();
 $('load-artifact').onclick=async()=>{

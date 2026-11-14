@@ -2,3 +2,5 @@
 aside{min-width:0}.artifact-bar{flex-wrap:wrap}@media(max-width:850px){.shell{grid-template-columns:minmax(0,1fr)}.watch{flex-wrap:wrap}}
 
 .pagination{display:flex;justify-content:space-between;gap:8px}.pagination button{font-size:12px}button:disabled{cursor:default;opacity:.45}button:disabled:hover{border-color:#35445b}#page-info,#selected-campaign,#page-warning{font-size:11px;overflow-wrap:anywhere}
+
+.event-pagination{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.event-pagination button{font-size:12px}.event-pagination .hint{margin-left:8px}

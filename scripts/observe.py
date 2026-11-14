@@ -469,7 +469,10 @@ class Evidence:
         content, truncated = self.text(path, 131072)
         return {"name": name, "text": content, "truncated": truncated}
 
-    def trace(self, run, trial):
+    def trace(self, run, trial, start=None):
+        """Read at most 80 requests; an absolute start stays fixed as calls append."""
+        if start is not None and (type(start) is not int or not 0 <= start <= 10**9):
+            raise ValueError("Trace start must be an integer between 0 and 1000000000")
         root = self.trial(run, trial)
         if not root.is_dir():
             raise ValueError("Trial unavailable")
@@ -482,11 +485,22 @@ class Evidence:
             if isinstance(case, dict) and isinstance(case.get("name"), str)
         }
         total_requests = len(files)
-        files = sorted(files, key=lambda p: (p.stat().st_mtime, p.name))[-80:]
+        control = self.is_control(summary, files)
+        files = sorted(
+            files, key=lambda p: (p.stat().st_mtime, p.relative_to(root).as_posix())
+        )
         last_model_request = {}
         for path in files:
             if not path.name.startswith("tool-"):
                 last_model_request[path.parent] = path
+        latest = start is None
+        start = (
+            max(0, total_requests - 80)
+            if latest
+            else min(start, max(0, total_requests - 1))
+        )
+        end = min(total_requests, start + 80)
+        files = files[start:end]
         for path in files:
             req = self.read(path)
             if not isinstance(req, dict):
@@ -641,7 +655,12 @@ class Evidence:
             "events": records,
             "event_window": {
                 "total_requests": total_requests,
-                "older_requests_omitted": max(0, total_requests - len(files)),
+                "start": start,
+                "end": end,
+                "limit": 80,
+                "latest": latest,
+                "older_start": max(0, start - 80) if start else None,
+                "newer_start": end if end < total_requests else None,
                 "unreadable_requests": len(files) - len(records),
             },
             "summary": summary or None,
@@ -649,7 +668,7 @@ class Evidence:
             "kind": "diagnostic"
             if self.is_diagnostic(summary)
             else "control"
-            if self.is_control(summary, files)
+            if control
             else "coding",
             "diff": self.text(root / "changes.diff", 65536)[0],
             "artifacts": sorted(
@@ -697,7 +716,11 @@ class Handler(BaseHTTPRequestHandler):
             elif route.path == "/api/run":
                 data = self.evidence.run(arg("run"))
             elif route.path == "/api/trace":
-                data = self.evidence.trace(arg("run"), arg("trial"))
+                data = self.evidence.trace(
+                    arg("run"),
+                    arg("trial"),
+                    start=int(arg("start")) if arg("start") else None,
+                )
             elif route.path == "/api/artifact":
                 data = self.evidence.artifact(arg("run"), arg("trial"), arg("name"))
             elif route.path in ("/", "/app.js", "/style.css"):
