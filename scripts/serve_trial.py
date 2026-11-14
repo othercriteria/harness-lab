@@ -131,6 +131,15 @@ def require_safe_trial(trial, returncode):
         raise RuntimeError(
             f"Campaign aborted: unsafe cleanup in {trial}: {summary['unsafe_cleanup']}"
         )
+    if "prefix_warmup" in summary:
+        match = trial / "prefix-warmup-match.json"
+        if (
+            not match.exists()
+            or json.loads(match.read_text()).get("matches_warmup") is not True
+        ):
+            raise RuntimeError(
+                "Campaign aborted: scored prefix warm-up was not verified"
+            )
     if returncode not in (0, 1):
         raise RuntimeError(
             f"Campaign aborted: abnormal trial exit {returncode} in {trial}"
@@ -146,6 +155,7 @@ def main():
     )
     parser.add_argument("--protocol", choices=protocols(), default="mvp")
     parser.add_argument("--seeds", nargs="+", type=int, default=[42])
+    parser.add_argument("--prefix-warmup-request", type=Path)
     parser.add_argument(
         "--weight-verification", choices=("full", "metadata"), default="full"
     )
@@ -153,6 +163,8 @@ def main():
         "--split", choices=["development", "reserved"], default="development"
     )
     args = parser.parse_args()
+    if args.prefix_warmup_request and len(args.tasks) != 1:
+        parser.error("Prefix warm-up requires one task per campaign")
     admit_tasks(args.tasks, args.split)
     limits = load_protocol(args.protocol)
     if not os.environ.get("BIG_MODELS_GPU_LOCK_FD"):
@@ -273,6 +285,47 @@ def main():
                 time.sleep(1)
             record["model_load_seconds"] = time.monotonic() - load_started
             write_json(output / "props.json", local_json(origin, "/props"))
+            if args.prefix_warmup_request:
+                from prefix_warmup import TIMEOUT_SECONDS
+
+                # Discarded public-prefix stub, outside scored dispatch. Keep the
+                # resource guard live while warming, just as during scored work.
+                warm_started = time.monotonic()
+                with (output / "prefix-warmup.log").open("wb") as warm_log:
+                    client = subprocess.Popen(
+                        [
+                            str(PROJECT / ".venv/bin/python"),
+                            str(PROJECT / "scripts/prefix_warmup.py"),
+                            "--request",
+                            str(args.prefix_warmup_request),
+                            "--origin",
+                            origin,
+                            "--output",
+                            str(output / "prefix-warmup"),
+                            "--timeout",
+                            str(TIMEOUT_SECONDS),
+                            "--max-generated-tokens",
+                            "1",
+                        ],
+                        stdout=warm_log,
+                        stderr=subprocess.STDOUT,
+                        close_fds=True,
+                    )
+                    while client.poll() is None:
+                        guard()
+                        if server.poll() is not None:
+                            raise RuntimeError("Server exited during prefix warm-up")
+                        if time.monotonic() - warm_started > TIMEOUT_SECONDS + 10:
+                            raise RuntimeError("Prefix warm-up exceeded deadline")
+                        time.sleep(1)
+                    if client.returncode != 0:
+                        raise RuntimeError("Prefix warm-up failed; see its receipt")
+                record["prefix_warmup"] = json.loads(
+                    (output / "prefix-warmup/result.json").read_text()
+                )
+                record["prefix_warmup"]["process_wall_seconds"] = (
+                    time.monotonic() - warm_started
+                )
             for index, (seed, task) in enumerate(
                 (s, t) for s in args.seeds for t in args.tasks
             ):
@@ -298,6 +351,13 @@ def main():
                     "--split",
                     args.split,
                 ]
+                if args.prefix_warmup_request:
+                    command.extend(
+                        [
+                            "--prefix-warmup-receipt",
+                            str(output / "prefix-warmup/result.json"),
+                        ]
+                    )
                 with (output / f"client-{index:02d}.log").open("wb") as client_log:
                     trial_started = time.monotonic()
                     client = subprocess.Popen(

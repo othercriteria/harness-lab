@@ -35,6 +35,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--protocol", choices=protocols(), default="mvp")
     parser.add_argument("--seeds", nargs="+", type=int, default=[42])
+    parser.add_argument("--prefix-warmup-request", type=Path)
     parser.add_argument(
         "--weight-verification", choices=("full", "metadata"), default="full"
     )
@@ -42,6 +43,13 @@ def main():
         "--split", choices=["development", "reserved"], default="development"
     )
     args = parser.parse_args()
+    if args.prefix_warmup_request:
+        from prefix_warmup import initial_request
+
+        if len(args.tasks) != 1:
+            parser.error("Prefix warm-up requires one task per campaign")
+        args.prefix_warmup_request = args.prefix_warmup_request.resolve(strict=True)
+        initial_request(json.loads(args.prefix_warmup_request.read_text()))
     admit_tasks(args.tasks, args.split)
     limits = load_protocol(args.protocol)
     for task in args.tasks:
@@ -54,6 +62,10 @@ def main():
         len(args.tasks) * len(args.seeds),
         resources["setup_allowance_seconds"],
     )
+    if args.prefix_warmup_request:
+        from prefix_warmup import TIMEOUT_SECONDS
+
+        budget += TIMEOUT_SECONDS + 30
     output = args.output.resolve()
     if not output.is_relative_to("/bulk/dlk/local-harness/runs") or output.exists():
         parser.error("Use a fresh directory under project bulk runs")
@@ -76,6 +88,8 @@ def main():
         "--seeds",
         *map(str, args.seeds),
     ]
+    if args.prefix_warmup_request:
+        command.extend(["--prefix-warmup-request", str(args.prefix_warmup_request)])
     wrappers = [
         (
             "with_memory_scope.py",

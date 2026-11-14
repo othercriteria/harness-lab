@@ -81,6 +81,7 @@ class LocalModel:
         self.agent_deadline = None
         self.budget_feedback_sent = False
         self.handoff_phase = None
+        self.prefix_warmup = None
         if "handoff_phase" in limits:
             from handoff_phase import HandoffPhase
 
@@ -111,37 +112,42 @@ class LocalModel:
             error.close()
         write_json(prefix.parent / (prefix.name + ".http-error.json"), record)
 
+    def context_post(self, endpoint, data, prefix):
+        name = f"{prefix}.{endpoint}"
+        write_json(self.output / (name + ".request.json"), data)
+        body = json.dumps(data).encode()
+        if len(body) > self.limits.get("max_request_bytes", 131072):
+            raise DeadlineExceeded("Context measurement request byte cap exceeded")
+        request = urllib.request.Request(
+            self.origin + "/" + endpoint,
+            data=body,
+            headers={"Content-Type": "application/json"},
+        )
+        started = time.monotonic()
+        try:
+            with self.opener.open(
+                request, timeout=min(10, self.limits["request_timeout_seconds"])
+            ) as response:
+                raw = response.read(4 * 1024 * 1024 + 1)
+            if len(raw) > 4 * 1024 * 1024:
+                raise ValueError("Context measurement response byte cap exceeded")
+            decoded = json.loads(raw)
+            write_json(self.output / (name + ".response.json"), decoded)
+            return decoded
+        except urllib.error.HTTPError as error:
+            self.record_http_error(error, self.output / name)
+            raise
+        finally:
+            write_json(
+                self.output / (name + ".timing.json"),
+                {"wall_seconds": time.monotonic() - started},
+            )
+
     def count_tokens(self, payload, phase):
         def post(endpoint, data):
-            name = f"context-{self.calls + 1:03d}.{phase}.{endpoint}"
-            write_json(self.output / (name + ".request.json"), data)
-            body = json.dumps(data).encode()
-            if len(body) > self.limits.get("max_request_bytes", 131072):
-                raise DeadlineExceeded("Context measurement request byte cap exceeded")
-            request = urllib.request.Request(
-                self.origin + "/" + endpoint,
-                data=body,
-                headers={"Content-Type": "application/json"},
+            return self.context_post(
+                endpoint, data, f"context-{self.calls + 1:03d}.{phase}"
             )
-            started = time.monotonic()
-            try:
-                with self.opener.open(
-                    request, timeout=min(10, self.limits["request_timeout_seconds"])
-                ) as response:
-                    raw = response.read(4 * 1024 * 1024 + 1)
-                if len(raw) > 4 * 1024 * 1024:
-                    raise ValueError("Context measurement response byte cap exceeded")
-                decoded = json.loads(raw)
-                write_json(self.output / (name + ".response.json"), decoded)
-                return decoded
-            except urllib.error.HTTPError as error:
-                self.record_http_error(error, self.output / name)
-                raise
-            finally:
-                write_json(
-                    self.output / (name + ".timing.json"),
-                    {"wall_seconds": time.monotonic() - started},
-                )
 
         rendered = post("apply-template", payload)
         if not isinstance(rendered.get("prompt"), str):
@@ -399,6 +405,14 @@ class LocalModel:
         body = json.dumps(payload).encode()
         if len(body) > self.limits.get("max_request_bytes", 131072):
             raise DeadlineExceeded("Serialized request byte cap exceeded")
+        if self.calls == 0 and self.prefix_warmup is not None:
+            from prefix_warmup import verify_scored_prefix
+
+            rendered = self.context_post("apply-template", payload, "prefix-match")
+            match = verify_scored_prefix(
+                payload, self.prefix_warmup, rendered["prompt"]
+            )
+            write_json(self.output / "prefix-warmup-match.json", match)
         self.calls += 1
         prefix = self.output / f"request-{self.calls:03d}"
         write_json(prefix.with_suffix(".request.json"), payload)
@@ -436,6 +450,12 @@ class LocalModel:
         if len(raw) > 4 * 1024 * 1024:
             raise ValueError("Response byte cap exceeded")
         response = json.loads(raw)
+        if self.calls == 1 and self.prefix_warmup is not None:
+            from prefix_warmup import scored_cache_usage
+
+            write_json(
+                self.output / "prefix-warmup-usage.json", scored_cache_usage(response)
+            )
         usage = response.get("usage", {})
         for name in ("completion_tokens", "prompt_tokens"):
             if not isinstance(usage.get(name), int) or usage[name] < 0:

@@ -17,6 +17,34 @@ from control import cancellation, deadline
 from sandbox import write_json
 
 BYTE_CAP = 4 * 1024 * 1024
+TIMEOUT_SECONDS = 120
+
+
+def verify_scored_prefix(request, receipt, rendered):
+    """Fail before generation if the scored public prompt differs from warm-up."""
+    initial_request(request)
+    digest = hashlib.sha256(rendered.encode()).hexdigest()
+    if receipt.get("passed") is not True or digest != receipt.get("prompt_sha256"):
+        raise ValueError("Scored initial prompt does not match successful warm-up")
+    return {"prompt_sha256": digest, "matches_warmup": True}
+
+
+def scored_cache_usage(response):
+    """Report the actual cache hit; absent telemetry never means warm."""
+    usage = response.get("usage", {})
+    total = usage.get("prompt_tokens")
+    cached = usage.get("prompt_tokens_details", {}).get("cached_tokens")
+    if cached is None:
+        cached = response.get("timings", {}).get("cache_n")
+    if type(total) is not int or type(cached) is not int or not 0 <= cached <= total:
+        return {"cache_status": "unmeasured", "observed_cached_tokens": None}
+    return {
+        "cache_status": "reused" if cached else "cold",
+        "observed_cached_tokens": cached,
+        "observed_prompt_tokens": total,
+        "uncached_prompt_tokens": total - cached,
+        "cached_fraction": cached / total if total else 0,
+    }
 
 
 def initial_request(value):

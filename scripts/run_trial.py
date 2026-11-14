@@ -553,6 +553,17 @@ def run(args):
     model_class = ReferenceModel if args.mode == "reference" else LocalModel
     extra_args = (task,) if args.mode == "reference" else ()
     model = model_class(*extra_args, args.origin, args.model, sampling, limits, output)
+    if getattr(args, "prefix_warmup_receipt", None):
+        if args.mode != "model":
+            raise ValueError("Prefix warm-up is only meaningful for model trials")
+        model.prefix_warmup = json.loads(args.prefix_warmup_receipt.read_text())
+        write_json(output / "prefix-warmup-receipt.json", model.prefix_warmup)
+        report["prefix_warmup"] = {
+            "receipt": "prefix-warmup-receipt.json",
+            "scope": "full initial public prompt; repeated-task ready-server timing",
+            "cost_in_task_seconds": False,
+            "cache_evidence": "prefix-warmup-usage.json when first response completed",
+        }
     env.handoff_phase = model.handoff_phase
     if policy is not None:
         model.history = ObservationHistory(
@@ -738,6 +749,7 @@ def main():
     parser.add_argument("--origin", default="http://127.0.0.1:18080")
     parser.add_argument("--model", default="local-pilot")
     parser.add_argument("--sampling", type=Path)
+    parser.add_argument("--prefix-warmup-receipt", type=Path)
     parser.add_argument("--protocol", choices=protocols(), default="mvp")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
