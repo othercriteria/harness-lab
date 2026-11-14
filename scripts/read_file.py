@@ -13,8 +13,9 @@ NAME = "read_file"
 MAX_FILE_BYTES = 16 * 1024 * 1024
 MAX_OUTPUT_CHARS = 10000
 INSTRUCTION = (
-    " Use read_file for bounded, numbered reads of UTF-8 workspace files."
-    " start_line is one-based; max_lines defaults to 200. Bash remains available"
+    " Use read_file for bounded reads of UTF-8 workspace files. Returned text"
+    " preserves file contents without line-number prefixes; range metadata uses"
+    " one-based lines. start_line is one-based; max_lines defaults to 200. Bash remains available"
     " for searches and combined inspections."
 )
 TOOL = {
@@ -23,7 +24,7 @@ TOOL = {
         "name": NAME,
         "description": (
             "Read current UTF-8 file contents inside /workspace without executing"
-            " a shell or changing files. Returns numbered lines and exact file"
+            " a shell or changing files. Returns plain file text, one-based line range and exact file"
             " identity; at most 400 lines and 10000 output characters."
             " With duplicate suppression enabled, an unchanged requested range"
             " already present in your current context may be referenced by"
@@ -153,7 +154,7 @@ def read(workspace, arguments):
     for number, line in enumerate(io.StringIO(text, newline=""), 1):
         total_lines = number
         if first <= number <= last and characters < MAX_OUTPUT_CHARS:
-            rendered = f"{number}: {line}"
+            rendered = line
             room = MAX_OUTPUT_CHARS - characters
             chunks.append(rendered[:room])
             characters += min(len(rendered), room)
