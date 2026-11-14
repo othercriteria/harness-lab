@@ -187,6 +187,29 @@ assert.ok(editRendered.includes(hostile));assert.equal(context.pwned,undefined);
 assert.ok(!allTags(elements.get('events')).some(t=>['a','img','script','iframe'].includes(t)));
 console.log('Exact edit arguments and real cleanup render as inert text.');
 
+// Snapshot reads are not shell executions; preserve actual visible contents,
+// duplicate references, failures and pending requests without inventing cleanup.
+for(const variant of ['contents','reference','failure','pending']) {
+  const output=variant==='reference'?'Unchanged range at o0001':variant==='failure'?'File does not exist':`4: ${hostile}\n5: print('ok')`;
+  const visible={returncode:variant==='failure'?1:0,output,file_read:{path:'a.py',start_line:4,max_lines:20,contents_returned:variant!=='reference',context_observation_id:variant==='reference'?'o0001':undefined}};
+  context.readEvent={id:'tool-003',kind:'tool',state:variant==='pending'?'reading':variant==='failure'?'read failed':'read returned',tool_name:'read_file',read_only:true,arguments:{path:'a.py',start_line:4,max_lines:20},result:variant==='pending'?null:{ok:variant!=='failure',executed:false,read_only:true,cleanup_required:false,wall_seconds:0.0003,visible},cleanup:null};
+  const card=vm.runInContext('eventCard(readEvent,true)',context);
+  const rendered=text(card);
+  assert.match(rendered,/READ/);assert.match(rendered,/a.py/);assert.match(rendered,/from line 4/);
+  assert.doesNotMatch(rendered,/BASH|FINALIZE|stdout|Cleanup/);
+  if(variant!=='pending'){
+    assert.ok(rendered.includes(output));assert.match(rendered,/Read-only workspace snapshot inspection/);
+    assert.match(rendered,variant==='reference'?/Existing context reference/:/Returned text/);
+  }
+  assert.equal(context.pwned,undefined);
+  assert.ok(!allTags(card).some(t=>['a','img','script','iframe'].includes(t)));
+}
+context.unknownEvent={id:'tool-099',kind:'tool',state:'returned',tool_name:'future_tool',arguments:{query:hostile}};
+const unknownCard=vm.runInContext('eventCard(unknownEvent,true)',context);
+assert.match(text(unknownCard),/TOOL/);assert.match(text(unknownCard),/future_tool/);
+assert.doesNotMatch(text(unknownCard),/BASH/);assert.ok(text(unknownCard).includes(hostile));
+console.log('Read-file contents/references/failures/pending and unknown-tool fallback passed.');
+
 // Closed unanswered calls are visibly terminal, with unavailable usage made explicit.
 for (const endedState of ['attempt deadline reached','request timed out','attempt ended / response unavailable']) {
   context.endedEvent={id:'request-057',kind:'model',state:endedState,tool_calls:[],

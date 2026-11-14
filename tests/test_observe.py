@@ -623,6 +623,74 @@ class ObservatoryTests(unittest.TestCase):
         self.assertIsNone(event["command"])
         self.assertTrue(event["cleanup"]["verified"])
 
+    def test_read_file_preserves_arguments_text_and_read_only_status(self):
+        args = {"path": "a.py", "start_line": 4, "max_lines": 20, "reread": False}
+        (self.trial / "tool-001.request.json").write_text(
+            json.dumps(
+                {
+                    "mode": "adapter-read",
+                    "name": "read_file",
+                    "executed": False,
+                    "arguments": args,
+                    "workspace_generation": "0001",
+                }
+            )
+        )
+        event = self.data.trace("campaign", "trial-00-task")["events"][0]
+        self.assertEqual(event["state"], "reading")
+        self.assertEqual(event["arguments"], args)
+        self.assertTrue(event["read_only"])
+        self.assertFalse(event["adapter_control"])
+        self.assertFalse(event["executed"])
+        self.assertIsNone(event["command"])
+        self.assertIsNone(event["cleanup"])
+        for ok, output, file_read in [
+            (True, "4: print('<img src=x>')\n", {"contents_returned": True}),
+            (
+                True,
+                "Unchanged requested range at o0001",
+                {"contents_returned": False, "context_observation_id": "o0001"},
+            ),
+            (False, "File does not exist", {}),
+        ]:
+            with self.subTest(ok=ok, file_read=file_read):
+                visible = {
+                    "returncode": 0 if ok else 1,
+                    "output": output,
+                    "file_read": file_read,
+                }
+                (self.trial / "tool-001.result.json").write_text(
+                    json.dumps(
+                        {
+                            "ok": ok,
+                            "executed": False,
+                            "read_only": True,
+                            "cleanup_required": False,
+                            "wall_seconds": 0.0003,
+                            "visible": visible,
+                        }
+                    )
+                )
+                event = self.data.trace("campaign", "trial-00-task")["events"][0]
+                self.assertEqual(
+                    event["state"], "read returned" if ok else "read failed"
+                )
+                self.assertEqual(event["result"]["visible"], visible)
+                self.assertFalse(event["cleanup_required"])
+
+    def test_unknown_tool_retains_its_arguments(self):
+        (self.trial / "tool-001.request.json").write_text(
+            json.dumps(
+                {
+                    "name": "future_tool",
+                    "arguments": {"query": "inspect this"},
+                }
+            )
+        )
+        event = self.data.trace("campaign", "trial-00-task")["events"][0]
+        self.assertEqual(event["tool_name"], "future_tool")
+        self.assertEqual(event["arguments"], {"query": "inspect this"})
+
     def test_unfinished_is_not_called_live(self):
         self.assertEqual(
             self.data.run("campaign")["state"], "unfinished / owner not observed"

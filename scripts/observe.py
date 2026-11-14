@@ -573,17 +573,26 @@ class Evidence:
                     "finish_attempt",
                     "checkpoint_context",
                 )
+                read_only = (
+                    req.get("mode") == "adapter-read" and req.get("name") == "read_file"
+                )
+                if read_only and result and isinstance(result.get("visible"), dict):
+                    result["visible"] = dict(result["visible"])
+                    output = result["visible"].get("output")
+                    if isinstance(output, str) and len(output) > 24000:
+                        result["visible"]["output"] = (
+                            output[:24000] + "\n[Display truncated; see raw artifact.]"
+                        )
                 record.update(
                     tool_name=req.get("public_interface", {}).get(
                         "tool", req.get("name", "bash")
                     ),
                     arguments=req.get("public_interface", {}).get(
                         "arguments", req.get("arguments")
-                    )
-                    if typed or req.get("name") in ("edit_file", "write_file")
-                    else None,
+                    ),
                     adapter_control=typed,
-                    executed=req.get("executed") if typed else None,
+                    read_only=read_only,
+                    executed=req.get("executed") if typed or read_only else None,
                     terminal_control=result.get("terminal_control") if result else None,
                     review_control=result.get("review_control") if result else None,
                     checkpoint_control=result.get("checkpoint_control")
@@ -601,6 +610,12 @@ class Evidence:
                     if typed and result
                     else "adapter pending"
                     if typed
+                    else "read returned"
+                    if read_only and result and result.get("ok")
+                    else "read failed"
+                    if read_only and result
+                    else "reading"
+                    if read_only
                     else "adapter terminal / unadjudicated"
                     if result and result.get("terminal_control") == "Blocked"
                     else "returned"
