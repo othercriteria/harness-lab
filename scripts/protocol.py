@@ -6,6 +6,30 @@ from pathlib import Path
 PROJECT = Path(__file__).resolve().parents[1]
 
 
+REPLAY_COMMIT = "6847e2237b4e77a3ede64e79e889ebb4b7d85968"
+
+
+def retired_options(data):
+    """False split metadata is inert; activating either retired path is refused."""
+    return [
+        name
+        for name in ("handoff_phase", "split_finalization")
+        if name in data and (name != "split_finalization" or data[name] is not False)
+    ]
+
+
+def reject_retired_options(data):
+    retired = retired_options(data)
+    if retired:
+        raise ValueError(
+            "Retired harness options: "
+            + ", ".join(retired)
+            + ". Use the exact frozen snapshot or Git "
+            + REPLAY_COMMIT
+            + " for historical replay; see docs/harness-option-survey.md."
+        )
+
+
 def profiles():
     return sorted(json.loads((PROJECT / "configs/servers.json").read_text()))
 
@@ -17,7 +41,11 @@ def tasks():
 def protocols():
     return [
         "mvp",
-        *sorted(p.stem for p in (PROJECT / "configs/protocols").glob("*.json")),
+        *sorted(
+            p.stem
+            for p in (PROJECT / "configs/protocols").glob("*.json")
+            if not retired_options(json.loads(p.read_text()))
+        ),
     ]
 
 
@@ -30,6 +58,7 @@ def load_protocol(name, root=PROJECT):
     ):
         raise ValueError("Invalid protocol name")
     data = json.loads(path.read_text())
+    reject_retired_options(data)
     data.setdefault("tool_call_limit", 24)
     data.setdefault("seed", 42)
     data.setdefault("max_command_bytes", 8192)
@@ -49,7 +78,6 @@ def load_protocol(name, root=PROJECT):
         "self_test_feedback",
         "spec_blocker_exit",
         "structured_finalization",
-        "split_finalization",
         "concise_finalization",
         "terminal_semantics_feedback",
         "exact_text_edit",
@@ -65,10 +93,6 @@ def load_protocol(name, root=PROJECT):
         "structured_finalization", False
     ):
         raise ValueError("shared_evidence requires structured_finalization")
-    if data.get("split_finalization", False) and not data.get(
-        "structured_finalization", False
-    ):
-        raise ValueError("split_finalization requires structured_finalization")
     if data.get("exact_text_edit", False):
         if not data.get("structured_finalization", False):
             raise ValueError("exact_text_edit requires structured_finalization")
@@ -200,9 +224,6 @@ def load_protocol(name, root=PROJECT):
     from progress_reminder import validate_policy as validate_progress_policy
 
     validate_progress_policy(data)
-    from handoff_phase import validate_policy as validate_handoff_policy
-
-    validate_handoff_policy(data)
     return data
 
 

@@ -18,7 +18,13 @@ from coding_agent import IsolatedEnvironment, LocalModel
 from control import RunCancelled, UnsafeCleanup, cancellation, deadline
 from mini_bootstrap import DefaultAgent
 from observations import ObservationHistory
-from protocol import admit_tasks, load_protocol, protocols, require_task_protocol
+from protocol import (
+    admit_tasks,
+    load_protocol,
+    protocols,
+    reject_retired_options,
+    require_task_protocol,
+)
 from sandbox import Runtime, write_json
 
 ENTRY_STARTED = float(os.environ.get("HARNESS_DISPATCH_MONOTONIC", time.monotonic()))
@@ -70,8 +76,7 @@ class ReferenceModel(LocalModel):
             self.limits.get("structured_finalization", False)
             and command == "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"
         ):
-            from finalization_api import SUBMIT, actions, split
-            from finish_attempt import NAME
+            from finish_attempt import NAME, actions
 
             value = {
                 "disposition": "submitted",
@@ -83,13 +88,6 @@ class ReferenceModel(LocalModel):
                 "blocker": None,
             }
             name = NAME
-            if split(self.limits):
-                name = SUBMIT
-                value = {
-                    "summary": value["summary"],
-                    "checks": [],
-                    "remaining": value["unverified"],
-                }
             message = {
                 "role": "assistant",
                 "content": "Trusted integration control",
@@ -108,7 +106,6 @@ class ReferenceModel(LocalModel):
                     None,
                     self.history,
                     finish_reason="tool_calls",
-                    split_enabled=split(self.limits),
                 ),
             }
             return message
@@ -250,6 +247,7 @@ def save_diff(before, after, path):
 
 def configure_agent(config, limits, protocol):
     """Render the frozen protocol's model-visible environment contract."""
+    reject_retired_options(limits)
     config = dict(config)
     config["step_limit"] = limits["step_limit"]
     config["wall_time_limit_seconds"] = limits["agent_wall_seconds"]
@@ -407,30 +405,21 @@ def configure_agent(config, limits, protocol):
             limits["open_problem_policy"]
         ]
     if limits.get("structured_finalization", False):
-        from finalization_api import (
-            INSTRUCTION as SPLIT_INSTRUCTION,
-        )
-        from finalization_api import (
-            adapt_notice,
-            split,
-        )
         from finish_attempt import INSTRUCTION
 
-        config["system_template"] += SPLIT_INSTRUCTION if split(limits) else INSTRUCTION
+        config["system_template"] += INSTRUCTION
         review_policy = limits.get("fresh_context") or {}
         if review_policy.get("trigger") == "first_submission" and review_policy.get(
             "announce_review", True
         ):
             from fresh_context import SUBMISSION_REVIEW_INSTRUCTION
 
-            config["system_template"] += adapt_notice(
-                SUBMISSION_REVIEW_INSTRUCTION, split(limits)
-            )
-        if limits.get("terminal_semantics_feedback", False) and not split(limits):
+            config["system_template"] += SUBMISSION_REVIEW_INSTRUCTION
+        if limits.get("terminal_semantics_feedback", False):
             from finish_attempt import TERMINAL_SEMANTICS_INSTRUCTION
 
             config["system_template"] += TERMINAL_SEMANTICS_INSTRUCTION
-        if limits.get("concise_finalization", False) and not split(limits):
+        if limits.get("concise_finalization", False):
             from finish_attempt import CONCISE_INSTRUCTION
 
             config["system_template"] += CONCISE_INSTRUCTION
@@ -451,11 +440,6 @@ def configure_agent(config, limits, protocol):
         from write_file import INSTRUCTION as WRITE_INSTRUCTION
 
         config["system_template"] += WRITE_INSTRUCTION
-    if "handoff_phase" in limits:
-        from finalization_api import adapt_notice, split
-        from handoff_phase import INSTRUCTION as HANDOFF_INSTRUCTION
-
-        config["system_template"] += adapt_notice(HANDOFF_INSTRUCTION, split(limits))
     if limits.get("self_test_feedback", False):
         config["system_template"] += (
             " Keep added checks rerunnable in the workspace. Use small checks with"
@@ -572,7 +556,6 @@ def run(args):
             "cost_in_task_seconds": False,
             "cache_evidence": "prefix-warmup-usage.json when first response completed",
         }
-    env.handoff_phase = model.handoff_phase
     if policy is not None:
         model.history = ObservationHistory(
             output, policy, expose_ids=limits.get("structured_finalization", False)

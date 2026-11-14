@@ -71,6 +71,9 @@ class LocalModel:
         self.origin = origin.rstrip("/")
         self.model = model
         self.sampling = sampling
+        from protocol import reject_retired_options
+
+        reject_retired_options(limits)
         self.limits = limits
         if "review_reasoning_only" in limits:
             from inference_phase import validate
@@ -85,12 +88,7 @@ class LocalModel:
         self.progress_reminder = None
         self.agent_deadline = None
         self.budget_feedback_sent = False
-        self.handoff_phase = None
         self.prefix_warmup = None
-        if "handoff_phase" in limits:
-            from handoff_phase import HandoffPhase
-
-            self.handoff_phase = HandoffPhase(limits, output)
         self.opener = urllib.request.build_opener(
             urllib.request.ProxyHandler({}), NoRedirect()
         )
@@ -170,10 +168,6 @@ class LocalModel:
         return self.fresh_context.project(messages) if self.fresh_context else messages
 
     def query(self, messages):
-        if self.handoff_phase is not None:
-            if self.history is None:
-                raise ValueError("Handoff phase requires measured history")
-            self.handoff_phase.check_clock(self)
         remaining = self.limits["total_completion_token_limit"] - self.completion_tokens
         if remaining <= 0:
             raise DeadlineExceeded("Completion-token budget exhausted")
@@ -231,9 +225,9 @@ class LocalModel:
             payload["reasoning_budget_tokens"] = self.limits["reasoning_budget_tokens"]
             payload["reasoning_budget_message"] = ""
         if self.limits.get("structured_finalization", False):
-            from finalization_api import tools
+            from finish_attempt import TOOL as FINISH_TOOL
 
-            payload["tools"].extend(tools(self.limits))
+            payload["tools"].append(FINISH_TOOL)
             if self.limits.get("exact_text_edit", False):
                 from edit_file import TOOL as EDIT_TOOL
 
@@ -270,8 +264,6 @@ class LocalModel:
                 self.output / f"request-{self.calls + 1:03d}.reasoning-budget.json",
                 allocation,
             )
-        if self.handoff_phase is not None:
-            self.handoff_phase.constrain(payload, remaining)
         context_report = None
         context_path = self.output / f"context-{self.calls + 1:03d}.json"
         if self.history is not None:
@@ -330,23 +322,6 @@ class LocalModel:
                             self.output / (pressure_prefix + ".reasoning-budget.json")
                         )
                     return self.query(messages)
-            if self.handoff_phase is not None and self.handoff_phase.maybe_enter(
-                messages, self, context_report
-            ):
-                before_phase = context_report
-                # The first cap described an unsent request. Recompute against
-                # the actual finish-only tools and notice, within original limits.
-                payload["max_tokens"] = min(
-                    remaining, self.limits["max_completion_tokens_per_request"]
-                )
-                self.handoff_phase.constrain(payload, remaining)
-                payload, context_report = self.history.prepare(
-                    messages,
-                    payload,
-                    lambda value, phase: self.count_tokens(value, "handoff-" + phase),
-                    self.limits["context_capacity_tokens"],
-                )
-                context_report["before_handoff_phase"] = before_phase
             available = context_report["available_completion_tokens"]
             if (
                 self.limits.get("context_budget_feedback", False)
@@ -407,8 +382,6 @@ class LocalModel:
                 self.fresh_context.measured(before_reset, context_report)
             if payload["max_tokens"] <= 0:
                 raise DeadlineExceeded("No context headroom after observation policy")
-        if self.handoff_phase is not None:
-            self.handoff_phase.check_clock(self)
         body = json.dumps(payload).encode()
         if len(body) > self.limits.get("max_request_bytes", 131072):
             raise DeadlineExceeded("Serialized request byte cap exceeded")
@@ -479,8 +452,6 @@ class LocalModel:
                 raise ValueError("Rendered token count disagrees with backend usage")
         choice = response["choices"][0]
         message = dict(choice["message"])
-        if self.handoff_phase is not None:
-            self.handoff_phase.check_response(message, response)
         max_calls = self.limits.get("max_tool_calls_per_response", 4)
         response_calls = message.get("tool_calls")
         checkpoint_call = (
@@ -513,14 +484,13 @@ class LocalModel:
                 raise
             self.fresh_context.checkpoint_response(accepted=True)
         elif self.limits.get("structured_finalization", False):
-            from finalization_api import actions as parse_finish_actions
+            from finish_attempt import actions as parse_finish_actions
 
             try:
                 actions = parse_finish_actions(
                     message,
                     response,
                     self.history,
-                    split_enabled=self.limits.get("split_finalization", False),
                     finish_reason=choice.get("finish_reason"),
                     edit_file_enabled=self.limits.get("exact_text_edit", False),
                     write_file_enabled=self.limits.get("whole_file_write", False),
@@ -603,8 +573,7 @@ class LocalModel:
             for observation, action in zip(observations, actions, strict=True):
                 self.history.record(
                     observation,
-                    action.get("api_tool", "finish_attempt")
-                    + " (provisional review; no command execution)"
+                    "finish_attempt (provisional review; no command execution)"
                     if action.get("tool") == "finish_attempt"
                     else "checkpoint_context (unverified memory; no command execution)"
                     if action.get("tool") == "checkpoint_context"
@@ -637,11 +606,6 @@ class LocalModel:
                     "calls": self.calls,
                     "completion_tokens": self.completion_tokens,
                     "prompt_tokens": self.prompt_tokens,
-                    **(
-                        {"handoff_phase": self.handoff_phase.decision}
-                        if self.handoff_phase is not None
-                        else {}
-                    ),
                     **(
                         {
                             "fresh_context": {
@@ -711,18 +675,11 @@ class IsolatedEnvironment:
         self.observations = None
         self.history_archive = None
         self.fresh_context = None
-        self.handoff_phase = None
 
     def execute(self, action):
         self.calls += 1
         if self.calls > self.tool_call_limit:
             raise DeadlineExceeded("Tool-call budget exhausted")
-        if (
-            self.handoff_phase is not None
-            and self.handoff_phase.active
-            and action.get("tool") != "finish_attempt"
-        ):
-            raise ValueError("Handoff-only phase forbids execution and edits")
         if self.structured_finalization:
             from finish_attempt import (
                 ECHO,
@@ -782,12 +739,6 @@ class IsolatedEnvironment:
                 try:
                     value = validate(action["payload"], self.history)
                     handoff = envelope(value, self.history)
-                    if "api_tool" in action:
-                        handoff["public_interface"] = {
-                            "tool": action["api_tool"],
-                            "arguments": action["api_payload"],
-                            "normalization_note": "Internal summary/evidence fields may be derived; original model claims are these public arguments. Selected checks do not certify their result or scope.",
-                        }
                     projection = compact_handoff(handoff)
                 except (
                     ValueError,
@@ -806,11 +757,6 @@ class IsolatedEnvironment:
                         "mode": "adapter-control",
                         "executed": False,
                         "name": NAME,
-                        **(
-                            {"public_interface": handoff["public_interface"]}
-                            if "public_interface" in handoff
-                            else {}
-                        ),
                         "arguments": value,
                         "raw_arguments": action.get("raw_arguments"),
                     },
@@ -827,9 +773,6 @@ class IsolatedEnvironment:
                         " concrete gaps and run focused checks, then call finish_attempt again."
                         " If reset is unavailable, continue review in the current context."
                     )
-                    from finalization_api import adapt_notice
-
-                    notice = adapt_notice(notice, "api_tool" in action)
                     write_json(self.output / "review-handoff.json", handoff)
                     write_json(
                         prefix.with_suffix(".result.json"),
