@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v9",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 11,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v8",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after fresh blind public-contract review and independent sealed first solution; isolated reference and blind solution21/21; preserved cleanup defect rejected.",
+  "revision_note": "Positive CLI cleanup-scope guidance plus one public commit-error ownership example; starter/private checks unchanged."
+}
