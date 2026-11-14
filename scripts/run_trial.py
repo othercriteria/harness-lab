@@ -440,6 +440,10 @@ def configure_agent(config, limits, protocol):
         from write_file import INSTRUCTION as WRITE_INSTRUCTION
 
         config["system_template"] += WRITE_INSTRUCTION
+    if limits.get("read_file", False):
+        from read_file import INSTRUCTION as READ_INSTRUCTION
+
+        config["system_template"] += READ_INSTRUCTION
     if limits.get("self_test_feedback", False):
         config["system_template"] += (
             " Keep added checks rerunnable in the workspace. Use small checks with"
@@ -541,6 +545,8 @@ def run(args):
         exact_text_edit=limits.get("exact_text_edit", False),
         whole_file_write=limits.get("whole_file_write", False),
         persistent_scratch=limits.get("persistent_scratch", False),
+        read_file=limits.get("read_file", False),
+        deduplicate_file_reads=limits.get("deduplicate_file_reads", False),
     )
     model_class = ReferenceModel if args.mode == "reference" else LocalModel
     extra_args = (task,) if args.mode == "reference" else ()

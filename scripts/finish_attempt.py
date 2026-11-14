@@ -263,6 +263,7 @@ def actions(
     finish_reason,
     edit_file_enabled=False,
     write_file_enabled=False,
+    read_file_enabled=False,
     max_calls=4,
 ):
     """Admission of complete action batch before DefaultAgent executes any action."""
@@ -281,6 +282,8 @@ def actions(
             allowed_tools.add("edit_file")
         if write_file_enabled:
             allowed_tools.add("write_file")
+        if read_file_enabled:
+            allowed_tools.add("read_file")
         for call in calls:
             if not isinstance(call, dict) or call.get("type") != "function":
                 raise ValueError("Expected function tool call")
@@ -317,11 +320,15 @@ def actions(
                     "tool_call_id": call["id"],
                 }
             ]
-        edits = any(c["function"]["name"] in ("edit_file", "write_file") for c in calls)
+        edits = any(
+            c["function"]["name"] in ("edit_file", "write_file", "read_file")
+            for c in calls
+        )
         if edits:
             if finish_reason != "tool_calls":
                 raise ValueError("Edits require a complete tool_calls response")
             from edit_file import action as edit_action
+            from read_file import action as read_action
             from write_file import action as write_action
 
             parsed = []
@@ -330,6 +337,8 @@ def actions(
                     parsed.append(edit_action(call))
                 elif call["function"]["name"] == "write_file":
                     parsed.append(write_action(call))
+                elif call["function"]["name"] == "read_file":
+                    parsed.append(read_action(call))
                 else:
                     parsed.extend(
                         parse_toolcall_actions(
@@ -357,7 +366,7 @@ def actions(
         from spec_blocker import reserved
 
         for action in parsed:
-            if action.get("tool") in ("edit_file", "write_file"):
+            if action.get("tool") in ("edit_file", "write_file", "read_file"):
                 continue
             if not isinstance(action["command"], str):
                 raise ValueError("Bash command must be text")

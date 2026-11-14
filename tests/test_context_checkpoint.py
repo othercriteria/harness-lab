@@ -95,7 +95,11 @@ class CheckpointTests(unittest.TestCase):
         return json.loads((self.root / name).read_text())
 
     def run_sequence(
-        self, checkpoint=None, finish_reason="tool_calls", after_response=None
+        self,
+        checkpoint=None,
+        finish_reason="tool_calls",
+        after_response=None,
+        read_diagnostic=False,
     ):
         def response(request, **kwargs):
             self.requests.append(json.loads(request.data))
@@ -117,7 +121,11 @@ class CheckpointTests(unittest.TestCase):
                     "call-4",
                 )
             else:
-                message = call("bash", {"command": "echo diagnostic"}, f"call-{n}")
+                message = (
+                    call("read_file", {"path": "module.py"}, f"call-{n}")
+                    if read_diagnostic
+                    else call("bash", {"command": "echo diagnostic"}, f"call-{n}")
+                )
             if after_response:
                 after_response(n)
             return io.BytesIO(
@@ -293,6 +301,47 @@ class CheckpointTests(unittest.TestCase):
             "fallback_without_summary",
         )
         verify_checkpoint_evidence(self.root, self.limits)
+
+    def test_read_file_checkpoint_boundary_and_real_context_reset_force_contents(self):
+        self.env.workspace = self.root / "workspace"
+        self.env.workspace.mkdir()
+        (self.env.workspace / "module.py").write_text("value = 7\n" * 40)
+        self.env.read_file = self.env.deduplicate_file_reads = True
+        self.limits.update(
+            read_file=True, deduplicate_file_reads=True, shared_evidence=True
+        )
+        evidence = [
+            {
+                "kind": "observation",
+                "observation_id": "o0001",
+                "supports": "Read module.py",
+            }
+        ]
+        self.run_sequence(
+            checkpoint=call(
+                "checkpoint_context",
+                {
+                    "summary": "Continue from unchanged files",
+                    "evidence": evidence,
+                },
+                "call-2",
+            ),
+            read_diagnostic=True,
+        )
+        self.assertEqual(len(self.perform_options), 0)
+        self.assertEqual(self.env.read_tools, {1, 3})
+        self.assertTrue(
+            self.read("tool-003.result.json")["visible"]["file_read"][
+                "contents_returned"
+            ]
+        )
+        self.assertIn(
+            "Historical evidence", self.requests[2]["messages"][-1]["content"]
+        )
+        self.assertEqual(
+            verify_checkpoint_evidence(self.root, self.limits)["status"], "saved"
+        )
+        self.assertEqual(self.model.calls, 4)
 
     def test_wrong_tool_is_charged_but_not_executed_then_plain_reset(self):
         self.run_sequence(

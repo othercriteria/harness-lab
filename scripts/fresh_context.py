@@ -24,6 +24,7 @@ HISTORICAL_EXECUTION_TOOLS = frozenset(
         "bash",
         "edit_file",
         "write_file",
+        "read_file",
         "finish_attempt",
         "submit_attempt",
         "report_blocker",
@@ -588,6 +589,14 @@ class FreshContext:
         env = self.environment
         # Snapshot return alone is insufficient: cleanup must be authoritative.
         for number in range(1, env.calls + 1):
+            if number in getattr(env, "read_tools", set()):
+                from read_file import verify_receipt
+
+                try:
+                    verify_receipt(self.output / f"tool-{number:03d}")
+                except (OSError, ValueError, KeyError) as error:
+                    raise UnsafeCleanup("Invalid read-only tool boundary") from error
+                continue
             if number == self.submission_tool or number in self.checkpoint_tools:
                 # The outer adapter's provisional handoff starts no process.
                 checkpoint = number in self.checkpoint_tools

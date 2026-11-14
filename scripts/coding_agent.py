@@ -228,6 +228,10 @@ class LocalModel:
             from finish_attempt import TOOL as FINISH_TOOL
 
             payload["tools"].append(FINISH_TOOL)
+            if self.limits.get("read_file", False):
+                from read_file import TOOL as READ_TOOL
+
+                payload["tools"].append(READ_TOOL)
             if self.limits.get("exact_text_edit", False):
                 from edit_file import TOOL as EDIT_TOOL
 
@@ -385,6 +389,10 @@ class LocalModel:
         body = json.dumps(payload).encode()
         if len(body) > self.limits.get("max_request_bytes", 131072):
             raise DeadlineExceeded("Serialized request byte cap exceeded")
+        if self.history is not None and self.limits.get(
+            "deduplicate_file_reads", False
+        ):
+            self.history.note_current_context(payload["messages"])
         if self.calls == 0 and self.prefix_warmup is not None:
             from prefix_warmup import verify_scored_prefix
 
@@ -494,6 +502,7 @@ class LocalModel:
                     finish_reason=choice.get("finish_reason"),
                     edit_file_enabled=self.limits.get("exact_text_edit", False),
                     write_file_enabled=self.limits.get("whole_file_write", False),
+                    read_file_enabled=self.limits.get("read_file", False),
                     max_calls=max_calls,
                 )
             except FormatError as error:
@@ -553,6 +562,9 @@ class LocalModel:
             "cost": 0.0,
             "timestamp": time.time(),
         }
+        for action in actions:
+            if action.get("tool") == "read_file":
+                action["model_request"] = self.calls
         return message
 
     def format_message(self, **kwargs):
@@ -649,6 +661,8 @@ class IsolatedEnvironment:
         exact_text_edit=False,
         whole_file_write=False,
         persistent_scratch=False,
+        read_file=False,
+        deduplicate_file_reads=False,
     ):
         self.runtime = runtime
         self.workspace = workspace
@@ -656,6 +670,15 @@ class IsolatedEnvironment:
         if type(persistent_scratch) is not bool:
             raise ValueError("Invalid persistent_scratch")
         self.scratch = ScratchState(output / "scratch") if persistent_scratch else None
+        if (
+            type(read_file) is not bool
+            or type(deduplicate_file_reads) is not bool
+            or (deduplicate_file_reads and not read_file)
+        ):
+            raise ValueError("Invalid read_file policy")
+        self.read_file = read_file
+        self.deduplicate_file_reads = deduplicate_file_reads
+        self.read_tools = set()
         self.timeout = timeout
         self.tool_call_limit = tool_call_limit
         self.max_command_bytes = max_command_bytes
@@ -735,6 +758,62 @@ class IsolatedEnvironment:
                         0.0, round(self.agent_deadline - time.monotonic(), 1)
                     ),
                 }
+            if action.get("tool") == "read_file" and self.read_file:
+                from read_file import read
+                from read_file import validate as validate_read
+
+                arguments = validate_read(action["arguments"])
+                prefix = self.output / f"tool-{self.calls:03d}"
+                started = time.monotonic()
+                output = read(self.workspace, arguments)
+                metadata = output.get("file_read")
+                if (
+                    self.deduplicate_file_reads
+                    and not arguments["reread"]
+                    and metadata
+                    and self.history
+                ):
+                    identifier = self.history.prior_file_read(metadata)
+                    notice = (
+                        f"Unchanged requested range is already in your current context at {identifier}."
+                        " Use reread=true to receive the text again."
+                    )
+                    if identifier is not None and len(output["output"]) > len(notice):
+                        output["output"] = notice
+                        output["file_read"] = {
+                            **metadata,
+                            "contents_returned": False,
+                            "context_observation_id": identifier,
+                        }
+                if self.agent_deadline is not None:
+                    output["remaining_agent_seconds"] = max(
+                        0.0, round(self.agent_deadline - time.monotonic(), 1)
+                    )
+                write_json(
+                    prefix.with_suffix(".request.json"),
+                    {
+                        "mode": "adapter-read",
+                        "name": "read_file",
+                        "executed": False,
+                        "arguments": arguments,
+                        "workspace_generation": self.workspace.name,
+                        "model_request": action.get("model_request"),
+                        "tool_call_id": action.get("tool_call_id"),
+                    },
+                )
+                write_json(
+                    prefix.with_suffix(".result.json"),
+                    {
+                        "ok": output["returncode"] == 0,
+                        "executed": False,
+                        "read_only": True,
+                        "cleanup_required": False,
+                        "wall_seconds": time.monotonic() - started,
+                        "visible": output,
+                    },
+                )
+                self.read_tools.add(self.calls)
+                return output
             if action.get("tool") == NAME:
                 try:
                     value = validate(action["payload"], self.history)

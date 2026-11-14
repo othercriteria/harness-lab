@@ -32,6 +32,7 @@ class ObservationHistory:
         self.records = {}
         self.expose_ids = expose_ids
         self.visible_messages = {}
+        self.current_context_ids = set()
         self.masked = set()
         self.save_manifest()
 
@@ -90,9 +91,37 @@ class ObservationHistory:
             "output_file": identifier + ".txt",
             "archive_path_mentioned": "/observations" in command,
         }
+        if "file_read" in visible:
+            record["file_read"] = visible["file_read"]
         self.records[identifier] = record
         self.save_manifest()
         message.setdefault("extra", {})["observation_id"] = identifier
+
+    def note_current_context(self, messages):
+        """Only exact original tool messages in the actual outgoing request count."""
+        contents = {
+            m.get("content")
+            for m in messages
+            if m.get("role") == "tool" and isinstance(m.get("content"), str)
+        }
+        self.current_context_ids = {
+            identifier
+            for identifier, text in self.visible_messages.items()
+            if text in contents
+        }
+
+    def prior_file_read(self, metadata):
+        keys = ("path", "file_sha256", "start_line", "max_lines")
+        for identifier in reversed(self.records):
+            previous = self.records[identifier].get("file_read", {})
+            if (
+                identifier in self.current_context_ids
+                and previous.get("contents_returned") is True
+                and previous.get("range_clipped") is False
+                and all(previous.get(k) == metadata.get(k) for k in keys)
+            ):
+                return identifier
+        return None
 
     def placeholder(self, identifier):
         record = self.records[identifier]
