@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v10",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 12,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v9",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after fresh blind review and sealed independent solution; isolated reference/blind22/22, preserved acquisition leak rejected in both interruption subcases.",
+  "revision_note": "Adds a public acquisition-interruption ownership example and explicit clarification of existing cleanup scope; starter/private/prior public checks unchanged."
+}
