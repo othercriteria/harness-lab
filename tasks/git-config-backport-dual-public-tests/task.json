@@ -1,6 +1,6 @@
 {
   "id": "git-config-backport-dual-public-tests",
-  "version": 2,
+  "version": 3,
   "kind": "git-backport",
   "split": "development",
   "maturity": "development",
@@ -11,14 +11,14 @@
     "directory": "repo",
     "initial_branch": "release/stable",
     "branches": {
-      "release/stable": "ab1a2f13561a2f5424951b55dcdabbd298d2bbf3",
-      "release/legacy": "2384dc424ea1a4067a1af3c0f097dfc411b8e4e0"
+      "release/stable": "c3fcf2ca914a0e45c4fb6a75b97d955874901688",
+      "release/legacy": "5b93503e93b694d6a46c567bc992e99568b46a5e"
     },
     "main": "215411f28feeb6dab7941797772f411b80864f8b",
     "tags": {
-      "base-stable": "ab1a2f13561a2f5424951b55dcdabbd298d2bbf3",
+      "base-stable": "c3fcf2ca914a0e45c4fb6a75b97d955874901688",
       "approved-write-safety": "215411f28feeb6dab7941797772f411b80864f8b",
-      "base-legacy": "2384dc424ea1a4067a1af3c0f097dfc411b8e4e0"
+      "base-legacy": "5b93503e93b694d6a46c567bc992e99568b46a5e"
     }
   },
   "provenance": {
@@ -48,10 +48,10 @@
   "evaluator_revision": {
     "version": 3,
     "public_contract_changed": false,
-    "public_bytes_changed": false,
     "change": "Extend existing propagation test with named/unnamed-section interpolation ValueError; retains16tests per branch. Output progress is insufficient error provenance.",
     "previous_frozen_version": "results/success-freeze-310.json",
-    "replay": "/bulk/dlk/local-harness/reviews/git-public-tests-evaluator-v3-001/summary.json"
+    "replay": "/bulk/dlk/local-harness/reviews/git-public-tests-evaluator-v3-001/summary.json",
+    "retained_for_public_fixture_revision": 2
   },
   "task_relaxation": {
     "ancestor_task": "git-config-backport-dual",
@@ -59,18 +59,24 @@
     "change": "Initial variant: add two public tests per target for unrelated stream/interpolation ValueError propagation, including matching validation text. Implementation scope, brief and policy unchanged. Private evaluation initially inherited unchanged; later coverage extensions are recorded in evaluator_revision.",
     "interpretation": "Aligned-specification implementation with richer public feedback; original task remains a diagnostic. Not a fresh independent task family.",
     "public_tests": "tests/test_export_propagation.py",
-    "test_sha256": "c696b1043c0435bb26ad5735dbd8c9de2087d08a066991d79026057bf1d48351"
+    "test_sha256": "b5ef645d7cd6a004ec54db5ab3485bebc388ec7d417de98eeadb7bf7826bea63"
+  },
+  "public_fixture_revision": {
+    "version": 2,
+    "change": "Extend public interpolation propagation case to named and unnamed sections. No normative contract, production starter, brief or private-check changes.",
+    "previous_frozen_version": "results/success-freeze-310.json",
+    "test_sha256": "b5ef645d7cd6a004ec54db5ab3485bebc388ec7d417de98eeadb7bf7826bea63"
   },
   "reference_provenance": {
-    "seal": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-001/solution-seal.json",
-    "sha256": "cbb2242f6a04018844ef8547ee4a645d8c26a93c3429595a8b84376ec4a3b670",
+    "seal": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-002/solution-seal.json",
+    "sha256": "c9efa8d73ef869c0c3df6cc68a50d88de507eb32ac0da065a7ddf6c40ebbf1c2",
     "feedback_driven_repair": false
   },
   "specification_alignment": {
-    "review": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-001/review.json",
-    "sha256": "d36aea6ed34a91a0b33ab2c24e8796149e5e884927a92fabe192351e5cf16073",
+    "review": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-002/review.json",
+    "sha256": "7b0d0a8a257914117937b4848f6935f01e0fe602d23adcebb80b596a376f0388",
     "gaps": [],
     "public_only": true,
-    "change": "At initial admission: two additional public tests, unchanged brief/policy/implementation requirements. Subsequent evaluator-only coverage updates do not change the public contract or this independent interpretation."
+    "change": "Public interpolation case now covers named and unnamed sections. No normative contract or production-starter changes; evaluatorv3 retained."
   }
 }
