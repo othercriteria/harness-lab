@@ -1,0 +1,63 @@
+{
+  "id": "git-config-backport-dual-public-tests",
+  "version": 1,
+  "kind": "git-backport",
+  "split": "development",
+  "maturity": "draft",
+  "fixture_validation": "isolated-only",
+  "entrypoint": "public/task.md",
+  "git_repository": {
+    "bundle": "repository.bundle",
+    "directory": "repo",
+    "initial_branch": "release/stable",
+    "branches": {
+      "release/stable": "ab1a2f13561a2f5424951b55dcdabbd298d2bbf3",
+      "release/legacy": "2384dc424ea1a4067a1af3c0f097dfc411b8e4e0"
+    },
+    "main": "215411f28feeb6dab7941797772f411b80864f8b",
+    "tags": {
+      "base-stable": "ab1a2f13561a2f5424951b55dcdabbd298d2bbf3",
+      "approved-write-safety": "215411f28feeb6dab7941797772f411b80864f8b",
+      "base-legacy": "2384dc424ea1a4067a1af3c0f097dfc411b8e4e0"
+    }
+  },
+  "provenance": {
+    "upstream_tag": "v3.13.0",
+    "sha256": {
+      "LICENSE": "78b12c3a81360b357002334f0e70ea0e92eebf7a9b358805c03c48484945f3bb",
+      "configparser.rst": "e69ad4c9e00a8c975181498b441fb897e13d61b25f2424d9436e695467d8be4f",
+      "configparser.py": "ece1abea1ec68cae85b2532ade9a2156ce9b20ff38738ac4147744509f65490b"
+    },
+    "url": "https://github.com/python/cpython/tree/v3.13.0",
+    "scope": "Pinned parser/docs; authored downstream task, histories and policy."
+  },
+  "human_duration": {
+    "minutes": null,
+    "status": "Uncalibrated"
+  },
+  "admission_status": "Draft; fresh blind review and sealed independent solution pending",
+  "test_counts": {
+    "stable": 16,
+    "legacy": 16
+  },
+  "limitations": [
+    "Related authored downstream tasks on pinned CPython source, not fresh independent task families.",
+    "Wall ceilings uncalibrated until local trials; no human-duration claim.",
+    "Finite tests and behavioral probes require source/handoff review."
+  ],
+  "evaluator_revision": {
+    "version": 2,
+    "public_contract_changed": false,
+    "change": "Extend existing stream-propagation check with a fresh ValueError sharing the actual validation message; preserve canonical test count.",
+    "previous_frozen_version": "results/success-freeze-302.json",
+    "replay": "/bulk/dlk/local-harness/reviews/git-backport-evaluator-v2-001/summary.json"
+  },
+  "task_relaxation": {
+    "ancestor_task": "git-config-backport-dual",
+    "ancestor_version": 2,
+    "change": "Add two public tests per target for unrelated stream/interpolation ValueError propagation, including text matching the actual validation message. Implementation scope, brief, policy and private acceptance checks unchanged.",
+    "interpretation": "Aligned-specification implementation with richer public feedback; original task remains a diagnostic. Not a fresh independent task family.",
+    "public_tests": "tests/test_export_propagation.py",
+    "test_sha256": "c696b1043c0435bb26ad5735dbd8c9de2087d08a066991d79026057bf1d48351"
+  }
+}
