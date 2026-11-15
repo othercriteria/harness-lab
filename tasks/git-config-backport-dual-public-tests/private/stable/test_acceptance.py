@@ -130,3 +130,20 @@ class Acceptance(unittest.TestCase):
             def write(self,stream):raise cp.ParsingError('bad')
         out=io.StringIO();self.assertEqual(service.export(Parser(),out),2 if LEGACY else False)
         self.assertFalse(out.closed)
+
+    def test_interpolation_state_change_preserves_error_origin(self):
+        for cls in (cp.ConfigParser, cp.RawConfigParser):
+            with self.subTest(parser=cls.__name__):
+                error = ValueError('later interpolation error after state update')
+                class Hook(cp.Interpolation):
+                    def before_write(self, parser, section, option, value):
+                        parser.set(section, 'late=key', 'added by interpolation')
+                        raise error
+                parser = cls(interpolation=Hook())
+                parser.read_dict({'s': {'safe': 'value'}})
+                out = io.StringIO()
+                with self.assertRaises(ValueError) as caught:
+                    service.export(parser, out)
+                self.assertIs(caught.exception, error)
+                self.assertTrue(parser.has_option('s', 'late=key'))
+                self.assertFalse(out.closed)
