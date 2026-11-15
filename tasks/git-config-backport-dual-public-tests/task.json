@@ -1,6 +1,6 @@
 {
   "id": "git-config-backport-dual-public-tests",
-  "version": 6,
+  "version": 7,
   "kind": "git-backport",
   "split": "development",
   "maturity": "development",
@@ -11,14 +11,14 @@
     "directory": "repo",
     "initial_branch": "release/stable",
     "branches": {
-      "release/stable": "929fd5c1f0d7e5255ae23df78ecdfdebd7e0bc01",
-      "release/legacy": "b6c7afa292225454552c4f199e0d45b3c6057dae"
+      "release/stable": "3d99279ab401a35c1cf41aa652fd492c70bc4be4",
+      "release/legacy": "f8e1a11af1eaac4b282ae6bdb89004aedc8d57fa"
     },
     "main": "215411f28feeb6dab7941797772f411b80864f8b",
     "tags": {
-      "base-stable": "929fd5c1f0d7e5255ae23df78ecdfdebd7e0bc01",
+      "base-stable": "3d99279ab401a35c1cf41aa652fd492c70bc4be4",
       "approved-write-safety": "215411f28feeb6dab7941797772f411b80864f8b",
-      "base-legacy": "b6c7afa292225454552c4f199e0d45b3c6057dae"
+      "base-legacy": "f8e1a11af1eaac4b282ae6bdb89004aedc8d57fa"
     }
   },
   "provenance": {
@@ -50,7 +50,7 @@
     "public_contract_changed": false,
     "change": "Add independent later-interpolation error-origin check after a public API state update, for both provided parser classes.17canonical methods per branch.",
     "previous_frozen_version": "results/success-freeze-317.json",
-    "retained_for_public_fixture_revision": 4,
+    "retained_for_public_fixture_revision": 5,
     "validation": "/bulk/dlk/local-harness/reviews/git-state-propagation-validation-001/summary.json",
     "validation_sha256": "91cab3ec180ec032b90428c228ee4edc767eb4c0e9bab06510cd04f1fc26646e"
   },
@@ -63,21 +63,22 @@
     "test_sha256": "7e237d20f4a0e370defd10ee60a7a276e8dfba4ef190d8f85892e8d4841d9f57"
   },
   "public_fixture_revision": {
-    "version": 4,
-    "change": "Add a public regression for normal propagation of an interpolation ValueError after a hook updates parser state. Full contract, brief and production starter unchanged; a current-state heuristic does not establish exception origin.",
-    "previous_frozen_version": "results/success-freeze-317.json",
-    "test_sha256": "7e237d20f4a0e370defd10ee60a7a276e8dfba4ef190d8f85892e8d4841d9f57"
+    "version": 5,
+    "change": "Existing public invalid-key test also asserts the documented repr(key) diagnostic. Written contract, production starter, other public tests and private acceptance bytes remain unchanged.",
+    "previous_frozen_version": "results/success-freeze-319.json",
+    "test_path": "tests/test_write.py",
+    "test_sha256": "c66c1e8f5c79221c19b2f01d1dd03c5cc3952106776ebcbcce822f70270eb634"
   },
   "reference_provenance": {
-    "seal": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-004/solution-seal.json",
-    "sha256": "421cab342870ff81edbe63c74eeaeb8b03cfe9e2b3e0fd9a40f378cdc667f80b",
+    "seal": "/bulk/dlk/local-harness/reviews/git-message-blind-001/solution-seal.json",
+    "sha256": "fb1ad6b6d8175cb8d7b6539b66149860f19e22160bb25a403cd0163d4d25b026",
     "feedback_driven_repair": false
   },
   "specification_alignment": {
-    "review": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-004/review.json",
-    "sha256": "61d849e169f157760b784fbb5eade8c091ca7376a4b8ca32d2607a5e3bad9c81",
+    "review": "/bulk/dlk/local-harness/reviews/git-message-blind-001/review.json",
+    "sha256": "83812b67908f16bc0b7a96eba52250dd14c5dd4da94e3dc3309c8972c6450ed0",
     "gaps": [],
     "public_only": true,
-    "change": "Public regression for preservation of later interpolation failure after a hook updates parser state. Existing implementation contract and focused-test guidance unchanged."
+    "change": "Existing public invalid-key check now asserts the already documented repr(key) error diagnostic; written contract, production starters and private tests unchanged."
   }
 }
