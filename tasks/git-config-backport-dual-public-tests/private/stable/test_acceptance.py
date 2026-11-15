@@ -114,6 +114,17 @@ class Acceptance(unittest.TestCase):
             with self.assertRaises(type(error)) as cm:service.export(p,Sink())
             self.assertIs(cm.exception,error)
 
+        # A header-less section can fail in interpolation before any stream write.
+        # Output progress does not identify the source of a ValueError.
+        for unnamed in (False,True):
+            error=ValueError('unrelated interpolation before output')
+            class Hook(cp.Interpolation):
+                def before_write(self,parser,section,option,value):raise error
+            p=self.make(allow_unnamed_section=unnamed,interpolation=Hook())
+            p.read_string('key=value' if unnamed else '[s]\nkey=value')
+            with self.assertRaises(ValueError) as cm:service.export(p,io.StringIO())
+            self.assertIs(cm.exception,error)
+
     def test_existing_parsing_error_handling(self):
         class Parser:
             def write(self,stream):raise cp.ParsingError('bad')
