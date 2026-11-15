@@ -1,0 +1,30 @@
+{
+  "status": "Design research complete; not implemented",
+  "research_report": "/bulk/dlk/local-harness/research/context-routing-001/dogfood-research/report.txt",
+  "interface_sketch": "/bulk/dlk/local-harness/research/context-routing-001/dogfood-research/interface-sketch.txt",
+  "recommendation": "Snapshot-to-artifact durable CLI job first, thin local stdio MCP second. Outer agent reviews, verifies in isolation and applies accepted changes.",
+  "operations": [
+    "submit",
+    "status",
+    "result",
+    "cancel"
+  ],
+  "first_slice": "One small real Python patch from an explicitly selected snapshot, pinned recipe, bounded budget; return normalized files/diff, check evidence and full trace. Analysis-only mode is optional and should not delay this.",
+  "gpu_policy": "Reuse canonical gpu-experiment.lock; fail fast busy; never attach to another experiment endpoint or silently switch it. Session service gating remains outside jobs.",
+  "reuse": [
+    "existing model execution isolation",
+    "separate isolated verifier",
+    "structured handoff and observations",
+    "durable lifecycle receipts",
+    "existing GPU lock and session restoration"
+  ],
+  "missing": [
+    "general public snapshot adapter separate from named benchmark task admission",
+    "durable job admission/status/result/cancel contract",
+    "normalized candidate export with allowed-path and stale-base checks",
+    "later MCP client integration verification"
+  ],
+  "success_measure": "Useful accepted work and rough-edge discoveries, with outer packaging/review/repair effort and total cold/warm time recorded. Do not equate green public tests with independent acceptance.",
+  "followup_scope": "Design requested within current goal; implementation is proposed subsequent work. Avoid building all optional queue/service/analysis-mode features before first useful patch.",
+  "official_mcp_source": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli"
+}
