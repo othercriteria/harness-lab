@@ -19,6 +19,14 @@ reading. The fix is supplied to focus work on integration and verification.
 This is the adaptation rung: keep each release's ordering, spacing, error and
 status contract. Copying main wholesale would discard required release behavior.
 
+service.export also accepts parser stand-ins exposing only write(stream). Preserve
+that one-method interface: call write once, return the release's OK on success,
+convert ParsingError (including subclasses) to INVALID, and propagate unrelated
+exceptions unchanged. These objects need not provide ConfigParser private fields
+or newly added helpers. The bounded key-validation policy applies to the provided
+RawConfigParser and ConfigParser implementations; retain their ordinary subclass
+and interpolation behavior.
+
 Run python -m unittest discover -s tests separately on each target after its
 final changes. Add focused regression coverage under tests/ and commit it. The
 existing supplied tests must remain byte-identical on each branch. Commit all

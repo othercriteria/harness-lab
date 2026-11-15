@@ -1,6 +1,6 @@
 {
   "id": "git-config-backport-dual-public-tests",
-  "version": 3,
+  "version": 4,
   "kind": "git-backport",
   "split": "development",
   "maturity": "development",
@@ -11,14 +11,14 @@
     "directory": "repo",
     "initial_branch": "release/stable",
     "branches": {
-      "release/stable": "c3fcf2ca914a0e45c4fb6a75b97d955874901688",
-      "release/legacy": "5b93503e93b694d6a46c567bc992e99568b46a5e"
+      "release/stable": "bbc1421f7c5393f8be32aed0d0522702c379eeee",
+      "release/legacy": "4a593300fdeeb7ddff015f80cf69cd11801e7a57"
     },
     "main": "215411f28feeb6dab7941797772f411b80864f8b",
     "tags": {
-      "base-stable": "c3fcf2ca914a0e45c4fb6a75b97d955874901688",
+      "base-stable": "bbc1421f7c5393f8be32aed0d0522702c379eeee",
       "approved-write-safety": "215411f28feeb6dab7941797772f411b80864f8b",
-      "base-legacy": "5b93503e93b694d6a46c567bc992e99568b46a5e"
+      "base-legacy": "4a593300fdeeb7ddff015f80cf69cd11801e7a57"
     }
   },
   "provenance": {
@@ -51,7 +51,7 @@
     "change": "Extend existing propagation test with named/unnamed-section interpolation ValueError; retains16tests per branch. Output progress is insufficient error provenance.",
     "previous_frozen_version": "results/success-freeze-310.json",
     "replay": "/bulk/dlk/local-harness/reviews/git-public-tests-evaluator-v3-001/summary.json",
-    "retained_for_public_fixture_revision": 2
+    "retained_for_public_fixture_revision": 3
   },
   "task_relaxation": {
     "ancestor_task": "git-config-backport-dual",
@@ -59,24 +59,24 @@
     "change": "Initial variant: add two public tests per target for unrelated stream/interpolation ValueError propagation, including matching validation text. Implementation scope, brief and policy unchanged. Private evaluation initially inherited unchanged; later coverage extensions are recorded in evaluator_revision.",
     "interpretation": "Aligned-specification implementation with richer public feedback; original task remains a diagnostic. Not a fresh independent task family.",
     "public_tests": "tests/test_export_propagation.py",
-    "test_sha256": "b5ef645d7cd6a004ec54db5ab3485bebc388ec7d417de98eeadb7bf7826bea63"
+    "test_sha256": "9d520227412385f9309afaeed9b64072fe5d96eed649965bc8d82843c9dd85a1"
   },
   "public_fixture_revision": {
-    "version": 2,
-    "change": "Extend public interpolation propagation case to named and unnamed sections. No normative contract, production starter, brief or private-check changes.",
-    "previous_frozen_version": "results/success-freeze-310.json",
-    "test_sha256": "b5ef645d7cd6a004ec54db5ab3485bebc388ec7d417de98eeadb7bf7826bea63"
+    "version": 3,
+    "change": "Clarify service parser input protocol and add a public call-through regression for minimal write(stream) objects. Production starter and private checks unchanged; previously implicit compatibility is explicit.",
+    "previous_frozen_version": "results/success-freeze-312.json",
+    "test_sha256": "9d520227412385f9309afaeed9b64072fe5d96eed649965bc8d82843c9dd85a1"
   },
   "reference_provenance": {
-    "seal": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-002/solution-seal.json",
-    "sha256": "c9efa8d73ef869c0c3df6cc68a50d88de507eb32ac0da065a7ddf6c40ebbf1c2",
+    "seal": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-003/solution-seal.json",
+    "sha256": "74e70bd31d849a5e17f5e500b1736de5ebc1ca2be75f537dfb055be3972700db",
     "feedback_driven_repair": false
   },
   "specification_alignment": {
-    "review": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-002/review.json",
-    "sha256": "7b0d0a8a257914117937b4848f6935f01e0fe602d23adcebb80b596a376f0388",
+    "review": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-003/review.json",
+    "sha256": "57e67f2d25f4a45cb70fb0b5f3a0d03065b84ab3be14eb5328f8b61b89fe3530",
     "gaps": [],
     "public_only": true,
-    "change": "Public interpolation case now covers named and unnamed sections. No normative contract or production-starter changes; evaluatorv3 retained."
+    "change": "Explicit service one-method parser interface and public call-through regression; production starter/private evaluator unchanged."
   }
 }
