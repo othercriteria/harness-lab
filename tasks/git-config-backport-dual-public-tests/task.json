@@ -1,6 +1,6 @@
 {
   "id": "git-config-backport-dual-public-tests",
-  "version": 4,
+  "version": 5,
   "kind": "git-backport",
   "split": "development",
   "maturity": "development",
@@ -65,7 +65,8 @@
     "version": 3,
     "change": "Clarify service parser input protocol and add a public call-through regression for minimal write(stream) objects. Production starter and private checks unchanged; previously implicit compatibility is explicit.",
     "previous_frozen_version": "results/success-freeze-312.json",
-    "test_sha256": "9d520227412385f9309afaeed9b64072fe5d96eed649965bc8d82843c9dd85a1"
+    "test_sha256": "9d520227412385f9309afaeed9b64072fe5d96eed649965bc8d82843c9dd85a1",
+    "retained_for_task_version": 5
   },
   "reference_provenance": {
     "seal": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-003/solution-seal.json",
@@ -73,10 +74,11 @@
     "feedback_driven_repair": false
   },
   "specification_alignment": {
-    "review": "/bulk/dlk/local-harness/reviews/git-dual-public-tests-blind-003/review.json",
-    "sha256": "57e67f2d25f4a45cb70fb0b5f3a0d03065b84ab3be14eb5328f8b61b89fe3530",
+    "review": "/bulk/dlk/local-harness/reviews/git-focused-regression-wording-blind-001/review.json",
+    "sha256": "599db28d0ca9e3f6d44fd6ed4e52388c0579cb135879c69ca65bb307b2b4f936",
     "gaps": [],
     "public_only": true,
-    "change": "Explicit service one-method parser interface and public call-through regression; production starter/private evaluator unchanged."
+    "change": "Wording only: one small branch-specific regression per target is sufficient; extra coverage optional; supplied suite is main verification suite. Full implementation requirements unchanged.",
+    "reference_reuse": "Existing sealed independent solution003 interpretation requires added regression coverage and delivers eight tests per branch. Compatible with optional additional coverage; replay without repair under revised brief."
   }
 }

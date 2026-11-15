@@ -28,7 +28,9 @@ RawConfigParser and ConfigParser implementations; retain their ordinary subclass
 and interpolation behavior.
 
 Run python -m unittest discover -s tests separately on each target after its
-final changes. Add focused regression coverage under tests/ and commit it. The
+final changes. Add focused regression coverage under tests/ and commit it. One small test
+for a branch-specific behavior on each target is sufficient; further coverage
+is optional. Use the supplied suite as the main verification suite. The
 existing supplied tests must remain byte-identical on each branch. Commit all
 work; leave the repository clean, with no pending cherry-pick/merge/rebase. Do
 not change files outside configparser.py, service.py and tests/ in the repository.
