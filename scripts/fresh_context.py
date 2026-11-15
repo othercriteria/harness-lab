@@ -25,6 +25,7 @@ HISTORICAL_EXECUTION_TOOLS = frozenset(
         "edit_file",
         "write_file",
         "read_file",
+        "run_checks",
         "finish_attempt",
         "submit_attempt",
         "report_blocker",
