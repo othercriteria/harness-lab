@@ -149,6 +149,10 @@ def verify(runtime, workspace, task, output, remaining):
         from verify_git import verify as verify_git
 
         return verify_git(runtime, workspace, task, output, remaining)
+    if metadata.get("kind") == "inert-data-integrity":
+        from grade_integrity import verify as verify_integrity
+
+        return verify_integrity(runtime, workspace, task, output, remaining)
     evaluator = metadata.get("evaluator")
     if evaluator == "hcast-orm-unittest-v1":
         from imported_orm import verify as verify_orm

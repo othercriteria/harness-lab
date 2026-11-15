@@ -259,6 +259,11 @@ def requires_outer_adjudication(metadata):
 
 
 def require_task_protocol(metadata, limits):
+    if metadata.get("kind") == "inert-data-integrity":
+        if metadata.get("admission_status") != "admitted":
+            raise ValueError("Inert-data task blind admission is not complete")
+        if limits.get("behavioral_gate"):
+            raise ValueError("Inert-data tasks use their independent data verifier")
     if metadata.get("kind") == "git-backport":
         if metadata.get("admission_status") != "admitted":
             raise ValueError("Git task blind admission is not complete")
