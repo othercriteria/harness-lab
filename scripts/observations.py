@@ -93,6 +93,8 @@ class ObservationHistory:
         }
         if "file_read" in visible:
             record["file_read"] = visible["file_read"]
+        if "check_record" in visible:
+            record["check_record"] = visible["check_record"]
         self.records[identifier] = record
         self.save_manifest()
         message.setdefault("extra", {})["observation_id"] = identifier

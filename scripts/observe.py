@@ -650,6 +650,7 @@ class Evidence:
                     command=req.get("arguments", {}).get("command"),
                     timeout=req.get("timeout"),
                     result=result,
+                    check_record=self.read(directory / (prefix + ".check.json")),
                     cleanup=cleanup,
                 )
                 if not result:

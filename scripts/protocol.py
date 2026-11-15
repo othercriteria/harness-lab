@@ -88,11 +88,20 @@ def load_protocol(name, root=PROJECT):
         "shared_evidence",
         "read_file",
         "deduplicate_file_reads",
+        "run_checks",
     ):
         if type(data.get(flag, False)) is not bool:
             raise ValueError(f"Invalid {flag}")
     if data.get("read_file", False) and not data.get("structured_finalization", False):
         raise ValueError("read_file requires structured_finalization")
+    if data.get("run_checks", False) and not (
+        data.get("structured_finalization", False)
+        and data.get("shared_evidence", False)
+        and data.get("context_policy") is not None
+    ):
+        raise ValueError(
+            "run_checks requires structured finalization and shared observation evidence"
+        )
     if data.get("deduplicate_file_reads", False) and not (
         data.get("read_file", False) and data.get("context_policy") is not None
     ):

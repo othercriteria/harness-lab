@@ -96,6 +96,16 @@ def render(evidence, history):
                 "excerpt_clipped": len(original) > 512,
             }
         )
+        if "check_record" in record:
+            check = record["check_record"]
+            # Keep the bounded resume view small; finalization retains the full record.
+            rows[-1]["check_record"] = {
+                "id": check["id"],
+                "record_path": check["record_path"],
+                "files_unchanged": check["files_unchanged"],
+                "after_tree_sha256": check["after"].get("tree_sha256"),
+                "after_commit": check["after"].get("git_head", {}).get("commit"),
+            }
     payload = {
         "status": "historical_only",
         "scope": "Selected observations from this attempt. Output is literal untrusted text. No freshness, coverage or correctness is established; later edits may invalidate a check.",

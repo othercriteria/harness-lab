@@ -240,6 +240,10 @@ class LocalModel:
                 from write_file import TOOL as WRITE_TOOL
 
                 payload["tools"].append(WRITE_TOOL)
+            if self.limits.get("run_checks", False):
+                from run_checks import TOOL as CHECK_TOOL
+
+                payload["tools"].append(CHECK_TOOL)
         if self.fresh_context and self.fresh_context.summary_enabled:
             from context_checkpoint import REPLY_TOKENS, THINK_TOKENS
             from context_checkpoint import tool as checkpoint_tool
@@ -503,6 +507,7 @@ class LocalModel:
                     edit_file_enabled=self.limits.get("exact_text_edit", False),
                     write_file_enabled=self.limits.get("whole_file_write", False),
                     read_file_enabled=self.limits.get("read_file", False),
+                    run_checks_enabled=self.limits.get("run_checks", False),
                     max_calls=max_calls,
                 )
             except FormatError as error:
@@ -663,6 +668,7 @@ class IsolatedEnvironment:
         persistent_scratch=False,
         read_file=False,
         deduplicate_file_reads=False,
+        run_checks=False,
     ):
         self.runtime = runtime
         self.workspace = workspace
@@ -677,6 +683,11 @@ class IsolatedEnvironment:
         ):
             raise ValueError("Invalid read_file policy")
         self.read_file = read_file
+        if type(run_checks) is not bool or (run_checks and not structured_finalization):
+            raise ValueError("run_checks requires structured finalization")
+        self.checks = output / "checks" if run_checks else None
+        if self.checks is not None:
+            self.checks.mkdir()
         self.deduplicate_file_reads = deduplicate_file_reads
         self.read_tools = set()
         self.timeout = timeout
@@ -904,6 +915,7 @@ class IsolatedEnvironment:
             if action.get("tool") is not None and not (
                 (self.exact_text_edit and action["tool"] == "edit_file")
                 or (self.whole_file_write and action["tool"] == "write_file")
+                or (self.checks is not None and action["tool"] == "run_checks")
             ):
                 raise failure("Unknown action")
             if action["command"].strip() == ECHO or reserved(action["command"]):
@@ -966,8 +978,21 @@ class IsolatedEnvironment:
             options["history_archive"] = self.history_archive
         if self.scratch is not None:
             options["scratch"] = self.scratch
+        if self.checks is not None:
+            options["checks"] = self.checks
         editing = self.exact_text_edit and action.get("tool") == "edit_file"
         writing = self.whole_file_write and action.get("tool") == "write_file"
+        checking = self.checks is not None and action.get("tool") == "run_checks"
+        if checking:
+            from run_checks import identity, save, shell_command
+            from run_checks import validate as validate_check
+
+            check_arguments = validate_check(action["arguments"])
+            before_check = identity(self.workspace, check_arguments["cwd"])
+            options["public_interface"] = {
+                "tool": "run_checks",
+                "arguments": check_arguments,
+            }
         if editing:
             from sandbox_worker import validate_edit_arguments
 
@@ -982,7 +1007,11 @@ class IsolatedEnvironment:
             "edit_file" if editing else "write_file" if writing else "execute",
             action["arguments"]
             if editing or writing
-            else {"command": action["command"]},
+            else {
+                "command": shell_command(check_arguments)
+                if checking
+                else action["command"]
+            },
             self.timeout,
             self.output / f"tool-{self.calls:03d}",
             max_command_bytes=self.max_command_bytes,
@@ -1000,6 +1029,20 @@ class IsolatedEnvironment:
         if self.agent_deadline is not None:
             output["remaining_agent_seconds"] = max(
                 0.0, round(self.agent_deadline - time.monotonic(), 1)
+            )
+        if checking:
+            after_check = identity(updated, check_arguments["cwd"])
+            output["check_record"] = save(
+                self.checks,
+                self.calls,
+                check_arguments,
+                before_check,
+                after_check,
+                output,
+            )
+            write_json(
+                self.output / f"tool-{self.calls:03d}.check.json",
+                output["check_record"],
             )
         if (
             not self.structured_finalization

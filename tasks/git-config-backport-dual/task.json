@@ -1,6 +1,6 @@
 {
   "id": "git-config-backport-dual",
-  "version": 1,
+  "version": 2,
   "kind": "git-backport",
   "split": "development",
   "maturity": "development",
@@ -55,5 +55,12 @@
     "Related authored downstream tasks on pinned CPython source, not fresh independent task families.",
     "Wall ceilings uncalibrated until local trials; no human-duration claim.",
     "Finite tests and behavioral probes require source/handoff review."
-  ]
+  ],
+  "evaluator_revision": {
+    "version": 2,
+    "public_contract_changed": false,
+    "change": "Extend existing stream-propagation check with a fresh ValueError sharing the actual validation message; preserve canonical test count.",
+    "previous_frozen_version": "results/success-freeze-302.json",
+    "replay": "/bulk/dlk/local-harness/reviews/git-backport-evaluator-v2-001/summary.json"
+  }
 }

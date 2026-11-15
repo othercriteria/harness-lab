@@ -108,7 +108,15 @@ class Acceptance(unittest.TestCase):
 
     def test_stream_errors_propagate(self):
         p=self.make();p.read_dict({'s':{'ok':'1'}})
-        for error in (OSError('io'),ValueError('unrelated')):
+        invalid=self.make();invalid.read_dict({'s':{'bad=key':'1'}})
+        try:
+            invalid.write(io.StringIO())
+        except ValueError as validation_error:
+            collision_text=str(validation_error)
+        else:
+            self.fail('validation did not raise')
+        # Exception origin, not message text, distinguishes validation from I/O.
+        for error in (OSError('io'),ValueError('unrelated'),ValueError(collision_text)):
             class Sink:
                 def write(self,value):raise error
             with self.assertRaises(type(error)) as cm:service.export(p,Sink())

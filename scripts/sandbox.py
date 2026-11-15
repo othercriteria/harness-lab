@@ -384,6 +384,7 @@ class Runtime:
         observations=None,
         history_archive=None,
         scratch=None,
+        checks=None,
     ):
         if scratch is not None and (
             request["mode"] != "tool" or evaluation is not None
@@ -395,6 +396,8 @@ class Runtime:
             request = {**request, "persistent_scratch": True}
         if history_archive is not None and request["mode"] != "tool":
             raise ValueError("Conversation history must not enter the evaluator")
+        if checks is not None and request["mode"] != "tool":
+            raise ValueError("Check records must not enter the evaluator")
         timeout = request["timeout"] + 5
         # Each action gets its own quota-limited cgroup and private namespaces.
         unit = "big-model-agent-" + uuid.uuid4().hex + ".scope"
@@ -478,6 +481,11 @@ class Runtime:
             if observations is not None:
                 archive = validate_observation_archive(observations, prefix)
                 command.extend(("--ro-bind", str(archive), "/observations"))
+            if checks is not None:
+                from run_checks import validate_archive
+
+                archive = validate_archive(checks, prefix)
+                command.extend(("--ro-bind", str(archive), "/checks"))
             if history_archive is not None:
                 archive = validate_history_archive(history_archive, prefix)
                 command.extend(("--ro-bind", str(archive), "/history"))
@@ -671,12 +679,16 @@ def perform_tool(
     history_archive=None,
     max_command_bytes=8192,
     scratch=None,
+    checks=None,
+    public_interface=None,
 ):
     if type(max_command_bytes) is not int or not 8192 <= max_command_bytes <= 32768:
         raise ValueError("Invalid trusted max_command_bytes")
     options = {"observations": observations} if observations is not None else {}
     if history_archive is not None:
         options["history_archive"] = history_archive
+    if checks is not None:
+        options["checks"] = checks
     if scratch is not None:
         if (
             not isinstance(scratch, ScratchState)
@@ -692,6 +704,7 @@ def perform_tool(
             "arguments": arguments,
             "timeout": timeout,
             "max_command_bytes": max_command_bytes,
+            **({"public_interface": public_interface} if public_interface else {}),
         },
         prefix,
         **options,

@@ -62,6 +62,17 @@ def main():
             timeout=3,
         )
 
+    # Object paths and refs are candidate-controlled. cat-file/rev-parse alone
+    # can return substituted loose bytes under a pinned object's original ID.
+    # Validate the full sanitized database before trusting any anchored graph or
+    # protected-file comparison. This also checks packed objects; no candidate
+    # config, hooks, replacement refs or external object stores are enabled.
+    try:
+        git("fsck", "--full", "--strict", "--no-reflogs")
+    except subprocess.CalledProcessError as error:
+        detail = error.stderr.decode("utf-8", errors="replace")[:2048]
+        raise ValueError("Git object integrity rejected: " + detail) from error
+
     def oid(ref):
         result = git("rev-parse", "--verify", ref + "^{commit}").decode().strip()
         if not re.fullmatch("[0-9a-f]{40}", result):
@@ -162,7 +173,8 @@ def main():
             "changed_files": sorted(changed),
         }
     # Compare the final working tree directly. Never run submitted fsmonitor,
-    # diff drivers, clean/smudge filters, hooks, or an index supplied by the model.
+    # diff drivers, clean/smudge filters or hooks. The sanitized index was checked
+    # against HEAD above; actual working bytes are compared independently here.
     expected = branches[checked_out]["files"]
     actual = {}
     for path in original.rglob("*"):
