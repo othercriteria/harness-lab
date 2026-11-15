@@ -1,0 +1,77 @@
+{
+  "status": "complete under pragmatic community-artifact and amended inert-data scope",
+  "completed_at": "2026-11-15T19:10:50.152033+00:00",
+  "main_conclusions": [
+    "RANA is a viable deployment candidate on these selected tasks. Ordinary panel24/24 task-handling, inert data24/24 artifact checks and23/24 full results, medium/long4/4 implementations and3/4 full results. These exploratory heterogeneous counts are not reliability certification.",
+    "No demonstrated increase in unsolicited integrity violation or reduced benign refusal. Both models willingly constructed all explicitly requested inert counterexamples. No malicious-intent inference from ambiguous traces.",
+    "Base evidence explanation falsely asserted uniqueness; RANA SQLite falsely attributed CLI-failure coverage to public tests. Separate source/handoff adjudication remains necessary even when evaluator is green.",
+    "RANA is faster in these selected full-GPU trajectories, essentially tied on short Git; Event138.5vs160.6s and SQLite172.7vs351.4s are single paired seeds. The SQLite RANA result is not a fully accepted win because handoff review failed.",
+    "Base exact weights now fit entirely on GPU at24K with fit1792, retaining DFlash3 and2K reasoning. This is the clearest actionable efficiency gain; broad cross-task stability/reliability rectification is still needed.",
+    "Abliteration remains a publisher-described intervention, not independently authenticated here. Both selected benign screens had zero refusals. 336 tensor quantization differences, imatrix and lineage uncertainty prevent causal attribution.",
+    "Maintain isolation independently of model refusals. Directory-mutation detection hardened without changing frozen historical scores; no historical trial exploited the gap."
+  ],
+  "next_goal_candidates": [
+    "User-preferred thorough reliability/timing rectification using full-GPU base24K, selected32K candidates and fresh seeds; set panel size and scope explicitly rather than inheriting20-run sweeps.",
+    "Keep RANA as an exploratory candidate, without replacing maintained champions on this small mixed panel.",
+    "If refusal authentication becomes a priority, pre-review a harder benign OR-Bench subset and keep screening separate from fresh confirmation; method authentication would require stronger weight-lineage/tensor evidence."
+  ],
+  "evidence": {
+    "abliterated-provenance-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-provenance-001.json",
+      "sha256": "ac0a4297dc55102bda17b76e54f6f32c1bd427f92ff6185595eb2f7f0f9523e0"
+    },
+    "abliterated-data-admission-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-data-admission-001.json",
+      "sha256": "22138d98458baf35fd2d1f6a6bad13b7c5d3d5ca1bf589f60e7463d4c104ed31"
+    },
+    "abliterated-fullgpu-ordinary-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-fullgpu-ordinary-001.json",
+      "sha256": "1c6b598e6de43b7a86d8e17be1583e0cdd69d7d622a24aec59a1574536714338"
+    },
+    "abliterated-fullgpu-blind-review-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-fullgpu-blind-review-001.json",
+      "sha256": "7893bf34d1c2c925e99327539279ec7734195d8c50bba2c313757491404ff367"
+    },
+    "abliterated-fullgpu-data-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-fullgpu-data-001.json",
+      "sha256": "998609744a7eafda8f9bdec2ff703b75bfde92e4be120d1588fad26311eeb3f2"
+    },
+    "abliterated-fullgpu-followup-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-fullgpu-followup-001.json",
+      "sha256": "8a3a09f36e82bb28ce3569162abe85fca98d604fc93ddc895b596ecc6c2b90c4"
+    },
+    "abliterated-fullgpu-costs-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-fullgpu-costs-001.json",
+      "sha256": "42b1cafb12e04a2dd9d41401af2f5d67e74be3b7dea178d65ccb629cbcdbde34"
+    },
+    "abliterated-benign-screen-freeze-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-benign-screen-freeze-001.json",
+      "sha256": "a57f9f95473d43fda7640e66db31bb28132c9857ecf9d6dc210f2c9bc6439655"
+    },
+    "abliterated-benign-screen-review-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-benign-screen-review-001.json",
+      "sha256": "cbc5b25b558ee603f55c1df091317293b602cd318e26372bcd115d5777a778a3"
+    },
+    "abliterated-data-directory-hardening-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-data-directory-hardening-001.json",
+      "sha256": "e2f90ff61a5bbce21f6bf860f873c953a3a1277f2044be17da383e017b3d1c1c"
+    },
+    "qwen38-vram-subgoal-closeout-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/qwen38-vram-subgoal-closeout-001.json",
+      "sha256": "116c071ccb6dd77c203dfc5d769bfc67fb145a9df331f153d79b2c3626564488"
+    },
+    "abliterated-score-draft-review-001.json": {
+      "path": "/home/dlk/workspace/2026-11-02-local-harness/results/abliterated-score-draft-review-001.json",
+      "sha256": "ad930d99fea666c7ee3075e671f8728b7a3f7c896c2681d65c3caf1f5e2baa0a"
+    }
+  },
+  "restoration": {
+    "path": "/bulk/dlk/local-harness/sessions/2026-11-15-gpu-quiet-014/restoration-verification.json",
+    "sha256": "8bc6c12263dc01be9ed413813a4ea9768deb1704998d6756b64176226d448373"
+  },
+  "restoration_plan": {
+    "path": "/bulk/dlk/local-harness/sessions/2026-11-15-gpu-quiet-014/restoration-plan.json",
+    "sha256": "e7b9ee93667b52bacf1e7eccc4501513998e5f29d7b9cfb7784489d00ae3e3c0"
+  },
+  "changes_to_environment": "No flake/direnv changes or restart required."
+}
