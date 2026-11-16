@@ -3,8 +3,9 @@
 import json
 from types import SimpleNamespace
 
+from evidence_contract import bounded_text, require_fields
 from mini_bootstrap import FormatError, parse_toolcall_actions
-from spec_blocker import CATEGORIES, _constant, _object, _string
+from spec_blocker import CATEGORIES, _constant, _object
 
 NAME = "finish_attempt"
 MAX_BYTES = 8192
@@ -166,39 +167,6 @@ def failure(error, response=None):
             " to submit your work or report a supported blocker."
         ),
     )
-
-
-def bounded_text(value, bound, field):
-    """Report actionable sizes without reflecting arbitrary model text."""
-    if isinstance(value, str):
-        size = len(value.encode("utf-8"))
-        if size > bound:
-            raise ValueError(
-                f"{field} is {size} UTF-8 bytes; maximum is {bound}. "
-                f"Shorten it substantially (aim below {bound // 2} bytes)"
-            )
-    _string(value, bound, field)
-
-
-def require_fields(value, fields, label):
-    """Name missing contract fields without reflecting untrusted key text."""
-    if not isinstance(value, dict):
-        raise ValueError(f"{label} must be an object")
-    expected = set(fields)
-    missing = expected - set(value)
-    extra = set(value) - expected
-    if missing or extra:
-        details = []
-        if missing:
-            details.append("missing: " + ", ".join(sorted(missing)))
-        if extra:
-            details.append(f"unexpected fields: {len(extra)}")
-        raise ValueError(
-            f"{label}: "
-            + "; ".join(details)
-            + ". Required fields: "
-            + ", ".join(fields)
-        )
 
 
 def validate(value, history):

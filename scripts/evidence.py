@@ -5,6 +5,8 @@ import hashlib
 import json
 import re
 
+from evidence_contract import bounded_text, require_fields
+
 # Rendering limits for the compact historical-evidence view (render()).
 # The first three are per-field character limits; RENDER_JSON_UTF8_BYTES is
 # the final UTF-8 byte bound on the serialized JSON payload, so it is a
@@ -19,9 +21,6 @@ RENDER_JSON_UTF8_BYTES = 4096
 
 
 def validate_evidence(evidence, history):
-    # Import contract helpers lazily to keep the existing finalization API stable.
-    from finish_attempt import bounded_text, require_fields
-
     if not isinstance(evidence, list) or len(evidence) > 4:
         raise ValueError("At most four evidence entries")
     seen = set()
