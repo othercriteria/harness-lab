@@ -1,0 +1,71 @@
+{
+  "at": "2026-11-16T16:35:40.073334+00:00",
+  "decision": "Provisionally select Coder-Next as ONE warm-task champion across BOTH codec cases.",
+  "confirmation_freeze": 359,
+  "confirmation": {
+    "rana": {
+      "full_passes": 4,
+      "trials": 4,
+      "total_accounted_task_seconds": 141.07930562691763,
+      "by_task": {
+        "contract-codec-a": {
+          "seconds": [
+            39.038966136053205,
+            35.853121019899845
+          ],
+          "full": 2
+        },
+        "contract-codec-b": {
+          "seconds": [
+            39.780724928947166,
+            26.406493542017415
+          ],
+          "full": 2
+        }
+      },
+      "reported_load_seconds": 34.268942170077935,
+      "reported_warmup_process_seconds": 6.096493866294622,
+      "campaigns": [
+        "frontier-confirm-joint-rana-contract-codec-a-seeds14930-14931-001",
+        "frontier-confirm-joint-rana-contract-codec-b-seeds14930-14931-001"
+      ]
+    },
+    "coder": {
+      "full_passes": 4,
+      "trials": 4,
+      "total_accounted_task_seconds": 117.85909326723777,
+      "by_task": {
+        "contract-codec-a": {
+          "seconds": [
+            24.72257678816095,
+            13.446234917035326
+          ],
+          "full": 2
+        },
+        "contract-codec-b": {
+          "seconds": [
+            33.912370692938566,
+            45.777910869102925
+          ],
+          "full": 2
+        }
+      },
+      "reported_load_seconds": 34.08498782804236,
+      "reported_warmup_process_seconds": 30.533037591027096,
+      "campaigns": [
+        "frontier-confirm-joint-coder-contract-codec-a-seeds14930-14931-001",
+        "frontier-confirm-joint-coder-contract-codec-b-seeds14930-14931-001"
+      ]
+    }
+  },
+  "relative_coder_task_saving": 0.164589783430643,
+  "scope": "Two fresh seeds percase/model, all8full accepted. No false blocker/false completion in this confirmation. Known tasks, smallN; no universal reliability or proven model-family dominance.",
+  "residency": "Coder warmup costs about24.44s more across two campaigns; measured loading is similar in this batch. Adding separately reported load and warmup costs erases the23.22s task-time advantage (about182.48s Coder vs181.44s RANA). These component sums are not whole lifecycle latency. RANA remains a jointly competent resident alternative, not a feasible-only route; champion choice never depends on outcome label.",
+  "screen": "Initial one-seed pair favoredRANA slightly; fresh confirmation favorsCoder on each paired-seed combined workload. Preserve reversal and uncertainty; no extension tofour required for provisional practical selection.",
+  "configuration": "Same comparison-coder-32k-cpu32-fit2048-temp06 profile and frontier-codec-coder-120-current-v1 protocol for BOTH tasks; original frozen353runtime shared repair, no new512call treatment.",
+  "references": [
+    "results/frontier-codec-joint-selection-001.json",
+    "results/frontier-codec-joint-amendment-001.json",
+    "results/frontier-all-attempts-001.json"
+  ]
+}

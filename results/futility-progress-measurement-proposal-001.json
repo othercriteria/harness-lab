@@ -1,0 +1,93 @@
+{
+  "id": "futility-progress-measurement-proposal-001",
+  "at": "2026-11-16T16:27:27.738347+00:00",
+  "status": "Design only; deferred from current frontier goal. No prompt, schema, execution or stop-policy changes.",
+  "user_steering": "Measure concrete grounded progress first. Explicitly question completion forecasts when the same model is overwhelmed/confused. Forecasts optional/exploratory; no futility stopping within current goal. Latest: retain numerical/categorical measurement; structured progress can yield mechanical statistics without a subjective completion probability.",
+  "question": "Can cheap evidence-backed progress reports expose stagnation under remaining allowances? Separately, do self-forecasts add predictive information beyond grounded progress and mechanical baselines?",
+  "outcome": "Task-appropriate fully accepted result within remaining original budget: valid implementation OR supported blocker when warranted, with required handoff/conformance. Keep source/canonical/completion/handoff components separate. No success from merely ending early.",
+  "initial_measurement": {
+    "placement": "Prefer existing checkpoint opportunities to reduce extra turns, with a prospective fixed elapsed-budget schedule if needed. Record changes since previous report. Checkpoint-only observations are selected toward context-heavy runs; retain reason/schedule and missing reports.",
+    "harness_supplied": "Current elapsed/remaining task time, model/tool allowances, context/recovery status; never evaluator solution, private checks or expected feasible/impossible label.",
+    "candidate_payload": {
+      "completed_since_last_report": "At most two concrete task-relevant milestones actually completed, each with existing observation/check/commit reference. Distinguish implemented, checked, passing, and merely attempted. Empty is valid.",
+      "remaining_requirements": "Which explicit public deliverables remain unimplemented or unverified; preserve unresolved/unknown rather than converting them into confidence.",
+      "current_obstacle": "Specific unresolved failure/question and what the latest attempted action established, including no change.",
+      "next_action": "One concrete action and what result would count as progress.",
+      "progress_since_last_report": "One of advanced / unchanged / regressed / uncertain, supported by the listed evidence. Category refers to task-relevant state, not activity count or chance of finishing."
+    },
+    "overhead": "Target roughly100-150generated tokens; meter actual request/prefill/decode/context overhead. A report is not free because it piggybacks on checkpoint. Keep report durably outside compacted summaries and preserve exact context cutpoint.",
+    "nonresponse": "Missing/malformed report is unknown, not zero probability or grounds for termination.",
+    "primary_signal": "Concrete task-relative progress and changes since the previous report, with evidence; avoid percent-complete or self-declared on-track as primary fields.",
+    "optional_secondary_payload": {
+      "finish_probability_percent": "Only in a later or separately controlled pilot, ask completion forecast to measure added value. Never interpret it as calibrated without evidence."
+    },
+    "grounding": "Tie reports to explicit public requirements rather than model-invented easy subgoals. Harness should corroborate references, file/commit changes and actual check outcomes when possible. Avoid counting reads, tool calls, edits or repeated tests as accomplishments by themselves. Do not prewrite task-specific solution decomposition or reveal private evaluator requirements.",
+    "deliverable_representation": {
+      "ids": "Stable IDs for explicit public deliverables/requirements, retained across checkpoints. A prospective harness-generated list may normalize existing public requirements but must not add solution hints, private evaluator requirements or new mandatory work. Model-created decompositions remain marked as such, not denominator-changing authoritative requirements.",
+      "per_item": [
+        "implementation_state: not_started / in_progress / implemented / not_applicable / unknown",
+        "verification_state: unchecked / failing / passing / stale / not_applicable / unknown",
+        "evidence references and brief unresolved obstacle"
+      ],
+      "caveat": "Implementation and verification are separate dimensions; statuses can regress or become stale after edits. Passing reported checks is not proof of complete correctness. Blocker tasks require argument evidence, not artificially mandatory code milestones."
+    },
+    "derived_features": [
+      "Counts and transitions of explicit deliverables by implementation/verification state.",
+      "Number of consecutive unchanged/regressed reports, corroborated where possible.",
+      "Age of last new task-relevant verified result, repeated unchanged failure signatures and resolved/reopened issues.",
+      "Remaining time/call/context allowances alongside these features.",
+      "Unknown/stale/unsubstantiated claims kept separate from verified states; do not silently interpret missing as stalled."
+    ]
+  },
+  "experiment": {
+    "stage1": "Prospectively freeze reporting schedule/prompt on an unfrozen pilot; continue every run to original limits. No adaptive early stopping based on forecast.",
+    "control": "Small matched-seed report/no-report comparison to detect behavioral or latency effects. Same tasks/models/ceilings otherwise; treat the prompt/schema change as a treatment. Do not mix these runs into existing frozen comparisons.",
+    "sampling": "Include successes, failures and late breakthroughs across task lengths/models; not only visibly confused Flint traces. Record expected blockers separately: a proof can produce a valid result discontinuously without code milestones.",
+    "calibration": "Primary: whether grounded progress features predict eventual task-appropriate full outcomes, and how often reported milestones match trace evidence. Compare task-relative completed/unverified deliverables, elapsed allowances, repeated failures and no-change periods. If optional forecasts collected, evaluate Brier score/coarse calibration and incremental value over these baselines. Trial-level uncertainty; multiple reports from one trial are correlated.",
+    "policy_replay": "On fully observed elicited runs, replay prospective stopping rules; report gross time saved, reporting overhead/net time saved, false stops of eventual full successes, per-case errors and late-breakthrough trajectories. Report production class-mix assumptions separately. Candidate categorical/count-based rules are evaluated alongside any optional probability forecasts; retain per-deliverable details to detect unequal difficulty and decisive bottlenecks. Do not treat the fraction of completed items as a calibrated percent complete.",
+    "selection": "Reserve fresh runs for evaluating any chosen stopping rule. Threshold tuning and evaluation on same traces is optimistic; repeated sequential decisions can compound false-positive risk.",
+    "counterfactual_limits": "Replay estimates saved runtime for report-enabled runs; it does not establish unchanged behavior without reports or after deploying a known stop policy. Avoid censorship by letting calibration runs complete."
+  },
+  "possible_later_comparators": [
+    "Mechanical stagnation signals: repeated failing checks, unchanged relevant files/branch delivery, repeated invalid calls, unmet milestones relative to remaining resources. Useful features, never conclusive alone.",
+    "Weak CPU-resident observer over bounded trace excerpts, benchmarking its latency/CPU contention and accuracy before use. No GPU model switching solely for monitoring.",
+    "Hosted blind review of outcome-hidden trace prefixes as an analysis comparator, not a required production dependency."
+  ],
+  "safety_and_reporting": [
+    "Progress reports are untrusted assertions, not verification evidence or a security boundary. Validate cited evidence availability; do not grant permissions from optimistic forecasts.",
+    "A future futility stop must retain its own terminal reason and full trace, never be silently scored as ordinary timeout or successful completion.",
+    "Retain possible supported-blocker decisions as distinct from lack-of-progress decisions.",
+    "No new capability or configuration is enabled by this proposal."
+  ],
+  "related_evidence": [
+    "results/success-freeze-351.json",
+    "results/frontier-screen-351-progress-001.json",
+    "results/frontier-codec-joint-amendment-001.json"
+  ],
+  "revised_at": "2026-11-16T16:34:37.141863+00:00",
+  "devils_advocate_forecasts": [
+    "An overwhelmed model may lack the decomposition or understanding needed to estimate remaining work. The cause of implementation failure can also undermine its forecast; confidence is not independent evidence.",
+    "Optimistic near-completion narratives, unrecognized requirements, forgotten failures and underestimated verification/integration costs may give confident but poorly calibrated forecasts.",
+    "Reports of completed work can also be cherry-picked or mistaken, but bounded factual claims can often be checked against traces/files/tests without asking another model to solve the whole task.",
+    "A completion probability is the eventual decision target, not necessarily the most reliable quantity to elicit directly. Grounded progress should be measured before assuming self-forecasting helps."
+  ],
+  "progress_limitations": [
+    "Progress is not necessarily linear: a discovered invariant, successful integration or proof can close many requirements at once. Stagnation alone does not justify termination.",
+    "Fixed numeric percentages or raw count of milestones can hide a decisive unsolved bottleneck. Use concrete achieved state, remaining requirements and uncertainty.",
+    "A report can omit the hard part or repeat old work as new progress; compare against the public deliverable checklist and prior evidence. Grounding is easier than forecasting, not infallible.",
+    "Do not add requirements while scoring progress, and do not treat optional test generation or exploration as mandatory work."
+  ],
+  "shared_evidence_contract": {
+    "requirement": "Reuse the existing checkpoint/finalization evidence interface, reference validation and freshness semantics. Do not create a parallel progress-evidence namespace or independent truth mechanism.",
+    "lifecycle": "A task-relevant claim can recur in progress, checkpoint and finalization with the same observation/check reference; retain original evidence and identify whether later edits made it historical/stale. Reusing evidence does not mean re-running checks or recopying full output.",
+    "claims": "Keep the same distinction between asserted implementation, observed test result, current applicability and unverified work. Progress categories/counts are derived annotations over these claims, not a new correctness oracle.",
+    "boundaries": "Public-contract citations may support arguments such as impossibility; implementation/verification claims need appropriate tool/check evidence. Mere reference existence does not establish semantic entailment. Use the existing supported reference kinds; inspect actual schemas before implementation.",
+    "hypothesis": "Consistent repeated use may improve final handoff quality and reduce verification duplication; this is a behavioral hypothesis to measure, not an established benefit.",
+    "scope": "Design only; no current frozen interface changes.",
+    "current_code_checked": {
+      "scripts/evidence.py": "validate_evidence accepts at most4 observation/public_contract entries; observation IDs must belong to current attempt; resolve binds original model-visible text with integrity hash. render explicitly labels historical_only and does not establish freshness, coverage or correctness.",
+      "scripts/context_checkpoint.py": "Reuses finalization evidence schema and shared validator. Carry this same interface into progress reporting rather than inventing references.",
+      "qualification": "Freshness semantics currently mean preserving historical-only status and available check metadata, not a general automatic fresh/current judgment. Any stronger stale/current deduction needs explicit support and tests before implementation."
+    }
+  }
+}

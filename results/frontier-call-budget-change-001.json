@@ -1,0 +1,28 @@
+{
+  "status": "implemented and focused-tested; not yet admitted into a GPU comparison",
+  "trigger": "Coder longGit retry exhausted128model/tool calls at568.96s before720s ceiling; unfinished work does not justify rescue rerun.",
+  "changes": [
+    "Bounded512tool-call support across protocol validation, attempt observation archive, checks and history capacity. Observation writer uses exact protocol tool allowance.",
+    "Model requests and tool calls remaining after response batch are visible in budget-enabled observations and archived verbatim. Initial prompt states both limits and reserves finalization calls.",
+    "Prospective recommendation helper:ceil(agent_seconds/2)rounded to32, floor128, cap512; no automatic protocol rewriting."
+  ],
+  "tests": {
+    "test_call_budget": 4,
+    "test_observations": 14,
+    "test_run_checks": 8,
+    "test_fresh_context": 27,
+    "test_protocol": 6,
+    "test_prompt_contracts": 9,
+    "test_context_checkpoint": 22,
+    "test_budget_feedback": 2,
+    "test_prefix_warmup": 10,
+    "total": 108,
+    "passed": true,
+    "skipped": 0,
+    "ruff": "passed",
+    "test_shared_evidence": 6
+  },
+  "comparison_policy": "353/354frozen runtimes unchanged. Admit new allowances explicitly and freeze both arms before comparing; no retroactive score changes.",
+  "followup": "Broader magic-number cleanup deferred to future dogfooding per user. No new Coderlong rescue run.",
+  "implementation_commit": "f2d9da4"
+}

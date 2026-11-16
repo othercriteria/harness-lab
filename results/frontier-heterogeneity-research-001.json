@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-16",
+  "status": "Research and proposed experiment only; no inference, task changes, service changes or active-plan changes",
+  "bottom_line": "Useful recipe diversity is plausible, but existing selected champions do not establish stable task-specific superiority or an effective router. First test a tiny frozen mapping against concurrent fixed-model controls, then test transfer and any repeat/ensemble policy at equal end-to-end cost.",
+  "local_sources": [
+    "AGENTS.md",
+    "STATUS.md",
+    "results/quantization-performance-conclusions-001.json",
+    "configs/quantization-practical-recipes-v1.json",
+    "results/model-comparison-overview-001.json",
+    "results/context-routing-conclusions-001.json",
+    "configs/frontier-refresh-plan-v1.json",
+    "results/frontier-tinfield-exposure-001.json"
+  ],
+  "local_evidence": [
+    {
+      "finding": "The matched quantization screen had 42/42 scoped implementation/canonical passes but only 14/14 full base results and 13/14 for each alternate. With correctness saturated, most observed ranking differences concern trajectory time and handoff reliability, not complementary code-solving capabilities.",
+      "qualification": "Two seeds per task. Alternate total-time advantage of 16.6% is concentrated in one short long-Git trajectory. Whole-task repeat sensitivity reverses the aggregate ranking; that sensitivity is not an observed repair policy."
+    },
+    {
+      "finding": "Fresh selected confirmation produced 35/35 scoped source passes and 33/35 full results. Selected means rose from about 202 to 296 seconds for SQLite, 184 to 236 for Tabreport, and 310 to 411 for long Git.",
+      "qualification": "Consistent with selection optimism and trajectory variability; not a causal estimate of winner's curse. No concurrent baseline means confirmation establishes usable recipes and repeatability on known tasks, not comparative superiority."
+    },
+    {
+      "finding": "Flint codec B and Coder codec A have separate 20/20 accepted historical panels, while Qwen dominates the maintained larger-task set. These are sensible specialist hypotheses.",
+      "qualification": "Adaptive task/recipe exposure, historical controls, changed task versions and runtime settings preclude pooling into a causal model-family ranking. A model being excellent on one task does not show it is better than another model there."
+    },
+    {
+      "finding": "Context changes helped SQLite/Tabreport but hurt Event/Frame in the small reconnaissance; SQLite resets changed from 6/7 to 1 each.",
+      "qualification": "This is an observed mechanism compatible with real task-recipe interaction. Context, fit reserve, GPU placement and trajectory were not isolated, so call it a recipe effect rather than pure context causality."
+    },
+    {
+      "finding": "The Tinfield inventory identifies many exposed task families and reserves both Git tasks and Tabreport for model/recipe-naive checks.",
+      "qualification": "Naive to this local model-tuning campaign does not mean held out from all harness development or absent from pretraining. Older layouts are not fully covered by the exposure scan."
+    }
+  ],
+  "reasoning": {
+    "three_distinct_questions": [
+      "Do model/recipe expected success or runtime rankings reverse across tasks?",
+      "Can a policy choose the useful model before observing the answer, using only available task features?",
+      "Does that policy beat a resident model, including loads, prefill, verification, coordination and failures?"
+    ],
+    "plausible_mechanisms_not_proven_here": [
+      "Training and post-training differences can alter learned algorithms, API familiarity, instruction adherence, tool formatting and verification habits.",
+      "Quantization perturbations can change the sampled trajectory without changing the broad underlying capability; near-identical base models may yield diversity but family labels are a weak proxy for error independence.",
+      "Long agent trajectories amplify early choices: one mistaken edit, verbose inspection loop or reset can dominate decoding speed. A larger/slower model can finish sooner through fewer calls and tokens.",
+      "Hardware fit, CPU offload, context allocation and draft agreement can interact with task length. A useful recipe mixture need not imply distinct intellectual specializations."
+    ],
+    "unverified_lore_to_avoid": [
+      "Different model families necessarily make independent errors.",
+      "Abliteration intrinsically improves benign coding ability.",
+      "More agents, more context, lower quantization or more thinking always improve verified results per second.",
+      "A benchmark winner has a general skill, or a task-name lookup learned from the evaluation set is a general router."
+    ],
+    "selection_math": "Selecting the minimum observed time among noisy recipes creates optimistic minima even when expected times are equal. A hindsight any-correct oracle also benefits from multiple draws: with independent 0.8-success attempts, any of three succeeds with probability 0.992 whether they come from distinct models or repeated calls to one identical model. This illustrative calculation is not an assumption about independence in this harness.",
+    "uncertainty": "Five successes in five independent repetitions have an exact one-sided 95% lower success bound of about 0.55; twenty in twenty give about 0.86. These are conditional repeated-task bounds, not generalization bounds. Three-seed screens can expose large practical effects but cannot certify small reliability differences."
+  },
+  "single_workstation_implications": {
+    "recommended_default": "One resident generalist; a small explicit exception table only for large repeatable gains. Separate same-resident contexts are the low-cost first agentic architecture. Route whole jobs before trying model swaps inside a trajectory.",
+    "cost_equation": "For an equal-reliability batch of n specialist jobs, switch only when n times expected per-job verified-time saving exceeds load plus warmup plus lost-cache plus dispatch/coordination costs. Include the return switch when the actual workload requires it. If reliability differs, keep success and time separate or preregister an explicit failure penalty; do not hide the tradeoff in accepted-only means.",
+    "illustration": "A hypothetical 30-second total switch overhead and 5-second per-job gain needs more than six jobs to save time. This is an example, not a measured local threshold.",
+    "measured_cost_context": "Matched-screen median loads were about 36s base, 12s layout, 6s RANA; median total non-task campaign costs were about 46s, 22s and 15s. These are campaign observations, not isolated switch measurements. Current context-profile changes launch another backend. Cached-prefix behavior varies by task transition.",
+    "why_one_resident_can_beat_observed_oracle": "A hindsight warm-task oracle ignores routing mistakes and switching. A resident can beat that zero-overhead benchmark after realistic costs are applied, especially on 15-60s jobs. A true cost-aware oracle has staying resident as an option and cannot be beaten by definition.",
+    "ensembles": "On one GPU, large-model alternatives execute serially; cloud parallel speedups do not transfer. Independent proposals or critic roles need an observable selection/verification rule, not private canonical labels. Compare A then B against A then A at equal total wall budget, counting merge, check and review work."
+  },
+  "proposed_preregistered_test": {
+    "status": "Suggested next experiment; not added to active freezes 343/344/345",
+    "phase_1": {
+      "purpose": "Distinguish large repeatable task-recipe interactions from fresh-seed noise on known tasks.",
+      "size": "24 attempts: two frozen recipe arms times four task cells times three fresh repetitions.",
+      "arm_selection": "After the current reconnaissance, select one resident baseline and one credible challenger once, then freeze. Do not run every model. The two arms must both run all four tasks; one specialist per different task would confound model and task.",
+      "tasks": "Prefer two cheap cells with an apparent opposing ranking, such as codec A/B, plus Tabreport and long Git. If these do not provide an apparent reversal, explicitly select a different four-cell panel before new seeds and record why. This is an intentionally selected interaction panel, not a representative workload sample.",
+      "controls": "Freeze bytes, complete recipes, budgets, evaluator, seed list, order, warmup and mapping before running. Allow task-specific context only if each exact recipe is fixed; resulting claim concerns recipes. Randomize/counterbalance arm block order across three rounds (for example AB, BA, AB with the starting orientation randomized), and task order within rounds. Keep warmup state comparable. Same integer seed is a reproducibility identifier, not guaranteed common random numbers across models.",
+      "primary_outputs": "For each task and arm: canonical/source success, full handoff/completion success, timeout/malformed calls, intervention, and all-attempt accounted seconds. Evaluate the precommitted task-to-arm mapping against each fixed arm on the same fresh panel. Use equal task weights unless a workload distribution was specified before seeing results.",
+      "analysis": "Look for repeatable opposite-sign differences across tasks, not merely one arm globally improving. Show every run and paired task-round differences. Report warm and end-to-end costs separately, aggregate totals, and leave-one-round-out sensitivity. Do not infer population generalization from treating 12 repeated task instances as 12 unrelated tasks. Avoid fitting a complex interaction model or claiming narrow confidence intervals from three repetitions.",
+      "practical_decision": "Suggested prespecified promotion threshold: at least 10% lower measured end-to-end workload time with no additional source or full-result failures in this small panel, and savings not solely from one round. This is a conservative operational rule, not a statistical noninferiority claim. Where samples conflict, retain resident default and label the specialist uncertain.",
+      "cost": "At illustrative ceilings 120/120/450/720s, maximum warm attempt time is 2*3*(120+120+450+720)=8460s or 141 minutes. Using historical indicative task times 15/25/240/410s gives about 69 minutes; challenger behavior is unknown. Add measured setup/switch time and human review. Do not silently raise ceilings or add repeats after seeing near-wins."
+    },
+    "phase_2_transfer": {
+      "purpose": "Separate known-task repeatability from useful dispatch on unseen jobs.",
+      "size": "A separate 12-attempt pilot: three untouched task instances times two arms times two fresh seeds. Choose instances and assign the rule before revealing results.",
+      "constraint": "Use already admitted reserved tasks if available. New/substantively changed tasks require blind public-contract review and independent sealed solution under AGENTS.md before admission; this research does not create them. Tinfield-naive Git/Tabreport are only model-tuning holdouts, not globally fresh tasks.",
+      "cost_and_claim": "For task ceilings 120/300/600s, warm maximum is 4*(120+300+600)=4080s or 68 minutes, plus setup/review. Three instances are a transfer smoke test, not broad quality certification. Freeze a broader fresh panel only if this small test promises useful decisions."
+    },
+    "optional_repeat_baseline": "First use phase-1 repeats to inspect whether heterogeneous any-correct coverage exceeds same-model repeat coverage; label both hindsight bounds, never deployable scores. If promising, preregister a small actual A-then-B versus A-then-A cascade using only deployment-visible failure signals and identical total wall budgets. The canonical evaluator scores afterward; it cannot select the submitted answer or trigger the retry. Count undetected failures as failures. Do not build ensemble infrastructure unless this comparison has plausible net headroom.",
+    "stopping": "For this fixed-panel option, stop at the declared size. Keep negative and inconclusive results; no automatic 20-run sweeps. A separate follow-up may allocate a few more pairs only to a decision-critical uncertain contrast, with its own prospective budget and claim.",
+    "adaptive_coordination": "The later user request for adaptive selection is being handled by the adaptive_recipe_selection agent. Its preregistered matched-block racing can replace the fixed-three-seed option. Preserve common-arm crossover coverage on the interaction panel, or elimination can confound model and task; do not retroactively treat adaptively selected cell maxima as confirmed heterogeneity. Reserve a fresh selected-versus-resident comparison and independent transfer panel after allocation stops."
+  },
+  "falsifiers_and_decisions": [
+    "If fresh concurrent contrasts lose their signs or depend on one lucky trajectory, the current selected ranking lacks reproducible support; that is not proof of identical models.",
+    "If one arm is better across all four cells, replace or retain a global default as warranted; this is not evidence for a heterogeneous router.",
+    "If a frozen map gains on known tasks but not reserved instances, keep a task-specific optimization claim and reject general routing claims.",
+    "If heterogeneous any-correct coverage is matched by equal-cost same-resident repeats, model diversity has not added useful value for that workload and policy.",
+    "If genuine conditional wins are smaller than switching, cache loss, verification or coordination costs, they are real but operationally irrelevant for single interactive jobs. Batching may change the decision.",
+    "If full-result failures offset warm time savings, retain resident default unless a measured repair policy resolves the tradeoff; source correctness alone is not complete delegation."
+  ],
+  "primary_research": [
+    {
+      "title": "On Over-fitting in Model Selection and Subsequent Selection Bias in Performance Evaluation",
+      "url": "https://jmlr.org/papers/v11/cawley10a.html",
+      "finding": "Finite-sample selection-criterion variance can create substantial selection bias, comparable to algorithm differences.",
+      "use_here": "General statistical basis for freezing candidates before independent fresh comparisons; not an estimate of this harness's bias."
+    },
+    {
+      "title": "RouteLLM: Learning to Route LLMs with Preference Data",
+      "url": "https://arxiv.org/abs/2406.18665v4",
+      "finding": "Demonstrates strong/weak model routing cost-quality gains and some transfer across model pairs.",
+      "use_here": "Evidence that routing can work, but API-price preference benchmarks do not establish one-GPU coding latency gains."
+    },
+    {
+      "title": "LLMRouterBench: A Massive Benchmark and Unified Framework for LLM Routing",
+      "url": "https://arxiv.org/abs/2601.07206",
+      "finding": "Reports model complementarity, weak separation among many routers, persistent oracle gaps, and diminishing returns from expanding model pools.",
+      "use_here": "Supports a small curated pool and strong simple baselines; complementarity and learnable routing remain separate."
+    },
+    {
+      "title": "What Does a Routing Oracle Measure Under Stochastic Decoding? Coupling, Scorer Choice, and Single-Commit Ceilings",
+      "url": "https://arxiv.org/abs/2607.03436v3",
+      "finding": "Distinguishes maximum success probability of one committed model from the probability any of several sampled outputs succeeds; union gains depend on coupling, scoring and sampling.",
+      "use_here": "Directly relevant conceptual distinction. The current substantially revised version supersedes older search summaries claiming a fixed noise share. Its archive audit is not a local-agent generalization result."
+    },
+    {
+      "title": "When Strong Reasoners Join the Pool: Small Union Premiums and Costly Runaway Generations in LLM Routing",
+      "url": "https://arxiv.org/abs/2611.04098",
+      "finding": "In a 45000-response, three-model MATH-500 technical report, three repeats of Nano approximately match heterogeneous any-correct coverage; rare long generations heavily affect cost proxies.",
+      "use_here": "A recent narrow counterexample to automatic diversity gains, motivating same-model repeats and tail-cost accounting. Not independently reproduced here and not coding-agent evidence."
+    },
+    {
+      "title": "Most of the LLM Routing Gap Is Task Type",
+      "url": "https://arxiv.org/abs/2608.23023v2",
+      "finding": "A static task table recovers much of the observed headroom in a small repeated-query matrix.",
+      "use_here": "Suggests a useful cheap baseline, but the authors explicitly fit and score on the same 294 questions with no holdout. It cannot support a general claim that task labels solve routing."
+    },
+    {
+      "title": "AI Agents That Matter",
+      "url": "https://arxiv.org/abs/2407.01502",
+      "finding": "Highlights cost-controlled agent evaluation, holdout weaknesses and reproducibility problems.",
+      "use_here": "Supports equal-cost resident/repeat controls and separating benchmark tuning from downstream usefulness."
+    },
+    {
+      "title": "Mixture-of-Agents Enhances Large Language Model Capabilities",
+      "url": "https://arxiv.org/abs/2406.04692",
+      "finding": "Layered heterogeneous agents improve the paper's response-quality benchmarks.",
+      "use_here": "Empirical basis for ensemble enthusiasm, but not proof of cheap verified coding, true error independence or serial-workstation advantage."
+    },
+    {
+      "title": "Towards a Science of Scaling Agent Systems",
+      "url": "https://arxiv.org/abs/2512.08296v3",
+      "finding": "Controlled agent-architecture study finds strong dependence on task structure, capability saturation and coordination overhead.",
+      "use_here": "Supports testing the architecture-task combination rather than assuming more agents helps. Does not directly establish heterogeneous-model superiority or 4090 latency."
+    }
+  ]
+}

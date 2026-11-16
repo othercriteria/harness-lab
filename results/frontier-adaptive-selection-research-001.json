@@ -1,0 +1,192 @@
+{
+  "id": "frontier-adaptive-selection-research-001",
+  "created_at": "2026-11-16T14:14:40.169003+00:00",
+  "status": "Research recommendation only; no active plans, scripts, services or task specifications changed; no GPU trials run.",
+  "inputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "0c40cc723fce0a729736d853d16e703f10c0b7badbdd8663afddd2f13db77d4a"
+    },
+    {
+      "path": "STATUS.md",
+      "sha256": "77679fb312d0d32496c9dd89d4a7cc04b61463bada10229eb3b4f47e7160c5d9"
+    },
+    {
+      "path": "configs/frontier-refresh-plan-v1.json",
+      "sha256": "9f1e32f75a43c379086264d9311fc6c6d854bc269476eb00d52b67f8c60565b9"
+    },
+    {
+      "path": "configs/frontier-refresh-long-screen-v1.json",
+      "sha256": "78560e0a5b9c90addb303f551f7e1d68bffe364b9a14e3e2abda495cdaf74dd9"
+    },
+    {
+      "path": "configs/frontier-refresh-ceiling-screen-v1.json",
+      "sha256": "8ddd22f11428f74a2eef9b0f6d6682ae89cf40bbe3b7466ff14f83c6fcc9df14"
+    },
+    {
+      "path": "configs/quantization-practical-recipes-v1.json",
+      "sha256": "af0f173c5f0c6d4c56fd1fde2760dfa2ded94db321f3eb427dfd0729b2b75478"
+    },
+    {
+      "path": "results/quantization-performance-conclusions-001.json",
+      "sha256": "fbdf2d0fd4926575cfc78d760ab2e823014ecf7a9605ca22acc88b4b10f98c67"
+    }
+  ],
+  "main_recommendation": "Use a small, cost-aware, per-task race over frozen recipes. Adapt the allocation of complete trials, then confirm the selected challenger against a concurrent incumbent. A JSON ledger is sufficient. Preserve an unresolved set instead of forcing a winner.",
+  "problem_definition": {
+    "objective": "Offline best-arm identification / pure exploration: spend a limited experimental budget to select a useful future recipe. Ordinary UCB or Thompson sampling for cumulative regret optimizes rewards earned while sampling and is not the default objective here.",
+    "fixed_budget_vs_fixed_confidence": "Prefer a fixed wall-clock/review budget and return provisional candidates or inconclusive. Fixed-confidence identification can demand many trials when recipes are close; do not promise a unique winner inside a small budget.",
+    "arm": "Exact task-version \u00d7 model/weights \u00d7 backend/placement \u00d7 context \u00d7 sampler \u00d7 prompt/tools \u00d7 reasoning/call/time budget \u00d7 evaluator/rubric. Recipe comparisons may deliberately vary several of these, but must not be described as isolated weight effects.",
+    "adaptive_allocation": "Freeze task, recipe and scoring bytes, seed-generation scheme, checkpoints, stopping rules and overall resource cap. Outcomes may choose which frozen arms receive the next complete trials. Changing any arm-defining bytes creates a new arm/cohort; retain the old evidence.",
+    "deployment_vs_experiment": "Keep experimental scheduling costs separate from deployment utility. An expensive-to-test arm can still be valuable in deployment; cheap experiments do not automatically deserve preference."
+  },
+  "local_evidence": [
+    "The long screen is six single-seed trials: Coder/RANA/Flint on Tabreport at 450s, and layout/Flint/Coder on long Git at 720s. These are initial probes, not reliability estimates.",
+    "The ceiling screen is three prospective pairs: Markdown 60/90s, Tabreport 300/450s, long Git 600/720s. Rendered budget feedback changes, so each ceiling is a distinct policy arm.",
+    "The prior matched screen was 14/14 full for baseline versus 13/14 for layout and RANA. All 42 source/canonical checks passed. A handoff failure cannot be erased by faster decoding or source correctness.",
+    "The alternate layout saved 16.6% aggregate accounted time on two seeds per task, with most gain concentrated in one long-Git trajectory. Five selected-only confirmation runs per task retained 33/35 full results; no concurrent baseline was included.",
+    "Matched-screen median model loads were about 36s baseline, 12s layout and 6s RANA. These are observed setup costs, not isolated quantization effects. Loading can outweigh a small short-task saving."
+  ],
+  "outcomes": {
+    "keep_separate": [
+      "canonical/source correctness",
+      "clean agent completion",
+      "handoff/report accuracy",
+      "within deadline",
+      "human intervention",
+      "actual accounted task seconds, including failed attempts and charged verification",
+      "setup/load/prefix-warm seconds",
+      "failure type and lifecycle/resource validity"
+    ],
+    "primary_selection_endpoint": "Fully accepted result within the declared user deadline, with the component endpoints always visible. Speed comparisons must include every scheduled attempt, not only successful runs.",
+    "no_hidden_failure_penalty": "There is no unique best recipe until the quality/time tradeoff is defined. Initially use a Pareto set and retain the incumbent when a quality/speed tradeoff is unresolved. Do not silently equate a failure with one retry or infer repair time.",
+    "optional_bounded_metric": "If a scalar scheduling aid is needed, predeclare Q = accepted completion time if fully accepted by a common deadline D, otherwise D. Q is restricted time to accepted completion in [0,D], not actual resource consumption and not an estimate of eventual runtime. Report full success and actual seconds beside it. A reduced-ceiling arm that fails before D still has Q=D.",
+    "retry_metric": "Mean time divided by success rate estimates repeated-independent-attempt cost only under a specified identical-retry policy. Correlated failures, handoff repair and model switching violate that shortcut; do not use it as the primary ranking."
+  },
+  "minimal_protocol": {
+    "stage_0": "Use existing completed probes as development context. Finish their frozen review/closure. Do not retroactively claim this policy was preregistered. Freeze a small follow-up plan and unused seed blocks.",
+    "candidates": "Per task, incumbent plus at most two plausible challengers. Keep model/recipe tuning on development tasks separate from evidence reserved for confirmation.",
+    "checkpoints": [
+      2,
+      4,
+      8
+    ],
+    "checkpoint_meaning": "Counts are completed, fully reviewed matched seeds per surviving recipe for that task; these are suggested exploration checkpoints, not a reliability sample-size claim. Existing one-seed probes can inform nomination; retrospective reuse must be labeled.",
+    "first_block": "Obtain two matched seeds for each admitted arm before performance-based deprioritization. An inability to launch or verified incompatibility may stop an arm immediately, preserving its receipt. One GPU experiment at a time.",
+    "exploratory_deprioritization": "At a checkpoint, an arm with repeated full-result failures and no observed speed/resource advantage, or one consistently slower with no observed quality gain, may receive no further trials. Example: 0/2 full versus incumbent 2/2, with no offsetting observed benefit, is enough to stop spending a small exploration budget; it is not proof of inferiority. Mark the reason heuristic and retain failure types.",
+    "promotion": "Allocate the next two matched seeds to incumbent plus the unresolved challenger with the largest plausible useful gain per incremental experimental minute. If all pass, require a prospective practical margin, e.g. max(10 seconds, 10% of incumbent typical task time), before pursuing speed-only differences. This margin is an engineering choice, not a theorem.",
+    "later_block": "At four seeds, nominate a useful survivor, extend a consequential unresolved comparison to eight, or stop with an unresolved Pareto set. Do not mechanically discard half of two nearly tied candidates.",
+    "stop_conditions": [
+      "No remaining candidate offers a practically useful gain after switching cost.",
+      "Remaining resource cap cannot cover a complete matched block plus its review/closure.",
+      "The next block costs more than the plausible value of resolving this choice for the anticipated workload.",
+      "At the predeclared maximum checkpoint, stop and report provisional or inconclusive; do not continue until a preferred outcome appears."
+    ],
+    "budget_example": "Reserve 25\u201335% of the overall experiment time/review budget for fresh comparison of finalist versus incumbent. Budget a two-seed long-Git two-arm block at up to 4\u00d7720s = 48 minutes of declared task ceilings plus setup, extra accounted verification and review. The analogous Tabreport block is 30 minutes at 450s. Thus 2\u21924\u21928 is a menu under a cost cap, not an automatic sweep.",
+    "next_block_priority": "Use a transparent manual ranking: unresolved deployment decision \u00d7 anticipated task frequency \u00d7 plausible quality/time benefit, divided by next block task+setup+review cost. These are judgment inputs, not calibrated value-of-information probabilities.",
+    "confirmation": "Freeze finalist and incumbent, use fresh seeds and fixed count (for example 4\u20138 pairs if affordable), counterbalance order, and retain all outcomes. The original exploratory data remain separately reported. Fresh seeds on known tasks test repetition; generalization needs fresh tasks."
+  },
+  "statistical_option": {
+    "default": "Use descriptive exploratory decisions with explicit uncertainty; do not gate practical exploration on elaborate significance machinery. Ordinary repeated 95% intervals or p-values do not make adaptively stopped claims valid.",
+    "simple_finite_look_method": "For a prospective finite family of M arm-task-endpoint cells and J checkpoint sample counts, construct each fixed-n interval at failure probability alpha/(M\u00d7J). A union bound gives simultaneous coverage across all predeclared cells and checkpoints, even when the decision to reach a checkpoint is adaptive, under the sampling assumptions. Use exact binomial intervals for full-result probabilities; split endpoint/tail error budgets consistently.",
+    "bounded_mean_method": "For a bounded per-trial metric X in [0,D], a two-sided Hoeffding radius is D\u00d7sqrt(log(2\u00d7M\u00d7J/alpha)/(2n)). For paired differences in [-D,D], use range 2D. The bounds are intentionally conservative and usually uninformative at n=2\u20138. Do not claim this method achieves efficient statistical elimination there.",
+    "formal_elimination": "For full-success probability p, eliminate a on reliability grounds only when its simultaneous upper bound is below incumbent lower bound minus a prespecified meaningful gap. For speed promotion, require the lower bound on p_a\u2212p_incumbent to exceed \u2212epsilon_quality, and the upper bound on Q_a\u2212Q_incumbent to be below \u2212epsilon_time. Component-wise intervals give conservative difference bounds. epsilon values must be fixed before outcomes; small panels will often not establish either condition.",
+    "anytime_alternative": "A validated bounded-mean empirical-Bernstein confidence sequence or Bernoulli e-process allows more frequent looks; still allocate error across arm/task/comparison families and retain assumptions. This is a later improvement, not a necessary new subsystem.",
+    "likelihood_alternative": "Bernoulli likelihood-ratio/Track-and-Stop approaches can allocate efficiently when success is the sole scalar target. They do not automatically solve the joint quality/time/cost problem; fitting Gaussian runtime likelihoods to timeout-heavy skewed data is unjustified without diagnostics.",
+    "scale_warning": "Even 20/20 independent successes give only about 0.861 as the one-sided 95% exact lower bound for a single fixed test. Five of five give about 0.549. At least 59/59 are needed for that lower bound to exceed 0.95, before multiplicity adjustments. A short race can nominate recipes without certifying very high reliability.",
+    "assumptions": "Fresh seed replicates must be exchangeable for the fixed task/recipe and environment target. Arbitrary service drift, feedback-dependent fixture changes or selective seed exclusions are not repaired by a confidence formula. If the target is an average over time or task distribution, define that target explicitly."
+  },
+  "pairing_and_hardware": [
+    "Match task version and seed labels across arms and preserve paired rows. The same numeric seed across different models does not imply identical randomness or guarantee variance reduction; examine observed covariance and keep individual outcomes.",
+    "Use small model-resident blocks of one or two seeds to amortize loading, then reverse/counterbalance model order in the next block. Record the chosen order before running. Avoid completing every incumbent run early and every challenger run late.",
+    "Use warm-prefix and cache policy consistently, record actual cache hits, placement, GPU contention, clocks/temperature if already available, and load/warmup separately. One GPU experiment at a time and session-level background gating remain mandatory.",
+    "A suspicious hardware interruption stays in the ledger. Apply a predeclared invalid-trial rule independent of whether a model won; retain original receipts and rerun an entire matched block when justified, with a separate sensitivity analysis. Model OOM and recipe-specific resource failure remain relevant feasibility outcomes.",
+    "For deployment, switch only when expected batch count \u00d7 plausible per-task saving exceeds incremental load/warmup and eviction cost with useful margin. With roughly 12s layout loading, a 3s warm saving needs more than four tasks just to amortize that load, before other costs; observed medians are not guaranteed future costs."
+  ],
+  "censoring_and_fidelity": [
+    "A deadline timeout is an observed failure for success-within-deadline, and a right-censored observation for latent eventual completion time. Never assign eventual runtime equal to the deadline or omit the timeout from mean runtime reporting.",
+    "Record observed resource time, event indicator and timeout type separately. Restricted time Q and full-success rate remain identifiable without extrapolating an unobserved tail. At this sample size, elaborate survival fits add little; survival assumptions are especially doubtful for intermediate adaptive stopping tied to model behavior.",
+    "Do not stop an individual trial early merely because a partial trajectory looks weak, then score it as if it received its original full budget. Such stopping either becomes part of a new deployment recipe or produces informative censoring requiring its own analysis.",
+    "Successive-halving style allocation across counts of complete trials is appropriate. Hyperband-style reduced-time fidelity is not automatically appropriate: budget feedback changes model behavior, and the final code/handoff gates appear late. Reduced ceilings are distinct frozen arms in the current plans.",
+    "When a trial is interrupted administratively, preserve it as such; it is not automatically a model timeout or a free retry."
+  ],
+  "pooling_and_leakage": [
+    "Primary selection stays per task or prespecified task family. More seeds on one task reduce execution uncertainty on that task, not uncertainty about new tasks.",
+    "For a global default, define deployment task weights first and use an equal matched task panel or an explicitly weighted estimate. Adaptive sample counts must not silently reweight aggregate model scores.",
+    "Historical evidence may nominate arms or inform a transparent weak prior; changing tasks, context, limits, backend or grader prevents direct pooling as identical trials. Do not share a Beta success posterior across unrelated task cells by default.",
+    "Hierarchical pooling or contextual routing needs task-level validation and calibration. Until then use a conservative current-residency default and task-specific evidence rather than unvalidated cross-task transfer.",
+    "Choosing prompts, contexts, ceilings, tests or model recipes using task outcomes makes those tasks development data. Freeze fresh tasks before comparative generalization claims; conceal private checks and follow blind public-contract review for any new task.",
+    "Fresh seed confirmation addresses winner-selection optimism conditional on an already known task. Held-out tasks address task-adaptation leakage; neither substitutes for the other. Do not repeatedly inspect a holdout while tuning."
+  ],
+  "ledger_fields": [
+    "task_id_and_hash",
+    "recipe_id_and_hash",
+    "freeze_and_rubric_hash",
+    "seed_block_and_seed",
+    "planned_order",
+    "stage",
+    "selection_reason_before_run",
+    "run_receipt_and_review_paths",
+    "canonical_pass",
+    "source_pass",
+    "clean_completion",
+    "handoff_pass",
+    "within_budget",
+    "intervention",
+    "actual_task_seconds",
+    "setup_seconds",
+    "observed_elapsed_and_censoring",
+    "failure_type",
+    "hardware_validity",
+    "decision_and_reason",
+    "remaining_resource_budget"
+  ],
+  "sources": [
+    {
+      "title": "Pure Exploration for Multi-Armed Bandit Problems",
+      "authors": "Bubeck, Munos, Stoltz",
+      "url": "https://arxiv.org/abs/0802.2655",
+      "supports": "Simple regret/pure exploration differs from cumulative regret; experimental resource expenditure can motivate selection rather than exploitation."
+    },
+    {
+      "title": "Almost Optimal Exploration in Multi-Armed Bandits",
+      "authors": "Karnin, Koren, Somekh (2013)",
+      "url": "https://proceedings.mlr.press/v28/karnin13.html",
+      "supports": "Best-arm algorithms with a target budget or confidence; sequential halving motivates concentrating later samples on survivors. This memo adapts the idea heuristically and does not inherit its guarantees."
+    },
+    {
+      "title": "Time-uniform, nonparametric, nonasymptotic confidence sequences",
+      "authors": "Howard, Ramdas, McAuliffe, Sekhon (2021)",
+      "url": "https://arxiv.org/abs/1810.08240",
+      "supports": "Confidence sequences provide time-uniform coverage under specified assumptions. Conventional fixed-time confidence intervals are not an anytime guarantee."
+    },
+    {
+      "title": "Best Arm Identification with Resource Constraints",
+      "authors": "Li and Cheung (2024)",
+      "url": "https://proceedings.mlr.press/v238/li24c.html",
+      "supports": "Best-arm selection can account for heterogeneous resource use; their SH-RR algorithm studies resource-aware halving. The manual policy here is not an implementation of that theorem, especially with model-switch setup costs."
+    },
+    {
+      "title": "Optimal Best Arm Identification with Fixed Confidence",
+      "authors": "Garivier and Kaufmann (2016)",
+      "url": "https://proceedings.mlr.press/v49/garivier16a.html",
+      "supports": "Track-and-Stop combines allocation and likelihood-based stopping in one-parameter bandit models. Its assumptions and scalar target do not directly cover this project vector of outcomes."
+    },
+    {
+      "title": "Procrastinating with Confidence: Near-Optimal, Anytime, Adaptive Algorithm Configuration",
+      "authors": "Kleinberg, Leyton-Brown, Lucier, Graham (2019)",
+      "url": "https://papers.nips.cc/paper_files/paper/2019/hash/538a50fb36b97123adc3627cbdb223bf-Abstract.html",
+      "supports": "Runtime-focused algorithm configuration benefits from adaptive allocation when many configurations perform poorly; specialized runtime procedures are a possible later direction, not a drop-in for coding-quality gates."
+    },
+    {
+      "title": "Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization",
+      "authors": "Li, Jamieson, DeSalvo, Rostamizadeh, Talwalkar (2018)",
+      "url": "https://jmlr.org/papers/v18/16-558.html",
+      "supports": "Resource-allocation and early-stopping methods for hyperparameter optimization. Treating shorter coding deadlines as faithful low-resource observations of longer-deadline policies would require separate validation; this is our project-specific inference."
+    }
+  ],
+  "coordination": {
+    "interaction_research": "results/frontier-heterogeneity-research-001.json",
+    "qualification": "Per-task best-recipe racing and a model\u00d7task interaction experiment answer different questions. Preserve a common two-arm cross-task panel if estimating interaction; do not let adaptively dropping different arms on each task erase the overlap needed to distinguish overall superiority from task-specific advantages. Run a small common matched core first, then allocate further repetitions adaptively. A selected task mapping should be compared against both fixed-arm controls on fresh trials."
+  }
+}
