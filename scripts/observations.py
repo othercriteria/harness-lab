@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 
+from call_budget import MAX_CALLS
 from control import DeadlineExceeded
 from sandbox import write_json
 
@@ -25,7 +26,10 @@ def literal_observation(visible):
 
 
 class ObservationHistory:
-    def __init__(self, output, policy, *, expose_ids=False):
+    def __init__(self, output, policy, *, expose_ids=False, call_limit=128):
+        if type(call_limit) is not int or not 1 <= call_limit <= MAX_CALLS:
+            raise ValueError("Invalid observation call limit")
+        self.call_limit = call_limit
         self.root = Path(output) / "observations"
         self.root.mkdir(exist_ok=False)
         self.policy = policy
@@ -61,7 +65,7 @@ class ObservationHistory:
         text = visible["output"]
         if not isinstance(text, str) or len(text) > 12000:
             raise ValueError("Archive must contain only the bounded displayed output")
-        if len(self.records) >= 128:
+        if len(self.records) >= self.call_limit:
             raise DeadlineExceeded("Observation archive count exhausted")
         identifier = f"o{len(self.records) + 1:04d}"
         if self.expose_ids:

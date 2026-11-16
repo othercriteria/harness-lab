@@ -8,6 +8,7 @@ import shlex
 import stat
 from pathlib import Path
 
+from call_budget import MAX_CALLS
 from read_file import read_bytes
 from spec_blocker import _constant, _object
 
@@ -16,7 +17,7 @@ MAX_COMMAND_BYTES = 8192
 MAX_FILES = 2048
 MAX_BYTES = 16 * 1024 * 1024
 MAX_RECORD_BYTES = 256 * 1024
-MAX_ARCHIVE_BYTES = 32 * 1024 * 1024
+MAX_ARCHIVE_BYTES = MAX_CALLS * MAX_RECORD_BYTES
 INSTRUCTION = (
     " Use run_checks(command, cwd) for verification commands. It runs in the same"
     " isolated environment as bash and records exit status, before/after file"
@@ -262,7 +263,7 @@ def validate_archive(directory, prefix):
         info = path.lstat()
         total += info.st_size
         if (
-            count > 128
+            count > MAX_CALLS
             or total > MAX_ARCHIVE_BYTES
             or not stat.S_ISREG(info.st_mode)
             or not re.fullmatch(r"c[0-9]{4}\.json", path.name)

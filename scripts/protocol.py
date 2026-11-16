@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+from call_budget import MAX_CALLS
+
 PROJECT = Path(__file__).resolve().parents[1]
 
 
@@ -231,8 +233,8 @@ def load_protocol(name, root=PROJECT):
         ):
             if type(policy[field]) is not int or not low <= policy[field] <= high:
                 raise ValueError(f"Invalid context policy {field}")
-        if data["tool_call_limit"] > 128:
-            raise ValueError("Context archive supports at most 128 observations")
+        if data["tool_call_limit"] > MAX_CALLS:
+            raise ValueError(f"Context archive supports at most {MAX_CALLS} observations")
     if data.get("structured_finalization", False) and policy is None:
         raise ValueError(
             "structured_finalization requires measured context_policy and observation history"

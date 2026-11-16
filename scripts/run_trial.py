@@ -357,6 +357,10 @@ def configure_agent(config, limits, protocol):
         finishing_seconds = min(60, max(5, (limits["task_wall_seconds"] + 9) // 10))
         config["system_template"] += (
             " Tool results report remaining_agent_seconds, excluding the verifier reserve."
+            f" This attempt allows {limits['step_limit']} model requests and"
+            f" {limits['tool_call_limit']} tool calls, including checks, checkpoints,"
+            " repairs and finalization. Tool results report the calls remaining after"
+            " the response's batch. Reserve calls for verification and the final handoff."
             f" With under {finishing_seconds} seconds left, prioritize an accurate final"
             " handoff over more optional work. Include unresolved work and observed failures."
             f" Bash commands are limited to {limits.get('max_command_bytes', 8192)} bytes."
@@ -575,6 +579,7 @@ def run(args):
     model_class = ReferenceModel if args.mode == "reference" else LocalModel
     extra_args = (task,) if args.mode == "reference" else ()
     model = model_class(*extra_args, args.origin, args.model, sampling, limits, output)
+    model.tool_environment = env
     if getattr(args, "prefix_warmup_receipt", None):
         if args.mode != "model":
             raise ValueError("Prefix warm-up is only meaningful for model trials")
@@ -588,7 +593,8 @@ def run(args):
         }
     if policy is not None:
         model.history = ObservationHistory(
-            output, policy, expose_ids=limits.get("structured_finalization", False)
+            output, policy, expose_ids=limits.get("structured_finalization", False),
+            call_limit=limits["tool_call_limit"],
         )
         env.history = model.history
         if policy["mode"] == "recoverable":

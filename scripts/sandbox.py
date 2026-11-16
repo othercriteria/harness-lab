@@ -21,6 +21,7 @@ import time
 import uuid
 from pathlib import Path
 
+from call_budget import MAX_CALLS, MAX_OBSERVATION_BYTES
 from control import UnsafeCleanup
 from fresh_context import validate_history_archive
 
@@ -36,7 +37,7 @@ def validate_observation_archive(observations, prefix):
         raise ValueError("Observation mount must belong to this attempt")
     total = 0
     entries = list(archive.iterdir())
-    if len(entries) > 257:
+    if len(entries) > 2 * MAX_CALLS + 1:
         raise ValueError("Observation archive entry limit")
     for entry in entries:
         if (
@@ -49,7 +50,7 @@ def validate_observation_archive(observations, prefix):
         ):
             raise ValueError("Unexpected observation archive entry")
         total += entry.stat().st_size
-    if total > 32 * 1024 * 1024:
+    if total > MAX_OBSERVATION_BYTES:
         raise ValueError("Observation archive byte limit")
     return archive
 

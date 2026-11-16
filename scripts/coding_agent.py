@@ -84,6 +84,7 @@ class LocalModel:
         self.completion_tokens = 0
         self.prompt_tokens = 0
         self.history = None
+        self.tool_environment = None
         self.fresh_context = None
         self.progress_reminder = None
         self.agent_deadline = None
@@ -576,6 +577,17 @@ class LocalModel:
         return kwargs
 
     def format_observation_messages(self, message, outputs, template_vars=None):
+        if self.limits.get("time_budget_feedback") and self.tool_environment is not None:
+            outputs = [
+                {
+                    **output,
+                    "remaining_model_calls": max(0, self.limits["step_limit"] - self.calls),
+                    "remaining_tool_calls": max(
+                        0, self.tool_environment.tool_call_limit - self.tool_environment.calls
+                    ),
+                }
+                for output in outputs
+            ]
         observations = format_toolcall_observation_messages(
             actions=message.get("extra", {}).get("actions", []),
             outputs=outputs,

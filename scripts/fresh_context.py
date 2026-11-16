@@ -11,9 +11,10 @@ import stat
 import time
 from pathlib import Path
 
+from call_budget import MAX_CALLS
 from control import DeadlineExceeded, UnsafeCleanup
 
-MAX_ENTRIES = 512
+MAX_ENTRIES = 4 * MAX_CALLS + 1
 MAX_TOTAL_BYTES = 32 * 1024 * 1024
 MAX_RECORD_BYTES = 4 * 1024 * 1024
 FIELDS = ("role", "content", "reasoning_content", "tool_calls", "tool_call_id")
