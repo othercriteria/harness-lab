@@ -5,6 +5,18 @@ import hashlib
 import json
 import re
 
+# Rendering limits for the compact historical-evidence view (render()).
+# The first three are per-field character limits; RENDER_JSON_UTF8_BYTES is
+# the final UTF-8 byte bound on the serialized JSON payload, so it is a
+# different unit and is applied after escaping.
+EXCERPT_PREFIX_CHARS = 128
+EXCERPT_SUFFIX_CHARS = 384
+# A message at or under the threshold is shown in full; the prefix and
+# suffix together make up exactly that threshold.
+EXCERPT_THRESHOLD_CHARS = EXCERPT_PREFIX_CHARS + EXCERPT_SUFFIX_CHARS
+COMMAND_DISPLAY_CHARS = 256
+RENDER_JSON_UTF8_BYTES = 4096
+
 
 def validate_evidence(evidence, history):
     # Import contract helpers lazily to keep the existing finalization API stable.
@@ -82,18 +94,22 @@ def render(evidence, history):
         original = citation["original_visible"]
         excerpt = (
             original
-            if len(original) <= 512
-            else (original[:128] + "\n[... excerpt omitted ...]\n" + original[-384:])
+            if len(original) <= EXCERPT_THRESHOLD_CHARS
+            else (
+                original[:EXCERPT_PREFIX_CHARS]
+                + "\n[... excerpt omitted ...]\n"
+                + original[-EXCERPT_SUFFIX_CHARS:]
+            )
         )
         rows.append(
             {
                 "observation_id": record["id"],
-                "command": record["command"][:256],
-                "command_clipped": len(record["command"]) > 256,
+                "command": record["command"][:COMMAND_DISPLAY_CHARS],
+                "command_clipped": len(record["command"]) > COMMAND_DISPLAY_CHARS,
                 "returncode": record["returncode"],
                 "originally_truncated": record["originally_truncated"],
                 "original_visible_excerpt": excerpt,
-                "excerpt_clipped": len(original) > 512,
+                "excerpt_clipped": len(original) > EXCERPT_THRESHOLD_CHARS,
             }
         )
         if "check_record" in record:
@@ -114,7 +130,7 @@ def render(evidence, history):
     # Byte bound includes JSON escaping, including pathological control text.
     while True:
         text = json.dumps(payload, ensure_ascii=False)
-        if len(text.encode()) <= 4096:
+        if len(text.encode()) <= RENDER_JSON_UTF8_BYTES:
             return text
         for row in rows:
             for field, clipped in (
