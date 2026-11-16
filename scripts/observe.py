@@ -120,6 +120,7 @@ class Evidence:
                 (verdict.get("review_kind"), verdict.get("disposition"))
                 not in {
                     ("posthoc_contract", "failed_coding"),
+                    ("posthoc_handoff", "verified_coding_bad_handoff"),
                     ("posthoc_protocol", "nonconforming_run"),
                 }
                 or not isinstance(verdict.get("rationale"), str)
@@ -127,6 +128,15 @@ class Evidence:
                 or not isinstance(verdict.get("evidence"), list)
                 or not verdict["evidence"]
             ):
+                return None
+            if verdict.get("review_kind") == "posthoc_handoff" and not (
+                summary.get("canonical_correctness") is True
+                and summary.get("verified_correctness") is True
+                and summary.get("clean_agent_completion") is True
+                and summary.get("within_budget") is True
+                and (summary.get("agent_outcome") or {}).get("exit_status") == "Submitted"
+            ):
+                # This narrow review may reject reporting, never promote failed code.
                 return None
             posthoc_failure = True
         disposition = verdict.get("disposition")

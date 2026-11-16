@@ -469,6 +469,46 @@ class ObservatoryTests(unittest.TestCase):
                 review.write_text(json.dumps({**verdict, **changes}))
                 self.assertIsNone(self.data.outer_adjudication(self.trial, summary))
 
+    def test_posthoc_handoff_failure_preserves_code_success_and_rejects_promotion(self):
+        summary = {
+            "task": "sample", "success": True, "verified_correctness": True,
+            "canonical_correctness": True, "clean_agent_completion": True,
+            "clean_agent_halt": True, "within_budget": True,
+            "agent_outcome": {"exit_status": "Submitted"},
+        }
+        path = self.trial / "summary.json"
+        path.write_text(json.dumps(summary))
+        original = path.read_bytes()
+        verdict = {
+            "version": 1, "status": "adjudicated", "task": "sample",
+            "raw_summary_sha256": hashlib.sha256(original).hexdigest(),
+            "review_kind": "posthoc_handoff",
+            "disposition": "verified_coding_bad_handoff",
+            "coding_correctness": True, "task_handling_correctness": False,
+            "rationale": "Final handoff cites a failing observation as successful.",
+            "evidence": [{"path": "sealed-source-review.json"}],
+        }
+        review = self.trial / "outer-adjudication.json"
+        review.write_text(json.dumps(verdict))
+        trial = self.data.run("campaign")["trials"][0]
+        self.assertEqual(trial["state"], "correct code / handoff failed")
+        self.assertTrue(trial["correct"])
+        self.assertFalse(trial["passed"])
+        self.assertEqual(path.read_bytes(), original)
+        for field in ("canonical_correctness", "verified_correctness",
+                      "clean_agent_completion", "within_budget"):
+            changed = {**summary, field: False}
+            path.write_text(json.dumps(changed))
+            review.write_text(json.dumps({
+                **verdict, "raw_summary_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }))
+            self.assertIsNone(self.data.outer_adjudication(self.trial, changed))
+        path.write_bytes(original)
+        for change in ({"raw_summary_sha256": "stale"}, {"evidence": []},
+                       {"disposition": "verified_coding", "task_handling_correctness": True}):
+            review.write_text(json.dumps({**verdict, **change}))
+            self.assertIsNone(self.data.outer_adjudication(self.trial, summary))
+
     def test_runtime_nonconformance_rejects_pass_without_calling_code_incorrect(self):
         summary = {
             "task": "sample",
