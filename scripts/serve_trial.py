@@ -14,7 +14,7 @@ import urllib.request
 from pathlib import Path
 
 import with_ollama_released as lifecycle
-from control import RunCancelled, cancellation
+from control import RunCancelled, cancellation, defer_launch_signals
 from model_registry import record_campaign, verify_weight
 from protocol import (
     admit_tasks,
@@ -93,9 +93,14 @@ def verified_model_args(weights):
 
 
 def local_json(origin, path, timeout=2):
-    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({}), lifecycle.NoRedirect()
+    )
     with opener.open(origin + path, timeout=timeout) as response:
-        return json.load(response)
+        data = response.read(1024 * 1024 + 1)
+    if len(data) > 1024 * 1024:
+        raise ValueError("Local server JSON exceeds bound")
+    return json.loads(data)
 
 
 def resources():
@@ -196,6 +201,7 @@ def main():
         "trials": [],
     }
     server = client = None
+    server_identity = None
     log = None
     telemetry = (output / "telemetry.jsonl").open("w")
 
@@ -211,6 +217,12 @@ def main():
             raise RuntimeError(
                 "External Ollama residency detected during exclusive trial"
             )
+        if server_identity is not None:
+            from server_endpoint import owned_listener
+
+            listener = owned_listener(server_identity, port)
+            if record.get("endpoint_ownership") and not listener:
+                raise RuntimeError("Owned server listener disappeared")
 
     with lifecycle.gpu_experiment_lock(), cancellation():
         try:
@@ -264,16 +276,27 @@ def main():
             }
             log = (output / "server.log").open("wb")
             load_started = time.monotonic()
-            server = subprocess.Popen(
-                argv, stdout=log, stderr=subprocess.STDOUT, env=env, close_fds=True
-            )
-            write_json(output / "server-pid.json", {"pid": server.pid})
+            with defer_launch_signals():
+                server = subprocess.Popen(
+                    argv, stdout=log, stderr=subprocess.STDOUT, env=env, close_fds=True
+                )
+            from server_endpoint import owned_listener, process_identity
+
+            server_identity = process_identity(server.pid)
+            write_json(output / "server-pid.json", server_identity)
             while True:
                 if server.poll() is not None:
                     raise RuntimeError("Server exited during loading")
                 guard()
                 try:
-                    if local_json(origin, "/health").get("status") == "ok":
+                    listener = owned_listener(server_identity, port)
+                    if listener and local_json(origin, "/health").get("status") == "ok":
+                        # Recheck after the HTTP roundtrip, not merely after spawn.
+                        confirmed = owned_listener(server_identity, port)
+                        if not confirmed:
+                            raise RuntimeError("Listener vanished during readiness")
+                        record["endpoint_ownership"] = confirmed
+                        write_json(output / "endpoint-ownership.json", confirmed)
                         break
                 except (OSError, ValueError):
                     pass
@@ -292,25 +315,26 @@ def main():
                 # resource guard live while warming, just as during scored work.
                 warm_started = time.monotonic()
                 with (output / "prefix-warmup.log").open("wb") as warm_log:
-                    client = subprocess.Popen(
-                        [
-                            str(PROJECT / ".venv/bin/python"),
-                            str(PROJECT / "scripts/prefix_warmup.py"),
-                            "--request",
-                            str(args.prefix_warmup_request),
-                            "--origin",
-                            origin,
-                            "--output",
-                            str(output / "prefix-warmup"),
-                            "--timeout",
-                            str(TIMEOUT_SECONDS),
-                            "--max-generated-tokens",
-                            "1",
-                        ],
-                        stdout=warm_log,
-                        stderr=subprocess.STDOUT,
-                        close_fds=True,
-                    )
+                    with defer_launch_signals():
+                        client = subprocess.Popen(
+                            [
+                                str(PROJECT / ".venv/bin/python"),
+                                str(PROJECT / "scripts/prefix_warmup.py"),
+                                "--request",
+                                str(args.prefix_warmup_request),
+                                "--origin",
+                                origin,
+                                "--output",
+                                str(output / "prefix-warmup"),
+                                "--timeout",
+                                str(TIMEOUT_SECONDS),
+                                "--max-generated-tokens",
+                                "1",
+                            ],
+                            stdout=warm_log,
+                            stderr=subprocess.STDOUT,
+                            close_fds=True,
+                        )
                     while client.poll() is None:
                         guard()
                         if server.poll() is not None:
@@ -360,14 +384,15 @@ def main():
                     )
                 with (output / f"client-{index:02d}.log").open("wb") as client_log:
                     trial_started = time.monotonic()
-                    client = subprocess.Popen(
-                        command,
-                        env=os.environ
-                        | {"HARNESS_DISPATCH_MONOTONIC": str(trial_started)},
-                        stdout=client_log,
-                        stderr=subprocess.STDOUT,
-                        close_fds=True,
-                    )
+                    with defer_launch_signals():
+                        client = subprocess.Popen(
+                            command,
+                            env=os.environ
+                            | {"HARNESS_DISPATCH_MONOTONIC": str(trial_started)},
+                            stdout=client_log,
+                            stderr=subprocess.STDOUT,
+                            close_fds=True,
+                        )
                     while client.poll() is None:
                         guard()
                         if server.poll() is not None:

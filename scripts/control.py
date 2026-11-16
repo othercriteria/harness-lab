@@ -17,6 +17,39 @@ class UnsafeCleanup(BaseException):
 
 
 @contextlib.contextmanager
+def defer_launch_signals():
+    """Keep the owned handle assignment atomic with respect to Python signals.
+
+    Do not block the OS signal mask: that mask would be inherited by the child.
+    Replay after assignment, while the caller's cleanup finally is already armed.
+    """
+    signals = (signal.SIGTERM, signal.SIGINT, signal.SIGHUP, signal.SIGALRM)
+    previous = {sig: signal.getsignal(sig) for sig in signals}
+    pending = []
+
+    def remember(signum, frame):
+        if previous[signum] != signal.SIG_IGN:
+            pending.append((signum, frame))
+
+    for sig in signals:
+        signal.signal(sig, remember)
+    try:
+        yield
+    finally:
+        for sig, handler in previous.items():
+            signal.signal(sig, handler)
+        if pending:
+            signum, frame = pending[0]
+            handler = previous[signum]
+            if callable(handler):
+                handler(signum, frame)
+            elif signum == signal.SIGALRM:
+                raise DeadlineExceeded("Deadline during subprocess launch")
+            else:
+                raise RunCancelled(f"Cancelled during subprocess launch: {signum}")
+
+
+@contextlib.contextmanager
 def deadline(seconds):
     def expired(signum, frame):
         raise DeadlineExceeded("Whole-stage wall deadline expired")

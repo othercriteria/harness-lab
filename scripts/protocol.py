@@ -261,6 +261,13 @@ def requires_outer_adjudication(metadata):
 
 
 def require_task_protocol(metadata, limits):
+    if metadata.get("kind") == "delegated-repository":
+        if metadata.get("admission_status") != "admitted":
+            raise ValueError("Delegated public-contract review is not complete")
+        if metadata.get("requires_outer_review") is not True:
+            raise ValueError("Delegated work requires separate outer review")
+        if not limits.get("structured_finalization") or limits.get("behavioral_gate"):
+            raise ValueError("Delegated work requires structured handoff and its own checks")
     if metadata.get("kind") == "inert-data-integrity":
         if metadata.get("admission_status") != "admitted":
             raise ValueError("Inert-data task blind admission is not complete")

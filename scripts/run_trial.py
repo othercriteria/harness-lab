@@ -2,7 +2,6 @@
 
 import argparse
 import base64
-import difflib
 import hashlib
 import json
 import os
@@ -13,6 +12,7 @@ import time
 from pathlib import Path
 
 import sandbox
+from bounded_diff import DiffView
 from check_fixtures import manifest
 from coding_agent import IsolatedEnvironment, LocalModel
 from control import RunCancelled, UnsafeCleanup, cancellation, deadline
@@ -145,6 +145,10 @@ def freeze(output, task):
 
 def verify(runtime, workspace, task, output, remaining):
     metadata = json.loads((task / "task.json").read_text())
+    if metadata.get("kind") == "delegated-repository":
+        from delegate_verify import verify as verify_delegated
+
+        return verify_delegated(runtime, workspace, task, output, remaining)
     if metadata.get("kind") == "git-backport":
         from verify_git import verify as verify_git
 
@@ -218,39 +222,15 @@ def save_diff(before, after, path):
             if p.is_file()
         }
     )
-    with path.open("w") as stream:
-        for name in names:
-            left, right = before / name, after / name
-            old = left.read_bytes() if left.is_file() else None
-            new = right.read_bytes() if right.is_file() else None
-            if old == new:
-                continue
-            try:
-                if any(b"\0" in data for data in (old, new) if data is not None):
-                    raise ValueError("NUL in file")
-                a = (old or b"").decode("utf-8").splitlines(True)
-                b = (new or b"").decode("utf-8").splitlines(True)
-            except (UnicodeDecodeError, ValueError):
-                # Complete bytes remain in the sealed workspace and manifest.
-                # Avoid turning binary artifacts into misleading replacement text.
-                metadata = {
-                    side: None
-                    if data is None
-                    else {
-                        "bytes": len(data),
-                        "sha256": hashlib.sha256(data).hexdigest(),
-                    }
-                    for side, data in (("before", old), ("after", new))
-                }
-                stream.write(
-                    f"Binary file {json.dumps(name)} changed: {json.dumps(metadata)}\n"
-                )
-                continue
-            stream.writelines(
-                difflib.unified_diff(
-                    a, b, fromfile="before/" + name, tofile="after/" + name
-                )
-            )
+    view = DiffView()
+    for name in names:
+        left, right = before / name, after / name
+        view.add(
+            name,
+            left.read_bytes() if left.is_file() else None,
+            right.read_bytes() if right.is_file() else None,
+        )
+    path.write_text(view.render())
 
 
 def configure_agent(config, limits, protocol):
@@ -593,7 +573,9 @@ def run(args):
         }
     if policy is not None:
         model.history = ObservationHistory(
-            output, policy, expose_ids=limits.get("structured_finalization", False),
+            output,
+            policy,
+            expose_ids=limits.get("structured_finalization", False),
             call_limit=limits["tool_call_limit"],
         )
         env.history = model.history
@@ -730,6 +712,10 @@ def run(args):
                 }
                 report["verified_correctness"] = False
                 report["success"] = False
+        if metadata.get("kind") == "delegated-repository":
+            from delegate_verify import pending_review
+
+            pending_review(report)
         report["final_workspace"] = str(env.workspace)
         report["usage"] = model.serialize()["info"]["local_model"]
         report["tool_calls"] = env.calls
@@ -738,7 +724,13 @@ def run(args):
             Path(__file__).read_bytes()
         ).hexdigest()
         agent.save(output / "trajectory.json")
-        save_diff(task / "public", env.workspace, output / "changes.diff")
+        try:
+            save_diff(task / "public", env.workspace, output / "changes.diff")
+        except Exception as error:
+            # Display packaging must not withhold the terminal/cleanup evidence.
+            # Complete source bytes remain in the isolated workspace generation.
+            report["diff_error"] = {"type": type(error).__name__, "message": str(error)}
+            report["success"] = False
         if limits.get("structured_finalization", False):
             write_json(
                 output / "finalization-review.json",
@@ -747,7 +739,9 @@ def run(args):
                     "model_handoff": "final-handoff.json"
                     if env.final_handoff
                     else None,
-                    "changes_diff_sha256": hashlib.sha256(
+                    "changes_diff_sha256": None
+                    if report.get("diff_error")
+                    else hashlib.sha256(
                         (output / "changes.diff").read_bytes()
                     ).hexdigest(),
                     "final_workspace_manifest": manifest(env.workspace),

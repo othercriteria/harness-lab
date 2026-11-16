@@ -22,7 +22,7 @@ import uuid
 from pathlib import Path
 
 from call_budget import MAX_CALLS, MAX_OBSERVATION_BYTES
-from control import UnsafeCleanup
+from control import UnsafeCleanup, defer_launch_signals
 from fresh_context import validate_history_archive
 
 WORKER = Path(__file__).with_name("sandbox_worker.py").resolve()
@@ -292,7 +292,7 @@ class Runtime:
         """Attempt every cleanup step; uncertainty is fatal even during cancellation."""
         cleanup = {"unit": unit, "verified": False}
         errors = []
-        process_verified = False
+        process_verified = process is None
 
         def record_error(operation, error):
             errors.append((operation, error))
@@ -307,28 +307,33 @@ class Runtime:
             record_error("stop_scope", error)
 
         # Do not let a failed systemd command skip cleanup of our owned handle.
-        running = True
-        try:
-            running = process.poll() is None
-        except BaseException as error:
-            record_error("process_poll", error)
-        if running:
+        running = process is not None
+        if process is not None:
             try:
-                os.killpg(process.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
+                running = process.poll() is None
             except BaseException as error:
-                record_error("process_kill", error)
-        try:
-            process.wait(timeout=5)
-            process_verified = True
-        except BaseException as error:
-            record_error("process_wait", error)
+                record_error("process_poll", error)
+            if running:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                except BaseException as error:
+                    record_error("process_kill", error)
+            try:
+                process.wait(timeout=5)
+                process_verified = True
+            except BaseException as error:
+                record_error("process_wait", error)
 
-        for operation, close in [
-            ("selector_close", selector.close),
-            *((name + "_close", getattr(process, name).close) for name in streams),
-        ]:
+        closers = []
+        if selector is not None:
+            closers.append(("selector_close", selector.close))
+        if process is not None:
+            closers.extend(
+                (name + "_close", getattr(process, name).close) for name in streams
+            )
+        for operation, close in closers:
             try:
                 close()
             except BaseException as error:
@@ -336,6 +341,7 @@ class Runtime:
 
         cleanup = {
             **cleanup,
+            "owned_process_started": process is not None,
             "owned_process_reaped": process_verified,
             "finalization_errors": [
                 {"operation": op, "type": type(error).__name__, "message": str(error)}
@@ -543,18 +549,20 @@ class Runtime:
             prefix.with_suffix(".invocation.json"),
             {"unit": unit, "argv": command, "timeout_seconds": timeout},
         )
-        process = subprocess.Popen(
-            command,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            start_new_session=True,
-        )
         started = time.monotonic()
         streams = {"stdout": bytearray(), "stderr": bytearray()}
-        selector = selectors.DefaultSelector()
+        process = selector = None
         limit_reason = None
         try:
+            with defer_launch_signals():
+                process = subprocess.Popen(
+                    command,
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    start_new_session=True,
+                )
+            selector = selectors.DefaultSelector()
             for name in streams:
                 selector.register(getattr(process, name), selectors.EVENT_READ, name)
             while selector.get_map():
