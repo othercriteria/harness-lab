@@ -234,7 +234,9 @@ def load_protocol(name, root=PROJECT):
             if type(policy[field]) is not int or not low <= policy[field] <= high:
                 raise ValueError(f"Invalid context policy {field}")
         if data["tool_call_limit"] > MAX_CALLS:
-            raise ValueError(f"Context archive supports at most {MAX_CALLS} observations")
+            raise ValueError(
+                f"Context archive supports at most {MAX_CALLS} observations"
+            )
     if data.get("structured_finalization", False) and policy is None:
         raise ValueError(
             "structured_finalization requires measured context_policy and observation history"
@@ -245,6 +247,15 @@ def load_protocol(name, root=PROJECT):
     from progress_reminder import validate_policy as validate_progress_policy
 
     validate_progress_policy(data)
+    if type(data.get("checkpoint_progress", False)) is not bool:
+        raise ValueError("checkpoint_progress must be a boolean")
+    if data.get("checkpoint_progress", False) and not (
+        data.get("shared_evidence") is True
+        and (data.get("fresh_context") or {}).get("summary_checkpoint") is True
+    ):
+        raise ValueError(
+            "checkpoint_progress requires shared evidence and summary checkpoints"
+        )
     return data
 
 
@@ -267,7 +278,9 @@ def require_task_protocol(metadata, limits):
         if metadata.get("requires_outer_review") is not True:
             raise ValueError("Delegated work requires separate outer review")
         if not limits.get("structured_finalization") or limits.get("behavioral_gate"):
-            raise ValueError("Delegated work requires structured handoff and its own checks")
+            raise ValueError(
+                "Delegated work requires structured handoff and its own checks"
+            )
     if metadata.get("kind") == "inert-data-integrity":
         if metadata.get("admission_status") != "admitted":
             raise ValueError("Inert-data task blind admission is not complete")

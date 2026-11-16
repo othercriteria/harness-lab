@@ -410,7 +410,10 @@ class FreshContext:
             reason = "insufficient remaining completion tokens"
         notice = {
             "role": "user",
-            "content": repair_request(model.limits.get("shared_evidence", False)),
+            "content": repair_request(
+                model.limits.get("shared_evidence", False),
+                progress=model.limits.get("checkpoint_progress", False),
+            ),
         }
         measured = None
         if reason is None:
@@ -463,7 +466,7 @@ class FreshContext:
         return True
 
     def accept_checkpoint(self, value):
-        from context_checkpoint import validate
+        from context_checkpoint import citations, validate
 
         if not (
             self.summary_enabled
@@ -476,7 +479,12 @@ class FreshContext:
             raise ValueError("Checkpoint is not awaiting acceptance")
         shared = self.model.limits.get("shared_evidence", False)
         self.checkpoint = copy.deepcopy(
-            validate(value, shared=shared, history=self.model.history)
+            validate(
+                value,
+                shared=shared,
+                history=self.model.history,
+                progress=self.model.limits.get("checkpoint_progress", False),
+            )
         )
         self.checkpoint_tool = self.environment.calls
         self.checkpoint_tools.add(self.checkpoint_tool)
@@ -491,8 +499,18 @@ class FreshContext:
         if shared:
             from evidence import resolve
 
-            record["evidence"] = self.checkpoint.get("evidence", [])
+            record["evidence"] = citations(self.checkpoint)
             record["observations"] = resolve(record["evidence"], self.model.history)
+        if "progress" in self.checkpoint:
+            record["progress"] = self.checkpoint["progress"]
+            record["progress_measurement"] = {
+                "status": "unverified_model_report",
+                "elicitation": "context_checkpoint",
+                "report_utf8_bytes": len(
+                    json.dumps(record["progress"], ensure_ascii=False).encode()
+                ),
+                "overhead_note": "Included in the checkpoint request's recorded time/tokens; marginal report cost is not separately observed.",
+            }
         with self.artifact("context-checkpoint").open("x") as stream:
             json.dump(record, stream, indent=2)
 
@@ -763,7 +781,10 @@ class FreshContext:
                 )
             notice = {
                 "role": "user",
-                "content": request(model.limits.get("shared_evidence", False)),
+                "content": request(
+                    model.limits.get("shared_evidence", False),
+                    progress=model.limits.get("checkpoint_progress", False),
+                ),
             }
             record = {
                 "status": "requested",
@@ -901,9 +922,10 @@ class FreshContext:
             )
             if model.limits.get("shared_evidence", False):
                 from evidence import render
+                from context_checkpoint import citations
 
                 notice["content"] += "\nHistorical evidence:\n" + render(
-                    self.checkpoint.get("evidence", []), model.history
+                    citations(self.checkpoint), model.history
                 )
         event = {
             "status": "applied",

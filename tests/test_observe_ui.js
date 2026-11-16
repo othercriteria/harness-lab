@@ -546,3 +546,17 @@ for (const [phase,state] of [['checkpoint','checkpoint rejected'],['reset','cont
   assert.doesNotMatch(text(card),/BASH|FINALIZE/);
 }
 console.log('Checkpoint rejection and context reset lifecycle rendering checks passed.');
+
+context.progressSample={change:'uncertain',implemented:['<script>literal claim</script>'],checks:[{result:'stale',summary:'Before later edits'}],remaining:['Verify behavior'],obstacle:'',next_action:'Run focused test',evidence:[]};
+context.progressParent=new Element();
+vm.runInContext('progressReport(progressParent,progressSample,{report_utf8_bytes:300})',context);
+assert.match(text(context.progressParent),/Progress report · model claims/);
+assert.match(text(context.progressParent),/unverified/);
+assert.match(text(context.progressParent),/<script>literal claim<\/script>/);
+assert.match(text(context.progressParent),/stale/);
+assert.match(text(context.progressParent),/None reported/);
+assert.match(text(context.progressParent),/300/);
+context.absentProgress=new Element();
+vm.runInContext('progressReport(absentProgress,null,null)',context);
+assert.equal(context.absentProgress.children.length,0);
+console.log('Progress claims, stale checks, inert text and absent reports remain distinct.');

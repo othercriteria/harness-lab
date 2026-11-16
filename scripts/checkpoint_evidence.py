@@ -14,6 +14,7 @@ from context_checkpoint import (
     REPLY_TOKENS,
     THINK_TOKENS,
     action,
+    citations,
     repair_request,
     request,
     tool,
@@ -221,7 +222,11 @@ def _verify_checkpoint(
             tools = payload["tools"]
         require(payload["tools"] == tools, "Tool prefix changed during attempt")
         require(
-            sum(t == tool(shared) for t in tools) == int(enabled),
+            sum(
+                t == tool(shared, progress=limits.get("checkpoint_progress", False))
+                for t in tools
+            )
+            == int(enabled),
             "Checkpoint schema differs from enabled policy",
         )
         context = read(root / f"context-{index:03d}.json")
@@ -241,7 +246,11 @@ def _verify_checkpoint(
             )
             notice = {
                 "role": "user",
-                "content": repair_request(shared) if repair else request(shared),
+                "content": repair_request(
+                    shared, progress=limits.get("checkpoint_progress", False)
+                )
+                if repair
+                else request(shared, progress=limits.get("checkpoint_progress", False)),
             }
             require(offer["notice"] == notice, "Checkpoint instructions changed")
             require(
@@ -325,6 +334,7 @@ def _verify_checkpoint(
             choice.get("finish_reason"),
             requested=True,
             shared=shared,
+            progress=limits.get("checkpoint_progress", False),
             history=history,
         )[0]
     except FormatError:
@@ -363,10 +373,23 @@ def _verify_checkpoint(
             saved["summary"] == accepted["payload"]["summary"],
             "Saved memory differs from response",
         )
+        require(
+            saved.get("progress") == accepted["payload"].get("progress"),
+            "Saved progress differs from model report",
+        )
+        if "progress" in accepted["payload"]:
+            measurement = saved.get("progress_measurement", {})
+            require(
+                measurement.get("status") == "unverified_model_report"
+                and measurement.get("elicitation") == "context_checkpoint"
+                and measurement.get("report_utf8_bytes")
+                == len(json.dumps(saved["progress"], ensure_ascii=False).encode()),
+                "Saved progress measurement differs",
+            )
         if shared:
             from evidence import resolve
 
-            expected = accepted["payload"].get("evidence", [])
+            expected = citations(accepted["payload"])
             require(
                 saved["evidence"] == expected, "Saved evidence differs from response"
             )
@@ -419,7 +442,7 @@ def _verify_checkpoint(
                 from evidence import render
 
                 suffix += "\nHistorical evidence:\n" + render(
-                    accepted["payload"].get("evidence", []), history
+                    citations(accepted["payload"]), history
                 )
             require(
                 reset["notice"]["content"].endswith(suffix),

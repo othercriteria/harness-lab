@@ -313,6 +313,110 @@ class CheckpointTests(unittest.TestCase):
         )
         verify_checkpoint_evidence(self.root, self.limits)
 
+    def test_progress_survives_reset_with_historical_evidence_and_no_new_budget(self):
+        from evidence import resolve
+
+        self.limits["shared_evidence"] = True
+        self.limits["checkpoint_progress"] = True
+        report = {
+            "change": "uncertain",
+            "implemented": [],
+            "checks": [{"result": "unknown", "summary": "Diagnostic only"}],
+            "remaining": ["Verify required behavior"],
+            "obstacle": "",
+            "next_action": "Inspect the relevant implementation",
+            "evidence": [
+                {
+                    "kind": "observation",
+                    "observation_id": "o0001",
+                    "supports": "Historical diagnostic, not correctness",
+                }
+            ],
+        }
+        self.run_sequence(
+            checkpoint=call(
+                "checkpoint_context", {"summary": SUMMARY, "progress": report}, "call-2"
+            )
+        )
+        saved = self.read("context-checkpoint-001.json")
+        self.assertEqual(saved["progress"], report)
+        self.assertEqual(
+            saved["observations"], resolve(report["evidence"], self.model.history)
+        )
+        self.assertEqual(
+            saved["progress_measurement"]["status"], "unverified_model_report"
+        )
+        resumed = self.requests[2]["messages"][-1]["content"]
+        self.assertIn('"progress"', resumed)
+        self.assertIn('"status": "historical_only"', resumed)
+        self.assertEqual((self.model.calls, self.env.calls), (4, 4))
+        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(
+            verify_checkpoint_evidence(self.root, self.limits)["status"], "saved"
+        )
+        saved["progress"]["change"] = "advanced"
+        (self.root / "context-checkpoint-001.json").write_text(json.dumps(saved))
+        with self.assertRaisesRegex(ValueError, "Saved progress differs"):
+            verify_checkpoint_evidence(self.root, self.limits)
+
+    def test_missing_progress_can_be_repaired_without_execution_or_budget_reset(self):
+        self.limits["shared_evidence"] = True
+        self.limits["checkpoint_progress"] = True
+        report = {
+            "change": "uncertain",
+            "implemented": [],
+            "checks": [],
+            "remaining": [],
+            "obstacle": "",
+            "next_action": "Inspect code",
+            "evidence": [],
+        }
+        original_deadline = self.env.agent_deadline
+        self.run_sequence(
+            checkpoint=call("checkpoint_context", {"summary": SUMMARY}, "bad"),
+            repair=call(
+                "checkpoint_context",
+                {"summary": SUMMARY, "progress": report},
+                "repaired",
+            ),
+            finish_at=5,
+        )
+        self.assertEqual(self.env.agent_deadline, original_deadline)
+        self.assertEqual(self.read("context-checkpoint-001.json")["progress"], report)
+        self.assertEqual(
+            verify_checkpoint_evidence(self.root, self.limits)["status"], "saved"
+        )
+        self.assertEqual(len(self.perform_options), 2)
+
+    def test_progress_is_explicit_and_cannot_smuggle_a_parallel_evidence_field(self):
+        report = {
+            "change": "uncertain",
+            "implemented": [],
+            "checks": [],
+            "remaining": [],
+            "obstacle": "",
+            "next_action": "Inspect code",
+            "evidence": [],
+        }
+        with self.assertRaises(ValueError):
+            validate({"summary": SUMMARY, "progress": report}, shared=True)
+        with self.assertRaisesRegex(ValueError, "requires a progress"):
+            validate({"summary": SUMMARY}, shared=True, progress=True)
+        with self.assertRaises(ValueError):
+            validate(
+                {"summary": SUMMARY, "progress": report, "evidence": []},
+                shared=True,
+                progress=True,
+            )
+        with self.assertRaisesRegex(ValueError, "requires shared evidence"):
+            validate({"summary": SUMMARY, "progress": report}, progress=True)
+        self.assertEqual(
+            validate(
+                {"summary": SUMMARY, "progress": report}, shared=True, progress=True
+            )["progress"],
+            report,
+        )
+
     def test_read_file_checkpoint_boundary_and_real_context_reset_force_contents(self):
         self.env.workspace = self.root / "workspace"
         self.env.workspace.mkdir()

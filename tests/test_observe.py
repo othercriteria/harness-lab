@@ -285,6 +285,20 @@ class ObservatoryTests(unittest.TestCase):
         ordinary = {k: v for k, v in summary.items() if k != "diagnostic_kind"}
         self.assertIsNone(self.data.outer_adjudication(self.trial, ordinary))
 
+    def test_progress_measurement_is_attached_to_its_checkpoint_tool(self):
+        (self.trial / "tool-001.request.json").write_text(json.dumps({
+            "mode": "adapter-control", "name": "checkpoint_context", "executed": False,
+            "arguments": {"summary": "Continue", "progress": {"change": "uncertain"}},
+        }))
+        measurement = {"status": "unverified_model_report", "report_utf8_bytes": 320}
+        (self.trial / "context-checkpoint-001.json").write_text(json.dumps({
+            "tool_call": 1, "progress_measurement": measurement,
+        }))
+        event = next(e for e in self.data.trace("campaign", "trial-00-task")["events"] if e["id"] == "tool-001")
+        self.assertEqual(event["progress_measurement"], measurement)
+        self.assertEqual(event["arguments"]["progress"]["change"], "uncertain")
+        self.assertIsNone(event["terminal_control"])
+
     def test_checkpoint_is_nonterminal_unverified_memory(self):
         (self.trial / "tool-001.request.json").write_text(
             json.dumps(

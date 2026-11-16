@@ -53,7 +53,9 @@ TOOL = {
 }
 
 
-def tool(shared=False):
+def tool(shared=False, *, progress=False):
+    if progress and not shared:
+        raise ValueError("Checkpoint progress requires shared evidence")
     if not shared:
         return TOOL
     from finish_attempt import TOOL as FINISH_TOOL
@@ -68,10 +70,29 @@ def tool(shared=False):
         " observation/public-contract references as final handoff. At most four;"
         " cite failures as well as successes when useful."
     )
+    if progress:
+        from progress_report import schema
+
+        properties["progress"] = schema(properties.pop("evidence"))
+        result["function"]["parameters"]["required"].append("progress")
     return result
 
 
-def request(shared=False):
+def request(shared=False, *, progress=False):
+    if progress:
+        return REQUEST + (
+            " Include progress with concise implemented work, check outcomes, remaining"
+            " public requirements, obstacle and next action. Report change since the"
+            " previous report (or task start for the first). Aim for 100–150 words"
+            " across summary and report; avoid repeating the same facts. Put shared"
+            " citations in progress.evidence. These are unverified claims, not a"
+            " completion forecast or a signal to stop. Empty lists and uncertain"
+            " or unknown states are valid. Historical checks may be stale after edits."
+            " Use implemented for saved changes to required artifacts; an empty list"
+            " is correct before changes. Keep source-reading findings in summary."
+            " Populate remaining from explicit public requirements; put optional"
+            " verification plans in next_action when relevant."
+        )
     return REQUEST + (
         " Optionally include evidence using the same references as final handoff;"
         " selected historical tool results will accompany your continuation note."
@@ -80,10 +101,31 @@ def request(shared=False):
     )
 
 
-def validate(value, *, shared=False, history=None):
-    allowed = {"summary", "evidence"} if shared else {"summary"}
+def citations(value):
+    """One shared citation interface, whether supplied with memory or progress."""
+    return (
+        value["progress"]["evidence"]
+        if "progress" in value
+        else value.get("evidence", [])
+    )
+
+
+def validate(value, *, shared=False, history=None, progress=False):
+    if progress and not shared:
+        raise ValueError("Checkpoint progress requires shared evidence")
+    allowed = (
+        {"summary", "progress"}
+        if progress
+        else {"summary", "evidence"}
+        if shared
+        else {"summary"}
+    )
     if not isinstance(value, dict) or "summary" not in value or set(value) - allowed:
-        raise ValueError("Checkpoint requires only a summary field")
+        raise ValueError(
+            "Checkpoint fields differ from the enabled schema"
+            if progress
+            else "Checkpoint requires only a summary field"
+        )
     summary = value["summary"]
     if (
         not isinstance(summary, str)
@@ -91,7 +133,13 @@ def validate(value, *, shared=False, history=None):
         or len(summary.encode()) > SUMMARY_BYTES
     ):
         raise ValueError("Checkpoint summary must be 1..4096 UTF-8 bytes")
-    if shared:
+    if progress:
+        from progress_report import validate as validate_progress
+
+        if "progress" not in value:
+            raise ValueError("Checkpoint requires a progress report")
+        validate_progress(value["progress"], history)
+    elif shared:
         from evidence import validate_evidence
 
         validate_evidence(value.get("evidence", []), history)
@@ -111,7 +159,16 @@ def failure(error, response):
     )
 
 
-def repair_request(shared=False):
+def repair_request(shared=False, *, progress=False):
+    if progress:
+        return (
+            "Repair the rejected checkpoint with one checkpoint_context call alone."
+            " Supply summary and progress using the tool schema; place shared citations"
+            " in progress.evidence. Correct the reported validation error without"
+            " inventing work or certainty. This is the only checkpoint repair opportunity;"
+            " original budgets continue unchanged. If repair fails, continuation may"
+            " reset without a summary or progress report."
+        )
     return (
         "Repair the rejected checkpoint with one checkpoint_context tool call alone. "
         'Use arguments {"summary":"your concise continuation note"}. '
@@ -127,7 +184,16 @@ def repair_request(shared=False):
     )
 
 
-def action(message, response, finish_reason, *, requested, shared=False, history=None):
+def action(
+    message,
+    response,
+    finish_reason,
+    *,
+    requested,
+    shared=False,
+    history=None,
+    progress=False,
+):
     try:
         if not requested:
             raise ValueError(
@@ -160,6 +226,7 @@ def action(message, response, finish_reason, *, requested, shared=False, history
             json.loads(raw, object_pairs_hook=_object, parse_constant=_constant),
             shared=shared,
             history=history,
+            progress=progress,
         )
         return [
             {

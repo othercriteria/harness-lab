@@ -278,9 +278,19 @@ def configure_agent(config, limits, protocol):
     config["instance_template"] += (
         f"\n\nTotal task ceiling: {limits['task_wall_seconds']} seconds, including verification."
         f" Agent allowance: {limits['agent_wall_seconds']} seconds."
-        " Run the task's checks; the default Python command is"
-        " python -m unittest discover -s tests."
     )
+    delegated = protocol == "delegated-v1"
+    if delegated:
+        config["instance_template"] += (
+            " Follow the public brief's verification method and any supplied checks."
+            " For documentation or static-review tasks, compare against the relevant"
+            " sources and report what you inspected."
+        )
+    else:
+        config["instance_template"] += (
+            " Run the task's checks; the default Python command is"
+            " python -m unittest discover -s tests."
+        )
     if limits.get("work_policy_feedback", False):
         if limits.get("contract_first_checks", False):
             config["system_template"] += (
@@ -293,6 +303,16 @@ def configure_agent(config, limits, protocol):
                 " Model-written checks can be wrong: inspect a failing assertion's setup"
                 " and contract basis before changing code or expectations."
             )
+        elif delegated:
+            config["system_template"] += (
+                "\n\nForm a brief checklist of the public requirements and make a scoped"
+                " change. For implementation work, run supplied tests and add a small"
+                " regression check when required or justified by a concrete risk. For"
+                " documentation, verify claims against the relevant sources. Match"
+                " verification effort to the task; report the method and remaining gaps."
+                " Derive expected results from the public contract. When a check fails,"
+                " inspect its setup and assumptions alongside the implementation."
+            )
         else:
             config["system_template"] += (
                 "\n\nForm a brief checklist of the public requirements; implement and run the"
@@ -303,10 +323,11 @@ def configure_agent(config, limits, protocol):
                 " fails, inspect both the code and the test's assumptions before changing either."
                 " Save rerunnable regression tests when requested by the task."
             )
-        config["system_template"] += (
-            " For unittest discovery, use unittest.TestCase subclasses or provide load_tests;"
-            " plain pytest-style functions are not discovered. Check the reported test count."
-        )
+        if not delegated:
+            config["system_template"] += (
+                " For unittest discovery, use unittest.TestCase subclasses or provide load_tests;"
+                " plain pytest-style functions are not discovered. Check the reported test count."
+            )
         if limits.get("evidence_audit_feedback", False):
             config["system_template"] += (
                 " Before submitting, review public requirements that lack direct evidence."
@@ -454,6 +475,13 @@ def configure_agent(config, limits, protocol):
         from context_checkpoint import INSTRUCTION as CHECKPOINT_INSTRUCTION
 
         config["system_template"] += CHECKPOINT_INSTRUCTION
+        if limits.get("checkpoint_progress", False):
+            config["system_template"] += (
+                " Requested checkpoints also include a concise progress report."
+                " Separate implemented changes from check outcomes, unfinished work"
+                " and uncertainty; reuse historical evidence citations. Reports do not"
+                " certify progress, end the attempt or change any budget."
+            )
     return config
 
 

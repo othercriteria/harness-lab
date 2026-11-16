@@ -69,7 +69,14 @@ def write_file(arguments):
         current = root
         for part in path.relative_to(root).parts[:-1]:
             current /= part
-            mode = current.lstat().st_mode
+            try:
+                mode = current.lstat().st_mode
+            except FileNotFoundError as error:
+                raise EditError(
+                    "PARENT_NOT_FOUND",
+                    "Parent directory does not exist. Create parent directories "
+                    "with bash mkdir, then retry write_file; file contents were not saved.",
+                ) from error
             if stat.S_ISLNK(mode) or not stat.S_ISDIR(mode):
                 raise EditError(
                     "PATH_NOT_ALLOWED",

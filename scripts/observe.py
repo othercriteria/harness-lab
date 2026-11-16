@@ -738,6 +738,17 @@ class Evidence:
                     check_record=self.read(directory / (prefix + ".check.json")),
                     cleanup=cleanup,
                 )
+                if typed and req.get("name") == "checkpoint_context":
+                    number = int(prefix.removeprefix("tool-"))
+                    for saved_path in sorted(
+                        directory.glob("context-checkpoint-[0-9]*.json")
+                    ):
+                        saved = self.read(saved_path)
+                        if saved.get("tool_call") == number:
+                            record["progress_measurement"] = saved.get(
+                                "progress_measurement"
+                            )
+                            break
                 if not result:
                     record["transport_stdout"] = self.text(
                         directory / (prefix + ".stdout.bin"), 16000

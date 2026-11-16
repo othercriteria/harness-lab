@@ -75,7 +75,7 @@ def verify_package(identifier, store=STORE):
     return root, record
 
 
-def register(specification, *, project=PROJECT, store=STORE):
+def register(specification, *, project=PROJECT, store=STORE, source_project=None):
     """Prepare only; no GPU/service/network/model activity or candidate execution."""
     required = {
         "label",
@@ -89,9 +89,15 @@ def register(specification, *, project=PROJECT, store=STORE):
         "check_files",
         "admission",
     }
-    if not isinstance(specification, dict) or set(specification) != required:
+    if (
+        not isinstance(specification, dict)
+        or not required <= set(specification)
+        or set(specification) - required - {"checkpoint_progress"}
+    ):
         raise ValueError("Invalid outer job specification")
     s = specification
+    if type(s.get("checkpoint_progress", False)) is not bool:
+        raise ValueError("checkpoint_progress must be a boolean")
     if not isinstance(s["label"], str) or not 1 <= len(s["label"]) <= 120:
         raise ValueError("Invalid job label")
     if not isinstance(s["brief"], str) or not 1 <= len(s["brief"].encode()) <= 32768:
@@ -137,8 +143,14 @@ def register(specification, *, project=PROJECT, store=STORE):
     pending = packages / (".preparing-" + uuid.uuid4().hex)
     pending.mkdir()
     try:
+        # Trusted outer callers may replay an explicitly selected earlier source
+        # tree while freezing the current harness. The solver still sees only the
+        # selected public files; application checks those bases against its target.
         snapshot = create_snapshot(
-            project, s["input_files"], s["allowed_write_paths"], pending / "source"
+            project if source_project is None else Path(source_project),
+            s["input_files"],
+            s["allowed_write_paths"],
+            pending / "source",
         )
         if admission.get("public_contract_sha256") != public_contract_id(
             snapshot["snapshot_id"], s["brief"]
@@ -172,6 +184,8 @@ def register(specification, *, project=PROJECT, store=STORE):
             success="Outer reviewed useful patch; no benchmark canonical score",
             budget_note="New-task setup is charged in job total; no prefix warmup",
         )
+        if s.get("checkpoint_progress", False):
+            limits["checkpoint_progress"] = True
         (runtime / "configs/protocols/delegated-v1.json").write_bytes(encoded(limits))
         task = runtime / "tasks" / TASK
         shutil.copytree(pending / "source/public", task / "public")

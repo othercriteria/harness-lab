@@ -251,7 +251,10 @@ class LocalModel:
 
             # Keep the tool prefix stable on every request in this treatment.
             payload["tools"].append(
-                checkpoint_tool(self.limits.get("shared_evidence", False))
+                checkpoint_tool(
+                    self.limits.get("shared_evidence", False),
+                    progress=self.limits.get("checkpoint_progress", False),
+                )
             )
             if checkpoint_request:
                 payload["max_tokens"] = min(payload["max_tokens"], REPLY_TOKENS)
@@ -487,6 +490,7 @@ class LocalModel:
                     choice.get("finish_reason"),
                     requested=checkpoint_request,
                     shared=self.limits.get("shared_evidence", False),
+                    progress=self.limits.get("checkpoint_progress", False),
                     history=self.history,
                 )
             except FormatError as error:
@@ -577,13 +581,20 @@ class LocalModel:
         return kwargs
 
     def format_observation_messages(self, message, outputs, template_vars=None):
-        if self.limits.get("time_budget_feedback") and self.tool_environment is not None:
+        if (
+            self.limits.get("time_budget_feedback")
+            and self.tool_environment is not None
+        ):
             outputs = [
                 {
                     **output,
-                    "remaining_model_calls": max(0, self.limits["step_limit"] - self.calls),
+                    "remaining_model_calls": max(
+                        0, self.limits["step_limit"] - self.calls
+                    ),
                     "remaining_tool_calls": max(
-                        0, self.tool_environment.tool_call_limit - self.tool_environment.calls
+                        0,
+                        self.tool_environment.tool_call_limit
+                        - self.tool_environment.calls,
                     ),
                 }
                 for output in outputs
