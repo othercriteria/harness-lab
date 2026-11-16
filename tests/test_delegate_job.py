@@ -98,6 +98,17 @@ class DelegateJobTests(unittest.TestCase):
         self.assertEqual(result["state"], "recovery_required")
         self.assertEqual(result["recorded_state"], "accepted")
 
+    def test_inaccessible_host_identity_is_not_reported_dead(self):
+        jobs.update(self.job, "running", owner=jobs.process_identity(os.getpid()))
+        with patch.object(
+            jobs, "process_identity", side_effect=PermissionError("restricted proc")
+        ):
+            result = jobs.status(self.identifier, self.root)
+            self.assertEqual(result["state"], "running")
+            self.assertEqual(result["owner_inspection"], "unavailable")
+            with self.assertRaisesRegex(RuntimeError, "inspection unavailable"):
+                jobs.recover(self.identifier, self.root)
+
     def test_cancel_never_signals_submitter(self):
         jobs.update(
             self.job,
@@ -134,6 +145,27 @@ class DelegateJobTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "still live"):
                 jobs.recover(self.identifier, self.root)
         lock.assert_not_called()
+
+    def test_recovery_preserves_precommit_result_and_reconciles_state(self):
+        jobs.atomic(
+            self.job / "result.json",
+            {"execution_state": "completed", "result": {"artifact": "retained"}},
+        )
+        with patch.object(
+            lifecycle, "gpu_experiment_lock", return_value=contextlib.nullcontext()
+        ):
+            state = jobs.recover(self.identifier, self.root)
+        self.assertEqual(state["state"], "failed")
+        self.assertEqual(
+            jobs.read(self.job / "result.json")["execution_state"], "failed"
+        )
+        self.assertEqual(
+            jobs.read(self.job / "result.json")["result"], {"artifact": "retained"}
+        )
+        self.assertEqual(
+            jobs.read(self.job / "pre-recovery-result.json")["execution_state"],
+            "completed",
+        )
 
     def test_shared_gate_blocks_experiments_after_os_lock_is_free(self):
         original = lifecycle.require_delegation_closed
@@ -192,6 +224,22 @@ class DelegateJobTests(unittest.TestCase):
     def test_missing_experiment_summary_is_not_success(self):
         run = self.receipts()
         (run / "experiment/summary.json").unlink()
+        with self.assertRaises(FileNotFoundError):
+            jobs.closure(run)
+
+    def test_missing_trial_result_needs_scope_closure_and_every_tool_receipt(self):
+        run = self.receipts()
+        (run / "experiment/trial-00-delegated-task/summary.json").unlink()
+        with self.assertRaisesRegex(RuntimeError, "whole-scope"):
+            jobs.closure(run)
+        jobs.atomic(
+            run / "memory/cleanup.json",
+            {"verified": True, "cgroup_empty_or_absent": True},
+        )
+        evidence = jobs.closure(run)
+        self.assertTrue(evidence["verified"])
+        self.assertFalse(evidence["trial_results_complete"])
+        (run / "experiment/trial-00-delegated-task/tool-001.cleanup.json").unlink()
         with self.assertRaises(FileNotFoundError):
             jobs.closure(run)
 

@@ -12,6 +12,45 @@ from observe import NATIVE_CASES, Evidence
 
 
 class ObservatoryTests(unittest.TestCase):
+    def test_delegated_job_is_not_a_failed_benchmark(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            root = base / "runs"
+            identifier = "a" * 32
+            run = root / ("delegate-" + identifier)
+            trial = run / "experiment/trial-00-delegated-task"
+            trial.mkdir(parents=True)
+            (run / "command.json").write_text("[]")
+            (trial / "summary.json").write_text(
+                json.dumps(
+                    {
+                        "work_kind": "delegated_repository",
+                        "success": False,
+                        "canonical_correctness": None,
+                        "clean_agent_completion": True,
+                        "task_adjudication": {"status": "pending_outer_review"},
+                    }
+                )
+            )
+            job = base / "delegation/jobs" / identifier
+            (job / "events").mkdir(parents=True)
+            (job / "state.json").write_text(
+                json.dumps(
+                    {
+                        "label": "Useful real work",
+                        "state": "completed",
+                        "cleanup_verified": True,
+                        "job_id": identifier,
+                        "owner": None,
+                    }
+                )
+            )
+            data = Evidence(root).run(run.name)
+            self.assertEqual(data["kind"], "delegated")
+            self.assertEqual(data["trials"][0]["state"], "awaiting outer review")
+            self.assertIsNone(data["trials"][0]["passed"])
+            self.assertEqual(data["delegation"]["label"], "Useful real work")
+
     def test_rejected_checkpoint_and_summaryless_reset_are_timeline_events(self):
         fixtures = [
             ("request-001.request.json", {}),
@@ -471,20 +510,27 @@ class ObservatoryTests(unittest.TestCase):
 
     def test_posthoc_handoff_failure_preserves_code_success_and_rejects_promotion(self):
         summary = {
-            "task": "sample", "success": True, "verified_correctness": True,
-            "canonical_correctness": True, "clean_agent_completion": True,
-            "clean_agent_halt": True, "within_budget": True,
+            "task": "sample",
+            "success": True,
+            "verified_correctness": True,
+            "canonical_correctness": True,
+            "clean_agent_completion": True,
+            "clean_agent_halt": True,
+            "within_budget": True,
             "agent_outcome": {"exit_status": "Submitted"},
         }
         path = self.trial / "summary.json"
         path.write_text(json.dumps(summary))
         original = path.read_bytes()
         verdict = {
-            "version": 1, "status": "adjudicated", "task": "sample",
+            "version": 1,
+            "status": "adjudicated",
+            "task": "sample",
             "raw_summary_sha256": hashlib.sha256(original).hexdigest(),
             "review_kind": "posthoc_handoff",
             "disposition": "verified_coding_bad_handoff",
-            "coding_correctness": True, "task_handling_correctness": False,
+            "coding_correctness": True,
+            "task_handling_correctness": False,
             "rationale": "Final handoff cites a failing observation as successful.",
             "evidence": [{"path": "sealed-source-review.json"}],
         }
@@ -495,17 +541,31 @@ class ObservatoryTests(unittest.TestCase):
         self.assertTrue(trial["correct"])
         self.assertFalse(trial["passed"])
         self.assertEqual(path.read_bytes(), original)
-        for field in ("canonical_correctness", "verified_correctness",
-                      "clean_agent_completion", "within_budget"):
+        for field in (
+            "canonical_correctness",
+            "verified_correctness",
+            "clean_agent_completion",
+            "within_budget",
+        ):
             changed = {**summary, field: False}
             path.write_text(json.dumps(changed))
-            review.write_text(json.dumps({
-                **verdict, "raw_summary_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            }))
+            review.write_text(
+                json.dumps(
+                    {
+                        **verdict,
+                        "raw_summary_sha256": hashlib.sha256(
+                            path.read_bytes()
+                        ).hexdigest(),
+                    }
+                )
+            )
             self.assertIsNone(self.data.outer_adjudication(self.trial, changed))
         path.write_bytes(original)
-        for change in ({"raw_summary_sha256": "stale"}, {"evidence": []},
-                       {"disposition": "verified_coding", "task_handling_correctness": True}):
+        for change in (
+            {"raw_summary_sha256": "stale"},
+            {"evidence": []},
+            {"disposition": "verified_coding", "task_handling_correctness": True},
+        ):
             review.write_text(json.dumps({**verdict, **change}))
             self.assertIsNone(self.data.outer_adjudication(self.trial, summary))
 

@@ -19,6 +19,7 @@ import with_speech_released as voice
 from control import defer_launch_signals
 from delegate_artifacts import encoded, export_candidate
 from delegate_package import STORE, TASK, package_path, register, sha, verify_package
+from server_endpoint import EndpointOwnershipError
 from server_endpoint import process_identity as endpoint_process_identity
 
 RUNS = Path("/bulk/dlk/local-harness/runs")
@@ -77,12 +78,25 @@ def job_path(identifier, store=STORE):
 
 
 def live(identity):
+    return owner_inspection(identity) == "live"
+
+
+def owner_inspection(identity):
+    """Restricted observers cannot infer owner death from inaccessible /proc."""
     if not identity:
-        return False
+        return "absent"
     try:
-        return process_identity(identity["pid"]) == identity
+        if identity.get("boot_id") != boot_id():
+            return "absent"
+        if identity.get("network_namespace") != os.readlink("/proc/self/ns/net"):
+            return "unavailable"
+        return "live" if process_identity(identity["pid"]) == identity else "absent"
+    except PermissionError:
+        return "unavailable"
+    except (FileNotFoundError, EndpointOwnershipError):
+        return "absent"
     except (OSError, ValueError, RuntimeError):
-        return False
+        return "unavailable"
 
 
 def update(job, state, **fields):
@@ -103,7 +117,19 @@ def status(identifier, store=STORE):
     job = job_path(identifier, store)
     record = read(job / "state.json")
     record["cancel_requested"] = (job / "cancel.json").exists()
-    if record["state"] not in TERMINAL and not live(record.get("owner")):
+    if (job / "review.json").exists():
+        review = read(job / "review.json")
+        if review.get("job_id") == identifier and review.get(
+            "package_id"
+        ) == record.get("package_id"):
+            record["acceptance"] = review.get("decision", "pending")
+    if (job / "application.json").exists():
+        application = read(job / "application.json")
+        record["application_state"] = application.get("state")
+        record["applied"] = application.get("applied") is True
+    inspection = owner_inspection(record.get("owner"))
+    record["owner_inspection"] = inspection
+    if record["state"] not in TERMINAL and inspection == "absent":
         record["recorded_state"] = record["state"]
         record["state"] = "recovery_required"
         record["reason"] = "Owner absent; cleanup must be reconciled before admission"
@@ -308,7 +334,16 @@ def closure(run):
     if not all(read(p).get("verified") is True for p in receipts):
         raise RuntimeError("Candidate/evaluator cleanup unverified")
     trials = list((run / "experiment").glob("trial-*"))
+    missing_summaries = []
     for trial in trials:
+        if not (trial / "summary.json").exists():
+            # Cancellation can stop the client before it journals its result.
+            # All independent sandbox invocations above still need receipts;
+            # the model/client additionally need positive whole-scope closure.
+            if mem.get("cgroup_empty_or_absent") is not True:
+                raise RuntimeError("Missing trial result without whole-scope closure")
+            missing_summaries.append(str(trial))
+            continue
         summary = read(trial / "summary.json", limit=16 * 1024 * 1024)
         if summary.get("unsafe_cleanup"):
             raise RuntimeError("Trial reported unsafe cleanup")
@@ -325,13 +360,15 @@ def closure(run):
         paths.append(experiment)
     return {
         "verified": True,
+        "missing_trial_summaries": missing_summaries,
+        "trial_results_complete": not missing_summaries,
         "receipts": {
             str(p): sha(p)
             for p in [
                 *paths,
                 *invocations,
                 *receipts,
-                *(t / "summary.json" for t in trials),
+                *(t / "summary.json" for t in trials if (t / "summary.json").exists()),
             ]
         },
     }
@@ -538,8 +575,10 @@ def recover(identifier, store=STORE):
     record = status(identifier, store)
     if record["state"] in TERMINAL:
         return record
-    if live(record.get("owner")):
-        raise RuntimeError("Owner still live; use cancel and wait")
+    if owner_inspection(record.get("owner")) != "absent":
+        raise RuntimeError(
+            "Owner still live or inspection unavailable; use host inspection, cancel and wait"
+        )
     if os.environ.get("BIG_MODELS_GPU_LOCK_FD"):
         raise RuntimeError("Recovery cannot borrow another lease")
     with lifecycle.gpu_experiment_lock(recovering_delegation=True):
@@ -548,20 +587,30 @@ def recover(identifier, store=STORE):
         else:
             evidence = {"verified": True, "not_launched": True}
         atomic(job / "closure.json", evidence)
-        if not (job / "result.json").exists():
-            atomic(
-                job / "result.json",
-                {
-                    "execution_state": "failed",
-                    "acceptance": "pending",
-                    "applied": False,
-                    "cleanup_verified": True,
-                    "error": "Worker interrupted; closure reconciled, raw traces preserved",
-                },
-            )
+        terminal = "cancelled" if (job / "cancel.json").exists() else "failed"
+        prior = {}
+        if (job / "result.json").exists():
+            prior = read(job / "result.json")
+            archive = job / "pre-recovery-result.json"
+            if not archive.exists():
+                atomic(archive, prior)
+        atomic(
+            job / "result.json",
+            {
+                **prior,
+                "execution_state": terminal,
+                "acceptance": "pending",
+                "applied": False,
+                "cleanup_verified": True,
+                "error": "Worker interrupted; closure reconciled, raw traces preserved",
+                "pre_recovery_result": str(job / "pre-recovery-result.json")
+                if prior
+                else None,
+            },
+        )
         return update(
             job,
-            "failed",
+            terminal,
             cleanup_verified=True,
             error="Interrupted owner; cleanup subsequently reconciled",
             recovered_at=now(),
@@ -599,9 +648,12 @@ def main():
         result = worker(args.value)
     else:
         record = status(args.value)
+        result_path = job_path(args.value) / "result.json"
         result = {
             "status": record,
-            "result": read(job_path(args.value) / "result.json"),
+            "result": read(result_path) if result_path.exists() else None,
+            "result_provisional": result_path.exists()
+            and record["state"] not in TERMINAL,
         }
     print(json.dumps(result, ensure_ascii=True))
 

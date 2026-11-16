@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from observe_costs import CostProjection
+from observe_jobs import projection as job_projection
 
 PROJECT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = Path("/bulk/dlk/local-harness/runs")
@@ -134,7 +135,8 @@ class Evidence:
                 and summary.get("verified_correctness") is True
                 and summary.get("clean_agent_completion") is True
                 and summary.get("within_budget") is True
-                and (summary.get("agent_outcome") or {}).get("exit_status") == "Submitted"
+                and (summary.get("agent_outcome") or {}).get("exit_status")
+                == "Submitted"
             ):
                 # This narrow review may reject reporting, never promote failed code.
                 return None
@@ -262,6 +264,7 @@ class Evidence:
 
     def run(self, name, details=True):
         root = self.child(self.root, name)
+        delegated = bool(re.fullmatch(r"delegate-[a-f0-9]{32}", name))
         if not (root / "command.json").is_file():
             raise ValueError("Not a campaign directory")
         bg = self.read(root / "background/summary.json") or {}
@@ -345,11 +348,22 @@ class Evidence:
                     }
                     else adjudication["coding_correctness"]
                 )
+            if delegated:
+                passed = None
+                trial_state = (
+                    "awaiting outer review"
+                    if summary.get("clean_agent_completion")
+                    else "no clean submission"
+                    if summary
+                    else trial_state
+                )
             trials.append(
                 {
                     "name": trial_name,
                     "state": trial_state,
-                    "kind": "diagnostic"
+                    "kind": "delegated"
+                    if delegated
+                    else "diagnostic"
                     if diagnostic
                     else "control"
                     if control
@@ -399,7 +413,9 @@ class Evidence:
             "state": state,
             "modified": (root / "command.json").stat().st_mtime,
             "trials": trials,
-            "kind": "control"
+            "kind": "delegated"
+            if delegated
+            else "control"
             if trials and all(t["kind"] == "control" for t in trials)
             else "diagnostic"
             if trials and all(t["kind"] == "diagnostic" for t in trials)
@@ -410,6 +426,11 @@ class Evidence:
             "restored": bg.get("restored"),
         }
         if details:
+            result["delegation"] = (
+                job_projection(name, self.root.parent / "delegation")
+                if delegated
+                else None
+            )
             result["lifecycle"] = {
                 "background": bg,
                 "voice": self.read(root / "voice/result.json"),

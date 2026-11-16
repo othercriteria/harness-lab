@@ -193,6 +193,20 @@ class DelegateArtifactTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Binary"):
             artifacts.export_candidate(self.snapshot, workspace, self.root / "export")
 
+    def test_interpreter_cache_is_not_submitted_but_unapproved_source_is_rejected(self):
+        workspace = self.workspace()
+        cache = workspace / "scripts/__pycache__"
+        cache.mkdir()
+        (cache / "a.cpython-313.pyc").write_bytes(b"\x00cache")
+        (workspace / "scripts/a.py").write_text("VALUE = 3\n")
+        out = self.root / "export"
+        result = artifacts.export_candidate(self.snapshot, workspace, out)
+        self.assertEqual([r["path"] for r in result["changes"]], ["scripts/a.py"])
+        self.assertFalse((out / "files/scripts/__pycache__").exists())
+        (workspace / "extra.py").write_text("unapproved")
+        with self.assertRaisesRegex(ValueError, "unapproved"):
+            artifacts.export_candidate(self.snapshot, workspace, self.root / "other")
+
     def test_diff_preserves_no_final_newline_information(self):
         workspace = self.workspace()
         (workspace / "scripts/a.py").write_text("VALUE = 3")

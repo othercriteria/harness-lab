@@ -195,7 +195,7 @@ def load_snapshot(snapshot):
     return record, files
 
 
-def tree_files(root, *, with_modes=False):
+def tree_files(root, *, with_modes=False, ignore_python_cache=False):
     """Enumerate a completed sandbox export; reject unexpected entries, not follow."""
     root = Path(root)
     if root.is_symlink() or not root.is_dir():
@@ -203,6 +203,13 @@ def tree_files(root, *, with_modes=False):
     names = []
     entries = 0
     for parent, dirs, files in os.walk(root, followlinks=False):
+        if ignore_python_cache and "__pycache__" in dirs:
+            cache = Path(parent) / "__pycache__"
+            if cache.is_symlink():
+                raise ValueError("Candidate cache symlink")
+            # Never read or export interpreter caches. The raw workspace retains
+            # them for inspection; they cannot be selected input/output paths.
+            dirs.remove("__pycache__")
         for name in [*dirs, *files]:
             entries += 1
             if entries > MAX_FILES * 2:
@@ -223,7 +230,7 @@ def tree_files(root, *, with_modes=False):
 def export_candidate(snapshot, workspace, destination, *, brief=None):
     """Normalize permitted file edits; no code execution or acceptance decision."""
     record, before = load_snapshot(snapshot)
-    after, modes = tree_files(workspace, with_modes=True)
+    after, modes = tree_files(workspace, with_modes=True, ignore_python_cache=True)
     if brief is not None:
         if after.pop("task.md", None) != brief or modes.pop("task.md", None) != 0:
             raise ValueError("Public job brief changed or disappeared")

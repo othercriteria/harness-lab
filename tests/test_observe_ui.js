@@ -387,6 +387,23 @@ assert.equal(elements.get('events').children[0].open,false);
 document.querySelectorAll=originalQuery;
 console.log('Timeline expansions survive history navigation and reset across attempts.');
 
+context.delegatedRun={name:'delegate-example',kind:'delegated',state:'complete',trials:[{name:'trial-00-delegated-task',kind:'delegated',state:'no clean submission',clean:false}],delegation:{label:'Docs <script> remains text',state:{state:'completed',cleanup_verified:true},result:{dispatch_seconds:190,result:{checks_passed:null}},outer_review:{decision:'accepted_with_repairs'},application:{applied:true}}};
+context.delegatedTrace={summary:{work_kind:'delegated_repository',clean_agent_completion:false,task_wall_seconds:165},events:[],artifacts:[]};
+vm.runInContext("state.trial='trial-00-delegated-task';render(delegatedRun,delegatedTrace)",context);
+assert.match(text(elements.get('metrics')),/UNVERIFIED Independent checks/);
+assert.match(text(elements.get('metrics')),/accepted with repairs Outer acceptance/);
+assert.match(text(elements.get('metrics')),/NO Clean model completion/);
+assert.match(text(elements.get('metrics')),/YES Applied/);
+assert.doesNotMatch(text(elements.get('metrics')),/Verified correctness/);
+assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
+assert.equal(elements.get('title').textContent,'Docs <script> remains text');
+assert.equal(elements.get('job-details').hidden,false);
+context.delegatedRun.delegation.classification={kind:'lifecycle_acceptance'};
+vm.runInContext('render(delegatedRun,delegatedTrace)',context);
+assert.equal(elements.get('record-type').textContent,'DELEGATION LIFECYCLE ACCEPTANCE');
+assert.match(text(elements.get('metrics')),/LIFECYCLE CHECK Use/);
+console.log('Delegated execution/checks/acceptance/application remain separate and text-only.');
+
 // Exercise real asynchronous refresh/navigation, including stale responses.
 async function paginationRefreshChecks(){
   const calls=[];
