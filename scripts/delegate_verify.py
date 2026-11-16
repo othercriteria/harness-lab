@@ -1,9 +1,11 @@
 """Independent isolated checks for real delegated work, without benchmark scores."""
 
 import json
+import shutil
 import time
 
 from control import deadline
+from delegate_artifacts import digest, encoded, export_candidate, tree_files
 
 
 def validate_plan(plan):
@@ -44,12 +46,41 @@ def verify(runtime, workspace, task, output, remaining):
         raise ValueError("Delegated verification plan too large")
     plan = validate_plan(json.loads(data))
     end = time.monotonic() + remaining
+    # Seal only policy-conforming bytes before candidate code reaches checks.
+    # Evaluators receive a distinct read-only copy; subsequent artifact collection
+    # binds the returned check evidence to this exact normalized submission.
+    output.mkdir(parents=True, exist_ok=True)
+    artifact = export_candidate(
+        task / "private/snapshot",
+        workspace,
+        output / "delegated-artifact",
+        brief=(task / "public/task.md").read_bytes(),
+    )
+    sealed = output / "delegated-candidate"
+    shutil.copytree(task / "private/snapshot/public", sealed)
+    for row in artifact["changes"]:
+        target = sealed / row["path"]
+        if row["operation"] == "delete":
+            target.unlink()
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(output / "delegated-artifact/files" / row["path"], target)
+            target.chmod(0o644 | row["executable_bits"])
+    contents, modes = tree_files(sealed, with_modes=True)
+    sealed_id = digest(
+        encoded(
+            {
+                n: {"sha256": digest(b), "executable_bits": modes[n]}
+                for n, b in contents.items()
+            }
+        )
+    )
     checks = []
     for index, check in enumerate(plan["checks"]):
         available = end - time.monotonic()
         with deadline(available):
             result, _ = runtime.sandbox(
-                workspace,
+                sealed,
                 {
                     "mode": "grade",
                     "argv": check["argv"],
@@ -69,6 +100,8 @@ def verify(runtime, workspace, task, output, remaining):
         "kind": "delegated_checks",
         "passed": all(c["passed"] for c in checks) if checks else None,
         "checks": checks,
+        "artifact_sha256": digest(encoded(artifact)),
+        "sealed_candidate_sha256": sealed_id,
         "authority": "Outer-selected commands in independent isolated evaluators",
         "qualification": "Observed checks are evidence, not complete correctness or outer acceptance. No checks means unverified, not passed.",
     }

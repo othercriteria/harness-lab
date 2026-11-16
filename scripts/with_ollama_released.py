@@ -164,8 +164,32 @@ def snapshot_source(output):
     return provenance["sha256"]
 
 
+def require_delegation_closed(jobs=BULK / "delegation/jobs"):
+    """A released OS lock is not evidence that an interrupted job cleaned up."""
+    if not jobs.exists():
+        return
+    for job in jobs.iterdir():
+        if job.is_symlink() or not job.is_dir():
+            raise RuntimeError("Unexpected entry in delegated job registry")
+        path = job / "state.json"
+        if path.is_symlink():
+            raise RuntimeError("Delegated state alias rejected")
+        with path.open("rb") as stream:
+            data = stream.read(1024 * 1024 + 1)
+        if len(data) > 1024 * 1024:
+            raise RuntimeError("Delegated state exceeds bound")
+        state = json.loads(data)
+        if (
+            state.get("state") not in {"completed", "failed", "cancelled", "timed_out"}
+            or state.get("cleanup_verified") is not True
+        ):
+            raise RuntimeError(f"Unclosed delegated job requires recovery: {job.name}")
+
+
 @contextlib.contextmanager
-def gpu_experiment_lock(root=Path("/bulk/dlk/big-local-models")):
+def gpu_experiment_lock(
+    root=Path("/bulk/dlk/big-local-models"), *, recovering_delegation=False
+):
     """Acquire the canonical lock, or duplicate a validated inherited descriptor.
 
     Duplicates share the parent's open file description. Close them on exit;
@@ -186,6 +210,8 @@ def gpu_experiment_lock(root=Path("/bulk/dlk/big-local-models")):
             raise RuntimeError(f"Invalid inherited GPU lock: {error}") from error
     with lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if inherited is None and not recovering_delegation:
+            require_delegation_closed()
         yield lock
 
 
