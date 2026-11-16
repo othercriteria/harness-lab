@@ -3,7 +3,6 @@
 import copy
 import json
 
-from mini_bootstrap import FormatError
 from spec_blocker import _constant, _object
 
 NAME = "checkpoint_context"
@@ -29,8 +28,8 @@ REQUEST = (
     " Do not claim new work. The original task, workspace and historical records will remain"
     " available. This request uses the same remaining budgets, with at most 2048 reply"
     " tokens and at most 256 thinking tokens when a native thinking cap is configured."
-    " A missing or malformed checkpoint will not be retried; the harness may reset"
-    " without a summary if enough time remains."
+    " If validation fails, the harness may offer one repair using the same budgets;"
+    " otherwise it may reset without a summary."
 )
 TOOL = {
     "type": "function",
@@ -102,14 +101,29 @@ def validate(value, *, shared=False, history=None):
 
 
 def failure(error, response):
-    return FormatError(
-        {
-            "role": "user",
-            "content": "No calls from that response were executed. Context checkpoint rejected: "
-            + str(error)[:500]
-            + ". Continue according to the next harness notice.",
-            "extra": {"interrupt_type": "FormatError", "response": response},
-        }
+    from tool_repair import failure as repair_failure
+
+    return repair_failure(
+        error,
+        response,
+        label="Context checkpoint rejected",
+        instruction="Continue according to the next harness notice.",
+    )
+
+
+def repair_request(shared=False):
+    return (
+        "Repair the rejected checkpoint with one checkpoint_context tool call alone. "
+        'Use arguments {"summary":"your concise continuation note"}. '
+        + (
+            "Optional evidence may be included once. "
+            if shared
+            else "Use only the summary field. "
+        )
+        + "Put the note in the summary argument, not in prose. "
+        "Each JSON field must occur once. Correct the validation error reported above; "
+        "this is the only checkpoint repair opportunity. Existing time, token and call "
+        "budgets continue unchanged. If repair fails, continuation may reset without a summary."
     )
 
 

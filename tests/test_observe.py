@@ -12,6 +12,111 @@ from observe import NATIVE_CASES, Evidence
 
 
 class ObservatoryTests(unittest.TestCase):
+    def test_rejected_checkpoint_and_summaryless_reset_are_timeline_events(self):
+        fixtures = [
+            ("request-001.request.json", {}),
+            ("context-checkpoint-request-001.json", {"status": "requested"}),
+            ("request-002.request.json", {}),
+            (
+                "context-checkpoint-response-001.json",
+                {
+                    "status": "rejected_response",
+                    "error": "Duplicate JSON field",
+                    "executed": False,
+                },
+            ),
+            (
+                "fresh-context-reset-001.json",
+                {
+                    "status": "applied",
+                    "summary_checkpoint": {"status": "fallback_without_summary"},
+                },
+            ),
+        ]
+        for index, (name, data) in enumerate(fixtures):
+            path = self.trial / name
+            path.write_text(json.dumps(data))
+            os.utime(path, (index + 1, index + 1))
+        trace = self.data.trace("campaign", self.trial.name)
+        self.assertEqual(
+            [e["id"] for e in trace["events"]],
+            [
+                name.removesuffix(".request.json").removesuffix(".json")
+                for name, _ in fixtures
+            ],
+        )
+        recovery = [e for e in trace["events"] if e["kind"] == "context"]
+        self.assertEqual(
+            [e["state"] for e in recovery],
+            [
+                "checkpoint requested",
+                "checkpoint rejected",
+                "context reset / no summary",
+            ],
+        )
+        self.assertEqual(recovery[1]["reason"], "Duplicate JSON field")
+        self.assertEqual(trace["event_window"]["total_events"], 5)
+        self.assertEqual(trace["event_window"]["total_requests"], 2)
+        for event in recovery:
+            self.assertIn(event["artifact"], trace["artifacts"])
+            artifact = self.data.artifact(
+                "campaign", self.trial.name, event["artifact"]
+            )
+            self.assertEqual(json.loads(artifact["text"]), event["lifecycle"])
+
+    def test_context_lifecycle_is_paginated_and_distinguishes_retained_summary(self):
+        for index in range(85):
+            path = self.trial / f"context-checkpoint-request-{index:03}.json"
+            path.write_text('{"status":"requested"}')
+            os.utime(path, (index + 1, index + 1))
+        latest = self.data.trace("campaign", self.trial.name)
+        self.assertEqual(len(latest["events"]), 80)
+        self.assertEqual(latest["events"][0]["id"], "context-checkpoint-request-005")
+        first = self.data.trace("campaign", self.trial.name, start=0)
+        self.assertEqual(first["event_window"]["newer_start"], 80)
+        for index, (name, payload, state) in enumerate(
+            [
+                (
+                    "context-checkpoint-response-085.json",
+                    {"status": "valid_response"},
+                    "checkpoint accepted / unverified memory",
+                ),
+                (
+                    "fresh-context-reset-085.json",
+                    {"status": "applied", "summary_checkpoint": {"status": "retained"}},
+                    "context reset / summary retained (unverified)",
+                ),
+                (
+                    "fresh-context-bypassed-086.json",
+                    {"status": "bypassed"},
+                    "context reset bypassed",
+                ),
+                (
+                    "fresh-context-refused-087.json",
+                    {"status": "refused"},
+                    "context reset refused",
+                ),
+            ]
+        ):
+            path = self.trial / name
+            path.write_text(json.dumps(payload))
+            os.utime(path, (90 + index, 90 + index))
+            self.assertEqual(
+                self.data.trace("campaign", self.trial.name)["events"][-1]["state"],
+                state,
+            )
+        self.assertEqual(
+            first["events"],
+            self.data.trace("campaign", self.trial.name, start=0)["events"],
+        )
+        (self.trial / "fresh-context-reset-999.json").symlink_to(
+            self.trial / "fresh-context-reset-085.json"
+        )
+        self.assertNotIn(
+            "fresh-context-reset-999",
+            [e["id"] for e in self.data.trace("campaign", self.trial.name)["events"]],
+        )
+
     def test_input_probe_disagreement_does_not_establish_coding_correctness(self):
         summary = {
             "task": "probe",
@@ -230,6 +335,7 @@ class ObservatoryTests(unittest.TestCase):
             trace["event_window"],
             {
                 "total_requests": 83,
+                "total_events": 83,
                 "start": 3,
                 "end": 83,
                 "limit": 80,
@@ -237,6 +343,7 @@ class ObservatoryTests(unittest.TestCase):
                 "older_start": 0,
                 "newer_start": None,
                 "unreadable_requests": 1,
+                "unreadable_events": 1,
             },
         )
         self.assertEqual(len(trace["events"]), 79)

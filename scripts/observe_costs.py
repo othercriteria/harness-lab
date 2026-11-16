@@ -30,6 +30,7 @@ class CostProjection:
             "request-*.response.bin",
             "request-*.timing.json",
             "context-checkpoint-request-*.json",
+            "context-checkpoint-repair-request-*.json",
             "fresh-context-reset-*.json",
             "summary.json",
             "trajectory.json",
@@ -85,7 +86,9 @@ class CostProjection:
         summary = read(root / "summary.json")
         checkpoint_indices = set()
         for path in files:
-            if path.name.startswith("context-checkpoint-request-"):
+            if path.name.startswith(
+                ("context-checkpoint-request-", "context-checkpoint-repair-request-")
+            ):
                 index = read(path).get("model_calls")
                 if type(index) is int and index >= 0:
                     checkpoint_indices.add(index + 1)

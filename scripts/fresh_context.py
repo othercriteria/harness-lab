@@ -332,6 +332,8 @@ class FreshContext:
         self.summary_enabled = policy.get("summary_checkpoint", False)
         self.checkpoint_requested = False
         self.checkpoint_attempted = False
+        self.checkpoint_attempts = 0
+        self.checkpoint_repair_considered = False
         self.checkpoint_valid_response = False
         self.checkpoint_tool = None
         self.checkpoint = None
@@ -367,6 +369,7 @@ class FreshContext:
         if not self.checkpoint_pending:
             raise ValueError("No pending checkpoint response")
         self.checkpoint_attempted = True
+        self.checkpoint_attempts += 1
         self.checkpoint_valid_response = accepted
         record = {
             "status": "valid_response" if accepted else "rejected_response",
@@ -376,8 +379,87 @@ class FreshContext:
             "error": error,
             "executed": False,
         }
-        with self.artifact("context-checkpoint-response").open("x") as stream:
+        stem = (
+            "context-checkpoint-response"
+            if self.checkpoint_attempts == 1
+            else "context-checkpoint-repair-response"
+        )
+        with self.artifact(stem).open("x") as stream:
             json.dump(record, stream, indent=2)
+
+    def offer_checkpoint_repair(self, messages, model):
+        """Reuse ordinary validation repair, once, without renewing any allowance."""
+        from context_checkpoint import REPLY_TOKENS, repair_request
+
+        self.checkpoint_repair_considered = True
+        timing = self.timing(time.monotonic())
+        env = self.environment
+        reason = None
+        if timing["remaining_agent_seconds"] < self.minimum_remaining:
+            reason = "minimum remaining time"
+        elif (
+            model.calls + 1 >= model.limits["step_limit"]
+            or env.calls + 1 >= env.tool_call_limit
+        ):
+            reason = "insufficient remaining calls for repair and continuation"
+        elif (
+            model.limits["total_completion_token_limit"] - model.completion_tokens
+            <= REPLY_TOKENS
+        ):
+            reason = "insufficient remaining completion tokens"
+        notice = {
+            "role": "user",
+            "content": repair_request(model.limits.get("shared_evidence", False)),
+        }
+        measured = None
+        if reason is None:
+            payload = json.loads(
+                (self.output / f"request-{model.calls:03d}.request.json").read_text()
+            )
+            payload["messages"] = model.history.wire(self.project([*messages, notice]))
+            tokens = model.count_tokens(payload, "checkpoint-repair")
+            available = (
+                model.limits["context_capacity_tokens"]
+                - tokens
+                - model.limits["context_policy"]["safety_tokens"]
+            )
+            measured = {
+                "input_tokens": tokens,
+                "available_completion_tokens": available,
+                "required_completion_headroom": 2560,
+            }
+            if available < 2560:
+                reason = "insufficient measured context headroom"
+            timing = self.timing(time.monotonic())
+            if timing["remaining_agent_seconds"] < self.minimum_remaining:
+                reason = "minimum remaining time after measurement"
+        decision = {
+            "status": "offered" if reason is None else "skipped",
+            "reason": reason,
+            "model_calls": model.calls,
+            "completion_tokens": model.completion_tokens,
+            "tool_calls": env.calls,
+            "timing": timing,
+            "context": measured,
+        }
+        with self.artifact("context-checkpoint-repair-decision").open("x") as stream:
+            json.dump(decision, stream, indent=2)
+        if reason is not None:
+            return False
+        original = json.loads(self.artifact("context-checkpoint-request").read_text())
+        offer = {
+            **decision,
+            "status": "requested",
+            "notice": notice,
+            "boundary_messages": len(messages),
+        }
+        if "observation_manifest" in original:
+            offer["observation_manifest"] = original["observation_manifest"]
+        with self.artifact("context-checkpoint-repair-request").open("x") as stream:
+            json.dump(offer, stream, indent=2)
+        messages.append(notice)
+        self.checkpoint_attempted = False
+        return True
 
     def accept_checkpoint(self, value):
         from context_checkpoint import validate
@@ -548,6 +630,8 @@ class FreshContext:
             self.attempted = False
             self.decision = "pending"
             self.checkpoint_requested = self.checkpoint_attempted = False
+            self.checkpoint_attempts = 0
+            self.checkpoint_repair_considered = False
             self.checkpoint_valid_response = False
             self.checkpoint_tool = self.checkpoint = None
             self.pressure = None
@@ -644,6 +728,14 @@ class FreshContext:
                 raise UnsafeCleanup(
                     f"Fresh-context boundary cleanup unverified: {path}"
                 ) from error
+        if (
+            self.checkpoint_attempts == 1
+            and not self.checkpoint_valid_response
+            and not self.checkpoint_repair_considered
+            and self.offer_checkpoint_repair(messages, model)
+        ):
+            return False
+        timing = self.timing(time.monotonic())
         if timing["remaining_agent_seconds"] < self.minimum_remaining:
             self.attempted = True
             return self.bypass(timing, "query_boundary")

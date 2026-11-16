@@ -10,7 +10,14 @@ import re
 from pathlib import Path
 from types import SimpleNamespace
 
-from context_checkpoint import REPLY_TOKENS, THINK_TOKENS, action, request, tool
+from context_checkpoint import (
+    REPLY_TOKENS,
+    THINK_TOKENS,
+    action,
+    repair_request,
+    request,
+    tool,
+)
 from mini_bootstrap import FormatError
 
 
@@ -44,6 +51,9 @@ def verify_checkpoint_evidence(directory, limits):
             "context-checkpoint-request",
             "context-checkpoint-response",
             "context-checkpoint",
+            "context-checkpoint-repair-request",
+            "context-checkpoint-repair-response",
+            "context-checkpoint-repair-decision",
         )
     }
     require(
@@ -58,7 +68,82 @@ def verify_checkpoint_evidence(directory, limits):
         for n in sequences
     }
     require(len(indices) == len(sequences), "Duplicate checkpoint request")
-    rows = [_verify_checkpoint(root, limits, n, indices) for n in sequences or [1]]
+    repairs = {}
+    for n in sequences:
+        path = root / f"context-checkpoint-repair-request-{n:03d}.json"
+        if path.exists():
+            offer = read(path)
+            original = read(root / f"context-checkpoint-request-{n:03d}.json")
+            rejected = read(root / f"context-checkpoint-response-{n:03d}.json")
+            decision = read(root / f"context-checkpoint-repair-decision-{n:03d}.json")
+            require(
+                rejected["status"] == "rejected_response",
+                "Repair after accepted checkpoint",
+            )
+            require(
+                offer["model_calls"]
+                == rejected["model_calls"]
+                == original["model_calls"] + 1,
+                "Repair is not immediately after rejection",
+            )
+            require(
+                offer["tool_calls"] == original["tool_calls"],
+                "Rejected checkpoint executed tools",
+            )
+            require(
+                offer.get("observation_manifest")
+                == original.get("observation_manifest"),
+                "Repair evidence changed",
+            )
+            require(
+                decision["status"] == "offered"
+                and offer["context"] == decision["context"],
+                "Repair decision mismatch",
+            )
+            require(
+                offer["context"]["available_completion_tokens"] >= 2560
+                and offer["context"]["available_completion_tokens"]
+                == limits["context_capacity_tokens"]
+                - offer["context"]["input_tokens"]
+                - limits["context_policy"]["safety_tokens"],
+                "Repair lacks context reserve",
+            )
+            require(
+                offer["timing"]["original_agent_deadline_monotonic"]
+                == original["timing"]["original_agent_deadline_monotonic"]
+                and offer["timing"]["remaining_agent_seconds"]
+                >= policy["min_remaining_agent_seconds"],
+                "Repair renewed or exhausted deadline",
+            )
+            require(
+                offer["model_calls"] + 1 < limits["step_limit"]
+                and offer["tool_calls"] + 1 < limits.get("tool_call_limit", 128)
+                and limits["total_completion_token_limit"] - offer["completion_tokens"]
+                > REPLY_TOKENS,
+                "Repair lacks continuation allowance",
+            )
+            index = offer["model_calls"] + 1
+            measured_path = root / f"context-{index:03d}.json"
+            if measured_path.exists():
+                require(
+                    read(measured_path)["input_tokens_after"]
+                    == offer["context"]["input_tokens"],
+                    "Repair context measurement differs from actual request",
+                )
+            require(index not in indices, "Duplicate repair request")
+            indices.add(index)
+            repairs[n] = True
+    rows = []
+    for n in sequences or [1]:
+        first = _verify_checkpoint(
+            root, limits, n, indices, followed_by_repair=n in repairs
+        )
+        if n in repairs:
+            row = _verify_checkpoint(root, limits, n, indices, repair=True)
+            row["initial_attempt"] = first
+            rows.append(row)
+        else:
+            rows.append(first)
     if policy.get("trigger") == "context_headroom":
         return {
             "status": "repeated_policy",
@@ -70,13 +155,22 @@ def verify_checkpoint_evidence(directory, limits):
     return rows[0]
 
 
-def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
+def _verify_checkpoint(
+    root,
+    limits,
+    sequence,
+    checkpoint_indices,
+    *,
+    repair=False,
+    followed_by_repair=False,
+):
     artifacts = list(root.glob(f"context-checkpoint*-{sequence:03d}.json"))
     enabled = (limits.get("fresh_context") or {}).get("summary_checkpoint", False)
     require(enabled or not artifacts, "Checkpoint artifacts without enabled policy")
     requests = sorted(root.glob("request-*.request.json"))
     require(len(requests) <= limits["step_limit"], "Model-call allowance exceeded")
-    offer_path = root / f"context-checkpoint-request-{sequence:03d}.json"
+    prefix = "context-checkpoint-repair" if repair else "context-checkpoint"
+    offer_path = root / f"{prefix}-request-{sequence:03d}.json"
     offer = read(offer_path) if offer_path.exists() else None
     shared = limits.get("shared_evidence", False)
     history = None
@@ -145,7 +239,10 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
             require(
                 offer["completion_tokens"] == total, "Checkpoint offer renewed tokens"
             )
-            notice = {"role": "user", "content": request(shared)}
+            notice = {
+                "role": "user",
+                "content": repair_request(shared) if repair else request(shared),
+            }
             require(offer["notice"] == notice, "Checkpoint instructions changed")
             require(
                 notice in payload["messages"], "Checkpoint request lacks invitation"
@@ -211,7 +308,7 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
         }
     if checkpoint_response is None:
         require(
-            not (root / f"context-checkpoint-response-{sequence:03d}.json").exists(),
+            not (root / f"{prefix}-response-{sequence:03d}.json").exists(),
             "Response without request",
         )
         return {
@@ -232,7 +329,7 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
         )[0]
     except FormatError:
         accepted = None
-    receipt = read(root / f"context-checkpoint-response-{sequence:03d}.json")
+    receipt = read(root / f"{prefix}-response-{sequence:03d}.json")
     require(
         receipt["model_calls"] == checkpoint_index,
         "Checkpoint response request mismatch",
@@ -247,6 +344,15 @@ def _verify_checkpoint(root, limits, sequence, checkpoint_indices):
         "Parser verdict differs",
     )
     require(receipt["executed"] is False, "Response claimed command execution")
+    if followed_by_repair:
+        require(accepted is None, "Only rejected responses may be repaired")
+        return {
+            "status": "rejected",
+            "summary_completion_tokens": checkpoint_response["usage"][
+                "completion_tokens"
+            ],
+            **accounting,
+        }
     tool_index = offer["tool_calls"] + 1
     control_path = root / f"tool-{tool_index:03d}.request.json"
     saved_path = root / f"context-checkpoint-{sequence:03d}.json"

@@ -100,15 +100,23 @@ class CheckpointTests(unittest.TestCase):
         finish_reason="tool_calls",
         after_response=None,
         read_diagnostic=False,
+        repair=None,
+        finish_at=None,
+        response_plan=None,
+        prompt_tokens=100,
     ):
         def response(request, **kwargs):
             self.requests.append(json.loads(request.data))
             n = len(self.requests)
-            if n == 2:
+            if response_plan is not None:
+                message = response_plan[n - 1]
+            elif n == 2:
                 message = checkpoint or call(
                     "checkpoint_context", {"summary": SUMMARY}, "call-2"
                 )
-            elif n == 4:
+            elif n == 3 and repair is not None:
+                message = repair
+            elif n == (finish_at or (5 if repair is not None else 4)):
                 message = call(
                     "finish_attempt",
                     {
@@ -131,7 +139,10 @@ class CheckpointTests(unittest.TestCase):
             return io.BytesIO(
                 json.dumps(
                     {
-                        "usage": {"prompt_tokens": 100, "completion_tokens": 5},
+                        "usage": {
+                            "prompt_tokens": prompt_tokens,
+                            "completion_tokens": 5,
+                        },
                         "choices": [
                             {
                                 "finish_reason": finish_reason
@@ -295,7 +306,7 @@ class CheckpointTests(unittest.TestCase):
             )
         )
         self.assertFalse((self.root / "context-checkpoint-001.json").exists())
-        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(len(self.perform_options), 1)
         self.assertEqual(
             self.read("fresh-context-reset-001.json")["summary_checkpoint"]["status"],
             "fallback_without_summary",
@@ -348,9 +359,9 @@ class CheckpointTests(unittest.TestCase):
             checkpoint=call("bash", {"command": "must not execute"}, "call-2")
         )
         self.assertEqual(
-            (self.model.calls, self.model.completion_tokens, self.env.calls), (4, 20, 3)
+            (self.model.calls, self.model.completion_tokens, self.env.calls), (4, 20, 2)
         )
-        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(len(self.perform_options), 1)
         self.assertEqual(
             self.read("context-checkpoint-response-001.json")["status"],
             "rejected_response",
@@ -359,10 +370,174 @@ class CheckpointTests(unittest.TestCase):
             self.read("fresh-context-reset-001.json")["summary_checkpoint"]["status"],
             "fallback_without_summary",
         )
-        self.assertEqual(len(self.requests[2]["messages"]), 3)
+        self.assertEqual(len(self.requests[3]["messages"]), 3)
         self.assertFalse((self.root / "context-checkpoint-001.json").exists())
         self.assertEqual(
             verify_checkpoint_evidence(self.root, self.limits)["status"], "rejected"
+        )
+        self.assertEqual(
+            self.read("context-checkpoint-repair-response-001.json")["status"],
+            "rejected_response",
+        )
+
+    def test_prose_checkpoint_can_be_repaired_without_renewing_budgets(self):
+        deadline = self.env.agent_deadline
+        self.run_sequence(
+            checkpoint={"role": "assistant", "content": SUMMARY},
+            finish_reason="stop",
+            repair=call("checkpoint_context", {"summary": SUMMARY}, "repair-1"),
+        )
+        self.assertEqual(
+            (self.model.calls, self.model.completion_tokens, self.env.calls), (5, 25, 4)
+        )
+        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(self.env.agent_deadline, deadline)
+        self.assertIn(
+            "Repair the rejected checkpoint",
+            self.requests[2]["messages"][-1]["content"],
+        )
+        self.assertEqual(self.requests[2]["max_tokens"], 2048)
+        self.assertEqual(self.requests[2]["reasoning_budget_tokens"], 256)
+        self.assertIn(SUMMARY, self.requests[3]["messages"][-1]["content"])
+        audit = verify_checkpoint_evidence(self.root, self.limits)
+        self.assertEqual(audit["status"], "saved")
+        self.assertEqual(audit["initial_attempt"]["status"], "rejected")
+        self.assertEqual(audit["known_completion_tokens"], 25)
+        self.assertEqual(self.read("context-checkpoint-001.json")["model_call"], 3)
+        decision = self.read("context-checkpoint-repair-request-001.json")
+        decision["timing"]["original_agent_deadline_monotonic"] += 100
+        (self.root / "context-checkpoint-repair-request-001.json").write_text(
+            json.dumps(decision)
+        )
+        with self.assertRaisesRegex(ValueError, "deadline"):
+            verify_checkpoint_evidence(self.root, self.limits)
+
+    def test_duplicate_fields_are_rejected_then_repaired_not_silently_coerced(self):
+        bad = call("checkpoint_context", {"summary": SUMMARY})
+        bad["tool_calls"][0]["function"]["arguments"] = (
+            '{"summary":"one","summary":"two"}'
+        )
+        self.run_sequence(
+            checkpoint=bad,
+            repair=call("checkpoint_context", {"summary": SUMMARY}, "repair"),
+        )
+        self.assertIn(
+            "Duplicate JSON field",
+            self.read("context-checkpoint-response-001.json")["error"],
+        )
+        self.assertEqual(self.read("context-checkpoint-001.json")["summary"], SUMMARY)
+        self.assertEqual(
+            verify_checkpoint_evidence(self.root, self.limits)["status"], "saved"
+        )
+
+    def test_repair_is_skipped_when_fresh_context_measurement_is_too_large(self):
+        self.model.count_tokens = lambda payload, phase: (
+            32000 if phase == "checkpoint-repair" else 100
+        )
+        self.run_sequence(checkpoint=call("bash", {"command": "must not execute"}))
+        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(
+            self.read("context-checkpoint-repair-decision-001.json")["reason"],
+            "insufficient measured context headroom",
+        )
+        self.assertFalse(
+            (self.root / "context-checkpoint-repair-request-001.json").exists()
+        )
+        self.assertEqual(
+            verify_checkpoint_evidence(self.root, self.limits)["status"], "rejected"
+        )
+
+    def test_repair_reserves_completion_tokens_for_continuation(self):
+        self.limits["total_completion_token_limit"] = 2058
+        self.run_sequence(checkpoint=call("bash", {"command": "must not execute"}))
+        self.assertEqual(
+            self.read("context-checkpoint-repair-decision-001.json")["reason"],
+            "insufficient remaining completion tokens",
+        )
+        self.assertEqual(self.model.calls, 4)
+        verify_checkpoint_evidence(self.root, self.limits)
+
+    def test_repair_reserves_a_model_call_for_continuation(self):
+        self.limits["step_limit"] = 3
+        self.run_sequence(
+            checkpoint=call("bash", {"command": "must not execute"}), finish_at=3
+        )
+        self.assertIn(
+            "remaining calls",
+            self.read("context-checkpoint-repair-decision-001.json")["reason"],
+        )
+        self.assertEqual(self.model.calls, 3)
+        verify_checkpoint_evidence(self.root, self.limits)
+
+    def test_repair_time_check_preserves_original_deadline(self):
+        deadline = self.env.agent_deadline
+
+        def late_response(n):
+            if n == 2:
+                self.controller.minimum_remaining = 400
+
+        self.run_sequence(
+            checkpoint=call("bash", {"command": "must not execute"}),
+            after_response=late_response,
+        )
+        self.assertEqual(
+            self.read("context-checkpoint-repair-decision-001.json")["reason"],
+            "minimum remaining time",
+        )
+        self.assertFalse(
+            (self.root / "context-checkpoint-repair-request-001.json").exists()
+        )
+        self.assertEqual(self.env.agent_deadline, deadline)
+
+    def test_each_context_reset_gets_one_repair_with_separate_receipts(self):
+        policy = {
+            "trigger": "context_headroom",
+            "min_remaining_agent_seconds": 180,
+            "headroom_tokens": 8192,
+            "max_resets": 2,
+            "summary_checkpoint": True,
+        }
+        self.limits["fresh_context"] = policy
+        self.controller = FreshContext(self.root, policy, self.env, model=self.model)
+        self.model.fresh_context = self.env.fresh_context = self.controller
+        self.controller.start(self.env.agent_deadline, 705)
+        self.model.count_tokens = lambda *args: 26000
+        final = call(
+            "finish_attempt",
+            {
+                "disposition": "submitted",
+                "summary": "Ready",
+                "evidence": [],
+                "unverified": ["Independent checks pending"],
+                "blocker": None,
+            },
+            "final",
+        )
+        self.run_sequence(
+            prompt_tokens=26000,
+            response_plan=[
+                call("bash", {"command": "echo diagnostic"}, "a"),
+                {"role": "assistant", "content": SUMMARY},
+                call("checkpoint_context", {"summary": SUMMARY}, "b"),
+                call("bash", {"command": "echo diagnostic"}, "c"),
+                {"role": "assistant", "content": SUMMARY},
+                call("checkpoint_context", {"summary": SUMMARY}, "d"),
+                final,
+            ],
+        )
+        self.assertEqual(self.controller.reset_count, 2)
+        self.assertEqual((self.model.calls, self.model.completion_tokens), (7, 35))
+        self.assertEqual(len(self.perform_options), 2)
+        audit = verify_checkpoint_evidence(self.root, self.limits)
+        self.assertEqual(audit["checkpoint_requests"], [2, 3, 5, 6])
+        self.assertEqual(
+            [r["status"] for r in audit["checkpoints"]], ["saved", "saved"]
+        )
+        self.assertTrue(
+            all(
+                r["initial_attempt"]["status"] == "rejected"
+                for r in audit["checkpoints"]
+            )
         )
 
     def test_unknown_final_usage_does_not_skip_prior_checkpoint_receipts(self):
@@ -386,9 +561,9 @@ class CheckpointTests(unittest.TestCase):
         ):
             verify_checkpoint_evidence(self.root, self.limits)
 
-    def test_truncated_checkpoint_is_rejected_without_retry(self):
+    def test_truncated_checkpoint_repair_is_bounded(self):
         self.run_sequence(finish_reason="length")
-        self.assertEqual(self.env.calls, 3)
+        self.assertEqual(self.env.calls, 2)
         self.assertEqual(self.controller.decision, "applied")
         self.assertFalse((self.root / "context-checkpoint-001.json").exists())
         self.assertEqual(
@@ -399,8 +574,8 @@ class CheckpointTests(unittest.TestCase):
         self.run_sequence(
             checkpoint={"role": "assistant", "content": "", "tool_calls": 7}
         )
-        self.assertEqual(self.env.calls, 3)
-        self.assertEqual(len(self.perform_options), 2)
+        self.assertEqual(self.env.calls, 2)
+        self.assertEqual(len(self.perform_options), 1)
         self.assertEqual(
             verify_checkpoint_evidence(self.root, self.limits)["status"], "rejected"
         )

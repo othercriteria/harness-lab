@@ -10,6 +10,24 @@ from observe import Evidence
 
 
 class CostTests(unittest.TestCase):
+    def test_checkpoint_repair_time_counts_as_checkpoint_work(self):
+        self.request(1, 2, "bash")
+        self.request(2, 3, "checkpoint_context")
+        self.request(3, 5, "checkpoint_context")
+        self.save("context-checkpoint-request-001.json", {"model_calls": 1})
+        self.save(
+            "context-checkpoint-repair-request-001.json",
+            {"model_calls": 2, "status": "requested"},
+        )
+        trace = self.data.trace("campaign", self.trial.name)
+        self.assertEqual(trace["cost_breakdown"]["checkpoint_request_seconds"], 8)
+        event = next(
+            e
+            for e in trace["events"]
+            if e["id"] == "context-checkpoint-repair-request-001"
+        )
+        self.assertEqual(event["state"], "checkpoint repair requested")
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)

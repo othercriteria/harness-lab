@@ -155,20 +155,16 @@ TOOL = {
 
 
 def failure(error, response=None):
-    return FormatError(
-        {
-            "role": "user",
-            "content": (
-                "No calls from that response were executed. Invalid finish/tool response: "
-                + str(error)[:500]
-                + ". Continue work with the available tools, or call finish_attempt alone"
-                " to submit your work or report a supported blocker."
-            ),
-            "extra": {
-                "interrupt_type": "FormatError",
-                **({"response": response} if response is not None else {}),
-            },
-        }
+    from tool_repair import failure as repair_failure
+
+    return repair_failure(
+        error,
+        response,
+        label="Invalid finish/tool response",
+        instruction=(
+            "Continue work with the available tools, or call finish_attempt alone"
+            " to submit your work or report a supported blocker."
+        ),
     )
 
 
@@ -387,6 +383,8 @@ def actions(
                     "This bash command cannot finish the attempt. Call finish_attempt alone"
                 )
         return parsed
+    except FormatError as error:
+        raise failure(error.messages[0]["content"], response) from error
     except (ValueError, UnicodeError, RecursionError, TypeError, KeyError) as error:
         raise failure(error, response) from error
 

@@ -29,6 +29,10 @@ NATIVE_CASES = (
     "representative_fields",
 )
 RECOVERY_CASES = ("case-a", "case-b")
+CONTEXT_EVENT = re.compile(
+    r"(?:context-checkpoint-(?:(?:repair-)?(?:request|response)|repair-decision)|fresh-context-(?:reset|bypassed|refused))-\d+\.json\Z"
+)
+CONTEXT_ARTIFACT = re.compile(r"context-checkpoint-\d+\.json\Z")
 NATIVE_ARTIFACT = re.compile(
     r"(?:" + "|".join(NATIVE_CASES) + r")/"
     r"(?:request-\d+\.(?:request\.json|response\.bin|timing\.json)"
@@ -206,6 +210,8 @@ class Evidence:
             or CONTROL_ARTIFACT.fullmatch(name)
             or NATIVE_ARTIFACT.fullmatch(name)
             or RECOVERY_ARTIFACT.fullmatch(name)
+            or CONTEXT_EVENT.fullmatch(name)
+            or CONTEXT_ARTIFACT.fullmatch(name)
         )
 
     @staticmethod
@@ -479,7 +485,7 @@ class Evidence:
         return {"name": name, "text": content, "truncated": truncated}
 
     def trace(self, run, trial, start=None):
-        """Read at most 80 requests; an absolute start stays fixed as calls append."""
+        """Read at most 80 events; an absolute start stays fixed as events append."""
         if start is not None and (type(start) is not int or not 0 <= start <= 10**9):
             raise ValueError("Trace start must be an integer between 0 and 1000000000")
         root = self.trial(run, trial)
@@ -495,24 +501,72 @@ class Evidence:
         }
         total_requests = len(files)
         control = self.is_control(summary, files)
+        files += [
+            path
+            for path in root.glob("*.json")
+            if CONTEXT_EVENT.fullmatch(path.name)
+            and path.is_file()
+            and not path.is_symlink()
+        ]
+        total_events = len(files)
         files = sorted(
             files, key=lambda p: (p.stat().st_mtime, p.relative_to(root).as_posix())
         )
         last_model_request = {}
         for path in files:
-            if not path.name.startswith("tool-"):
+            if REQUEST.fullmatch(path.name) and not path.name.startswith("tool-"):
                 last_model_request[path.parent] = path
         latest = start is None
         start = (
-            max(0, total_requests - 80)
+            max(0, total_events - 80)
             if latest
-            else min(start, max(0, total_requests - 1))
+            else min(start, max(0, total_events - 1))
         )
-        end = min(total_requests, start + 80)
+        end = min(total_events, start + 80)
         files = files[start:end]
+        unreadable_requests = 0
         for path in files:
             req = self.read(path)
             if not isinstance(req, dict):
+                unreadable_requests += bool(REQUEST.fullmatch(path.name))
+                continue
+            if CONTEXT_EVENT.fullmatch(path.name):
+                status = req.get("status", "unknown")
+                reset = path.name.startswith("fresh-context-")
+                summary_status = (req.get("summary_checkpoint") or {}).get("status")
+                state = {
+                    "requested": "checkpoint requested",
+                    "valid_response": "checkpoint accepted / unverified memory",
+                    "rejected_response": "checkpoint rejected",
+                    "offered": "checkpoint repair offered",
+                    "skipped": "checkpoint repair skipped",
+                    "bypassed": "context reset bypassed",
+                    "refused": "context reset refused",
+                }.get(status, str(status))
+                if "-repair-" in path.name and status == "requested":
+                    state = "checkpoint repair requested"
+                if reset and status == "applied":
+                    state = (
+                        "context reset / summary retained (unverified)"
+                        if summary_status == "retained"
+                        else "context reset / no summary"
+                        if summary_status in (None, "fallback_without_summary")
+                        else "context reset / summary status unknown"
+                    )
+                records.append(
+                    {
+                        "id": path.stem,
+                        "at": path.stat().st_mtime,
+                        "kind": "context",
+                        "phase": "reset" if reset else "checkpoint",
+                        "state": state,
+                        "reason": req.get("error")
+                        or req.get("reason")
+                        or req.get("trigger"),
+                        "lifecycle": req,
+                        "artifact": path.name,
+                    }
+                )
                 continue
             prefix = path.name.removesuffix(".request.json")
             directory = path.parent
@@ -666,13 +720,15 @@ class Evidence:
             "cost_breakdown": self.costs.get(self, root) if not control else None,
             "event_window": {
                 "total_requests": total_requests,
+                "total_events": total_events,
                 "start": start,
                 "end": end,
                 "limit": 80,
                 "latest": latest,
                 "older_start": max(0, start - 80) if start else None,
-                "newer_start": end if end < total_requests else None,
-                "unreadable_requests": len(files) - len(records),
+                "newer_start": end if end < total_events else None,
+                "unreadable_requests": unreadable_requests,
+                "unreadable_events": len(files) - len(records),
             },
             "summary": summary or None,
             "outer_adjudication": self.outer_adjudication(root, summary),

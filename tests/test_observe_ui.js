@@ -358,7 +358,7 @@ assert.match(text(snapshotCard),/417/);
 assert.match(text(snapshotCard),/excluded from the submitted workspace and evaluator/);
 trace.event_window={total_requests:83,start:3,end:83,limit:80,latest:true,older_start:0,newer_start:null,unreadable_requests:1};
 vm.runInContext('render(input.run,input.trace)',context);
-assert.match(elements.get('event-page-info').textContent,/Requests 4–83 of 83/);
+assert.match(elements.get('event-page-info').textContent,/Events 4–83 of 83/);
 assert.match(elements.get('event-page-info').textContent,/Latest/);
 assert.equal(elements.get('older-events').disabled,false);
 assert.equal(elements.get('newer-events').disabled,true);
@@ -518,3 +518,14 @@ assert.match(vm.runInContext("runOutcomeSummary({kind:'coding',trials:[{state:'s
 
 assert.equal(vm.runInContext("statusClass('correct code / handoff failed')",context),'bad');
 assert.match(vm.runInContext("runOutcomeSummary({kind:'coding',trials:[{state:'correct code / handoff failed',correct:true,adjudication:{status:'adjudicated',task_handling_correctness:false}}]})",context),/1 failed trial/);
+
+for (const [phase,state] of [['checkpoint','checkpoint rejected'],['reset','context reset / no summary']]) {
+  context.lifecycleEvent={id:'context-recovery-001',kind:'context',phase,state,reason:'Duplicate JSON field <img src=x onerror=alert(1)>',lifecycle:{status:phase==='reset'?'applied':'rejected_response',summary_checkpoint:{status:'fallback_without_summary'}},artifact:'fresh-context-reset-001.json'};
+  const card=vm.runInContext('eventCard(lifecycleEvent,true)',context);
+  assert.match(text(card),new RegExp(phase==='reset'?'RESET':'CHECKPOINT'));
+  assert.match(text(card),new RegExp(state));
+  assert.match(text(card),/Duplicate JSON field/);
+  assert.match(text(card),/fallback_without_summary/);
+  assert.doesNotMatch(text(card),/BASH|FINALIZE/);
+}
+console.log('Checkpoint rejection and context reset lifecycle rendering checks passed.');
