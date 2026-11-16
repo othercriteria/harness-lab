@@ -20,8 +20,9 @@ MAX_RECORD_BYTES = 256 * 1024
 MAX_ARCHIVE_BYTES = MAX_CALLS * MAX_RECORD_BYTES
 INSTRUCTION = (
     " Use run_checks(command, cwd) for verification commands. It runs in the same"
-    " isolated environment as bash and records exit status, before/after file"
-    " identities and available Git HEAD metadata. Use a repository root as cwd"
+    " isolated environment as bash and records exit status, file identities immediately"
+    " before/after this command, and available Git HEAD metadata. files_unchanged"
+    " compares these two snapshots, not the task's starting files. Use a repository root as cwd"
     " for Git checks. Cite its observation ID in checkpoints and finish_attempt."
     " Read-only /checks/cNNNN.json records let bash scripts copy recorded revision"
     " IDs into delivery files without manual transcription. Records are historical:"
@@ -35,7 +36,8 @@ TOOL = {
         "description": (
             "Run a verification command and save a historical check record. Same"
             " isolation, timeout and output bounds as bash. Records the selected"
-            " directory's regular files before/after (excluding .git), observed Git"
+            " directory's regular files immediately before/after this command"
+            " (excluding .git), observed Git"
             " HEAD, exit status and displayed output. This is not a correctness"
             " certification. Compound commands must preserve relevant exit status."
         ),

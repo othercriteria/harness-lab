@@ -90,6 +90,7 @@ TOOL = {
                                     },
                                     "supports": {
                                         "type": "string",
+                                        "description": "State what this observation establishes. For checks, distinguish asserted results from printed output and your interpretation; match the claim to the actual output.",
                                         "minLength": 1,
                                         "maxLength": 500,
                                     },
