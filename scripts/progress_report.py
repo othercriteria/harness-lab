@@ -19,8 +19,11 @@ from evidence import validate_evidence
 from evidence_contract import bounded_text, require_fields
 from progress_values import (
     CHANGE_VALUES,
+    CHECKS_MAX_ITEMS,
     CHECK_RESULT_VALUES,
+    IMPLEMENTED_MAX_ITEMS,
     PAYLOAD_UTF8_BYTES,
+    REMAINING_MAX_ITEMS,
     TEXT_BOUND,
 )
 
@@ -69,7 +72,7 @@ def schema(evidence_schema):
             "implemented": {
                 "type": "array",
                 "minItems": 0,
-                "maxItems": 2,
+                "maxItems": IMPLEMENTED_MAX_ITEMS,
                 "items": {
                     "type": "string",
                     "minLength": 1,
@@ -77,14 +80,15 @@ def schema(evidence_schema):
                 },
                 "description": (
                     "Actual implementation changes, not test outcomes; "
-                    f"0-2 items, each at most {TEXT_BOUND} characters "
+                    f"0-{IMPLEMENTED_MAX_ITEMS} items, each at most "
+                    f"{TEXT_BOUND} characters "
                     f"and {TEXT_BOUND} UTF-8 bytes."
                 ),
             },
             "checks": {
                 "type": "array",
                 "minItems": 0,
-                "maxItems": 2,
+                "maxItems": CHECKS_MAX_ITEMS,
                 "items": {
                     "type": "object",
                     "required": ["result", "summary"],
@@ -103,7 +107,8 @@ def schema(evidence_schema):
                 },
                 "description": (
                     "Model claims about checks, not independently "
-                    "observed facts; 0-2 entries, each exactly result "
+                    f"observed facts; 0-{CHECKS_MAX_ITEMS} entries, each "
+                    "exactly result "
                     "and summary, summary at most "
                     f"{TEXT_BOUND} characters and {TEXT_BOUND} UTF-8 "
                     "bytes."
@@ -112,7 +117,7 @@ def schema(evidence_schema):
             "remaining": {
                 "type": "array",
                 "minItems": 0,
-                "maxItems": 4,
+                "maxItems": REMAINING_MAX_ITEMS,
                 "items": {
                     "type": "string",
                     "minLength": 1,
@@ -120,7 +125,7 @@ def schema(evidence_schema):
                 },
                 "description": (
                     "Explicit public requirements still unfinished or "
-                    "unverified; 0-4 items, each at most "
+                    f"unverified; 0-{REMAINING_MAX_ITEMS} items, each at most "
                     f"{TEXT_BOUND} characters and {TEXT_BOUND} UTF-8 "
                     "bytes. Empty is allowed and does not establish "
                     "completion."
@@ -188,11 +193,15 @@ def validate(value, history=None):
             "change must be one of: " + ", ".join(CHANGE_VALUES)
         )
 
-    _validate_text_list(value["implemented"], TEXT_BOUND, 2, "implemented")
+    _validate_text_list(
+        value["implemented"], TEXT_BOUND, IMPLEMENTED_MAX_ITEMS, "implemented"
+    )
 
     checks = value["checks"]
-    if not isinstance(checks, list) or len(checks) > 2:
-        raise ValueError("checks must be an array of at most 2")
+    if not isinstance(checks, list) or len(checks) > CHECKS_MAX_ITEMS:
+        raise ValueError(
+            f"checks must be an array of at most {CHECKS_MAX_ITEMS}"
+        )
     for index, entry in enumerate(checks):
         label = f"checks[{index}]"
         require_fields(entry, ("result", "summary"), label)
@@ -204,7 +213,9 @@ def validate(value, history=None):
             )
         _require_text(entry["summary"], TEXT_BOUND, f"{label}.summary")
 
-    _validate_text_list(value["remaining"], TEXT_BOUND, 4, "remaining")
+    _validate_text_list(
+        value["remaining"], TEXT_BOUND, REMAINING_MAX_ITEMS, "remaining"
+    )
 
     obstacle = value["obstacle"]
     if not isinstance(obstacle, str):

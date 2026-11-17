@@ -7,7 +7,13 @@ import re
 import stat
 
 from progress_summary import CHANGE_VALUES, CHECK_RESULT_VALUES, summarize
-from progress_values import PAYLOAD_UTF8_BYTES, TEXT_BOUND
+from progress_values import (
+    CHECKS_MAX_ITEMS,
+    IMPLEMENTED_MAX_ITEMS,
+    PAYLOAD_UTF8_BYTES,
+    REMAINING_MAX_ITEMS,
+    TEXT_BOUND,
+)
 
 CHECKPOINT_NAME = re.compile(r"context-checkpoint-([0-9]{3,})\.json\Z")
 REPORT_FIELDS = {
@@ -35,15 +41,22 @@ def _report_shape(report):
         raise ValueError("progress must be an object with exactly seven report fields")
     if report["change"] not in CHANGE_VALUES:
         raise ValueError("progress.change has an unknown value")
-    for field, limit in (("implemented", 2), ("remaining", 4)):
+    for field, limit in (
+        ("implemented", IMPLEMENTED_MAX_ITEMS),
+        ("remaining", REMAINING_MAX_ITEMS),
+    ):
         items = report[field]
         if not isinstance(items, list) or len(items) > limit:
             raise ValueError(f"progress.{field} must be an array of at most {limit} items")
         for item in items:
             _text(item, "progress." + field)
     checks = report["checks"]
-    if not isinstance(checks, list) or len(checks) > 2:
-        raise ValueError("progress.checks must be an array of at most two entries")
+    if not isinstance(checks, list) or len(checks) > CHECKS_MAX_ITEMS:
+        # Preserve the established default diagnostic while following the limit.
+        count_text = "two" if CHECKS_MAX_ITEMS == 2 else str(CHECKS_MAX_ITEMS)
+        raise ValueError(
+            f"progress.checks must be an array of at most {count_text} entries"
+        )
     for entry in checks:
         if not isinstance(entry, dict) or set(entry) != {"result", "summary"}:
             raise ValueError("each check must contain exactly result and summary")

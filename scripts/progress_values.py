@@ -20,3 +20,10 @@ TEXT_BOUND = 300
 # PAYLOAD_UTF8_BYTES is allowed; the aggregate cap applies even when every individual field
 # is within its own cap.
 PAYLOAD_UTF8_BYTES = 4096
+# Per-array item-count maxima for the implemented, checks, and remaining
+# report arrays, shared by progress_report (schema maxima, descriptive
+# count text and validation) and progress_inspect (shape validation and
+# associated diagnostics).
+IMPLEMENTED_MAX_ITEMS = 2
+CHECKS_MAX_ITEMS = 2
+REMAINING_MAX_ITEMS = 4
