@@ -55,7 +55,7 @@ def public_contract_id(snapshot_id, brief):
     )
 
 
-def task_text(brief, snapshot):
+def task_text(brief, snapshot, apprentice_notes=False):
     """Deterministic model-visible brief: the raw brief plus the exact edit scope.
 
     The scope lists only the snapshot contract's allowed_write_paths and marks
@@ -75,6 +75,20 @@ def task_text(brief, snapshot):
     else:
         lines.append("")
         lines.append("All other supplied files are read-only.")
+    if apprentice_notes:
+        lines += [
+            "", "## Apprentice notebook", "",
+            "Read SUBAGENTS.md for this repository's working notes. The task brief"
+            " and enforced edit scope govern this assignment; notes are advisory"
+            " and may be incomplete or stale.",
+        ]
+        if "SUBAGENTS.md" in contract["allowed_write_paths"]:
+            lines.append(
+                "You may propose a concise notebook revision when this task gives"
+                " useful new evidence. Keep it relevant to future work and identify"
+                " the proposed revision in your handoff. Revisions require outer"
+                " review before use in later jobs. No revision is required."
+            )
     return "\n".join(lines) + "\n"
 
 
@@ -115,12 +129,15 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
     if (
         not isinstance(specification, dict)
         or not required <= set(specification)
-        or set(specification) - required - {"checkpoint_progress"}
+        or set(specification) - required - {"checkpoint_progress", "apprentice_notes"}
     ):
         raise ValueError("Invalid outer job specification")
     s = specification
     if type(s.get("checkpoint_progress", False)) is not bool:
         raise ValueError("checkpoint_progress must be a boolean")
+    notes_enabled = s.get("apprentice_notes", False)
+    if type(notes_enabled) is not bool:
+        raise ValueError("apprentice_notes must be a boolean")
     if not isinstance(s["label"], str) or not 1 <= len(s["label"]) <= 120:
         raise ValueError("Invalid job label")
     if not isinstance(s["brief"], str) or not 1 <= len(s["brief"].encode()) <= 32768:
@@ -188,6 +205,12 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
             s["allowed_write_paths"],
             pending / "source",
         )
+        contract = snapshot["contract"]
+        if notes_enabled:
+            if "SUBAGENTS.md" not in contract["inputs"]:
+                raise ValueError("Enabled apprentice notes require SUBAGENTS.md as an explicit input")
+        elif "SUBAGENTS.md" in contract["base"]:
+            raise ValueError("Disabled apprentice notes require omitting SUBAGENTS.md from inputs and writes")
         if admission.get("public_contract_sha256") != public_contract_id(
             snapshot["snapshot_id"], s["brief"]
         ):
@@ -225,7 +248,9 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
         (runtime / "configs/protocols/delegated-v1.json").write_bytes(encoded(limits))
         task = runtime / "tasks" / TASK
         shutil.copytree(pending / "source/public", task / "public")
-        (task / "public/task.md").write_text(task_text(s["brief"], snapshot))
+        (task / "public/task.md").write_text(
+            task_text(s["brief"], snapshot, notes_enabled)
+        )
         (task / "private").mkdir()
         # The export policy is outer-only. Check it before running any evaluator.
         shutil.copytree(pending / "source", task / "private/snapshot")
@@ -257,6 +282,12 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
             "task_seconds": seconds,
             "recipe_source": recipe,
             "admission": admission,
+            "apprentice_notes": {
+                "enabled": notes_enabled,
+                "path": "SUBAGENTS.md" if notes_enabled else None,
+                "sha256": contract["inputs"].get("SUBAGENTS.md"),
+                "editable": notes_enabled and "SUBAGENTS.md" in contract["allowed_write_paths"],
+            },
             "venv": str(project / ".venv"),
             "runtime_dependencies": freeze["runtime_dependencies"],
             "files": file_manifest(pending),
