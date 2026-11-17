@@ -24,6 +24,16 @@ GUIDANCE = (
 )
 
 
+def _finite_number(value):
+    """Exact built-in int/float whose float conversion is finite; nothing else."""
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(float(value))
+    except OverflowError:
+        return False
+
+
 def validate_policy(limits):
     policy = limits.get("progress_reminder")
     if policy is None:
@@ -37,9 +47,7 @@ def validate_policy(limits):
         policy["after_elapsed_agent_fraction"],
         policy["min_remaining_agent_seconds"],
     )
-    if any(
-        type(v) not in (int, float) or not math.isfinite(v) for v in (fraction, minimum)
-    ):
+    if any(not _finite_number(v) for v in (fraction, minimum)):
         raise ValueError("Progress-reminder timing must be finite numbers")
     if not 0 < fraction < 1 or minimum <= 0:
         raise ValueError("Invalid progress-reminder timing")
@@ -67,10 +75,7 @@ class ProgressReminder:
         if self.started is not None:
             raise ValueError("Progress-reminder clock already started")
         if (
-            any(
-                type(v) not in (int, float) or not math.isfinite(v)
-                for v in (deadline, budget)
-            )
+            any(not _finite_number(v) for v in (deadline, budget))
             or budget <= 0
             or self.environment.agent_deadline != deadline
         ):
