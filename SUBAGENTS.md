@@ -33,6 +33,9 @@ snapshot may be smaller than the real repository; inspect what is present.
   repeating broad exploration. Historical successful checks may precede edits.
 - Distinguish implementation changes, observed checks, and unresolved questions.
   Notes and model claims are not independent correctness judgments.
+- When rewriting status or planning text, treat preserved history as a record, not
+  a current plan: do not carry stale future-work or proposal statements into the
+  current summary, and keep genuinely unresolved items labeled unresolved.
 
 If this notebook is editable for your task, propose only useful, evidence-grounded
 revisions. Keep it short; correct or remove stale advice. Describe the revision in
