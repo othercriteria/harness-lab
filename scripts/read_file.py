@@ -68,6 +68,12 @@ def validate(value):
         or "\x00" in path
     ):
         raise ValueError("Invalid workspace file path")
+    if path in ("/workspace", "/workspace/", ".", "./"):
+        raise ValueError(
+            "read_file needs a file, not the workspace directory. "
+            "Use execute with command 'ls /workspace' to list files, "
+            "then pass a file path to read_file."
+        )
     if path.startswith("/workspace/"):
         path = path[len("/workspace/") :]
     if path.startswith("/") or any(p in ("", ".", "..") for p in path.split("/")):
