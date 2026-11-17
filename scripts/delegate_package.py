@@ -119,7 +119,6 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
         "input_files",
         "allowed_write_paths",
         "brief",
-        "recipe_task",
         "task_seconds",
         "verification_seconds",
         "checks",
@@ -129,10 +128,18 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
     if (
         not isinstance(specification, dict)
         or not required <= set(specification)
-        or set(specification) - required - {"checkpoint_progress", "apprentice_notes"}
+        or set(specification) - required - {
+            "checkpoint_progress", "apprentice_notes", "recipe_task", "recipe_id"
+        }
     ):
         raise ValueError("Invalid outer job specification")
     s = specification
+    selectors = {"recipe_task", "recipe_id"} & set(s)
+    if len(selectors) != 1:
+        raise ValueError("Select exactly one of recipe_task or recipe_id")
+    selector = next(iter(selectors))
+    if not isinstance(s[selector], str) or not 1 <= len(s[selector]) <= 120:
+        raise ValueError("Invalid recipe selector")
     if type(s.get("checkpoint_progress", False)) is not bool:
         raise ValueError("checkpoint_progress must be a boolean")
     notes_enabled = s.get("apprentice_notes", False)
@@ -177,10 +184,14 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
             or name == "checks.json"
         ):
             raise ValueError("Invalid private check filename")
-    recipes = read(project / "configs/frontier-practical-recipes-v1.json")["recipes"]
-    choices = [r for r in recipes if r["task"] == s["recipe_task"]]
+    index, key = (
+        ("delegate-recipes-v1.json", "id") if selector == "recipe_id"
+        else ("frontier-practical-recipes-v1.json", "task")
+    )
+    recipes = read(project / "configs" / index)["recipes"]
+    choices = [r for r in recipes if r[key] == s[selector]]
     if len(choices) != 1:
-        raise ValueError("Select one registered practical recipe")
+        raise ValueError("Select one registered recipe")
     recipe = choices[0]
     for path_key, digest_key in [
         ("server_config_path", "server_config_sha256"),
