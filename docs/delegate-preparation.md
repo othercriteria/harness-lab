@@ -96,6 +96,9 @@ Qualification never grants the local model more host access.
 
 1. **Establish operational fit.** Reuse known weights and placement evidence;
    record exact identities, resource limits and session restoration ownership.
+   Diff effective inference settings against the prior working recipe, including
+   reasoning caps, deadline allocation and template options. A familiar server
+   profile name does not prove those client-side controls were carried forward.
    Check loading, native tool parsing, actual memory placement, cleanup and a
    complete bounded request. Preserve startup/resource failures separately from
    task failures. Do not tune quality around a broken protocol or weaken guards
@@ -114,6 +117,10 @@ Qualification never grants the local model more host access.
    diagnosis without the required artifact is useful recognition evidence but
    an incomplete assignment. A green shape check is not a correct review.
    Inspect traces for repeated work and outer review cost, not just exit status.
+   Count repair opportunities as well as failed calls: six bad paths generated
+   in one batch are one initial mistake, not six ignored corrections. Likewise,
+   a failed scratch assertion that is repaired and honestly reported can be
+   evidence of successful debugging rather than an unsupported handoff.
 4. **Spend further work where it can change a decision.** A local interface
    defect warrants a small common fix plus affected controls; a resource limit
    warrants a bounded placement or CPU probe; an unsupported allegation warrants
