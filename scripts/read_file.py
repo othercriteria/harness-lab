@@ -138,9 +138,17 @@ def read(workspace, arguments):
         if "\x00" in text:
             raise ValueError("read_file supports UTF-8 text without NUL bytes")
     except (OSError, ValueError) as error:
+        display_path = "/workspace/" + value["path"]
+        if len(display_path) > 240:
+            display_path = display_path[:240] + "..."
         return {
             "returncode": 1,
-            "output": f"{type(error).__name__}: unable to read a bounded regular UTF-8 workspace file.",
+            "output": (
+                f"{type(error).__name__}: unable to read a bounded regular UTF-8 file at "
+                + json.dumps(display_path, ensure_ascii=True)
+                + ". Paths are relative to /workspace (for example src/app.py),"
+                " or absolute /workspace/src/app.py."
+            ),
             "truncated": False,
             "exception_info": type(error).__name__,
         }

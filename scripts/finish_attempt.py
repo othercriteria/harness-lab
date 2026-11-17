@@ -184,7 +184,11 @@ def validate(value, history):
         "handoff",
     )
     if value["disposition"] not in ("submitted", "blocked"):
-        raise ValueError("Unknown disposition")
+        raise ValueError(
+            "Unknown disposition: use 'submitted' to hand off the current workspace"
+            " or 'blocked' for a supported blocker. Task-specific result labels belong"
+            " in the requested output, not in finish_attempt.disposition."
+        )
     bounded_text(value["summary"], 1000, "summary")
     if len(json.dumps(value, ensure_ascii=False).encode()) > MAX_BYTES:
         raise ValueError("Handoff exceeds8192 bytes")
