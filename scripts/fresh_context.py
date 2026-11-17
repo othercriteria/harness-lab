@@ -879,6 +879,13 @@ class FreshContext:
                 )
             self.decision = "refused"
             return False
+        facts = None
+        if model.limits.get("shared_evidence", False):
+            from resumption_digest import build
+
+            facts = build(
+                getattr(env, "initial_workspace", None), env.workspace, model.history
+            )
         committed_timing = self.timing(time.monotonic())
         if committed_timing["remaining_agent_seconds"] < self.minimum_remaining:
             # Outer-owned publication is still unmounted and unexposed. Preserve
@@ -911,6 +918,12 @@ class FreshContext:
                 " and make an explicit final handoff when finished."
             ),
         }
+        if facts is not None:
+            from resumption_digest import encoded as encode_facts
+
+            notice["content"] += (
+                "\nHarness-recorded file/check facts:\n" + encode_facts(facts)
+            )
         if self.continuation_mode == "review":
             notice["content"] += REVIEW_INSTRUCTION
         if self.checkpoint is not None:
@@ -921,8 +934,8 @@ class FreshContext:
                 + json.dumps(self.checkpoint, ensure_ascii=False)
             )
             if model.limits.get("shared_evidence", False):
-                from evidence import render
                 from context_checkpoint import citations
+                from evidence import render
 
                 notice["content"] += "\nHistorical evidence:\n" + render(
                     citations(self.checkpoint), model.history
@@ -942,6 +955,8 @@ class FreshContext:
             "tool_calls": env.calls,
             "notice": notice,
         }
+        if facts is not None:
+            event["resumption_digest"] = facts
         if self.pressure is not None:
             event["trigger"] = (
                 "measured context headroom at a completed tool-cycle boundary"

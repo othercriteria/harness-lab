@@ -695,6 +695,9 @@ class IsolatedEnvironment:
     ):
         self.runtime = runtime
         self.workspace = workspace
+        # Tool calls publish new immutable workspace generations. Keep only this
+        # public starting-generation path, never a task/evaluator root.
+        self.initial_workspace = workspace
         self.output = output
         if type(persistent_scratch) is not bool:
             raise ValueError("Invalid persistent_scratch")
@@ -1007,7 +1010,7 @@ class IsolatedEnvironment:
         writing = self.whole_file_write and action.get("tool") == "write_file"
         checking = self.checks is not None and action.get("tool") == "run_checks"
         if checking:
-            from run_checks import identity, save, shell_command
+            from run_checks import bounded_output, identity, save, shell_command
             from run_checks import validate as validate_check
 
             check_arguments = validate_check(action["arguments"])
@@ -1054,6 +1057,9 @@ class IsolatedEnvironment:
                 0.0, round(self.agent_deadline - time.monotonic(), 1)
             )
         if checking:
+            output["output"], output["output_window"] = bounded_output(
+                text, TOOL_OUTPUT_CHARS
+            )
             after_check = identity(updated, check_arguments["cwd"])
             output["check_record"] = save(
                 self.checks,

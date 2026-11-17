@@ -21,8 +21,13 @@ MAX_ARCHIVE_BYTES = MAX_CALLS * MAX_RECORD_BYTES
 INSTRUCTION = (
     " Use run_checks(command, cwd) for verification commands. It runs in the same"
     " isolated environment as bash and records exit status, file identities immediately"
-    " before/after this command, and available Git HEAD metadata. files_unchanged"
-    " compares these two snapshots, not the task's starting files. Use a repository root as cwd"
+    " before/after this command, and available Git HEAD metadata."
+    " files_unchanged_by_command compares these two snapshots, not the task's starting files;"
+    " null means comparison unavailable. Long captured output keeps a bounded beginning and end"
+    " without changing the command's exit status, so output-limiting pipelines are unnecessary."
+    " Prefer separate check calls for distinct assertions. For compound shell commands,"
+    " inspect the output: a final zero status does not prove earlier commands ran or passed."
+    " Use a repository root as cwd"
     " for Git checks. Cite its observation ID in checkpoints and finish_attempt."
     " Read-only /checks/cNNNN.json records let bash scripts copy recorded revision"
     " IDs into delivery files without manual transcription. Records are historical:"
@@ -35,7 +40,8 @@ TOOL = {
         "name": NAME,
         "description": (
             "Run a verification command and save a historical check record. Same"
-            " isolation, timeout and output bounds as bash. Records the selected"
+            " isolation and timeout as bash; long captured output keeps the beginning and end"
+            " within the 12000-character display bound. Records the selected"
             " directory's regular files immediately before/after this command"
             " (excluding .git), observed Git"
             " HEAD, exit status and displayed output. This is not a correctness"
@@ -150,6 +156,12 @@ def git_head(workspace, cwd):
 
 
 def identity(workspace, cwd):
+    return {
+        key: value for key, value in snapshot(workspace, cwd).items() if key != "files"
+    }
+
+
+def snapshot(workspace, cwd):
     """Hash normalized snapshot data through no-follow directory descriptors."""
     cwd = validate({"command": "true", "cwd": cwd})["cwd"]
     descriptor = None
@@ -216,6 +228,11 @@ def identity(workspace, cwd):
             "entries": len(rows),
             "bytes": total,
             "git_head": git_head(workspace, cwd),
+            "files": {
+                row[0]: {"executable": row[1], "sha256": row[2]}
+                for row in rows
+                if len(row) == 3
+            },
         }
     except (OSError, ValueError, UnicodeError):
         return {"status": "unavailable"}
@@ -232,9 +249,14 @@ def save(directory, number, arguments, before, after, output):
         "cwd": arguments["cwd"],
         "before": before,
         "after": after,
-        "files_unchanged": before.get("status") == after.get("status") == "captured"
-        and before["tree_sha256"] == after["tree_sha256"],
+        "files_unchanged_by_command": (
+            before["tree_sha256"] == after["tree_sha256"]
+            if before.get("status") == after.get("status") == "captured"
+            else None
+        ),
+        "scope": "Selected cwd before/after this command, excluding .git; not comparison to task start or a coverage claim.",
         "returncode": output["returncode"],
+        "exception_info": output["exception_info"],
     }
     record = {
         **summary,
@@ -242,6 +264,7 @@ def save(directory, number, arguments, before, after, output):
         "output": output["output"],
         "truncated": output["truncated"],
         "exception_info": output["exception_info"],
+        "output_window": output.get("output_window"),
         "scope": "Historical command boundary snapshots of cwd, excluding .git. No claim about transient edits, dependencies elsewhere, committed-tree cleanliness, coverage or correctness.",
     }
     data = json.dumps(record, ensure_ascii=True).encode()
@@ -250,6 +273,27 @@ def save(directory, number, arguments, before, after, output):
     with (Path(directory) / (identifier + ".json")).open("xb") as stream:
         stream.write(data)
     return summary
+
+
+def bounded_output(text, limit):
+    """Keep diagnostics at both ends without a shell pipeline or extra execution."""
+    if len(text) <= limit:
+        return text, {"mode": "complete_capture", "captured_characters": len(text)}
+    # Reserve a fixed part of the existing display allowance for the omission
+    # notice; include it in the bound, including for non-ASCII output.
+    marker = "\n[... check output middle omitted ...]\n"
+    if limit <= len(marker):
+        raise ValueError("Check output limit too small")
+    available = limit - len(marker)
+    head = available // 4
+    tail = available - head
+    return text[:head] + marker + text[-tail:], {
+        "mode": "head_tail",
+        "captured_characters": len(text),
+        "head_characters": head,
+        "tail_characters": tail,
+        "omitted_characters": len(text) - available,
+    }
 
 
 def validate_archive(directory, prefix):

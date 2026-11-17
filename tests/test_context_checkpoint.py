@@ -241,6 +241,13 @@ class CheckpointTests(unittest.TestCase):
         from finish_attempt import envelope
 
         self.limits["shared_evidence"] = True
+        # Only the solver workspace belongs in the factual digest; outer run
+        # artifacts (including the sentinel below) must not be enumerated.
+        workspace = self.root / "workspaces/0000"
+        workspace.mkdir(parents=True)
+        (workspace / "provided.py").write_text("public source data")
+        self.env.workspace = self.env.initial_workspace = workspace
+        (self.root / "private-sentinel").write_text("PRIVATE_EVALUATOR_DATA")
         evidence = [
             {
                 "kind": "observation",
@@ -275,6 +282,12 @@ class CheckpointTests(unittest.TestCase):
         self.assertIn('"status": "historical_only"', resumed)
         self.assertIn("o0001", resumed)
         self.assertIn("diagnostic", resumed)
+        self.assertIn("Harness-recorded file/check facts", resumed)
+        self.assertNotIn("private-sentinel", resumed)
+        self.assertNotIn("PRIVATE_EVALUATOR_DATA", resumed)
+        facts = self.read("fresh-context-reset-001.json")["resumption_digest"]
+        self.assertEqual(facts["changed_files_total"], 0)
+        self.assertEqual(facts["recent_checks"], [])  # bash observations are not checks
         self.assertEqual((self.model.calls, self.env.calls), (4, 4))
         self.assertEqual(len(self.perform_options), 2)
         self.assertEqual(

@@ -117,7 +117,18 @@ def render(evidence, history):
             rows[-1]["check_record"] = {
                 "id": check["id"],
                 "record_path": check["record_path"],
-                "files_unchanged": check["files_unchanged"],
+                "cwd": check["cwd"],
+                "exception_info": check.get("exception_info", "")[:64],
+                "exception_info_clipped": len(check.get("exception_info", "")) > 64,
+                "files_unchanged_by_command": check.get(
+                    "files_unchanged_by_command",
+                    # Historical records used false for unavailable identity.
+                    check.get("files_unchanged")
+                    if check["before"].get("status")
+                    == check["after"].get("status")
+                    == "captured"
+                    else None,
+                ),
                 "after_tree_sha256": check["after"].get("tree_sha256"),
                 "after_commit": check["after"].get("git_head", {}).get("commit"),
             }
@@ -138,3 +149,7 @@ def render(evidence, history):
             ):
                 row[field] = row[field][: len(row[field]) // 2]
                 row[clipped] = True
+            if "check_record" in row:
+                check = row["check_record"]
+                check["cwd"] = check["cwd"][: len(check["cwd"]) // 2]
+                check["cwd_clipped"] = True
