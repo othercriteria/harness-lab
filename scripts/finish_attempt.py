@@ -26,8 +26,12 @@ INSTRUCTION = (
     " insufficient evidence. The outer harness reviews blocked handoffs afterward;"
     " you do not need to arrange review. A contract-only argument may cite public_contract"
     " clauses without executing tests. Copy observation_id from tool-result metadata"
-    " when citing executed checks. For coding submissions, cite the final relevant check"
-    " after edits, with its actual result and count;"
+    " when citing executed checks. The harness attaches a receipt of cited commands,"
+    " exit statuses and literal output excerpts; it also records up to three recent"
+    " run_checks results with available current-directory comparisons. These facts"
+    " do not establish test coverage or correctness. For coding submissions, cite"
+    " the final relevant check after edits and explain its relevance or limitations;"
+    " you need not transcribe test counts, commands or exit statuses."
     " if no check completed after the final edit, disclose that in unverified rather"
     " than implying an earlier check validates the current files."
     " A passing suite is not proof of the entire contract. Mark unchecked claims"
@@ -90,7 +94,7 @@ TOOL = {
                                     },
                                     "supports": {
                                         "type": "string",
-                                        "description": "State what this observation establishes. For checks, distinguish asserted results from printed output and your interpretation; match the claim to the actual output.",
+                                        "description": "Your interpretation: explain relevance or limitations. The harness attaches recorded execution facts; no need to repeat commands, exit statuses or test counts. Any claims you do make must match the observed output.",
                                         "minLength": 1,
                                         "maxLength": 500,
                                     },
@@ -358,16 +362,27 @@ def actions(
         raise failure(error, response) from error
 
 
-def envelope(value, history):
+def envelope(value, history, *, workspace=None, initial_workspace=None):
     validate(value, history)
-    from evidence import resolve
+    from evidence import render, resolve
 
     citations = resolve(value["evidence"], history)
+    receipt = {
+        "source": "harness_recorded_facts",
+        "selected_observations": json.loads(render(value["evidence"], history)),
+        "current_public_state": None,
+        "scope": "Execution facts and literal untrusted output, not semantic coverage, test counts or correctness. Model interpretations remain in handoff. Missing comparisons are unknown.",
+    }
+    if workspace is not None and history is not None:
+        from resumption_digest import build
+
+        receipt["current_public_state"] = build(initial_workspace, workspace, history)
     return {
         "status": "unverified_model_handoff",
         "source": "model",
         "handoff": value,
         "observations": citations,
+        "execution_receipt": receipt,
         "note": "References establish existence, not interpretation or correctness; historical state may be stale.",
     }
 
@@ -384,6 +399,8 @@ def compact_handoff(envelope):
     }
     if "public_interface" in envelope:
         projection["public_interface"] = envelope["public_interface"]
+    if "execution_receipt" in envelope:
+        projection["execution_receipt"] = envelope["execution_receipt"]
     if len(json.dumps(projection).encode()) > 65536:
         raise ValueError("Compact handoff exceeds summary contribution bound")
     return projection

@@ -859,7 +859,10 @@ class IsolatedEnvironment:
             if action.get("tool") == NAME:
                 try:
                     value = validate(action["payload"], self.history)
-                    handoff = envelope(value, self.history)
+                    handoff = envelope(
+                        value, self.history, workspace=self.workspace,
+                        initial_workspace=self.initial_workspace,
+                    )
                     projection = compact_handoff(handoff)
                 except (
                     ValueError,
