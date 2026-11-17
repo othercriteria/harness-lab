@@ -14,15 +14,9 @@ MAX_FILES = 24
 MAX_CHECKS = 3
 
 
-def encoded(value):
-    return json.dumps(value, ensure_ascii=True, separators=(",", ":"))
-
-
-def text_field(text, limit=256):
-    """Bound serialized size, including escaped control characters in paths."""
-    while len(encoded(text).encode()) > limit:
-        text = text[: len(text) // 2]
-    return text
+# Re-exported from json_text so existing importers of resumption_digest keep
+# working: encoded and text_field are defined there.
+from json_text import encoded, text_field  # noqa: F401
 
 
 def build(initial_workspace, workspace, history):
