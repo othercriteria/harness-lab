@@ -1,0 +1,145 @@
+{
+  "status": "complete",
+  "completed_utc": "2026-11-17T15:08:18.165057+00:00",
+  "goal": "Versioned apprentice notebook with reviewed evolution and useful maintenance work",
+  "research_root": "/bulk/dlk/local-harness/research/apprentice-notebook-001",
+  "counts": {
+    "local_jobs": 7,
+    "distinct_tasks": 5,
+    "clean_completions": 7,
+    "declared_check_passes": 7,
+    "applied_contributions": 5,
+    "focused_integration_tests": 144
+  },
+  "qualification": "Mechanical pass/clean completion are not semantic acceptance. Both status originals and the preparation guide required factual corrections; notebook advice also required review. This is ordinary apprentice development, not a frozen reliability estimate.",
+  "landings": [
+    {
+      "commit": "91ce0f4",
+      "change": "Explicit opt-in frozen notebook selection, normal reviewed revisions,85mechanism tests"
+    },
+    {
+      "commit": "a793844",
+      "change": "Concise current status and exact historical archive; outer factual repairs"
+    },
+    {
+      "commit": "b6dc8f3",
+      "change": "Inspector order/Unicode tests and first reviewed lesson"
+    },
+    {
+      "commit": "b210fef",
+      "change": "Real consumer identity and physically minimal dependency-tree checks"
+    },
+    {
+      "commit": "d795ae8",
+      "change": "Shared progress limits, preserved behavior, narrowed notebook advice"
+    },
+    {
+      "commit": "ac9f63b",
+      "change": "Outer follow-up makes optional surrogate-pair case exercise an actual escaped pair"
+    },
+    {
+      "commit": "88fb2e0",
+      "change": "Preparation guide with factual corrections; chronology note accepted unchanged"
+    }
+  ],
+  "comparisons": [
+    {
+      "task": "status",
+      "order": [
+        "off",
+        "fixed"
+      ],
+      "seed": 16301,
+      "notes_version": 0,
+      "off_task_seconds": 154.3372006448917,
+      "fixed_task_seconds": 246.96695029106922,
+      "finding": "Both originals pass mechanical archive/shape checks but fail current-state semantics. Fixed selected only after repairs; no observed quality advantage."
+    },
+    {
+      "task": "values-tests",
+      "order": [
+        "fixed",
+        "off"
+      ],
+      "seed": 16321,
+      "notes_version": 1,
+      "fixed_task_seconds": 95.84009356494062,
+      "off_task_seconds": 99.74713522009552,
+      "finding": "Both originals pass requirements and independent negative controls. Fixed selected for simpler child test, not timing. Similar times; no persuasive notebook benefit."
+    }
+  ],
+  "comparison_limits": [
+    "One ordered matched seed per task; no causal speed/reliability estimate. Different note versions across tasks, fixed within each pair.",
+    "All initial repository preloads were excluded for max_bytes; no on/off preload-inclusion branch difference. Explicit notebook tool consultation was observed, including bash cat for inspector.",
+    "Task ceilings, briefing and dependency curation can dominate outcomes; strong task instructions make some notes redundant.",
+    "Evolving trials and accepted corrections are nonstationary qualitative evidence, not a pooled experimental arm."
+  ],
+  "notebook_evolution": [
+    {
+      "version": 0,
+      "accepted": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v0.md",
+      "sha256": "49c161530cfde52c5e4141bcb17f68febe1a475fb39a4666e73887283f5d008a",
+      "words": 279,
+      "proposal": null
+    },
+    {
+      "version": 1,
+      "accepted": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v1.md",
+      "sha256": "28274ffa2a8f95f5d5840e064c765744a3cb4546ef2ed36fd8157cd1a68fc0aa",
+      "words": 313,
+      "proposal": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v1-proposed.md"
+    },
+    {
+      "version": 2,
+      "accepted": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v2.md",
+      "sha256": "76a32ed02ae37fc18b87d68ab1c011fd5e09e507e8694d73057431770b44687c",
+      "words": 345,
+      "proposal": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v2-proposed.md"
+    },
+    {
+      "version": 3,
+      "accepted": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v3.md",
+      "sha256": "1c9e2b7bba0583f5e4a0f336ed297e11c274d0eec626372959a1f3dc6a0de0df",
+      "words": 381,
+      "proposal": "/bulk/dlk/local-harness/research/apprentice-notebook-001/notes-v3-proposed.md"
+    }
+  ],
+  "lessons": [
+    "Notebook exposure, proposals, outer corrections and later reuse all work without granting new authority.",
+    "Inspector proposed an overly specific receiver/fixture lesson; outer review generalized it.",
+    "Bounds proposed that object identity proves one definition; outer review corrected this false generalization for immutable values.",
+    "Guide retained an accurate chronology lesson after explicit outer feedback. This is assisted learning, not spontaneous rediscovery or evidence of future transfer.",
+    "The notebook did not prevent stale current-state claims. Advice can itself be plausible but wrong, so no automatic adoption is justified."
+  ],
+  "adoption": "Keep explicit opt-in for apprentice work, omission for clean experiments, and ordinary substantive review before advice carries forward. No automatic memory system, AGENTS alias, permission change or general performance claim.",
+  "verification": {
+    "integration": "/bulk/dlk/local-harness/research/apprentice-notebook-001/final-integration-verification-v2.result.json",
+    "inspector_mutants": "/bulk/dlk/local-harness/research/apprentice-notebook-001/inspector-verification-v2.result.json",
+    "values_boundary_mutants": "/bulk/dlk/local-harness/research/apprentice-notebook-001/values-boundary-verification-v2.result.json",
+    "guide": "/bulk/dlk/local-harness/research/apprentice-notebook-001/guide-reviewed-verification.result.json",
+    "outer_scaffolding_errors": "/bulk/dlk/local-harness/research/apprentice-notebook-001/outer-verification-limitations.json"
+  },
+  "security": {
+    "report": "/bulk/dlk/local-harness/research/apprentice-notebook-001/red-team-review.json",
+    "finding": "No notebook-specific isolation blocker found by independent code review and live CPU containment probes. Not a proof of adversarial robustness.",
+    "limits": [
+      "Concurrent uncooperative host writer race remains documented.",
+      "Read-only means final accepted export policy, not immutable solver filesystem.",
+      "Hashes and scope checks cannot establish advice quality, reviewer independence or adversarial evaluator correctness."
+    ]
+  },
+  "effort": {
+    "method": "Coarse active estimates in per-task review/preparation receipts; interleaved work and outer scaffolding repairs prevent precise labor or economic comparison.",
+    "finding": "Preparation and semantic review remain material; useful outputs do not establish apprentice cost competitiveness."
+  },
+  "observations": "/bulk/dlk/local-harness/research/apprentice-notebook-001/observations.json",
+  "session": {
+    "plan": "/bulk/dlk/local-harness/sessions/2026-11-17-gpu-quiet-025/restoration-plan.json",
+    "restoration": "/bulk/dlk/local-harness/sessions/2026-11-17-gpu-quiet-025/restoration-verification.json",
+    "restored": true
+  },
+  "next_work_not_authorized": [
+    "Use the notebook on future ordinary apprentice tasks and prune stale or over-specific guidance through normal review.",
+    "Evaluate transfer of the chronology lesson on a fresh task if that becomes useful; do not infer it from this goal."
+  ]
+}
