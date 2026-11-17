@@ -110,11 +110,24 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
     admission = s["admission"]
     if not isinstance(admission, dict) or admission.get("approved") is not True:
         raise ValueError("Outer public-contract admission required")
-    # These are outer-owned attestations, not candidate-provided claims.
-    for key in ("blind_review", "sealed_solution"):
-        entry = admission.get(key, {})
-        if set(entry) != {"path", "sha256"} or sha(entry["path"]) != entry["sha256"]:
-            raise ValueError("Missing or changed blind admission evidence")
+    # These are outer-owned attestations, not candidate-provided claims. The
+    # experimental mode records absent pre-review honestly; application still
+    # requires independent acceptance and the exact source/write-policy match.
+    mode = admission.get("mode", "blind_reviewed")
+    if mode == "outer_only_experimental":
+        if set(admission) != {
+            "approved", "mode", "public_contract_sha256", "reason"
+        } or not isinstance(admission.get("reason"), str) or not (
+            admission["reason"].strip() and len(admission["reason"]) <= 2000
+        ):
+            raise ValueError("Experimental admission requires an explicit reason and no blind evidence")
+    elif mode == "blind_reviewed":
+        for key in ("blind_review", "sealed_solution"):
+            entry = admission.get(key, {})
+            if set(entry) != {"path", "sha256"} or sha(entry["path"]) != entry["sha256"]:
+                raise ValueError("Missing or changed blind admission evidence")
+    else:
+        raise ValueError("Unsupported delegated admission mode")
     validate_plan({"version": 1, "checks": s["checks"]})
     if not isinstance(s["check_files"], dict) or len(s["check_files"]) > 32:
         raise ValueError("Invalid private check selection")
@@ -155,7 +168,7 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
         if admission.get("public_contract_sha256") != public_contract_id(
             snapshot["snapshot_id"], s["brief"]
         ):
-            raise ValueError("Blind admission describes a different public contract")
+            raise ValueError("Admission describes a different public contract")
         runtime = pending / "runtime"
         (runtime / "scripts").mkdir(parents=True)
         for p in sorted((project / "scripts").glob("*.py")):
@@ -207,6 +220,7 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
             "origin": "delegated",
             "split": "development",
             "admission_status": "admitted",
+            "admission_mode": mode,
             "requires_outer_review": True,
         }
         (task / "task.json").write_bytes(encoded(metadata))
