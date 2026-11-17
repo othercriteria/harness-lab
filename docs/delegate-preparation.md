@@ -85,6 +85,64 @@ archive and shape checks do not verify chronology. Keep genuinely unresolved
 questions labeled unresolved instead of converting old aspirations into
 current facts.
 
+## Qualifying a model recipe
+
+This is a provisional onboarding playbook, being developed through the
+[model characterization campaign](../configs/delegate-model-characterization-v1.json).
+The unit of qualification is a pinned **model, backend, recipe and interface**
+for a stated role and task range. Prior ladder success is a reason to try an
+apprentice task, not evidence that the model can review or hand off work well.
+Qualification never grants the local model more host access.
+
+1. **Establish operational fit.** Reuse known weights and placement evidence;
+   record exact identities, resource limits and session restoration ownership.
+   Check loading, native tool parsing, actual memory placement, cleanup and a
+   complete bounded request. Preserve startup/resource failures separately from
+   task failures. Do not tune quality around a broken protocol or weaken guards
+   to obtain a score.
+2. **Screen broadly before tuning deeply.** Start with a small common mix: a
+   clean review, a review with a real defect, and useful implementation or test
+   work. Include the existing recipe as a refreshed control. Keep paired public
+   bytes, budgets and notebook policy fixed, while documenting model-specific
+   sampling, reasoning and context choices. Complete an informative first pass
+   across candidates before optimizing the first model's interesting failures.
+   A startup failure can end a feasibility attempt; one poor task does not
+   establish that all roles are unsuitable.
+3. **Classify the failure before choosing the intervention.** Separate
+   infrastructure, tool/interface repair, source correctness, finding truth and
+   coverage, requested artifact delivery, and evidence/handoff support. A correct
+   diagnosis without the required artifact is useful recognition evidence but
+   an incomplete assignment. A green shape check is not a correct review.
+   Inspect traces for repeated work and outer review cost, not just exit status.
+4. **Spend further work where it can change a decision.** A local interface
+   defect warrants a small common fix plus affected controls; a resource limit
+   warrants a bounded placement or CPU probe; an unsupported allegation warrants
+   another clean/defective control. Change one recipe dimension at a time when
+   measuring throughput, using matched work rather than different generated
+   trajectories. Preserve every original result. Record task relaxation or
+   model-specific prompting as a new condition, not an invisible rescue.
+5. **Confirm the useful role.** Use selected fresh seeds and fresh work before
+   recommending a model beyond the tuning cases. Expand into documentation,
+   specification blockers or longer tasks when relevant to that role. Report
+   denominators and selection history; defer expensive reliability sweeps until
+   a deployment decision needs them. A small screen supports a provisional role
+   recommendation, not a universal reliability claim.
+
+Every next-trial decision should name the uncertainty, the discriminating task
+or change, the cost limit, and what outcome would change the recommendation.
+Stopping or deferring a model is a legitimate outcome: repeated operational
+infeasibility, no useful role after the bounded screen, or expensive repair with
+little expected benefit. Retain promising narrow roles even if another model
+wins overall. Numerical promotion thresholds are not established yet.
+
+Keep separate measures for task time, full dispatch time, cold/warm startup,
+generated work, checks, semantic acceptance, and outer intervention. A resident
+server or longer budget changes the operating condition; do not silently pool
+its timings with cold jobs or shorter attempts. The eventual routine should
+automate package identity, scheduling, receipts and evidence tables first.
+Semantic acceptance and the choice of the next informative experiment remain
+outer judgments until there is evidence that a narrower rule can replace them.
+
 ## Sequence
 
 1. Choose the small change; write the public brief and edit scope.
