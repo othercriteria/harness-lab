@@ -50,3 +50,46 @@ Bounds: implementation items, check summaries, remaining items, obstacle, and ne
 ## Accounting and non-effects
 
 The report's cost is included in the checkpoint request's recorded time and tokens; marginal report cost is not separately measured. Checkpoint-only reports select for context-heavy runs; short runs may never produce one. Missing or malformed reporting is not evidence of stagnation: the normal one-repair/fallback behavior applies, and the existing time, token, and call budgets continue unchanged. Reports do not terminate work, allocate more resources, or implement futility stopping, and there is no calibrated percent-complete or finish-probability score. Nothing here claims measured improvements or runtime reliability from source inspection.
+
+## Inspecting saved trials
+
+Run `python scripts/progress_inspect.py /path/to/saved/trial` (or supply any trial
+folder). The standard-library CLI prints one JSON object to stdout. It reads
+only immediate entries named `context-checkpoint-NNN.json`, where NNN is at
+least three ASCII digits, and orders them by numeric sequence, then filename.
+Request/response/repair metadata and other filenames are ignored. It does not
+infer missing sequence numbers. Accepted-record identity comes from the
+filename convention; the tool does not independently authenticate acceptance.
+Trace strings are parsed as data, never executed or imported. Symlinks and
+nonregular checkpoint entries are diagnosed rather than followed.
+
+`counts` separates candidate checkpoint files, usable reports, missing progress
+fields, malformed records, malformed reports, and unreadable files. Every
+candidate is either a usable report or one of these four diagnostic categories.
+`report_files` gives usable reports' filenames in summary order; `diagnostics`
+names excluded files and reasons. A present null progress value is malformed,
+not absent. An empty folder has zero counts and a `no_checkpoints` diagnostic.
+`summary` is the unchanged `progress_summary.summarize` result over usable
+reports only. Consequently adjacency and latest refer to usable reports;
+missing/bad records can hide intervening changes. Absence is never counted as
+`unchanged` or other evidence of no progress.
+
+The inspector checks the seven-field shape, enums, text and list limits, and
+4096-byte report bound. Text follows the shared bounded-text contract: LF and
+TAB are allowed within nonblank text; other characters below U+0020 are
+rejected, while DEL (U+007F) is allowed. Evidence must be an array of objects, but citation
+schemas and historical references are **not validated or resolved**: their
+supporting modules/history are not part of this standalone inspection interface.
+This is not a replacement for the reference validator. Duplicate JSON keys,
+nonfinite constants, invalid UTF-8, and non-object records are diagnosed.
+
+Exit status is 0 for complete inspection (including an empty folder), 1 when
+any candidate was excluded, and 2 for an inaccessible/invalid directory (a JSON
+`error` on stdout). Argument usage errors also exit 2, using argparse's stderr
+message. Partial summaries remain available on stdout with status 1.
+Counts describe **unverified model claims** and establish neither completion
+nor futility. Even zero remaining items and passing check claims require
+independent review.
+
+Verify with `python -m unittest discover -s tests -p 'test_progress_*.py'` and
+`python scripts/progress_inspect.py /path/to/saved/trial`.
