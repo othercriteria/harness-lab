@@ -1,0 +1,94 @@
+{
+  "at": "2026-11-17T01:40:32.989146+00:00",
+  "status": "complete",
+  "goal_result": "Completed the planned reliability measurement and progress-analysis goal; perfect-score aspirations remain unmet and are not claimed. No failure-discarding retries.",
+  "original_confirmation": {
+    "planned": 150,
+    "reviewed": 150,
+    "full_accepted": 132,
+    "source_failures": 5,
+    "handoff_failures": 14,
+    "source_and_handoff_overlap": 1,
+    "handoff_only_failures": 13
+  },
+  "separate_smoke": {
+    "count": 9,
+    "accepted": 9
+  },
+  "separate_followups": {
+    "markdown_wording": {
+      "selected_diagnostics": "2/2",
+      "fresh_full": "18/20",
+      "fresh_source": "20/20",
+      "decision": "No demonstrated reliability benefit; original selection retained."
+    },
+    "frame_120s": {
+      "fresh_full": "7/10",
+      "fresh_source": "10/10",
+      "timing_seconds": {
+        "sum_seconds": 703.5236497628503,
+        "median_seconds": 64.44503737951163,
+        "min_seconds": 46.32267416990362,
+        "max_seconds": 112.03342777211219
+      },
+      "decision": "Retain180s as the measured established recipe.120s remains a viable candidate for a later small comparison, with10/10source correctness but7/10full acceptance and one near-ceiling trial. Do not launch150s fallback or further streak-seeking trials now: observed failures are handoff claims rather than timeouts."
+    }
+  },
+  "all_attempts": {
+    "launched_campaigns": 21,
+    "terminal_campaigns": 21,
+    "scored_terminal_trials": 191,
+    "interrupted_or_incomplete_trials": 0,
+    "running_trials": 0,
+    "reviewed_scored_trials": 191,
+    "full_accepted_scored_trials": 168,
+    "reported_accounted_scored_seconds": 19772.547026907792,
+    "reported_interrupted_task_seconds": 0,
+    "reported_model_load_seconds": 324.89259705063887,
+    "reported_warmup_process_seconds": 126.07035370985977,
+    "terminal_outer_lifecycle_seconds": 20393.762995
+  },
+  "all_attempts_qualification": "191 trials includes original smoke, original confirmation and distinct follow-up arms.168accepted is bookkeeping, not a pooled reliability estimate.",
+  "progress": {
+    "reports": 141,
+    "reporting_trials_including_smoke": 54,
+    "primary_confirmation_reports": 91,
+    "primary_confirmation_reporting_trials": 50,
+    "required_semantic_reviews": 109,
+    "findings": [
+      "Specific saved-work/check evidence is useful; coarse progress labels and empty obstacle fields are weak signals.",
+      "Only1of50reporting confirmation trials reported an obstacle; failures can still report no obstacle.",
+      "Failed checks often precede successful repair. LongGit9 recovered from an inspection-only plateau through311seconds. No automatic stopping rule justified.",
+      "Joint checkpoint time occupies9.94%to19.55%of task time across the four reporting confirmation tasks; includes continuation summary and is not isolated removable progress overhead."
+    ],
+    "analysis": "docs/frontier-progress-calibration.md"
+  },
+  "decisions": [
+    "Retain exact measured freeze360recipes and preserve their component failure rates. Existing delegate defaults remain independently pinned.",
+    "Keep feasible/impossible codec on one recipe, with supported blockers separated from coding scores.",
+    "Do not generalize cheap-task wording evidence to all recipes. No blanket ceiling reduction.",
+    "Queue SQLite450seconds as requested, not an extra mandatory closeout experiment.",
+    "Next useful work: factual resumption/check provenance, command-local evidence semantics and bounded check output preserving command status; promote existing contract probes in future evaluator versions."
+  ],
+  "limitations": [
+    "Known development tasks and repeated seeds; no unseen-task or universal reliability claim.",
+    "Source correctness, handoff truthfulness, supported blockers and canonical scores remain distinct. Human semantic review can reject otherwise green runs; severity and ambiguity qualifications retained.",
+    "Progress observations are selected by checkpoint occurrence, clustered within trials, and partly outcome-aware during diagnosis. No calibrated completion probability claim.",
+    "Warm-prefix task timings exclude cold setup and human review. Setup/outer lifecycle totals overlap; do not add them together."
+  ],
+  "evidence": {
+    "cohort": "results/frontier-reliability-frozen-cohort-001.json",
+    "ledger": "results/frontier-reliability-all-attempts-001.json",
+    "recipes": "configs/frontier-reliability-recipes-v1.json",
+    "markdown": "results/frontier-reliability-markdown-wording-001.json",
+    "frame": "results/frontier-reliability-frame-120s-001.json",
+    "slate": "/bulk/dlk/local-harness/research/frontier-reliability-001/candidate-improvements-001.json",
+    "completion_audit": "results/frontier-reliability-completion-audit-001.json"
+  },
+  "restoration": {
+    "plan": "/bulk/dlk/local-harness/sessions/2026-11-16-gpu-quiet-020/restoration-plan.json",
+    "verified": true,
+    "host_check": "/bulk/dlk/local-harness/research/frontier-reliability-001/final-host-state.json"
+  },
+  "validation": "Final mechanical evidence-binding audit required before goal tool completion; its receipt is the authoritative pass/fail record."
+}
