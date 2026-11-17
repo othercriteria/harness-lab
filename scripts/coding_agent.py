@@ -44,6 +44,11 @@ def bash_tool(limits):
             " Files in /tmp persist between calls within this attempt;"
             " scratch files are not part of the submitted workspace."
         )
+    if limits.get("run_checks", False):
+        tool["function"]["description"] += (
+            " Use run_checks for verification commands; it displays bounded beginning/end"
+            " output and records command/file evidence."
+        )
     return tool
 
 

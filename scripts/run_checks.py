@@ -54,7 +54,11 @@ TOOL = {
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "Shell command to check the work; command plus cwd wrapper must fit 8192 UTF-8 bytes.",
+                    "description": (
+                        "Run the verification command directly; this tool already bounds displayed output."
+                        " Use separate calls for checks whose individual outcomes matter."
+                        " Command plus cwd wrapper must fit 8192 UTF-8 bytes."
+                    ),
                 },
                 "cwd": {
                     "type": "string",
