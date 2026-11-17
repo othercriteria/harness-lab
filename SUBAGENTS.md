@@ -20,6 +20,9 @@ snapshot may be smaller than the real repository; inspect what is present.
 - When mocking an instance method, distinguish its receiver from the enclosing
   test instance. Capture test fixtures in a closure; a receiver attribute with
   the same name may mean something different (for example, `Path.root`).
+- When refactoring shared constants, preserve existing public imports and test
+  consumers. Use identity assertions when shared-object identity is a requirement;
+  for immutable values, identity alone does not prove one source definition.
 
 ## State and handoff
 

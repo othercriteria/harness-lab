@@ -7,6 +7,7 @@ import re
 import stat
 
 from progress_summary import CHANGE_VALUES, CHECK_RESULT_VALUES, summarize
+from progress_values import PAYLOAD_UTF8_BYTES, TEXT_BOUND
 
 CHECKPOINT_NAME = re.compile(r"context-checkpoint-([0-9]{3,})\.json\Z")
 REPORT_FIELDS = {
@@ -20,8 +21,10 @@ def _text(value, label, allow_empty=False):
         raise ValueError(f"{label} must be text")
     if allow_empty and value == "":
         return
-    if not value.strip() or len(value.encode("utf-8")) > 300:
-        raise ValueError(f"{label} must be nonblank and at most 300 UTF-8 bytes")
+    if not value.strip() or len(value.encode("utf-8")) > TEXT_BOUND:
+        raise ValueError(
+            f"{label} must be nonblank and at most {TEXT_BOUND} UTF-8 bytes"
+        )
     if any(ord(char) < 32 and char not in "\n\t" for char in value):
         raise ValueError(f"{label} contains control characters")
 
@@ -52,8 +55,8 @@ def _report_shape(report):
     evidence = report["evidence"]
     if not isinstance(evidence, list) or any(not isinstance(item, dict) for item in evidence):
         raise ValueError("progress.evidence must be an array of citation objects")
-    if len(json.dumps(report, ensure_ascii=False, allow_nan=False).encode("utf-8")) > 4096:
-        raise ValueError("progress exceeds 4096 serialized UTF-8 bytes")
+    if len(json.dumps(report, ensure_ascii=False, allow_nan=False).encode("utf-8")) > PAYLOAD_UTF8_BYTES:
+        raise ValueError(f"progress exceeds {PAYLOAD_UTF8_BYTES} serialized UTF-8 bytes")
 
 
 def _object(pairs):

@@ -17,16 +17,12 @@ import json
 
 from evidence import validate_evidence
 from evidence_contract import bounded_text, require_fields
-from progress_values import CHANGE_VALUES, CHECK_RESULT_VALUES
-
-# Per-field text bound: 300 characters AND 300 UTF-8 bytes. Every UTF-8
-# character encodes to at least one byte, so the byte bound is the
-# stricter one; bounded_text enforces it plus nonempty and control
-# character rules.
-TEXT_BOUND = 300
-# Whole-report bound: UTF-8 bytes of json.dumps(value, ensure_ascii=False)
-# with its default separators. Exactly PAYLOAD_UTF8_BYTES is allowed.
-PAYLOAD_UTF8_BYTES = 4096
+from progress_values import (
+    CHANGE_VALUES,
+    CHECK_RESULT_VALUES,
+    PAYLOAD_UTF8_BYTES,
+    TEXT_BOUND,
+)
 
 REPORT_FIELDS = (
     "change",
