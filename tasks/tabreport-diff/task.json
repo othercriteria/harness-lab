@@ -1,6 +1,6 @@
 {
   "id": "tabreport-diff",
-  "version": 2,
+  "version": 3,
   "kind": "repository-feature",
   "split": "development",
   "maturity": "active-development",
@@ -8,11 +8,11 @@
   "entrypoint": "public/task.md",
   "test_counts": {
     "public": 21,
-    "acceptance": 10
+    "acceptance": 11
   },
   "baseline_public_passes": false,
   "fixture_validation": "isolated-only",
-  "admission_status": "Public contract and sealed blind solution unchanged. Evaluator revision2 adds stdout write failure coverage after Qwen3.6 green-canonical/source-failed run; isolated replay recorded in results/tabreport-diff-evaluator-v2-validation-001.json. This is an exposed development task.",
+  "admission_status": "Public contract, starter files, public tests and sealed blind solution unchanged. Evaluator revision3 promotes the established output-encoding outer probe; isolated replay in results/tabreport-diff-evaluator-v3-validation-001.json. Known development task; frozen earlier versions preserved.",
   "human_duration": {
     "minutes": null,
     "status": "Uncalibrated authored feature on an exposed package."
@@ -33,10 +33,10 @@
     "Finite canonical and external coverage; no full adversarial robustness claim."
   ],
   "evaluator_revision": {
-    "version": 2,
+    "version": 3,
     "public_contract_changed": false,
-    "change": "OSError/BrokenPipeError on supplied stdout must return2, diagnose and preserve caller streams, for JSON and CSV.",
-    "prior_evidence": "results/success-freeze-225.json",
-    "validation": "results/tabreport-diff-evaluator-v2-validation-001.json"
+    "change": "Real ASCII stdout encoding failure for valid UTF-8 input must return2, diagnose and preserve caller streams; JSON escaping may instead succeed. Existing output-write contract unchanged.",
+    "prior_evidence": "results/frontier-reliability-frozen-cohort-001.json",
+    "validation": "results/tabreport-diff-evaluator-v3-validation-001.json"
   }
 }

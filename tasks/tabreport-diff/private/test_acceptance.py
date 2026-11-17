@@ -163,3 +163,25 @@ class SnapshotDiffTests(unittest.TestCase):
                         self.assertTrue(err.getvalue())
                         self.assertEqual(out.getvalue(), '')
                         self.assertFalse(source.closed or out.closed or err.closed)
+
+    def test_stdout_encoding_error_uses_output_failure_contract(self):
+        # A real TextIOWrapper can fail while encoding otherwise valid UTF-8
+        # input. JSON may escape non-ASCII text, whereas CSV must preserve it.
+        with tempfile.TemporaryDirectory() as directory:
+            after = Path(directory) / 'after.csv'
+            after.write_text('team,item,minutes,status\nÉ,x,1,open\n', encoding='utf-8')
+            for format in ('json', 'csv'):
+                with self.subTest(format=format):
+                    source = io.StringIO('team,item,minutes,status\n')
+                    buffer = io.BytesIO()
+                    out = io.TextIOWrapper(buffer, encoding='ascii', write_through=True)
+                    err = io.StringIO()
+                    try:
+                        code = main(['-', str(after), '--format', format],
+                                    stdin=source, stdout=out, stderr=err)
+                        self.assertIn(code, (0, 2) if format == 'json' else (2,))
+                        if code == 2:
+                            self.assertTrue(err.getvalue())
+                        self.assertFalse(source.closed or out.closed or err.closed)
+                    finally:
+                        out.close()
