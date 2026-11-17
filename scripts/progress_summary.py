@@ -14,7 +14,8 @@ correctness, not a calibrated completion or finish-probability score,
 and not a futility or termination decision. Truth, relevance, and
 next-action concreteness remain outer review, not mechanical rules here.
 
-The module is data only: standard library, no I/O, no execution, no
+The module is data only: standard library plus the shared,
+dependency-free progress_values vocabulary, no I/O, no execution, no
 model calls, no import of progress_report, no validation of individual
 reports, no evidence resolution, and no mutation of, or retained
 mutable references to, its inputs.
@@ -22,8 +23,7 @@ mutable references to, its inputs.
 
 import copy
 
-CHANGE_VALUES = ("advanced", "unchanged", "regressed", "uncertain")
-CHECK_RESULT_VALUES = ("passing", "failing", "stale", "unknown")
+from progress_values import CHANGE_VALUES, CHECK_RESULT_VALUES
 
 
 def summarize(reports):
