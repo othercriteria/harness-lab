@@ -17,6 +17,9 @@ snapshot may be smaller than the real repository; inspect what is present.
 - A passing check establishes its actual assertions, not every property named in
   its filename or comments. Cite the observation that supports a claim and keep
   coverage claims narrow. Say what remains unverified.
+- When mocking an instance method, distinguish its receiver from the enclosing
+  test instance. Capture test fixtures in a closure; a receiver attribute with
+  the same name may mean something different (for example, `Path.root`).
 
 ## State and handoff
 
