@@ -28,6 +28,11 @@ The receipt separates three things:
   coverage, test counts or correctness; model interpretations remain in the
   handoff; missing comparisons are unknown.
 
+Observation citations may contain only `kind` and `observation_id`; optional
+`supports` text remains a model interpretation. Public-contract citations still
+require their argument in `supports`. Omission of interpretation does not establish
+semantic support for a claim.
+
 The compact summary is a bounded projection of the same envelope: status,
 source, the full handoff, `observation_count`, the receipt (when present), and
 a pointer to the artifact, `observations_artifact: "final-handoff.json"`. The full observation collection stays in the fixed artifact. The compact
