@@ -8,11 +8,13 @@ from pathlib import Path
 
 
 def number(value):
-    return (
-        value
-        if type(value) in (int, float) and math.isfinite(value) and value >= 0
-        else None
-    )
+    if type(value) not in (int, float) or value < 0:
+        return None
+    try:
+        finite = math.isfinite(float(value))
+    except OverflowError:
+        return None
+    return value if finite else None
 
 
 def sequence(value):
