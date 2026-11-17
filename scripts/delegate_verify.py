@@ -12,6 +12,7 @@ def validate_plan(plan):
     if (
         not isinstance(plan, dict)
         or set(plan) != {"version", "checks"}
+        or type(plan["version"]) is not int
         or plan["version"] != 1
         or not isinstance(plan["checks"], list)
         or len(plan["checks"]) > 16
