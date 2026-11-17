@@ -55,6 +55,29 @@ def public_contract_id(snapshot_id, brief):
     )
 
 
+def task_text(brief, snapshot):
+    """Deterministic model-visible brief: the raw brief plus the exact edit scope.
+
+    The scope lists only the snapshot contract's allowed_write_paths and marks
+    every other supplied file read-only. The contract is the same policy export
+    enforces, so the worker is told its permissions without restating them and
+    without weakening any outer check.
+    """
+    contract = snapshot["contract"]
+    lines = [brief.rstrip("\n"), "", "## Edit scope", "",
+             "Only the listed paths may be added, modified, or deleted; no other file changes are accepted.", ""]
+    lines += [f"- editable: {name}" for name in contract["allowed_write_paths"]]
+    read_only = sorted(set(contract["inputs"]) - set(contract["allowed_write_paths"]))
+    if read_only:
+        lines.append("")
+        lines.append("All other supplied files are read-only:")
+        lines += [f"- read-only: {name}" for name in read_only]
+    else:
+        lines.append("")
+        lines.append("All other supplied files are read-only.")
+    return "\n".join(lines) + "\n"
+
+
 def verify_package(identifier, store=STORE):
     root = package_path(identifier, store)
     record = read(root / "package.json")
@@ -202,7 +225,7 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
         (runtime / "configs/protocols/delegated-v1.json").write_bytes(encoded(limits))
         task = runtime / "tasks" / TASK
         shutil.copytree(pending / "source/public", task / "public")
-        (task / "public/task.md").write_text(s["brief"])
+        (task / "public/task.md").write_text(task_text(s["brief"], snapshot))
         (task / "private").mkdir()
         # The export policy is outer-only. Check it before running any evaluator.
         shutil.copytree(pending / "source", task / "private/snapshot")
