@@ -121,6 +121,10 @@ Qualification never grants the local model more host access.
    in one batch are one initial mistake, not six ignored corrections. Likewise,
    a failed scratch assertion that is repaired and honestly reported can be
    evidence of successful debugging rather than an unsupported handoff.
+   Check the feedback itself: a directory read described as path traversal can
+   conceal the recoverable mistake. Preserve both the original failed recovery
+   and the interface defect; a clearer message does not retroactively excuse
+   or repair the submission.
 4. **Spend further work where it can change a decision.** A local interface
    defect warrants a small common fix plus affected controls; a resource limit
    warrants a bounded placement or CPU probe; an unsupported allegation warrants
@@ -128,6 +132,10 @@ Qualification never grants the local model more host access.
    measuring throughput, using matched work rather than different generated
    trajectories. Preserve every original result. Record task relaxation or
    model-specific prompting as a new condition, not an invisible rescue.
+   When source review finds a requirement the grader missed, keep the original
+   check result and record a supplemental probe and separate acceptance decision.
+   Do not silently replace frozen tests or equate a passing checker with complete
+   centralization, correct documentation links, or supported review findings.
 5. **Confirm the useful role.** Use selected fresh seeds and fresh work before
    recommending a model beyond the tuning cases. Expand into documentation,
    specification blockers or longer tasks when relevant to that role. Report
