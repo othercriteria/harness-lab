@@ -30,9 +30,12 @@ def validate_evidence(evidence, history):
             raise ValueError(f"{label} must be an object")
         kind = entry.get("kind")
         if kind == "observation":
-            require_fields(
-                entry, ("kind", "observation_id", "supports"), label + " (observation)"
-            )
+            # supports is optional: omitting it means no interpretation was
+            # supplied. It is never synthesized or normalized here.
+            required = ("kind", "observation_id")
+            if "supports" in entry:
+                required = required + ("supports",)
+            require_fields(entry, required, label + " (observation)")
             identifier = entry["observation_id"]
             if not isinstance(identifier, str) or not re.fullmatch(
                 r"o[0-9]{4}", identifier
@@ -63,7 +66,10 @@ def validate_evidence(evidence, history):
             bounded_text(entry["public_clause"], 500, "public_clause")
         else:
             raise ValueError(f"{label}.kind must be observation or public_contract")
-        bounded_text(entry["supports"], 500, "supports")
+        # When supplied, supports keeps its existing nonempty text and
+        # byte/control-character bounds; public-contract entries always have it.
+        if "supports" in entry:
+            bounded_text(entry["supports"], 500, "supports")
 
 
 def resolve(evidence, history):

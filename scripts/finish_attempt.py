@@ -26,13 +26,16 @@ INSTRUCTION = (
     " insufficient evidence. The outer harness reviews blocked handoffs afterward;"
     " you do not need to arrange review. A contract-only argument may cite public_contract"
     " clauses without executing tests. Copy observation_id from tool-result metadata"
-    " when citing executed checks. The harness attaches a receipt of cited commands,"
+    " when citing executed checks: kind=observation plus observation_id is enough"
+    " for recorded facts; add supports when an interpretation or limitation is"
+    " useful. Optional supports remain model claims, not harness-certified facts."
+    " The harness attaches a receipt of cited commands,"
     " exit statuses and literal output excerpts; it also records up to three recent"
     " run_checks results with available current-directory comparisons. These facts"
     " do not establish test coverage or correctness. For coding submissions, cite"
-    " the final relevant check after edits and explain its relevance or limitations;"
-    " you need not transcribe test counts, commands or exit statuses."
-    " if no check completed after the final edit, disclose that in unverified rather"
+    " the final relevant check after edits. Recorded commands, exit statuses and"
+    " test counts need not be repeated. If no check completed after the final edit,"
+    " disclose that in unverified rather"
     " than implying an earlier check validates the current files."
     " A passing suite is not proof of the entire contract. Mark unchecked claims"
     " unverified and explain empty evidence. In addition to schema character limits,"
@@ -78,14 +81,14 @@ TOOL = {
                 },
                 "evidence": {
                     "type": "array",
-                    "description": "Cite each observation_id at most once; combine claims supported by the same observation into one entry's supports text.",
+                    "description": "Cite each recorded fact with kind=observation plus observation_id, at most once each; add supports when an interpretation or limitation is useful, combining claims supported by the same observation into one entry's supports text.",
                     "maxItems": 4,
                     "items": {
                         "anyOf": [
                             {
                                 "type": "object",
                                 "additionalProperties": False,
-                                "required": ["kind", "observation_id", "supports"],
+                                "required": ["kind", "observation_id"],
                                 "properties": {
                                     "kind": {"type": "string", "enum": ["observation"]},
                                     "observation_id": {
@@ -94,7 +97,7 @@ TOOL = {
                                     },
                                     "supports": {
                                         "type": "string",
-                                        "description": "Your interpretation: explain relevance or limitations. The harness attaches recorded execution facts; no need to repeat commands, exit statuses or test counts. Any claims you do make must match the observed output.",
+                                        "description": "Optional interpretation: explain relevance or limitations when useful. The harness attaches recorded execution facts; no need to repeat commands, exit statuses or test counts. Any claims you make remain model claims, not harness-certified facts, and must match the observed output.",
                                         "minLength": 1,
                                         "maxLength": 500,
                                     },
