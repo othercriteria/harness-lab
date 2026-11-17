@@ -71,7 +71,7 @@ def validate(value):
     if path in ("/workspace", "/workspace/", ".", "./"):
         raise ValueError(
             "read_file needs a file, not the workspace directory. "
-            "Use execute with command 'ls /workspace' to list files, "
+            "Use bash with command 'ls /workspace' to list files, "
             "then pass a file path to read_file."
         )
     if path.startswith("/workspace/"):
