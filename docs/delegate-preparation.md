@@ -87,8 +87,8 @@ current facts.
 
 ## Qualifying a model recipe
 
-This is a provisional onboarding playbook, being developed through the
-[model characterization campaign](../configs/delegate-model-characterization-v1.json).
+This provisional onboarding playbook is informed by the completed
+[model characterization campaign](../results/delegate-model-characterization-conclusions-001.json).
 The unit of qualification is a pinned **model, backend, recipe and interface**
 for a stated role and task range. Prior ladder success is a reason to try an
 apprentice task, not evidence that the model can review or hand off work well.
@@ -99,6 +99,8 @@ Qualification never grants the local model more host access.
    Diff effective inference settings against the prior working recipe, including
    reasoning caps, deadline allocation and template options. A familiar server
    profile name does not prove those client-side controls were carried forward.
+   Inspect the first emitted request as well as configuration files: qualification
+   concerns the settings that actually reach the backend.
    Check loading, native tool parsing, actual memory placement, cleanup and a
    complete bounded request. Preserve startup/resource failures separately from
    task failures. Do not tune quality around a broken protocol or weaken guards
@@ -136,6 +138,10 @@ Qualification never grants the local model more host access.
    check result and record a supplemental probe and separate acceptance decision.
    Do not silently replace frozen tests or equate a passing checker with complete
    centralization, correct documentation links, or supported review findings.
+   Record whether the intervention was exercised: a new feedback message cannot
+   explain a run that never received it. Budget changes also affect mechanisms
+   such as checkpoint eligibility, not only time available to think. Inspect
+   those events before calling a longer run evidence of greater task capability.
 5. **Confirm the useful role.** Use selected fresh seeds and fresh work before
    recommending a model beyond the tuning cases. Expand into documentation,
    specification blockers or longer tasks when relevant to that role. Report
