@@ -147,3 +147,80 @@ class Acceptance(unittest.TestCase):
                 self.assertIs(caught.exception, error)
                 self.assertTrue(parser.has_option('s', 'late=key'))
                 self.assertFalse(out.closed)
+
+    def test_service_uses_actual_overridden_write_behavior(self):
+        for operation in ('remove_unsafe', 'introduce_unsafe', 'unrelated_before_validation'):
+            with self.subTest(operation=operation):
+                unrelated = ValueError('unrelated subclass failure')
+                class Custom(cp.ConfigParser):
+                    def __init__(self):
+                        super().__init__()
+                        self.calls = 0
+
+                    def write(self, stream, *args, **kwargs):
+                        self.calls += 1
+                        if operation == 'remove_unsafe':
+                            self.remove_option('s', 'bad=key')
+                        elif operation == 'introduce_unsafe':
+                            self.set('s', 'bad=key', 'x')
+                        else:
+                            raise unrelated
+                        return super().write(stream, *args, **kwargs)
+
+                parser = Custom()
+                parser.read_dict({'s': {'ok': '1'}})
+                if operation != 'introduce_unsafe':
+                    parser.set('s', 'bad=key', 'x')
+                out = io.StringIO()
+                if operation == 'unrelated_before_validation':
+                    with self.assertRaises(ValueError) as caught:
+                        service.export(parser, out)
+                    self.assertIs(caught.exception, unrelated)
+                else:
+                    status = service.export(parser, out)
+                    expected = (0 if LEGACY else True) if operation == 'remove_unsafe' else (2 if LEGACY else False)
+                    self.assertEqual(status, expected)
+                self.assertEqual(parser.calls, 1)
+                self.assertEqual(out.getvalue(), ('[s]\nok=1\n\n' if LEGACY else '[s]\nok = 1\n\n') if operation == 'remove_unsafe' else '')
+                self.assertFalse(out.closed)
+
+    def test_unrelated_valueerror_with_identical_args_propagates(self):
+        invalid = self.make()
+        invalid.read_dict({'s': {'bad=key': 'x'}})
+        try:
+            invalid.write(io.StringIO())
+        except (cp.Error, ValueError) as original:
+            failure_args = original.args
+        else:
+            self.fail('invalid key was not rejected')
+        for case in ('stream', 'named_interpolation', 'unnamed_interpolation', 'stand_in'):
+            with self.subTest(case=case):
+                unrelated = ValueError(*failure_args)
+                class FailingStream:
+                    def write(self, text):
+                        raise unrelated
+                class FailingInterpolation(cp.Interpolation):
+                    def before_write(self, parser, section, option, value):
+                        raise unrelated
+                class Writer:
+                    def __init__(self):
+                        self.calls = 0
+                    def write(self, stream):
+                        self.calls += 1
+                        raise unrelated
+                if case == 'stand_in':
+                    parser, out = Writer(), io.StringIO()
+                elif case == 'stream':
+                    parser, out = self.make(), FailingStream()
+                    parser.read_dict({'s': {'safe': 'x'}})
+                else:
+                    unnamed = case == 'unnamed_interpolation'
+                    parser = self.make(allow_unnamed_section=unnamed,
+                                       interpolation=FailingInterpolation())
+                    parser.read_string('safe=x\n' if unnamed else '[s]\nsafe=x\n')
+                    out = io.StringIO()
+                with self.assertRaises(ValueError) as caught:
+                    service.export(parser, out)
+                self.assertIs(caught.exception, unrelated)
+                if case == 'stand_in':
+                    self.assertEqual(parser.calls, 1)
