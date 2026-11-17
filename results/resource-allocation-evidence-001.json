@@ -1,0 +1,415 @@
+{
+  "status": "descriptive evidence snapshot; not new experiments or forecasts",
+  "sources": [
+    {
+      "path": "/bulk/dlk/local-harness/research/delegate-models-001/timing-projection.json",
+      "sha256": "5d4dce9782072051249a59a514a9f888e5b6df4be4447eb6bc1f99530f6d73ad"
+    },
+    {
+      "path": "results/delegate-model-characterization-conclusions-001.json",
+      "sha256": "b519767f112d75d7c455ca3cc82b064cb0e6537297cb3a3fcc1b223fbef7634f"
+    },
+    {
+      "path": "results/delegate-apprentice-conclusions-001.json",
+      "sha256": "7aaf4ba51367585ff6bea826f59813582fb119281ac5e48ff7791486ef601f32"
+    },
+    {
+      "path": "results/apprentice-review-repair-conclusions-001.json",
+      "sha256": "f6ad1348e2682fc6de2155d3b52fad94ff6e2e74a750fab5ae110be0fa54c9d0"
+    },
+    {
+      "path": "results/workflow-efficiency-resource-costs-001.json",
+      "sha256": "a159078942ebc74a096c8f12c95ec47820eb79b3abbbbac712c798f6bf259a59"
+    },
+    {
+      "path": "results/frontier-reliability-conclusions-001.json",
+      "sha256": "d069742fb12320f3e831f85e18bc25ad926591019c289bb9b24d933cde78ea3a"
+    }
+  ],
+  "notes": [
+    "Known development assignments; outcomes are not transferable reliability estimates.",
+    "Dispatch time includes lifecycle work and is not GPU busy time or a measured exclusive lease interval.",
+    "Reported backend timings cover completed response bodies; missing response timing is not zero.",
+    "Outer active effort and user attention are not comprehensively instrumented."
+  ],
+  "qualification_panel": [
+    {
+      "model": "qwen",
+      "condition": "v2",
+      "tasks": 9,
+      "full_results": 7,
+      "task_seconds": 1334.2624081829563,
+      "dispatch_seconds": 1531.0948679056019,
+      "reported_prefill_seconds": 124.28,
+      "reported_decode_seconds": 1112.949138,
+      "context_reset_count": 4,
+      "request_count": 104,
+      "response_count": 104,
+      "reported_prefill_task_fraction": 0.09314509592550742,
+      "reported_prefill_dispatch_fraction": 0.0811706724417434,
+      "dispatch_minus_task_seconds": 196.83245972264558,
+      "median_dispatch_minus_task_seconds": 20.62180287996307,
+      "rows": [
+        {
+          "task": "case-p",
+          "job_id": "557d14fc88d44d89955ffe39a406d370",
+          "task_seconds": 115.92546959896572,
+          "dispatch_seconds": 140.83093585609458,
+          "reported_prefill_seconds": 5.717087,
+          "context_reset_count": 0,
+          "request_count": 7,
+          "response_count": 7
+        },
+        {
+          "task": "case-v",
+          "job_id": "2d4e7bb643bc49c29759551970c4dc8a",
+          "task_seconds": 90.04517640196718,
+          "dispatch_seconds": 114.83620525803417,
+          "reported_prefill_seconds": 5.911766,
+          "context_reset_count": 0,
+          "request_count": 6,
+          "response_count": 6
+        },
+        {
+          "task": "summary-regressions",
+          "job_id": "33eaed10cbb04e15ac00219e9dfd67cf",
+          "task_seconds": 90.36247565411031,
+          "dispatch_seconds": 115.90309437806718,
+          "reported_prefill_seconds": 6.623565,
+          "context_reset_count": 0,
+          "request_count": 6,
+          "response_count": 6
+        },
+        {
+          "task": "item-limits",
+          "job_id": "b59ab7663fff42a2b66f0827da87d007",
+          "task_seconds": 246.51353859901428,
+          "dispatch_seconds": 267.01532986201346,
+          "reported_prefill_seconds": 25.86598,
+          "context_reset_count": 1,
+          "request_count": 18,
+          "response_count": 18
+        },
+        {
+          "task": "navigation-repair",
+          "job_id": "0803fef6d92a4f16bd36dde5e3265c65",
+          "task_seconds": 186.90957358991727,
+          "dispatch_seconds": 206.87588092009537,
+          "reported_prefill_seconds": 16.796,
+          "context_reset_count": 1,
+          "request_count": 12,
+          "response_count": 12
+        },
+        {
+          "task": "case-r",
+          "job_id": "e37e3c551da64fc0a7a0a6f7af9957a8",
+          "task_seconds": 137.70768734789453,
+          "dispatch_seconds": 156.90762772108428,
+          "reported_prefill_seconds": 11.369422,
+          "context_reset_count": 0,
+          "request_count": 9,
+          "response_count": 9
+        },
+        {
+          "task": "case-t",
+          "job_id": "27dc5057a0a94bc8b208afa1aade4b8e",
+          "task_seconds": 187.30223847320303,
+          "dispatch_seconds": 207.9240413531661,
+          "reported_prefill_seconds": 24.340492,
+          "context_reset_count": 1,
+          "request_count": 21,
+          "response_count": 21
+        },
+        {
+          "task": "case-x",
+          "job_id": "9caf84402fb94ae18f062892c5a41ca5",
+          "task_seconds": 122.504715151852,
+          "dispatch_seconds": 142.85465984605253,
+          "reported_prefill_seconds": 8.231038,
+          "context_reset_count": 0,
+          "request_count": 9,
+          "response_count": 9
+        },
+        {
+          "task": "case-z",
+          "job_id": "92f9f222307249a2b14f4eb6b590494c",
+          "task_seconds": 156.99153336603194,
+          "dispatch_seconds": 177.94709271099418,
+          "reported_prefill_seconds": 19.42465,
+          "context_reset_count": 1,
+          "request_count": 16,
+          "response_count": 16
+        }
+      ]
+    },
+    {
+      "model": "flint",
+      "condition": "corrected_think2k",
+      "tasks": 9,
+      "full_results": 2,
+      "task_seconds": 1850.3154245452024,
+      "dispatch_seconds": 1975.666721741436,
+      "reported_prefill_seconds": 319.147994,
+      "reported_decode_seconds": 1279.433906,
+      "context_reset_count": 0,
+      "request_count": 152,
+      "response_count": 148,
+      "reported_prefill_task_fraction": 0.17248302087653236,
+      "reported_prefill_dispatch_fraction": 0.16153938844436752,
+      "dispatch_minus_task_seconds": 125.35129719623365,
+      "median_dispatch_minus_task_seconds": 11.851097790990025,
+      "rows": [
+        {
+          "task": "case-p",
+          "job_id": "a13ce2c21d2b483c9af7a20ac34cf0bc",
+          "task_seconds": 220.64309285092168,
+          "dispatch_seconds": 243.6859413201455,
+          "reported_prefill_seconds": 23.660073999999998,
+          "context_reset_count": 0,
+          "request_count": 15,
+          "response_count": 14
+        },
+        {
+          "task": "case-v",
+          "job_id": "4679bbc898304820aab1d5f9413a118c",
+          "task_seconds": 109.48474793508649,
+          "dispatch_seconds": 125.4793046489358,
+          "reported_prefill_seconds": 18.676291,
+          "context_reset_count": 0,
+          "request_count": 10,
+          "response_count": 10
+        },
+        {
+          "task": "summary-regressions",
+          "job_id": "19a94ca3e78f42b886f55ce8cb9c4801",
+          "task_seconds": 172.36013098899275,
+          "dispatch_seconds": 188.60531058115885,
+          "reported_prefill_seconds": 25.648938,
+          "context_reset_count": 0,
+          "request_count": 18,
+          "response_count": 18
+        },
+        {
+          "task": "item-limits",
+          "job_id": "a9dc3cd97958456a888d30dd93ec0c5d",
+          "task_seconds": 260.3445250149816,
+          "dispatch_seconds": 272.0204509140458,
+          "reported_prefill_seconds": 45.352068,
+          "context_reset_count": 0,
+          "request_count": 40,
+          "response_count": 40
+        },
+        {
+          "task": "navigation-repair",
+          "job_id": "33dd8d19c7a94cf9b38364874d6b74d1",
+          "task_seconds": 220.60863616503775,
+          "dispatch_seconds": 231.95337136881426,
+          "reported_prefill_seconds": 22.107959,
+          "context_reset_count": 0,
+          "request_count": 15,
+          "response_count": 14
+        },
+        {
+          "task": "case-r",
+          "job_id": "39698e2161e74e96a8e95c9c9d819492",
+          "task_seconds": 220.64478997909464,
+          "dispatch_seconds": 231.94479494099505,
+          "reported_prefill_seconds": 38.241286,
+          "context_reset_count": 0,
+          "request_count": 17,
+          "response_count": 16
+        },
+        {
+          "task": "case-t",
+          "job_id": "91261d69d44f4685b28a70053983b45f",
+          "task_seconds": 219.1153838019818,
+          "dispatch_seconds": 230.96648159297183,
+          "reported_prefill_seconds": 53.505849,
+          "context_reset_count": 0,
+          "request_count": 13,
+          "response_count": 13
+        },
+        {
+          "task": "case-x",
+          "job_id": "6dd6030c4bc341f5b150c44af37718c3",
+          "task_seconds": 220.6881327200681,
+          "dispatch_seconds": 231.99676831718534,
+          "reported_prefill_seconds": 34.286579,
+          "context_reset_count": 0,
+          "request_count": 11,
+          "response_count": 10
+        },
+        {
+          "task": "case-z",
+          "job_id": "7e70ee2d0a984e53981d51041239ba3e",
+          "task_seconds": 206.42598508903757,
+          "dispatch_seconds": 219.01429805718362,
+          "reported_prefill_seconds": 57.66895,
+          "context_reset_count": 0,
+          "request_count": 13,
+          "response_count": 13
+        }
+      ]
+    },
+    {
+      "model": "coder",
+      "condition": "v2",
+      "tasks": 9,
+      "full_results": 1,
+      "task_seconds": 1134.497489115689,
+      "dispatch_seconds": 1292.5016350108199,
+      "reported_prefill_seconds": 467.196601,
+      "reported_decode_seconds": 577.694422,
+      "context_reset_count": 0,
+      "request_count": 108,
+      "response_count": 106,
+      "reported_prefill_task_fraction": 0.411809286033914,
+      "reported_prefill_dispatch_fraction": 0.3614669322999262,
+      "dispatch_minus_task_seconds": 158.00414589513093,
+      "median_dispatch_minus_task_seconds": 18.576714686118066,
+      "rows": [
+        {
+          "task": "case-p",
+          "job_id": "6b0f95a0b4fe449a9412604ebf572239",
+          "task_seconds": 211.69564697495662,
+          "dispatch_seconds": 230.6650550069753,
+          "reported_prefill_seconds": 74.421841,
+          "context_reset_count": 0,
+          "request_count": 26,
+          "response_count": 26
+        },
+        {
+          "task": "case-r",
+          "job_id": "13c8026bfa654e9bae4eff6feb235b79",
+          "task_seconds": 220.82389267603867,
+          "dispatch_seconds": 239.77737607993186,
+          "reported_prefill_seconds": 69.389614,
+          "context_reset_count": 0,
+          "request_count": 20,
+          "response_count": 19
+        },
+        {
+          "task": "case-t",
+          "job_id": "076515835e484323bf204e1833e1e8a0",
+          "task_seconds": 86.64700345392339,
+          "dispatch_seconds": 105.72782881604508,
+          "reported_prefill_seconds": 51.966073,
+          "context_reset_count": 0,
+          "request_count": 9,
+          "response_count": 9
+        },
+        {
+          "task": "case-v",
+          "job_id": "11f63d35f4fa417a9061a9dc78482208",
+          "task_seconds": 118.13171188579872,
+          "dispatch_seconds": 136.7084265719168,
+          "reported_prefill_seconds": 53.960440999999996,
+          "context_reset_count": 0,
+          "request_count": 12,
+          "response_count": 12
+        },
+        {
+          "task": "case-x",
+          "job_id": "56297e3c9a1b42c2a19f05badb2b1b72",
+          "task_seconds": 69.7954145509284,
+          "dispatch_seconds": 87.47222716012038,
+          "reported_prefill_seconds": 45.618808,
+          "context_reset_count": 0,
+          "request_count": 6,
+          "response_count": 6
+        },
+        {
+          "task": "case-z",
+          "job_id": "227f6f918b8f40ec9d365440cc9025ed",
+          "task_seconds": 66.91131401387975,
+          "dispatch_seconds": 85.4592319149524,
+          "reported_prefill_seconds": 46.240119,
+          "context_reset_count": 0,
+          "request_count": 5,
+          "response_count": 5
+        },
+        {
+          "task": "summary-regressions",
+          "job_id": "782bf56a924142f889549dba06f0543d",
+          "task_seconds": 270.87727328017354,
+          "dispatch_seconds": 290.0224051629193,
+          "reported_prefill_seconds": 69.925523,
+          "context_reset_count": 0,
+          "request_count": 22,
+          "response_count": 21
+        },
+        {
+          "task": "item-limits",
+          "job_id": "ffb3d6c113fc448aa3571e80db021fd6",
+          "task_seconds": 23.039412171114236,
+          "dispatch_seconds": 36.84120823489502,
+          "reported_prefill_seconds": 18.578196,
+          "context_reset_count": 0,
+          "request_count": 3,
+          "response_count": 3
+        },
+        {
+          "task": "navigation-repair",
+          "job_id": "ccbca418856a43019209c1bdaf14242a",
+          "task_seconds": 66.57582010887563,
+          "dispatch_seconds": 79.82787606306374,
+          "reported_prefill_seconds": 37.095986,
+          "context_reset_count": 0,
+          "request_count": 5,
+          "response_count": 5
+        }
+      ]
+    }
+  ],
+  "delegate-apprentice-conclusions-001": {
+    "local_jobs": 19,
+    "effort": {
+      "local_task_seconds": 3376.0033244281076,
+      "local_dispatch_seconds": 3763.1377803927753,
+      "median_dispatch_minus_task_seconds": 20.25731279188767,
+      "outer_active_labor": "Not instrumented; do not infer savings from clock overlap or local elapsed time.",
+      "followup": "Roughly20s/job dispatch-minus-task remains noticeable on small tasks; disaggregate lifecycle/backend setup before claiming a fix. Preserve serialized ownership/cleanup."
+    }
+  },
+  "apprentice-review-repair-conclusions-001": {
+    "effort": {
+      "method": "Coarse active estimates in individual review and preparation receipts, interleaved with model runs. Packet-build clock is not total labor; no precise total labor or economic-parity claim.",
+      "panel_preparation": "/bulk/dlk/local-harness/research/apprentice-review-repair-001/effort.json",
+      "followup_preparation": "/bulk/dlk/local-harness/research/apprentice-review-repair-001/followup-preparation.json",
+      "assessment": "Outer setup and semantic review remain substantial for these tiny changes. The result supports bounded apprentice use and improved testing, not replacing the outer maintainer.",
+      "outer_setup_errors": [
+        "Two coverage-gap scaffolds emitted literal backslash-n and failed import; corrected v3 evidence retained alongside failures. These are outer setup failures, not candidate defects."
+      ]
+    }
+  },
+  "workflow-efficiency-resource-costs-001": {
+    "unique_trials": 47,
+    "task_seconds": 10156.033787990687,
+    "campaign_dispatch_receipt_seconds": 11003.375238,
+    "elapsed_since_goal_config_creation_seconds": 14418.15846,
+    "limits": [
+      "Unique observed attempts, including failures and expected blockers. Reused controls are counted once; no failed work is omitted.",
+      "Task clocks include automatic evaluation. Supplemental outer probe compute is separate; human review, unit/integration testing, UI work and orchestration are not inferred from these clocks.",
+      "Campaign receipts include launch/load/warm/standard verification/teardown, but separately scheduled probes and human review occur outside. Missing receipt coverage is explicit.",
+      "Elapsed wall time since the goal configuration was written is not exclusive GPU use or a measured human engineering cost.",
+      "No causal all-task speedup or100-hour return on investment can be estimated from these developmental screens."
+    ]
+  },
+  "frontier-reliability-conclusions-001": {
+    "original_confirmation": {
+      "planned": 150,
+      "reviewed": 150,
+      "full_accepted": 132,
+      "source_failures": 5,
+      "handoff_failures": 14,
+      "source_and_handoff_overlap": 1,
+      "handoff_only_failures": 13
+    },
+    "limitations": [
+      "Known development tasks and repeated seeds; no unseen-task or universal reliability claim.",
+      "Source correctness, handoff truthfulness, supported blockers and canonical scores remain distinct. Human semantic review can reject otherwise green runs; severity and ambiguity qualifications retained.",
+      "Progress observations are selected by checkpoint occurrence, clustered within trials, and partly outcome-aware during diagnosis. No calibrated completion probability claim.",
+      "Warm-prefix task timings exclude cold setup and human review. Setup/outer lifecycle totals overlap; do not add them together."
+    ]
+  }
+}
