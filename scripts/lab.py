@@ -170,6 +170,12 @@ def main():
         "setup", help="Prepare bulk cache and lock/install Python dependencies"
     )
     sub.add_parser("check", help="Check lint, formatting, and trusted task fixtures")
+    memory = sub.add_parser(
+        "memory", help="Sample host RAM, swap traffic and memory stalls"
+    )
+    memory.add_argument(
+        "--seconds", type=int, default=5, help="Observation interval (default 5)"
+    )
     pilot = sub.add_parser("pilot", help="Run a guarded, restoring GPU campaign")
     pilot.add_argument("--profile", choices=profiles(), required=True)
     pilot.add_argument("--output", type=Path, required=True)
@@ -198,6 +204,13 @@ def main():
     )
     registry.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.action == "memory":
+        from host_memory import report
+
+        if args.seconds < 1:
+            parser.error("--seconds must be positive")
+        print(json.dumps(report(args.seconds), indent=2))
+        return 0
     if args.action == "registry":
         from model_registry import main as registry_main
 

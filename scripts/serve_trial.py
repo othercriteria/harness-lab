@@ -15,6 +15,7 @@ from pathlib import Path
 
 import with_ollama_released as lifecycle
 from control import RunCancelled, cancellation, defer_launch_signals
+from host_memory import sample as host_memory_sample
 from model_registry import record_campaign, verify_weight
 from protocol import (
     admit_tasks,
@@ -104,15 +105,18 @@ def local_json(origin, path, timeout=2):
 
 
 def resources():
-    memory = {
-        line.split(":")[0]: int(line.split()[1]) * 1024
-        for line in Path("/proc/meminfo").read_text().splitlines()
-    }
-    vm = dict(line.split() for line in Path("/proc/vmstat").read_text().splitlines())
+    host = host_memory_sample()
+    mem = host["memory_kib"]
+    page = os.sysconf("SC_PAGE_SIZE")
     return {
         "time": time.time(),
-        "available": memory["MemAvailable"],
-        "swap_out_bytes": int(vm["pswpout"]) * os.sysconf("SC_PAGE_SIZE"),
+        "monotonic": host["monotonic"],
+        "available": mem["MemAvailable"] * 1024,
+        "swap_out_bytes": host["vm"]["pswpout"] * page,
+        "swap_in_bytes": host["vm"]["pswpin"] * page,
+        "swap_free_bytes": mem["SwapFree"] * 1024,
+        "memory_pressure_total_us": host["pressure_us"],
+        "oom_kills": host["vm"]["oom_kill"],
     }
 
 
@@ -205,13 +209,29 @@ def main():
     log = None
     telemetry = (output / "telemetry.jsonl").open("w")
 
+    previous = baseline
+
     def guard():
+        nonlocal previous
         current = resources()
+        elapsed = current["monotonic"] - previous["monotonic"]
+        full_us = current["memory_pressure_total_us"]["full"]
+        current["interval_seconds"] = elapsed
+        current["interval_full_memory_stall_percent"] = (
+            (full_us - previous["memory_pressure_total_us"]["full"])
+            / (elapsed * 10_000)
+            if elapsed > 0
+            else None
+        )
+        current["swap_out_growth_bytes"] = (
+            current["swap_out_bytes"] - baseline["swap_out_bytes"]
+        )
+        previous = current
         telemetry.write(json.dumps(current) + "\n")
         telemetry.flush()
         if current["available"] < 32 * 1024**3:
             raise RuntimeError("Available RAM fell below 32 GiB")
-        if current["swap_out_bytes"] - baseline["swap_out_bytes"] > 128 * 1024**2:
+        if current["swap_out_growth_bytes"] > 128 * 1024**2:
             raise RuntimeError("Global swap-out guard exceeded 128 MiB")
         if local_json("http://127.0.0.1:11434", "/api/ps").get("models"):
             raise RuntimeError(
