@@ -218,7 +218,8 @@ function costBreakdown(value){
 function delegatedMetrics(run,trace){
   const job=run.delegation, result=job?.result?.result, summary=trace?.summary;
   const check=result?.checks_passed??summary?.independent_checks_passed;
-  return [['Use',job?.classification?.kind==='lifecycle_acceptance'?'LIFECYCLE CHECK':job?.classification?.kind==='diagnostic_replay'?'DIAGNOSTIC REPLAY':'USEFUL WORK'],['Execution',job?.state?.state||run.state],
+  const useKind=job?.classification?.kind;
+  return [['Use',useKind==='lifecycle_acceptance'?'LIFECYCLE CHECK':useKind==='diagnostic_replay'?'DIAGNOSTIC REPLAY':useKind==='useful_work'?'USEFUL WORK':'UNCLASSIFIED'],['Execution',job?.state?.state||run.state],
     ['Independent checks',check===true?'PASS':check===false?'FAIL':'UNVERIFIED'],
     ['Clean model completion',summary?.clean_agent_completion===true?'YES':summary?'NO':'PENDING'],
     ['Outer acceptance',(job?.outer_review?.decision||'PENDING').replaceAll('_',' ')],

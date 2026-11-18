@@ -395,13 +395,32 @@ assert.match(text(elements.get('metrics')),/accepted with repairs Outer acceptan
 assert.match(text(elements.get('metrics')),/NO Clean model completion/);
 assert.match(text(elements.get('metrics')),/YES Applied/);
 assert.doesNotMatch(text(elements.get('metrics')),/Verified correctness/);
+assert.match(text(elements.get('metrics')),/UNCLASSIFIED Use/);
+assert.doesNotMatch(text(elements.get('metrics')),/USEFUL WORK|LIFECYCLE CHECK|DIAGNOSTIC REPLAY/);
 assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
 assert.equal(elements.get('title').textContent,'Docs <script> remains text');
 assert.equal(elements.get('job-details').hidden,false);
+context.delegatedRun.delegation.classification={kind:'diagnostic_replay'};
+vm.runInContext('render(delegatedRun,delegatedTrace)',context);
+assert.match(text(elements.get('metrics')),/DIAGNOSTIC REPLAY Use/);
+assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
 context.delegatedRun.delegation.classification={kind:'lifecycle_acceptance'};
 vm.runInContext('render(delegatedRun,delegatedTrace)',context);
 assert.equal(elements.get('record-type').textContent,'DELEGATION LIFECYCLE ACCEPTANCE');
 assert.match(text(elements.get('metrics')),/LIFECYCLE CHECK Use/);
+context.delegatedRun.delegation.classification={kind:'useful_work'};
+vm.runInContext('render(delegatedRun,delegatedTrace)',context);
+assert.match(text(elements.get('metrics')),/USEFUL WORK Use/);
+assert.doesNotMatch(text(elements.get('metrics')),/UNCLASSIFIED Use/);
+assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
+context.delegatedRun.delegation.classification={kind:'research_probe'};
+vm.runInContext('render(delegatedRun,delegatedTrace)',context);
+assert.match(text(elements.get('metrics')),/UNCLASSIFIED Use/);
+assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
+context.delegatedRun.delegation.classification={};
+vm.runInContext('render(delegatedRun,delegatedTrace)',context);
+assert.match(text(elements.get('metrics')),/UNCLASSIFIED Use/);
+assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
 console.log('Delegated execution/checks/acceptance/application remain separate and text-only.');
 
 // Verification claims must stay paired with the matching operation even when
