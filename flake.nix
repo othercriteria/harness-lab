@@ -13,7 +13,7 @@
       in {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            python313 uv ruff git curl jq ripgrep bubblewrap
+            python313 uv ruff nodejs git curl jq ripgrep bubblewrap
             bash coreutils diffutils findutils gnugrep gnused patch
             util-linux procps time
             opencode aider-chat
