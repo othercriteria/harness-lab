@@ -165,7 +165,7 @@ def identity(workspace, cwd):
     }
 
 
-def snapshot(workspace, cwd):
+def snapshot(workspace, cwd, *, include_git=False):
     """Hash normalized snapshot data through no-follow directory descriptors."""
     cwd = validate({"command": "true", "cwd": cwd})["cwd"]
     descriptor = None
@@ -195,7 +195,7 @@ def snapshot(workspace, cwd):
                         raise ValueError("File count limit")
                     names.append(entry.name)
             for name in sorted(names):
-                if name == ".git":
+                if name == ".git" and not include_git:
                     continue
                 path = relative + name
                 info = os.stat(name, dir_fd=directory, follow_symlinks=False)
