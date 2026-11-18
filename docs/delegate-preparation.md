@@ -3,7 +3,7 @@
 A practical guide for the Maintainer — the trusted outer human or hosted-agent
 role that prepares work, operates the host and reviews results — running
 apprentice jobs through the delegated-work mechanics in the
-[README](../README.md#delegated-work-mvp). The Worker is the inner agent that
+[operations guide](operations.md#delegated-work-mvp). The Worker is the inner agent that
 receives only the frozen package's public inputs and brief; the Delegate is the
 packaging, dispatch, result collection and reviewed application around it; and
 the Verifier runs the separate executable checks. This adds no approval layer;
