@@ -29,10 +29,11 @@ function runOutcomeSummary(run){
   if(run.kind==='delegated')return `Delegated work · ${trials.at(-1)?.state||'preparing'}`;
   if(run.kind==='diagnostic')return `${trials.filter(t=>t.state==='diagnostic reviewed').length}/${trials.length} diagnostics reviewed`;
   if(trials.some(t=>t.comparison_review)){
-    const accepted=trials.filter(t=>t.passed===true).length;
+    const accepted=trials.filter(t=>t.comparison_review?.status==='accepted').length;
     const invalid=trials.filter(t=>t.comparison_review?.status==='operationally_invalid').length;
     const pending=trials.filter(t=>t.comparison_review?.status==='pending_outer_review').length;
-    return `${accepted}/${trials.length-invalid} accepted${invalid?` · ${invalid} operationally invalid`:''}${pending?` · ${pending} awaiting review`:''}`;
+    const without=trials.filter(t=>!t.comparison_review).length;
+    return `${accepted}/${trials.length-invalid-without} accepted${invalid?` · ${invalid} operationally invalid`:''}${pending?` · ${pending} awaiting review`:''}${without?` · ${without} without comparison review`:''}`;
   }
   if(run.kind==='control'||!trials.some(t=>t.adjudication))return `${trials.filter(t=>t.state==='passed').length}/${trials.length} ${run.kind==='control'?'controls':'trials'} passed`;
   const counts={coding:0,blocker:0,pending:0,failed:0,rejected:0,stopped:0,live:0,unfinished:0};

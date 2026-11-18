@@ -471,6 +471,29 @@ assert.match(text(elements.get('metrics')),/OPERATIONALLY INVALID Full-result re
 assert.match(text(elements.get('metrics')),/excluded from model-quality comparisons/);
 console.log('Comparison acceptance and operational-invalid counts remain separate.');
 
+// Issue #39: only explicit accepted comparison reviews count; a passing row
+// without a comparison review stays out of the denominator but stays visible.
+const partialComparisonRun={name:'partial-comparison',kind:'coding',state:'complete',trials:[
+  {name:'trial-00',kind:'coding',passed:true,state:'passed',comparison_review:{status:'accepted'}},
+  {name:'trial-01',kind:'coding',passed:true,state:'passed'}]};
+context.partialComparisonRun=partialComparisonRun;
+assert.doesNotMatch(vm.runInContext('runOutcomeSummary(partialComparisonRun)',context),/2\/2 accepted/);
+assert.equal(vm.runInContext('runOutcomeSummary(partialComparisonRun)',context),'1/1 accepted · 1 without comparison review');
+// Ordinary summaries are unchanged when no row carries a comparison review.
+const plainComparisonRun={name:'plain-comparison',kind:'coding',state:'complete',trials:[
+  {state:'passed',adjudication:{status:'adjudicated'}},{state:'passed',adjudication:{status:'adjudicated'}}]};
+context.plainComparisonRun=plainComparisonRun;
+assert.equal(vm.runInContext('runOutcomeSummary(plainComparisonRun)',context),'2 coding passes');
+// All rows carrying a comparison status keep the accepted/rejected/pending/invalid treatment.
+const fullComparisonRun={name:'full-comparison',kind:'coding',state:'complete',trials:[
+  {state:'passed',passed:true,comparison_review:{status:'accepted'}},
+  {state:'failed',passed:false,comparison_review:{status:'rejected'}},
+  {state:'in progress',comparison_review:{status:'pending_outer_review'}},
+  {state:'operationally invalid',comparison_review:{status:'operationally_invalid'}}]};
+context.fullComparisonRun=fullComparisonRun;
+assert.equal(vm.runInContext('runOutcomeSummary(fullComparisonRun)',context),'1/3 accepted · 1 operationally invalid · 1 awaiting review');
+console.log('Partial comparison reviews count only explicit accepted rows (issue #39).');
+
 async function paginationRefreshChecks(){
   const calls=[];
   let hold=null;
