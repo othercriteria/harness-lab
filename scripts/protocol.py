@@ -286,6 +286,10 @@ def require_task_protocol(metadata, limits):
             raise ValueError("Inert-data task blind admission is not complete")
         if limits.get("behavioral_gate"):
             raise ValueError("Inert-data tasks use their independent data verifier")
+    if metadata.get("kind") == "javascript-release-selection" and (
+        limits.get("behavioral_gate") or limits.get("python_test_library")
+    ):
+        raise ValueError("Use the JS task protocol with its independent Node verifier")
     if metadata.get("kind") == "git-backport":
         if metadata.get("admission_status") != "admitted":
             raise ValueError("Git task blind admission is not complete")

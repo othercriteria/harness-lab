@@ -49,7 +49,10 @@ class ReferenceModel(LocalModel):
         # Keep this trusted integration control within the same command cap as
         # evaluated models, including for larger multi-file references.
         self.commands = []
-        for path in sorted((task / "private/reference").rglob("*.py")):
+        metadata = json.loads((task / "task.json").read_text())
+        is_js = metadata.get("kind") == "javascript-release-selection"
+        pattern = "*.cjs" if is_js else "*.py"
+        for path in sorted((task / "private/reference").rglob(pattern)):
             relative = str(path.relative_to(task / "private/reference"))
             raw = path.read_bytes()
             for offset in range(0, max(1, len(raw)), 4000):
@@ -63,7 +66,7 @@ class ReferenceModel(LocalModel):
                 self.commands.append("python -c " + shlex.quote(code))
         self.commands.extend(
             [
-                "python -m unittest discover -s tests",
+                "node tests/public.cjs" if is_js else "python -m unittest discover -s tests",
                 "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT",
             ]
         )
@@ -157,6 +160,10 @@ def verify(runtime, workspace, task, output, remaining):
         from grade_integrity import verify as verify_integrity
 
         return verify_integrity(runtime, workspace, task, output, remaining)
+    if metadata.get("kind") == "javascript-release-selection":
+        from verify_release_channel import verify as verify_js
+
+        return verify_js(runtime, workspace, task, output, remaining)
     evaluator = metadata.get("evaluator")
     if evaluator == "hcast-orm-unittest-v1":
         from imported_orm import verify as verify_orm
@@ -233,7 +240,7 @@ def save_diff(before, after, path):
     path.write_text(view.render())
 
 
-def configure_agent(config, limits, protocol):
+def configure_agent(config, limits, protocol, *, node=False):
     """Render the frozen protocol's model-visible environment contract."""
     reject_retired_options(limits)
     config = dict(config)
@@ -264,6 +271,8 @@ def configure_agent(config, limits, protocol):
 
         validate(limits["python_test_library"])
         config["system_template"] += INSTRUCTION
+    if node:
+        config["system_template"] += " Node.js is available as node for the JavaScript checks in the brief."
     blocker_available = limits.get("structured_finalization") or limits.get(
         "spec_blocker_exit"
     )
@@ -280,7 +289,9 @@ def configure_agent(config, limits, protocol):
         f" Agent allowance: {limits['agent_wall_seconds']} seconds."
     )
     delegated = protocol == "delegated-v1"
-    if delegated:
+    if node:
+        config["instance_template"] += " Run the JavaScript checks specified in the public brief."
+    elif delegated:
         config["instance_template"] += (
             " Follow the public brief's verification method and any supplied checks."
             " For documentation or static-review tasks, compare against the relevant"
@@ -323,7 +334,7 @@ def configure_agent(config, limits, protocol):
                 " fails, inspect both the code and the test's assumptions before changing either."
                 " Save rerunnable regression tests when requested by the task."
             )
-        if not delegated:
+        if not delegated and not node:
             config["system_template"] += (
                 " For unittest discovery, use unittest.TestCase subclasses or provide load_tests;"
                 " plain pytest-style functions are not discovered. Check the reported test count."
@@ -524,7 +535,8 @@ def run(args):
         admitted(task)
         require_protocol(limits)
     config = json.loads((inputs / "configs/agent.json").read_text())
-    config = configure_agent(config, limits, args.protocol)
+    node = metadata.get("kind") == "javascript-release-selection"
+    config = configure_agent(config, limits, args.protocol, node=node)
     if continuation:
         config["system_template"] = "{{original_system}}"
         config["instance_template"] = "{{task}}"
@@ -573,13 +585,10 @@ def run(args):
         copy_initial_tree(continuation["directory"] / "workspace", workspace)
     else:
         shutil.copytree(task / "public", workspace)
-    runtime = (
-        Runtime(
-            python_test_library=limits["python_test_library"],
-            library_catalog=inputs / "configs/python-test-libraries.json",
-        )
-        if "python_test_library" in limits
-        else Runtime()
+    runtime = Runtime(
+        python_test_library=limits.get("python_test_library"),
+        library_catalog=inputs / "configs/python-test-libraries.json",
+        node=node,
     )
     if metadata.get("kind") == "git-backport" and not continuation:
         from git_task import prepare

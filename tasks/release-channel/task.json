@@ -1,0 +1,21 @@
+{
+  "id": "release-channel",
+  "version": 1,
+  "kind": "javascript-release-selection",
+  "origin": "authored",
+  "split": "development",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 2,
+    "acceptance": 11
+  },
+  "fixture_validation": "isolated-only",
+  "human_duration": {
+    "minutes_range_estimated": [
+      3,
+      7
+    ],
+    "measured_human_minutes": null
+  },
+  "reference_provenance": "Fresh-context blind solution sealed before evaluator feedback. See results/release-channel-pilot-001.json."
+}

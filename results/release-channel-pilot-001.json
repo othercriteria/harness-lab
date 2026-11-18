@@ -1,0 +1,617 @@
+{
+  "task": "release-channel",
+  "admission": {
+    "origin": "New authored CommonJS release-index maintenance fixture in this repository. Synthetic inputs, no upstream time measurement. Public material and blind review preceded evaluator feedback.",
+    "public_brief_sha256": "8c09d314f4db5864472bf1f7ce68200df5100ee128e56d387ccee05854628b64",
+    "blind": {
+      "current-release.cjs": "d0eb0abdd1310fe520583874bcdc1793ce0bafe1e244fb4ea34119719bdd14f7",
+      "review.md": "8ca70c25bb84efa671db4487f4b981d2f5fc6ab0fffd2695cb39b37ae133665a"
+    },
+    "blind_elapsed_seconds": 27,
+    "estimated_human_minutes": [
+      3,
+      7
+    ],
+    "measured_human_minutes": null,
+    "review": "# Blind admission review\n\nI found no ambiguity or inconsistency requiring a wording change. I read only the public brief, starter, and public tests. The public assertions cover an empty index, cross-channel isolation, and an older publication that follows a withdrawal in input order. They leave reinstatement, equal revisions, and build zero unillustrated. The brief determines the expected result for each.\n\nI interpreted revision order independently for each build in the requested channel. Equal revisions can retain either row because their states agree. After resolving every build, I choose the highest published one, including zero. A withdrawal of the highest build can expose a lower published build. When every build is withdrawn or the channel is absent, the result is null.\n\nMy first submission is in `current-release.cjs`. It scans the records once, retains references to the latest records in a map keyed by build, and scans that map once. It only reads the caller's records. I did not execute the submission or receive evaluator feedback.\n\n**Human engineer estimate** Roughly 3\u20137 minutes for an engineer familiar with JavaScript to read the brief, implement the two scans, run the public tests in a ready environment, and check the boundary cases. This is a judgment for one small task. Familiarity with Map and time spent adding examples could move it outside that range.\n\n**Measured blind attempt wall time** 27 seconds, from 2026-11-18 19:55:29 to 2026-11-18 19:55:56 UTC. The interval covers public input discovery, reading, interpretation, and writing the first solution and review.\n",
+    "fixture_controls": {
+      "starter": {
+        "passed": false,
+        "cases": {
+          "empty": true,
+          "fallback": false,
+          "zero": true,
+          "foreign": true,
+          "withdrawn": false,
+          "reinstated": true,
+          "per-build revision": true,
+          "same build across channels": true,
+          "agreeing duplicate": true,
+          "wide integer": true,
+          "absent despite other activity": false
+        }
+      },
+      "blind": {
+        "passed": true,
+        "cases": {
+          "empty": true,
+          "fallback": true,
+          "zero": true,
+          "foreign": true,
+          "withdrawn": true,
+          "reinstated": true,
+          "per-build revision": true,
+          "same build across channels": true,
+          "agreeing duplicate": true,
+          "wide integer": true,
+          "absent despite other activity": true
+        }
+      }
+    },
+    "reference_cpu_seconds": 3.9008628220763057
+  },
+  "plan": {
+    "pilot": [
+      19200,
+      19201
+    ],
+    "probes": [
+      "flint",
+      "coder"
+    ],
+    "common_ceiling": 90,
+    "choice": "Try Qwen at 60 seconds on the two development seeds if both at 90 are correct within 45 seconds. Confirm at 60 only if both pass full review, otherwise at 90. Failures remain recorded.",
+    "confirmation": [
+      19210,
+      19211,
+      19212,
+      19213,
+      19214,
+      19215,
+      19216,
+      19217,
+      19218,
+      19219
+    ],
+    "confirmation_policy": "Ten fresh Qwen trials, same task, first warmed with discarded fixed public-prefix request from its pilot at the selected ceiling. No other ladder tasks. Distinguish raw correctness, handoff and warmup. Two-seed model probes are exploratory.",
+    "held_out": "Before model exposure freeze additional unpublished semantic cases, then grade frozen submissions in a separate sandbox.",
+    "session_restoration": "/bulk/dlk/local-harness/sessions/2026-11-18-gpu-quiet-050/restoration-plan.json"
+  },
+  "node_startup_seconds": [
+    0.04387240903452039,
+    0.05447438103146851,
+    0.04852533480152488,
+    0.032339554047212005,
+    0.03305487986654043
+  ],
+  "holdout_cases": [
+    {
+      "name": "republication below a withdrawn head",
+      "channel": "nightly",
+      "records": [
+        {
+          "build": 3,
+          "revision": 4,
+          "state": "published",
+          "channel": "nightly"
+        },
+        {
+          "build": 4,
+          "revision": 8,
+          "state": "withdrawn",
+          "channel": "nightly"
+        },
+        {
+          "build": 3,
+          "revision": 2,
+          "state": "withdrawn",
+          "channel": "nightly"
+        },
+        {
+          "build": 4,
+          "revision": 7,
+          "state": "published",
+          "channel": "nightly"
+        },
+        {
+          "build": 9,
+          "revision": 99,
+          "state": "published",
+          "channel": "other"
+        }
+      ],
+      "expected": 3
+    },
+    {
+      "name": "upper safe integer",
+      "channel": "nightly",
+      "records": [
+        {
+          "build": 9007199254740991,
+          "revision": 4,
+          "state": "withdrawn",
+          "channel": "nightly"
+        },
+        {
+          "build": 9007199254740991,
+          "revision": 5,
+          "state": "published",
+          "channel": "nightly"
+        }
+      ],
+      "expected": 9007199254740991
+    },
+    {
+      "name": "only exact channel matches",
+      "channel": "nightly",
+      "records": [
+        {
+          "build": 5,
+          "revision": 8,
+          "state": "published",
+          "channel": "Nightly"
+        }
+      ],
+      "expected": null
+    },
+    {
+      "name": "zero after all others withdrawn",
+      "channel": "nightly",
+      "records": [
+        {
+          "build": 0,
+          "revision": 0,
+          "state": "published",
+          "channel": "nightly"
+        },
+        {
+          "build": 5,
+          "revision": 80,
+          "state": "withdrawn",
+          "channel": "nightly"
+        },
+        {
+          "build": 5,
+          "revision": 79,
+          "state": "published",
+          "channel": "nightly"
+        }
+      ],
+      "expected": 0
+    }
+  ],
+  "holdout_sha256": "049a74517a4fff5ed30260468e10dd01c690597ff19f47572a84c95b7713c37f",
+  "host_evidence": "/bulk/dlk/local-harness/research/release-channel-001",
+  "campaigns": [
+    {
+      "run": "js-release-coder-90-dev-001",
+      "inputs_sha256": "721e5b58b9830541effa6267824883c79c4d17eec2ce2a04d9b814959d4ef8ed",
+      "profile": "routing-coder-32k-cpu31-fit1536-temp06",
+      "profile_sha256": "b8c85dc2882c3be9f5305e4696dad276238c837f25e446384b8156f9d7e9db3f",
+      "protocol_sha256": "0e2c557f7884b5d1e2dffe919aefd77944647c7beb076b3ba5d4fba8fbf71022",
+      "model_load_s": 48.79,
+      "warmup_s": null,
+      "cleanup_verified": true,
+      "trials": [
+        {
+          "seed": 19200,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 41.714,
+          "agent_s": 38.775,
+          "verification_s": 1.0,
+          "first_edit_result_s_approx": 31.43,
+          "first_public_test_dispatch_s_approx": 20.45,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 4394,
+          "initial_cached_tokens": 0,
+          "source_sha256": "648475831aab8268d0e1dbbd28cc71ef818d392bae4c3340678105204542ad0a",
+          "summary_sha256": "770cf706fb895473256f2404b6fc3bcd87531f45668151f850b794c7683553dd",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19201,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 26.847,
+          "agent_s": 24.496,
+          "verification_s": 0.753,
+          "first_edit_result_s_approx": 15.69,
+          "first_public_test_dispatch_s_approx": 17.71,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 4394,
+          "initial_cached_tokens": 4390,
+          "source_sha256": "7688e753692e4010c0c5727defcc541c6a9d87b35189839b0ec972d498c76a2a",
+          "summary_sha256": "c23f3b9c29096bce86ebb98fd7c5adfcdf1971c064df8ffcfa1d99b7fe64903a",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        }
+      ]
+    },
+    {
+      "run": "js-release-flint-90-dev-001",
+      "inputs_sha256": "721e5b58b9830541effa6267824883c79c4d17eec2ce2a04d9b814959d4ef8ed",
+      "profile": "frontier-flint-48k-fit2048",
+      "profile_sha256": "131aa6058ad413231673f41f892152adc7eb46265041fd33d96f4805e8fdeb90",
+      "protocol_sha256": "2ed86e8a078277f0ad1d6d9ef58f08854bcf53040738e834f42062cdf659c7a2",
+      "model_load_s": 56.77,
+      "warmup_s": null,
+      "cleanup_verified": true,
+      "trials": [
+        {
+          "seed": 19200,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 25.131,
+          "agent_s": 22.44,
+          "verification_s": 0.786,
+          "first_edit_result_s_approx": 16.6,
+          "first_public_test_dispatch_s_approx": 17.31,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 3908,
+          "initial_cached_tokens": 0,
+          "source_sha256": "b4916ea9257a24d77ae00071179c570cbe76bd5d37c62acd2af70645504ad749",
+          "summary_sha256": "9397c2759bb7109a0fdea1a12155a7ec15ea837600e4888d83fd5152b6cc27f8",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19201,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 16.096,
+          "agent_s": 13.479,
+          "verification_s": 0.782,
+          "first_edit_result_s_approx": 8.59,
+          "first_public_test_dispatch_s_approx": 9.05,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 3908,
+          "initial_cached_tokens": 3903,
+          "source_sha256": "21627f8d0cc5954716b175237083a1978136dc8022b96fd78ebcf9168f00e20c",
+          "summary_sha256": "9d5fd9830c2fb2deba8a232442983f2fd93e7aa94adb0c5b8edb108dc3974756",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        }
+      ]
+    },
+    {
+      "run": "js-release-qwen-60-confirm-001",
+      "inputs_sha256": "721e5b58b9830541effa6267824883c79c4d17eec2ce2a04d9b814959d4ef8ed",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "profile_sha256": "d05e3a3ce6b14976f853259e0de556b103882cc0c24a03cbc6c08281047a6d79",
+      "protocol_sha256": "c2a12ec260b2a2184393b2e46e0efd3ddf9342590eacfab6ad0b945d6109c766",
+      "model_load_s": 15.81,
+      "warmup_s": 3.0715676199179143,
+      "cleanup_verified": true,
+      "trials": [
+        {
+          "seed": 19210,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 36.006,
+          "agent_s": 33.343,
+          "verification_s": 0.768,
+          "first_edit_result_s_approx": 10.16,
+          "first_public_test_dispatch_s_approx": 17.42,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "cae82e2963d6944e4fdbae9cbfdb974c48e09963790d6585992a8e8a908d4ee9",
+          "summary_sha256": "c63d4368fe22b301c0b4e0fdd733259176f9b29b5ecd56f77ed63d432ecfa150",
+          "handoff_accepted": false,
+          "handoff_qualification": "The workspace comparison contained four entries, including a directory. The handoff called these four files."
+        },
+        {
+          "seed": 19211,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 32.001,
+          "agent_s": 29.38,
+          "verification_s": 0.821,
+          "first_edit_result_s_approx": 11.63,
+          "first_public_test_dispatch_s_approx": 16.75,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "11a2a7cb0061d12258b870e28e8e825e77ae184273eda38b6a1cdc21ce9956b5",
+          "summary_sha256": "e0bf3fc6f8097420cbe4edf3b1a59b0465f33a098b531aa2cbae9ba3b77c3255",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19212,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 22.058,
+          "agent_s": 19.413,
+          "verification_s": 0.773,
+          "first_edit_result_s_approx": 15.3,
+          "first_public_test_dispatch_s_approx": 15.3,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "065fc0c50b6b0a910814b28488c2260cf63c13edd847e233e61eaea0a8a6dbee",
+          "summary_sha256": "c1ffe9de1f1891b1ffd469fb848fc73280fee31959d34c8959ea4881bf2b9fa0",
+          "handoff_accepted": false,
+          "handoff_qualification": "The permutation test covered all 720 orders and checked serialized source records. It compared the backing array, not the actual permutation arrays passed to the function, so that assertion does not establish that those arrays kept their order."
+        },
+        {
+          "seed": 19213,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 25.246,
+          "agent_s": 22.595,
+          "verification_s": 0.759,
+          "first_edit_result_s_approx": 18.45,
+          "first_public_test_dispatch_s_approx": 18.45,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "182fa6d4eebec80ca7f45a7d74969b09b4f3b300a4c8720b8c1d68ea4c21146c",
+          "summary_sha256": "e884697726619c307ac62e52e7e2cf7c29624fb496715b990f328f554cea720c",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19214,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 22.59,
+          "agent_s": 20.057,
+          "verification_s": 0.763,
+          "first_edit_result_s_approx": 10.24,
+          "first_public_test_dispatch_s_approx": 16.39,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "7077d20a94a93986dc37c0f07b28c633a9a41ec2645d020da4ec81593568884c",
+          "summary_sha256": "6e6de7faccb888654588db9edbd1ba11e6bef1fb0d06723c0c055b4ba2ef134d",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19215,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 22.107,
+          "agent_s": 19.648,
+          "verification_s": 0.733,
+          "first_edit_result_s_approx": 10.36,
+          "first_public_test_dispatch_s_approx": 15.18,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "7077d20a94a93986dc37c0f07b28c633a9a41ec2645d020da4ec81593568884c",
+          "summary_sha256": "6fa33068f1ebe54a85e131c22e243e46d58c305a61114d20305caa3a4e920792",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19216,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 19.412,
+          "agent_s": 16.861,
+          "verification_s": 0.73,
+          "first_edit_result_s_approx": 9.82,
+          "first_public_test_dispatch_s_approx": 14.82,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "fdc8d18b1d71951312e009a8ac67f33dadc39c98a05e0c2b7ce4b8622c14287c",
+          "summary_sha256": "0e73cf25fd40d7834a256494f70dd766e90773417dc8bf649f9709fcca96719c",
+          "handoff_accepted": false,
+          "handoff_qualification": "The handoff counted five shuffled copies. The loop ran four times and compared the backing array for mutation instead of the shuffled argument."
+        },
+        {
+          "seed": 19217,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 24.286,
+          "agent_s": 21.683,
+          "verification_s": 0.789,
+          "first_edit_result_s_approx": 13.22,
+          "first_public_test_dispatch_s_approx": 19.28,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "67fc26824891bbc393176733f0825b7b120a56b31db23f7680f93d6e752417f6",
+          "summary_sha256": "2d12512a04c07edf7938b38b8718b90deb6f930941deebf6e4c4c84fcb9467ea",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19218,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 20.137,
+          "agent_s": 17.495,
+          "verification_s": 0.715,
+          "first_edit_result_s_approx": 10.19,
+          "first_public_test_dispatch_s_approx": 15.04,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "182fa6d4eebec80ca7f45a7d74969b09b4f3b300a4c8720b8c1d68ea4c21146c",
+          "summary_sha256": "21f5363f26ff58109835b89a4863a06d1ad0bac93bb4ac9645262218685d3111",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19219,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 20.306,
+          "agent_s": 17.728,
+          "verification_s": 0.729,
+          "first_edit_result_s_approx": 8.91,
+          "first_public_test_dispatch_s_approx": 15.06,
+          "prefix_matched": true,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "03c5d46063d8cf482fb40a6ef17208907610650fa9a2db055ec3571b87126663",
+          "summary_sha256": "bb7ef7406589a530413700aec2fbc22de2d5d00be734beb2a4d1d7a86224839c",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        }
+      ]
+    },
+    {
+      "run": "js-release-qwen-60-dev-001",
+      "inputs_sha256": "721e5b58b9830541effa6267824883c79c4d17eec2ce2a04d9b814959d4ef8ed",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "profile_sha256": "d05e3a3ce6b14976f853259e0de556b103882cc0c24a03cbc6c08281047a6d79",
+      "protocol_sha256": "c2a12ec260b2a2184393b2e46e0efd3ddf9342590eacfab6ad0b945d6109c766",
+      "model_load_s": 15.8,
+      "warmup_s": null,
+      "cleanup_verified": true,
+      "trials": [
+        {
+          "seed": 19200,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 24.525,
+          "agent_s": 21.902,
+          "verification_s": 0.781,
+          "first_edit_result_s_approx": 10.08,
+          "first_public_test_dispatch_s_approx": 13.0,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 0,
+          "source_sha256": "3b3f6a347055fe53161f3c66b99af0e951a963c8bb7391898370da4d46ef511e",
+          "summary_sha256": "869aea4efc894156c5c9518d0f7d567176f1f22cbb1eab9f5ec100f3055f6d97",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19201,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 34.794,
+          "agent_s": 32.322,
+          "verification_s": 0.764,
+          "first_edit_result_s_approx": 29.58,
+          "first_public_test_dispatch_s_approx": 29.58,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "2277b39bcba9660a321358952611a2d03a705d838a569723e17e2cf402ea9fca",
+          "summary_sha256": "0751059cb63696a8430476ce84a89fd9a77491c8eff402ef03501d3b8634c96d",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        }
+      ]
+    },
+    {
+      "run": "js-release-qwen-90-dev-001",
+      "inputs_sha256": "721e5b58b9830541effa6267824883c79c4d17eec2ce2a04d9b814959d4ef8ed",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "profile_sha256": "d05e3a3ce6b14976f853259e0de556b103882cc0c24a03cbc6c08281047a6d79",
+      "protocol_sha256": "99411720092397191a1bff04a19936eecbfca7aab9c7c8500d8f129ee4c469c4",
+      "model_load_s": 15.81,
+      "warmup_s": null,
+      "cleanup_verified": true,
+      "trials": [
+        {
+          "seed": 19200,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 19.606,
+          "agent_s": 16.872,
+          "verification_s": 0.927,
+          "first_edit_result_s_approx": 15.13,
+          "first_public_test_dispatch_s_approx": 15.13,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 0,
+          "source_sha256": "cae82e2963d6944e4fdbae9cbfdb974c48e09963790d6585992a8e8a908d4ee9",
+          "summary_sha256": "cbecdd2b86eea54aa3f0bd03720a3809e279968872efdfdb7bfedcb39e8856d8",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        },
+        {
+          "seed": 19201,
+          "success": true,
+          "clean": true,
+          "within_budget": true,
+          "canonical_passed": true,
+          "holdout_passed": true,
+          "task_s": 21.086,
+          "agent_s": 18.048,
+          "verification_s": 0.745,
+          "first_edit_result_s_approx": 10.32,
+          "first_public_test_dispatch_s_approx": 15.58,
+          "prefix_matched": null,
+          "initial_prompt_tokens": 4257,
+          "initial_cached_tokens": 4253,
+          "source_sha256": "71047959272337ac669871eb4ac90b18b856c72f6ae047e81ec840a4231ec682",
+          "summary_sha256": "792fac8c29c7e0107ce5acdc2930d5ee8702b6972377fde457635e0ea54eec42",
+          "handoff_accepted": true,
+          "handoff_qualification": null
+        }
+      ]
+    }
+  ],
+  "timing": "Task clock covers fresh workspace through verification on a ready server. First edit is the first successful structured write/edit result and first public test is the first shell command requesting node tests/public.cjs. Estimates use receipt filesystem timestamps relative to summary write minus elapsed task time. Node startup is subprocess wall time for isolated node -e with empty code. Other-model probes use two development seeds; first requests do not have dedicated warmup.",
+  "restoration": "/bulk/dlk/local-harness/sessions/2026-11-18-gpu-quiet-050/restoration-verification.json",
+  "restoration_sha256": "bad31dde1d3cc0127f2679158689784e2e96478789f9fd551215eae5fadcea90",
+  "landing_replay": {
+    "submitted_artifacts_passed": 18,
+    "out_of_scope_executable_mode_control_rejected": true,
+    "frozen_verifier_sha256": "77cf010a9a4c9fab5a9db28b299bbfb7b330ba4a25bda1f3632fa1b8078a5bef",
+    "landing_verifier_sha256": "3f018f4c37aa77a72be3e3e89239d4df9773fb022cdb52a87aeb0674d45ad930",
+    "change": "The landing verifier also checks executable modes, includes cache files in the scope check and refuses empty acceptance panels. All original run receipts and scores were preserved."
+  }
+}
