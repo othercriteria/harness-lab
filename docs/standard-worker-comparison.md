@@ -1,5 +1,70 @@
 # Worker, OpenCode and Aider on the same local model
 
+## Checking a portable evidence packet
+
+All four harnesses implemented the two-file evidence reader and passed
+independent source and handoff review. On a single fresh seed, Aider, Worker
+and OpenCode finished within three seconds of one another. Upstream mini took
+about twice as long. The [reader example](../examples/reviewing-worker-output/README.md)
+uses the exact two Python files submitted by Worker. The Maintainer verified
+the inventory against the existing example files and added a regression test
+that changes one file and removes another.
+
+| Harness | Seconds through verification | Model requests | Generated tokens | Observed workflow |
+|---|---:|---:|---:|---|
+| Aider | 48.1 | 1 | 2,592 | Both editable files supplied. One edit response, then automatic tests. |
+| Worker | 50.1 | 4 | 4,277 | Repository contents preloaded, two file writes, two check receipts and a structured handoff. |
+| OpenCode | 50.7 | 8 | 3,032 | Five reads, two writes and five shell calls. A Python check followed an unavailable shell utility. |
+| Upstream mini-SWE-agent | 97.0 | 13 | 6,904 | Twenty-three bash calls, including six before the first edit and a final attempt to identify changed files by timestamp. |
+
+The task required a library and command to agree about exact file bytes,
+manifest-relative paths, sorted status lists and mixed or empty inventories.
+Each submission passed four canonical tests and three external command
+probes. A fresh blind reviewer solved the public task before seeing either
+grader; the unchanged starter failed both. The model, 32k context, 2k thinking
+cap, seed 19116 and 240-second primary ceiling were shared. Model loading and
+public-prefix warmup were excluded from the clock. All four first scored
+requests had four uncached prompt tokens.
+
+Mini used the pinned upstream 2.4.6 `DefaultAgent`, bundled `mini.yaml`,
+bash schema, action parser and observation formatting. The Lab supplied the
+local inference transport, command isolation, resource limits and independent
+grading. Its terminal echo records submission; Worker additionally binds its
+handoff to specific observations. Aider received its usual source-file
+selection, and Worker received its repository preload. The results compare
+those workflows together. Upstream documentation describes the components
+used in the control. [Mini-SWE-agent](https://mini-swe-agent.com/latest/)
+
+The two fresh tasks tell different stories. On issue selection Worker used
+14,095 generated tokens, ran nine extra tests and still shared the other
+agents' defect. Here its two check calls covered the supplied tests plus a
+mixed and empty packet, and every citation checked out. Keep Worker as the
+default. A useful next experiment if lengthy verification recurs is to ask
+Worker for a single discriminating edge-case check once the public suite
+passes. Compare accepted output, time and handoff accuracy on a reserved task
+before changing its usual verification behavior.
+
+[Per-run measurements, trace excerpts and artifact identities](../results/standard-workers-evidence-check-001.json)
+
+### Aider history allowance on Tabreport
+
+On the ordered pair, raising the allowance from 2,048 to 8,192 tokens cut
+warm time through verification from **185.6 to 156.2 seconds** (15.8%).
+The backend received identical first requests and returned identical first
+edit text. Both arms then repaired their own regression tests and ended with
+identical Python source and test bytes. The default sent three additional
+summary requests totaling 41.6 backend seconds. Time through verification
+fell by 29.4 seconds; summary duration alone overstates the saving.
+
+The exploratory pair had suggested a much larger gain, from 188.7 to 78.7
+seconds. Inspecting the first requests showed that Aider had presented the
+source files in different orders. The faster arm got a working patch on its
+first edit. The repeat set `PYTHONHASHSEED=0` in both native clients and
+compared actual payloads. Prefer 8,192 for this pinned Aider recipe at 32k,
+and pin file ordering for future comparisons. One task and one controlled
+seed establish a working configuration; longer histories can change the
+tradeoff.
+
 ## Selecting GitHub issues for a Worker packet
 
 On a fresh in-repo task, each harness added a repeatable `--issue NUMBER`
@@ -23,15 +88,9 @@ normalization, and verified a real export of issues 34 and 35. One earlier
 OpenCode launcher error occurred before inference. The comparison uses the
 pinned first-screen harness versions. Raw traces live on Skaia.
 
-Keep Worker as the default. For the next block, use a multi-file portable
-evidence task: given a small recorded run, resolve its referenced artifact
-and show whether its bytes match the receipt. A missing file and a changed
-file give the reviewer independent failure cases. This also exercises a real
-reader need behind issues 18 and 35. Test Aider's history allowance separately
-on the existing Tabreport task before freezing another comparison. Its five
-historical summary requests used 94.9 s of backend time. The fresh run shows
-the cost can recur even on a short task. An allowance change needs a paired
-test to establish wall-time savings.
+This result motivated the multi-file evidence task above and the historical
+Aider history-allowance comparison. Its five earlier Tabreport summary requests
+had used 94.9 s of backend time.
 
 [Issue-selection measurements and provenance](../results/standard-workers-issue-selection-001.json)
 

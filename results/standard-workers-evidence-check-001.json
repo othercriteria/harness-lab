@@ -1,0 +1,464 @@
+{
+  "starter_revision": "652ec2c43a901b8fb4d751b5bf0b561c39052d0d",
+  "host": "Skaia, RTX 4090",
+  "model": "qwen38-27b-ranalayout-32k-scoped-v1",
+  "thinking_cap": 2048,
+  "versions": {
+    "mini-swe-agent": "2.4.6",
+    "Aider": "0.86.1",
+    "OpenCode": "1.18.25"
+  },
+  "raw_root": "/bulk/dlk/local-harness/research/harness-comparison-003",
+  "run_root": "/bulk/dlk/local-harness/runs",
+  "freeze_hashes": {
+    "default": "cf0ddd4e933d12d9bab2410bd16eb6211cba61f35f969b512e01335d2d487e65",
+    "8192": "da5cbfd413155c836afbd4b55910488500f4bb675ff6f6606c06e2dc75ed5b52",
+    "fresh": "0588d1eea0287ac0067e8c494f6f9e6e21e374f1cdcdc9229ee7f6b1a914cde8",
+    "default-ordered": "8490c8d799fe508f992bd14291bc9595ceba364bd0cb6a3ee181f990cf827cf6",
+    "8192-ordered": "dcb38699ee97929142f8f9c7fa4edebe9b91a51dbb7d2a1b788c544d0f43a019"
+  },
+  "fresh_brief": "A reader of the Lab's examples wants to check downloaded evidence against a supplied inventory. Implement the library in examples/evidence_files.py and the command in examples/check_evidence.py. Only those two files may change.\n\ncheck_files(manifest) takes a pathlib.Path to a UTF-8 JSON file mapping relative POSIX filenames to lowercase SHA-256 hex digests. The manifest and its schema are trusted and valid; paths are distinct ordinary relative paths with no symlinks or traversal. Resolve them relative to the manifest's parent. Each target is either a regular file or absent. Hash exact bytes. Return a list of (filename, status) tuples sorted by filename, including every entry. Status is \"ok\", \"missing\" or \"changed\". An empty manifest yields an empty list. The function must not print, write files, or change the current directory.\n\nRun python examples/check_evidence.py MANIFEST from any working directory (use the script's absolute path when outside the repository). On stdout emit one JSON object with keys \"ok\", \"missing\" and \"changed\", each containing the sorted list of filenames in that category, including empty lists. Exit 0 if all entries are ok (including an empty manifest), otherwise 1. Both outcomes are ordinary reports, with empty stderr. Unlisted files are irrelevant. The reader supplies exactly one valid manifest argument. Stream formatting and JSON key order are flexible.\n\nAn example inventory and its recorded evidence are in examples/reviewing-worker-output. The public suite runs offline with python -m unittest discover -s tests.\n",
+  "blind_solution": [
+    "9819e083d1ef71acfaa54c13f9cab5c9ec56482b22f89cf7da9bebc0e9303fb7  evidence_files.py",
+    "0751a01c3820bf6c83e53978c5eb0a26e2889905fda8a85f180d78f04577e501  check_evidence.py",
+    "effb5afa7ef837b3b1b38357ddb15763876ebc01f0f822e55a66fff2f3e04003  review.md"
+  ],
+  "admission": {
+    "starter": {
+      "canonical": false,
+      "behavioral": false
+    },
+    "blind": {
+      "canonical": true,
+      "behavioral": true
+    }
+  },
+  "review_clock": "Unblinded outer Codex elapsed interval. Default Aider source inspection began before the recorded interval. Excludes common setup and integration; not human labor.",
+  "rows": [
+    {
+      "kind": "aider",
+      "setting": "default",
+      "task": "tabreport-diff",
+      "seed": 18100,
+      "run": "comp16-aider-history-default-18100-001",
+      "raw_summary_sha256": "75fa55f66525ba70adb00460afa8ab13c494b3926e429f735fb6da772e319e9d",
+      "receipt_sha256": "d2c85fcc522bd2b1fefdf916bc62036303d2e53cd76b9cc7753252e223b75688",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "Both frozen graders passed; protected tests unchanged. Single-pass identity maps, staged CLI output and regression tests implement the requested feature. The native transcript supports the final 32-test run. One test name suggests successful stdin-to-file coverage but actually exercises the double-stdin rejection. No such coverage claim appears in the handoff.",
+      "review_interval_s": 25.9,
+      "seconds": 188.74,
+      "verification_s": 4.19,
+      "model_load_s": 15.78,
+      "model_calls": 6,
+      "completion_tokens": 13398,
+      "summary_calls": 3,
+      "summary_backend_s": 52.79,
+      "prompt_sha256": "3c5065193edf84dca53e88f5c5d23b7d09370d7d444169626d8145968e304702",
+      "initial_prompt_tokens": 7841,
+      "cached": 7837,
+      "tool_records": {},
+      "source_hashes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "tabreport/cli.py": "dfb0dbc76b16148273949c1d0c356d141f54f6b6bf2778805796c7051c531b52",
+        "tabreport/csvio.py": "6e6e87c497c4e414ae10e6fc26d00ee8c5cb3c09767bd3a0eb0c35aafc4fc87a",
+        "tabreport/diff.py": "4eea31d21eda92578d70d69769a04c4bb541f9fa650ffa54990bd14bc3b41d49",
+        "tabreport/model.py": "6a7a4a8e25c915e3cf0d10edfca626b68440ce4768431c86bd59b730fdfd255a",
+        "tabreport/render.py": "2f4703ea53fbbb0054ef973a4accc2ffeb8fc4653b411b411bb6d07ad286047b",
+        "tests/test_compatibility.py": "25ab6ec576cc0f1909c76cdd555f2f862c30be3a8620bff4bf02f096e265229c",
+        "tests/test_diff_examples.py": "9055103ad92eb59d6e16c8c7d6851b613b6b7d538473f25d724f9717fdb131db",
+        "tests/test_diff_feature.py": "724edeca9f32de53b20405a0d7e2d5af1edc704b8b2aa7134aed31acf16d618c",
+        "tests/test_requested_changes.py": "79db95305ff6eeb864f1ee67967321e06779a8cfe611c9477cdddc6ffb75d75d"
+      }
+    },
+    {
+      "kind": "aider",
+      "setting": "8192",
+      "task": "tabreport-diff",
+      "seed": 18100,
+      "run": "comp16-aider-history-8192-18100-001",
+      "raw_summary_sha256": "7ccd2b61099d6a5eb4e24b60a1c42b443eb24b69d9116441f0524028a4c98045",
+      "receipt_sha256": "99d26a1d5b5e6f1f3937fc10d7d97093d06dba0ff3b45dfaf183bc130e7dc29f",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "Both graders pass. Protected files unchanged. Source implements identity lookup, duplicate handling, sort, rendering and staged CLI, with nine new tests and 30 observed passes. Native handoff describes the edit and requests the test the client actually ran.",
+      "review_interval_s": 9.3,
+      "seconds": 78.68,
+      "verification_s": 4.16,
+      "model_load_s": 15.78,
+      "model_calls": 1,
+      "completion_tokens": 5708,
+      "summary_calls": 0,
+      "summary_backend_s": 0,
+      "prompt_sha256": "1389c20309a9288b5bf65bc324a89d7ea022eb35468f2c0c017210835149dd73",
+      "initial_prompt_tokens": 7841,
+      "cached": 7837,
+      "tool_records": {},
+      "source_hashes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "tabreport/cli.py": "dfb0dbc76b16148273949c1d0c356d141f54f6b6bf2778805796c7051c531b52",
+        "tabreport/csvio.py": "6e6e87c497c4e414ae10e6fc26d00ee8c5cb3c09767bd3a0eb0c35aafc4fc87a",
+        "tabreport/diff.py": "00a1ec48e46186b60185c17d237e8012ffc2eeb301f4c7a8da1ca1fc7919514b",
+        "tabreport/model.py": "6a7a4a8e25c915e3cf0d10edfca626b68440ce4768431c86bd59b730fdfd255a",
+        "tabreport/render.py": "2f4703ea53fbbb0054ef973a4accc2ffeb8fc4653b411b411bb6d07ad286047b",
+        "tests/test_compatibility.py": "25ab6ec576cc0f1909c76cdd555f2f862c30be3a8620bff4bf02f096e265229c",
+        "tests/test_diff_examples.py": "9055103ad92eb59d6e16c8c7d6851b613b6b7d538473f25d724f9717fdb131db",
+        "tests/test_diff_feature.py": "2930c4530466e69ec7bff289b82860792529f822faa01050a7242972ff736512",
+        "tests/test_requested_changes.py": "79db95305ff6eeb864f1ee67967321e06779a8cfe611c9477cdddc6ffb75d75d"
+      }
+    },
+    {
+      "kind": "mini",
+      "setting": "fresh",
+      "task": "evidence-check",
+      "seed": 19116,
+      "run": "comp16-evidence-mini-19116-001",
+      "raw_summary_sha256": "22dd276a7f84ed12e3d4a873f4790cd625b4ed196035e6ac77f64d38c6eefb42",
+      "receipt_sha256": "44f52a62610c103735c9a7772d004d328f43f7abf0d057c5435b4123077c29de",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "General streaming checksum reader, correct classification, ordering and JSON exit semantics. Exactly the two requested files changed. The native echo completed; the preceding test observations support the claims. A structured evidence handoff is unavailable in this upstream workflow.",
+      "review_interval_s": 7.2,
+      "seconds": 96.97,
+      "verification_s": 2.52,
+      "model_load_s": 15.8,
+      "model_calls": 13,
+      "completion_tokens": 6904,
+      "summary_calls": 0,
+      "summary_backend_s": 0,
+      "prompt_sha256": "1ff7e181ae692f647fa5f91514a0d3971fe694ec851ad71d69f20f1239a4373c",
+      "initial_prompt_tokens": 1384,
+      "cached": 1380,
+      "tool_records": {
+        "execute": 23
+      },
+      "source_hashes": {
+        "examples/check_evidence.py": "f75fdb95b25c3857782344c34a2eb94f5cd5b68d53c8382f80ededa712d48fc3",
+        "examples/evidence_files.py": "d6f8b9768f50f40fef5be4797bc0cf9b4e60424408c14203242a5ecf4a254c2f",
+        "tests/test_packet.py": "7d9c90bd010147b7c7c72e379d22fbce4b670895b6bb7fc4ec9c512104271756"
+      },
+      "selected_trace_evidence": [
+        {
+          "file": "tool-022.result.json",
+          "sha256": "dee0c260bfa893058d5304b4857953f1f98d32c2e7320cccb18c9f5fde4bce58",
+          "excerpt": "Ran 2 tests in 0.033s\n\nOK\n===\n{\"ok\": [\"accepted/outer-review.json\", \"accepted/verification.json\", \"rejected/o0013-output.txt\"], \"missing\": [], \"changed\": []}\nexit=0\n"
+        }
+      ]
+    },
+    {
+      "kind": "worker",
+      "setting": "fresh",
+      "task": "evidence-check",
+      "seed": 19116,
+      "run": "comp16-evidence-worker-19116-001",
+      "raw_summary_sha256": "e2342e0fcf27481abe79fa9dddfb895f799534e3eaedd9c785794b0c151e4383",
+      "receipt_sha256": "924f5c6dcf48d7fe6e635001eaf36b97c6440c842d7f97e8aa80e4b1afc3e469",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "Both permitted files implement the public contract, including exact binary hashing and all three CLI statuses. The final payload cites actual passing public tests and the scratch mixed, empty and alternate-cwd probes; inspected the command, outputs and before/after identity.",
+      "review_interval_s": 20.3,
+      "seconds": 50.1,
+      "verification_s": 2.59,
+      "model_load_s": 15.79,
+      "model_calls": 4,
+      "completion_tokens": 4277,
+      "summary_calls": 0,
+      "summary_backend_s": 0,
+      "prompt_sha256": "e5cb52d6a08b2c4b8c7b2ae3ca058880b383e54012265e3577bb70e9bb257f96",
+      "initial_prompt_tokens": 5453,
+      "cached": 5449,
+      "tool_records": {
+        "execute": 3,
+        "finish_attempt": 1,
+        "write_file": 2
+      },
+      "source_hashes": {
+        "examples/check_evidence.py": "5101095c0c8af6717d30e10378cff23b4844eb74594daf9a05c78e4b705b4ec2",
+        "examples/evidence_files.py": "434de1cd12632c40ad73bca47bbf5881e6651e3f0281868eab3dc5a009345abb",
+        "tests/test_packet.py": "7d9c90bd010147b7c7c72e379d22fbce4b670895b6bb7fc4ec9c512104271756"
+      },
+      "selected_trace_evidence": [
+        {
+          "file": "observations/o0004.txt",
+          "sha256": "e332b7f5719e6a1638ef4620c7b4f71ca0fa18ffdaf88cfcdf3c3cdac31b4b72",
+          "excerpt": "test_command (test_packet.ExampleTests.test_command) ... ok\ntest_recorded_files (test_packet.ExampleTests.test_recorded_files) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.034s\n\nOK\n"
+        },
+        {
+          "file": "observations/o0005.txt",
+          "sha256": "2de58327f20d2ee4997653ad8b3de006fe5910af1ab4383592195c0d2bbaf199",
+          "excerpt": "--- library API ---\nlibrary API OK: [('a.txt', 'changed'), ('b.txt', 'ok'), ('nope.txt', 'missing')] []\n--- command: all ok (from /tmp, absolute script path) ---\nexit=0\n{\"ok\": [\"accepted/outer-review.json\", \"accepted/verification.json\", \"rejected/o0013-output.txt\"], \"missing\": [], \"changed\": []}\nstderr=[]\n--- command: mixed statuses ---\nexit=1\n{\"ok\": [\"b.txt\"], \"missing\": [\"nope.txt\"], \"changed\": [\"a.txt\"]}\nstderr=[]\n--- command: empty manifest ---\nexit=0\n{\"ok\": [], \"missing\": [], \"changed\": []}\nstderr=[]\n"
+        }
+      ]
+    },
+    {
+      "kind": "aider",
+      "setting": "fresh",
+      "task": "evidence-check",
+      "seed": 19116,
+      "run": "comp16-evidence-aider-19116-001",
+      "raw_summary_sha256": "707ca368d648d3ab9ef5d30ac88827bd9566421a0d653ef9df213aa36188dcf4",
+      "receipt_sha256": "20584917ed614b50782d828fe42e0d929392ebe47c9416c8d04d451fbd423786",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "The two allowed files implement streaming binary hashing, manifest-relative lookup, ordered groups and status codes. Single native edit response and client tests match terminal delivery; tests and evidence untouched.",
+      "review_interval_s": 8.3,
+      "seconds": 48.07,
+      "verification_s": 2.64,
+      "model_load_s": 15.79,
+      "model_calls": 1,
+      "completion_tokens": 2592,
+      "summary_calls": 0,
+      "summary_backend_s": 0,
+      "prompt_sha256": "645a26935da930caff3438232c3937fccd84283204b9eb7f473d8f1cde833b44",
+      "initial_prompt_tokens": 3208,
+      "cached": 3204,
+      "tool_records": {},
+      "source_hashes": {
+        "examples/check_evidence.py": "92f32f1f9511679dc7beec3578db689ce24838184d61411593b98be493ca1667",
+        "examples/evidence_files.py": "ae96a2c08b4c62ec741530b5f7b2e43ecb1a4eb9d1295817d9f3af30f1f627ac",
+        "tests/test_packet.py": "7d9c90bd010147b7c7c72e379d22fbce4b670895b6bb7fc4ec9c512104271756"
+      },
+      "selected_trace_evidence": [
+        {
+          "file": "native/native.stdout.bin",
+          "sha256": "a01b82b2d2c92af951579c593149cced5fc24002e83b71294f8d47ccde759733",
+          "excerpt": "Applied edit to examples/evidence_files.py\n\npython -m unittest discover -s tests\n..\n----------------------------------------------------------------------\nRan 2 tests in 0.033s\n\nOK"
+        }
+      ]
+    },
+    {
+      "kind": "opencode",
+      "setting": "fresh",
+      "task": "evidence-check",
+      "seed": 19116,
+      "run": "comp16-evidence-opencode-19116-001",
+      "raw_summary_sha256": "bdeb328276efdf848ddf2d202f202005c80567a3718a1bfd429c273b34455035",
+      "receipt_sha256": "85e6a0f2112ac868655342651362fa23c5f7860379fa8cffd3dc7bb7091ede20",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "The two allowed source files implement the binary hashing and CLI contract. Adapter config mountpoints are outer-owned. Public suite and scratch evidence support mixed and empty manifests and alternate working directories. An earlier missing sha256sum did not invalidate the subsequent Python-based verification.",
+      "review_interval_s": 18.8,
+      "seconds": 50.7,
+      "verification_s": 2.68,
+      "model_load_s": 15.81,
+      "model_calls": 8,
+      "completion_tokens": 3032,
+      "summary_calls": 0,
+      "summary_backend_s": 0,
+      "prompt_sha256": "f6d9f81f9a2678ef8c97d839e55bcc9fc9db89729ab62064bcee72a24c871ebc",
+      "initial_prompt_tokens": 7774,
+      "cached": 7770,
+      "tool_records": {
+        "bash": 5,
+        "read": 5,
+        "write": 2
+      },
+      "source_hashes": {
+        "examples/check_evidence.py": "5101095c0c8af6717d30e10378cff23b4844eb74594daf9a05c78e4b705b4ec2",
+        "examples/evidence_files.py": "a6ab8dbe548ad61c85940a6318f9ff1d90e014add0dfaef1824c31bc308f6c1b",
+        "tests/test_packet.py": "7d9c90bd010147b7c7c72e379d22fbce4b670895b6bb7fc4ec9c512104271756"
+      },
+      "selected_trace_evidence": [
+        {
+          "file": "native/native.stdout.bin",
+          "sha256": "98cf41589cae22027c149209261a356aeb6d84242d25b3412e3320f1d6c00a60",
+          "excerpt": {
+            "command": "python -m unittest discover -s tests -v",
+            "output": "test_command (test_packet.ExampleTests.test_command) ... ok\ntest_recorded_files (test_packet.ExampleTests.test_recorded_files) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.036s\n\nOK\n"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "aider",
+      "setting": "default-ordered",
+      "task": "tabreport-diff",
+      "seed": 18100,
+      "run": "comp16-aider-history-default-ordered-18100-001",
+      "raw_summary_sha256": "ae79e0a3fff1833ee72aaf4a8e77efae782769b2c9024feadb42ae8ad8bb7b94",
+      "receipt_sha256": "4b3cc7f90604cad6f173a580ec9ec424c1d82d22963e5f798da284c34105edcf",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "Exact identity dictionaries, nonmutating render and staged errors conform to the task. Supplied tests unmodified. The final diff corrected its own zero-minute CSV test; native test output supports 32 passing tests.",
+      "review_interval_s": 9.6,
+      "seconds": 185.63,
+      "verification_s": 4.16,
+      "model_load_s": 15.8,
+      "model_calls": 6,
+      "completion_tokens": 13189,
+      "summary_calls": 3,
+      "summary_backend_s": 41.63,
+      "prompt_sha256": "3b8168124eb860f18f83ca3929250b3727852e2237979e01588192c3f2f35f08",
+      "initial_prompt_tokens": 7841,
+      "cached": 7837,
+      "tool_records": {},
+      "source_hashes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "tabreport/cli.py": "dfb0dbc76b16148273949c1d0c356d141f54f6b6bf2778805796c7051c531b52",
+        "tabreport/csvio.py": "6e6e87c497c4e414ae10e6fc26d00ee8c5cb3c09767bd3a0eb0c35aafc4fc87a",
+        "tabreport/diff.py": "5ff6041c674d9e6f28660070e2d49065cd244001b01045510559f7dff506c958",
+        "tabreport/model.py": "6a7a4a8e25c915e3cf0d10edfca626b68440ce4768431c86bd59b730fdfd255a",
+        "tabreport/render.py": "2f4703ea53fbbb0054ef973a4accc2ffeb8fc4653b411b411bb6d07ad286047b",
+        "tests/test_compatibility.py": "25ab6ec576cc0f1909c76cdd555f2f862c30be3a8620bff4bf02f096e265229c",
+        "tests/test_diff_examples.py": "9055103ad92eb59d6e16c8c7d6851b613b6b7d538473f25d724f9717fdb131db",
+        "tests/test_requested_changes.py": "79db95305ff6eeb864f1ee67967321e06779a8cfe611c9477cdddc6ffb75d75d",
+        "tests/test_snapshot_diff.py": "3531beb312fdb6667b8b7dc62aec9dc3d1607f67c689e4bd48107af409f92841"
+      }
+    },
+    {
+      "kind": "aider",
+      "setting": "8192-ordered",
+      "task": "tabreport-diff",
+      "seed": 18100,
+      "run": "comp16-aider-history-8192-ordered-18100-001",
+      "raw_summary_sha256": "e01e8ddb76704420f9e480f05041464a13fe8900c4ae542d4969fc079f044755",
+      "receipt_sha256": "62fedff777c29f670d6addcc6fe382d17289f02fda31b97f3855318d5eaad928",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "source_accepted": true,
+      "handoff_accepted": true,
+      "full": true,
+      "review": "Both frozen checks and protected inputs pass. Source uses identity maps, staged CLI and correct CSV/JSON shapes. The last repair correctly fixes its own zero-minute test expectation; native client reports 32 passing tests.",
+      "review_interval_s": 8.2,
+      "seconds": 156.25,
+      "verification_s": 4.09,
+      "model_load_s": 15.81,
+      "model_calls": 3,
+      "completion_tokens": 10561,
+      "summary_calls": 0,
+      "summary_backend_s": 0,
+      "prompt_sha256": "3b8168124eb860f18f83ca3929250b3727852e2237979e01588192c3f2f35f08",
+      "initial_prompt_tokens": 7841,
+      "cached": 7837,
+      "tool_records": {},
+      "source_hashes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "tabreport/cli.py": "dfb0dbc76b16148273949c1d0c356d141f54f6b6bf2778805796c7051c531b52",
+        "tabreport/csvio.py": "6e6e87c497c4e414ae10e6fc26d00ee8c5cb3c09767bd3a0eb0c35aafc4fc87a",
+        "tabreport/diff.py": "5ff6041c674d9e6f28660070e2d49065cd244001b01045510559f7dff506c958",
+        "tabreport/model.py": "6a7a4a8e25c915e3cf0d10edfca626b68440ce4768431c86bd59b730fdfd255a",
+        "tabreport/render.py": "2f4703ea53fbbb0054ef973a4accc2ffeb8fc4653b411b411bb6d07ad286047b",
+        "tests/test_compatibility.py": "25ab6ec576cc0f1909c76cdd555f2f862c30be3a8620bff4bf02f096e265229c",
+        "tests/test_diff_examples.py": "9055103ad92eb59d6e16c8c7d6851b613b6b7d538473f25d724f9717fdb131db",
+        "tests/test_requested_changes.py": "79db95305ff6eeb864f1ee67967321e06779a8cfe611c9477cdddc6ffb75d75d",
+        "tests/test_snapshot_diff.py": "3531beb312fdb6667b8b7dc62aec9dc3d1607f67c689e4bd48107af409f92841"
+      }
+    }
+  ],
+  "aider_first_request_comparisons": [
+    {
+      "labels": [
+        "default",
+        "8192"
+      ],
+      "identical": false,
+      "changed_fields": [
+        "messages"
+      ],
+      "changed_message_indices": [
+        9
+      ],
+      "file_orders": [
+        [
+          "tabreport/__init__.py",
+          "tabreport/cli.py",
+          "tabreport/csvio.py",
+          "tabreport/__main__.py",
+          "tabreport/render.py",
+          "tabreport/model.py",
+          "tabreport/diff.py"
+        ],
+        [
+          "tabreport/model.py",
+          "tabreport/__init__.py",
+          "tabreport/render.py",
+          "tabreport/cli.py",
+          "tabreport/csvio.py",
+          "tabreport/diff.py",
+          "tabreport/__main__.py"
+        ]
+      ]
+    },
+    {
+      "labels": [
+        "default-ordered",
+        "8192-ordered"
+      ],
+      "identical": true,
+      "changed_fields": [],
+      "changed_message_indices": [],
+      "file_orders": [
+        [
+          "tabreport/__main__.py",
+          "tabreport/csvio.py",
+          "tabreport/diff.py",
+          "tabreport/model.py",
+          "tabreport/__init__.py",
+          "tabreport/cli.py",
+          "tabreport/render.py"
+        ],
+        [
+          "tabreport/__main__.py",
+          "tabreport/csvio.py",
+          "tabreport/diff.py",
+          "tabreport/model.py",
+          "tabreport/__init__.py",
+          "tabreport/cli.py",
+          "tabreport/render.py"
+        ]
+      ]
+    }
+  ],
+  "method": "Fixed order, one seed per comparison, common 32k/2k Qwen backend and warm primary clock. Native Aider sees named editable files and its repository map; upstream mini receives its bundled mini.yaml prompt and bash tool, independent of Worker repository preload. Each retains its own edit and completion workflow. All commands/evaluators isolated.",
+  "mini_boundary": "Pinned source DefaultAgent + LitellmModel message preparation, action parsing and observation formatting. Only local inference transport and zero local price accounting are overridden. Lab command runtime enforces isolation, output bounds and submission. Noninteractive step and wall limits; not an unmodified native CLI end-to-end timing.",
+  "selected_frozen_files": {
+    "comparison/mini.yaml": "b539a8965f5bf41dd0f32daafa5d2db22581923d13812fa378fd09569b9d6b0c",
+    "comparison/mini_transported.py": "f018d10a790b7731e6ce32883754fd28c82e15178d946e5d0e379c97029a495d",
+    "scripts/grade_evidence.py": "d040ef6174e7e05a0a3b3a19417b84d6c9ef8ccf1026214a81d01d43e39b653d",
+    "tasks/evidence-check/private/test_acceptance.py": "3c491e0ca5de5f290583a20b336d28c64906ff745b688fbafe10adb7e9a73f41",
+    "tasks/evidence-check/public/tests/test_packet.py": "7d9c90bd010147b7c7c72e379d22fbce4b670895b6bb7fc4ec9c512104271756"
+  },
+  "restoration": "2026-11-18-gpu-quiet-044/restoration-verification.json",
+  "landed": {
+    "run": "comp16-evidence-worker-19116-001",
+    "source_repairs": false,
+    "source_files": [
+      "examples/evidence_files.py",
+      "examples/check_evidence.py"
+    ],
+    "outer_work": "Selected three preexisting evidence files for a byte inventory; added portable acceptance test, CI step and reader documentation. The inventory checks consistency against trusted hashes; reader still assesses handoff claims."
+  }
+}

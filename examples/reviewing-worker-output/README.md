@@ -2,6 +2,16 @@
 
 One Worker wrote a change that landed. Another produced a reasonable review whose handoff the Maintainer rejected. Follow the evidence for each decision. You can read both cases on GitHub. To run the first check, use a full clone, Git, and Python 3.13 on Linux. This example follows the version rehearsed on 18 November 2026. Its evidence links point to files at that revision.
 
+From the root of a current clone, you can check the bytes of three recorded
+evidence files against the example inventory before entering the historical
+checkout. A missing or changed file produces its own entry and exit status 1.
+This checks consistency with the supplied inventory. The review below explains
+how to evaluate the claims in those files.
+
+```sh
+python3 examples/check_evidence.py examples/reviewing-worker-output/files.json
+```
+
 From the root of your clone, create a separate checkout at the recorded commit and enter it:
 
 ```sh
