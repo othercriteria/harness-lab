@@ -58,6 +58,49 @@ class DelegateJobTests(unittest.TestCase):
         child = jobs.read(self.job / "child.json")["pid"]
         self.assertFalse(lifecycle.live_group_members(child))
 
+    def test_dispatch_records_only_explicit_classification(self):
+        request = dict(
+            package_id="b" * 64,
+            session_id="2026-11-18-gpu-quiet-040",
+            total_seconds=900,
+            seed=1,
+            idempotency_key="sample",
+        )
+        with self.assertRaisesRegex(ValueError, "classification"):
+            jobs.validate_request({**request, "classification": "other"})
+        for kind in (None, "diagnostic_replay", "lifecycle_acceptance", "useful_work"):
+            store = self.root / str(kind)
+            payload = request if kind is None else {**request, "classification": kind}
+            with (
+                self.subTest(kind=kind),
+                patch.object(jobs, "STORE", store),
+                patch.object(
+                    lifecycle,
+                    "gpu_experiment_lock",
+                    return_value=contextlib.nullcontext(Mock()),
+                ),
+                patch.object(
+                    jobs,
+                    "verify_package",
+                    return_value=(store, {"label": "job", "snapshot_id": "snapshot"}),
+                ),
+                patch.object(jobs, "require_quiet_session", return_value={}),
+                patch.object(jobs.subprocess, "Popen"),
+            ):
+                admitted = jobs.submit(payload, store)
+                receipt = store / "jobs" / admitted["job_id"] / "classification.json"
+                if kind is None:
+                    self.assertFalse(receipt.exists())
+                else:
+                    self.assertEqual(
+                        jobs.read(receipt),
+                        {
+                            "job_id": admitted["job_id"],
+                            "kind": kind,
+                            "source": "dispatch",
+                        },
+                    )
+
     def test_real_child_deadline_reaps_owned_group(self):
         result = self.execute("import time; time.sleep(20)", timeout=0.1)
         self.assertEqual(result["state"], "timed_out")

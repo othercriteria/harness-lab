@@ -1,0 +1,80 @@
+{
+  "job_id": "8e86190e331543e8b052e7943ba38f1d",
+  "package_id": "5b1dd86067ce29f129b6c9bc608bc09a3cc6df673eb49f4ad60ef0ea39dd5f55",
+  "snapshot_id": "b1b9242af6055301e61cf8753f0d7c5a2b4dee0444bfe240d9f981c7fa802c3c",
+  "public_contract_sha256": "ac5fc85e0ce91ca669a979c250d88926ab62ae7818d7aabd7c108bc24c1e4acb",
+  "portable_spec_sha256": "63aa3ac7ef89c211c897c6b0b296f2a326c8ea690aa6c7b3b467c1e5885fc857",
+  "request_sha256": "825254e0ee9bc9798ca098acabf32a3ee75397d17daacb045d41ebc1642f1a35",
+  "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "submitted_at": "2026-11-18T16:14:21.338585+00:00",
+  "completed_at": "2026-11-18T16:17:40.828067+00:00",
+  "dispatch_seconds": 199.48768246988766,
+  "worker_task_seconds": 174.84125722805038,
+  "clean_agent_completion": true,
+  "structural_check_passed": true,
+  "handoff": {
+    "disposition": "submitted",
+    "summary": "Fixed the delegated Use metric: absent classification, missing kind, or unrecognized kind now render UNCLASSIFIED; lifecycle_acceptance stays LIFECYCLE CHECK, diagnostic_replay stays DIAGNOSTIC REPLAY, and only an explicit useful_work classification says USEFUL WORK. Extended the offline delegated render regression to exercise absent, unknown, and all known kinds; record-type, acceptance, and application evidence lines untouched.",
+    "evidence": [
+      {
+        "kind": "observation",
+        "observation_id": "o0020",
+        "supports": "Final delegatedMetrics: Use now derives from useKind=job?.classification?.kind with the 4-way ternary; Execution/Independent checks/Clean completion/Outer acceptance/Applied rows unchanged."
+      },
+      {
+        "kind": "observation",
+        "observation_id": "o0021",
+        "supports": "Extended delegated test block: first render (no classification) asserts UNCLASSIFIED Use and no USEFUL WORK/LIFECYCLE CHECK/DIAGNOSTIC REPLAY; then diagnostic_replay, lifecycle_acceptance, useful_work (USEFUL WORK Use + DELEGATED REPOSITORY WORK record-type), unknown kind research_probe, and missing kind {} all asserted through the delegated run view; prior UNVERIFIED/accepted with repairs/NO Clean/YES Applied assertions preserved."
+      },
+      {
+        "kind": "observation",
+        "observation_id": "o0023",
+        "supports": "Static verification: string/comment-aware bracket balance is zero for both edited files; the new ternary chain is present verbatim and a Python simulation maps all five cases correctly; record-type line confirmed unchanged."
+      },
+      {
+        "kind": "observation",
+        "observation_id": "o0024",
+        "supports": "Integrity: test file tail intact, line counts as expected (app.js 292->293, test 615->634), four UNCLASSIFIED references in tests as intended."
+      }
+    ],
+    "unverified": [
+      "JavaScript suite not executed here: no node/deno/bun binary exists in the worker sandbox (command -v and filesystem search found none; esprima unavailable in Python). Per the brief, the outer reviewer runs the JS suite on the submitted files separately.",
+      "Verification was static: bracket-balance check, verbatim expression assertion, and logic simulation of the ternary; the actual vm-based render assertions were not run in this sandbox."
+    ],
+    "blocker": null
+  },
+  "outer_checks": {
+    "exit_codes": {
+      "old-suite": 0,
+      "submission": 0,
+      "old-renderer-new-tests": 1,
+      "independent-v2": 0,
+      "old-independent-v2": 1
+    },
+    "controls": "Negative controls failed on Use. Reviewer fixture v1 failed its own DOM lookup on both renderers and was superseded by v2.",
+    "final_handoff": "Four cited observations support static inspection only; no JavaScript execution claimed.",
+    "scope": "Two selected files. Baseline original tests plus nine independent rendered cases, retaining acceptance and applied fields."
+  },
+  "reviewed_at": "2026-11-18T16:20:32.295034+00:00",
+  "decision": "accepted",
+  "application": {
+    "applied": true,
+    "artifact_sha256": "0cc7609c6d57c8c58dced95f442e415a09b96aea56d53d872770e460d42ef609",
+    "job_id": "8e86190e331543e8b052e7943ba38f1d",
+    "paths": [
+      {
+        "after_sha256": "9996a16baebfbe72d1c70173e53f9686b2ec10fc99f060527a3f94362d0ae1ed",
+        "path": "observatory/app.js"
+      },
+      {
+        "after_sha256": "33d53fb7959db51555ac00140740c9110094fd8ae5442ccf191d6bcef9484c15",
+        "path": "tests/test_observe_ui.js"
+      }
+    ],
+    "qualification": "Atomic per file, cooperating-writer lock; no automatic rollback of concurrent edits.",
+    "review_sha256": "34ef4e0add2ae9e5cfa7766b18f329c360eff8ac202c05e20063485ff2a26a46",
+    "state": "applied"
+  },
+  "landing_commit": "4a99ddb38432f9041ed525f6f69ee05b8211fee5",
+  "task_sha256": "e486a61cad9ea1419c1614e08852bfbf2e711f389db7e4189ed92401be0a4ffa"
+}

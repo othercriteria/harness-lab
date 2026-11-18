@@ -136,8 +136,8 @@ def status(identifier, store=STORE):
     return record
 
 
-def validate_request(request):
-    if not isinstance(request, dict) or set(request) != {
+def validate_request(request, store=STORE):
+    if not isinstance(request, dict) or set(request) - {"classification"} != {
         "package_id",
         "idempotency_key",
         "session_id",
@@ -145,7 +145,13 @@ def validate_request(request):
         "total_seconds",
     }:
         raise ValueError("Invalid delegated request")
-    package_path(request["package_id"])
+    if "classification" in request and request["classification"] not in (
+        "diagnostic_replay",
+        "lifecycle_acceptance",
+        "useful_work",
+    ):
+        raise ValueError("Unknown delegated job classification")
+    package_path(request["package_id"], store)
     if not isinstance(request["idempotency_key"], str) or not re.fullmatch(
         r"[a-zA-Z0-9_.:/-]{1,160}", request["idempotency_key"]
     ):
@@ -191,7 +197,7 @@ def require_no_unclosed_jobs(store):
 def submit(request, store=STORE):
     submitted = time.monotonic()
     submitted_at = now()
-    validate_request(request)
+    validate_request(request, store)
     if store != STORE:
         raise ValueError("Detached submission requires the production store")
     if os.environ.get("BIG_MODELS_GPU_LOCK_FD"):
@@ -220,6 +226,15 @@ def submit(request, store=STORE):
             (job / "events").mkdir()
             owner = process_identity(os.getpid())
             atomic(job / "request.json", request)
+            if "classification" in request:
+                atomic(
+                    job / "classification.json",
+                    {
+                        "job_id": identifier,
+                        "kind": request["classification"],
+                        "source": "dispatch",
+                    },
+                )
             atomic(
                 job / "state.json",
                 {
@@ -523,7 +538,7 @@ def execute_owned(
 def worker(identifier, store=STORE):
     job = job_path(identifier, store)
     request = read(job / "request.json")
-    validate_request(request)
+    validate_request(request, store)
     if read(job / "state.json").get("submitted_boot_id") != boot_id():
         raise RuntimeError(
             "Job belongs to a previous boot; recover instead of restarting"

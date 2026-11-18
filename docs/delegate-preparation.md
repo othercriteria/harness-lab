@@ -10,6 +10,8 @@ the Verifier runs the separate executable checks. This adds no approval layer;
 existing admission, isolation, GPU ownership, review, and application
 requirements still govern the work.
 
+For a runnable example with pinned starter files, follow [Prepare a Worker package](../examples/preparing-worker-package/README.md).
+
 ## Preparing the assignment
 
 **Choose a small, useful change.** Pick work whose value is clear if it lands
