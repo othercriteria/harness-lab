@@ -156,6 +156,13 @@ summary.
    execution and directory. If the relevant comparison is unavailable, clipped
    or partly omitted, retain that qualification. Inspect the complete artifact
    or diff when needed.
+   When the claim says another record *cites*, *matches* or *confirms*
+   something, ask whether you saw both sides. In case E, the grep located
+   an assignment on line 68. The submitted finding supplied its own line
+   reference, and a separate mutation probe showed the defect. Changing
+   only the finding to cite line 69 would leave the grep output identical.
+   In a packet containing just the grep, credit the location and leave the
+   finding's citation open. [Original claim and both readings](../results/advisory-claim-review-001.json)
 4. Record what this changes for acceptance. If the evidence exists elsewhere,
    keep the supported result and correct the attribution. If a false assurance
    matters to the assignment, qualify or reject the handoff even when the patch
