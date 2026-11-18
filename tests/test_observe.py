@@ -12,6 +12,49 @@ from observe import NATIVE_CASES, Evidence
 
 
 class ObservatoryTests(unittest.TestCase):
+    def test_scoped_continuation_is_labeled_and_return_is_not_finalization(self):
+        continuation = {
+            "case": "example",
+            "arm": "restored",
+            "spent_counters": {"model_calls_already_spent": 12},
+        }
+        fixtures = {
+            "continuation.json": continuation,
+            "tool-013.request.json": {
+                "mode": "adapter-control",
+                "name": "return_scope",
+                "executed": False,
+                "arguments": {"findings": "Unverified finding"},
+            },
+            "tool-013.result.json": {
+                "ok": True,
+                "executed": False,
+                "cleanup_required": False,
+                "scope_control": "return_recorded",
+            },
+            "scope-return-s0001.json": {"transition": "returned", "scope_id": "s0001"},
+        }
+        for index, (name, value) in enumerate(fixtures.items()):
+            path = self.trial / name
+            path.write_text(json.dumps(value))
+            os.utime(path, (index + 1, index + 1))
+        run = self.data.run("campaign")
+        self.assertEqual(run["kind"], "continuation")
+        self.assertEqual(run["trials"][0]["continuation"], continuation)
+        trace = self.data.trace("campaign", self.trial.name)
+        self.assertEqual(trace["continuation"], continuation)
+        events = trace["events"]
+        self.assertEqual([e["kind"] for e in events], ["context", "tool", "context"])
+        self.assertEqual(events[0]["phase"], "continuation")
+        self.assertTrue(events[1]["adapter_control"])
+        self.assertFalse(events[1]["executed"])
+        self.assertIsNone(events[1]["terminal_control"])
+        self.assertEqual(events[1]["scope_control"], "return_recorded")
+        self.assertEqual(events[2]["phase"], "scope")
+        self.assertIn("unverified", events[2]["state"])
+        self.assertIn("continuation.json", trace["artifacts"])
+        self.assertFalse(self.data.allowed_artifact("scopes/committed.json"))
+
     def test_delegated_job_is_not_a_failed_benchmark(self):
         with tempfile.TemporaryDirectory() as temp:
             base = Path(temp)
@@ -286,15 +329,33 @@ class ObservatoryTests(unittest.TestCase):
         self.assertIsNone(self.data.outer_adjudication(self.trial, ordinary))
 
     def test_progress_measurement_is_attached_to_its_checkpoint_tool(self):
-        (self.trial / "tool-001.request.json").write_text(json.dumps({
-            "mode": "adapter-control", "name": "checkpoint_context", "executed": False,
-            "arguments": {"summary": "Continue", "progress": {"change": "uncertain"}},
-        }))
+        (self.trial / "tool-001.request.json").write_text(
+            json.dumps(
+                {
+                    "mode": "adapter-control",
+                    "name": "checkpoint_context",
+                    "executed": False,
+                    "arguments": {
+                        "summary": "Continue",
+                        "progress": {"change": "uncertain"},
+                    },
+                }
+            )
+        )
         measurement = {"status": "unverified_model_report", "report_utf8_bytes": 320}
-        (self.trial / "context-checkpoint-001.json").write_text(json.dumps({
-            "tool_call": 1, "progress_measurement": measurement,
-        }))
-        event = next(e for e in self.data.trace("campaign", "trial-00-task")["events"] if e["id"] == "tool-001")
+        (self.trial / "context-checkpoint-001.json").write_text(
+            json.dumps(
+                {
+                    "tool_call": 1,
+                    "progress_measurement": measurement,
+                }
+            )
+        )
+        event = next(
+            e
+            for e in self.data.trace("campaign", "trial-00-task")["events"]
+            if e["id"] == "tool-001"
+        )
         self.assertEqual(event["progress_measurement"], measurement)
         self.assertEqual(event["arguments"]["progress"]["change"], "uncertain")
         self.assertIsNone(event["terminal_control"])

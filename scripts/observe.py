@@ -34,6 +34,9 @@ CONTEXT_EVENT = re.compile(
     r"(?:context-checkpoint-(?:(?:repair-)?(?:request|response)|repair-decision)|fresh-context-(?:reset|bypassed|refused))-\d+\.json\Z"
 )
 CONTEXT_ARTIFACT = re.compile(r"context-checkpoint-\d+\.json\Z")
+SCOPE_EVENT = re.compile(
+    r"(?:continuation|scope-return-s\d{4}|scope-entry-rejected-\d{3})\.json\Z"
+)
 NATIVE_ARTIFACT = re.compile(
     r"(?:" + "|".join(NATIVE_CASES) + r")/"
     r"(?:request-\d+\.(?:request\.json|response\.bin|timing\.json)"
@@ -224,6 +227,7 @@ class Evidence:
             or RECOVERY_ARTIFACT.fullmatch(name)
             or CONTEXT_EVENT.fullmatch(name)
             or CONTEXT_ARTIFACT.fullmatch(name)
+            or SCOPE_EVENT.fullmatch(name)
         )
 
     @staticmethod
@@ -281,6 +285,9 @@ class Evidence:
             if trial.is_symlink() or not trial.is_dir():
                 continue
             summary = self.read(trial / "summary.json") or {}
+            continuation = summary.get("continuation") or self.read(
+                trial / "continuation.json"
+            )
             adjudication = self.outer_adjudication(trial, summary)
             pending = (
                 summary.get("task_adjudication", {}).get("status")
@@ -363,6 +370,8 @@ class Evidence:
                     "state": trial_state,
                     "kind": "delegated"
                     if delegated
+                    else "continuation"
+                    if continuation
                     else "diagnostic"
                     if diagnostic
                     else "control"
@@ -372,6 +381,7 @@ class Evidence:
                     if diagnostic
                     else None,
                     "passed": passed,
+                    "continuation": continuation,
                     "control_kind": summary.get("kind") if control else None,
                     "commands_executed": summary.get("commands_executed")
                     if control
@@ -415,6 +425,8 @@ class Evidence:
             "trials": trials,
             "kind": "delegated"
             if delegated
+            else "continuation"
+            if trials and all(t["kind"] == "continuation" for t in trials)
             else "control"
             if trials and all(t["kind"] == "control" for t in trials)
             else "diagnostic"
@@ -535,7 +547,7 @@ class Evidence:
         files += [
             path
             for path in root.glob("*.json")
-            if CONTEXT_EVENT.fullmatch(path.name)
+            if (CONTEXT_EVENT.fullmatch(path.name) or SCOPE_EVENT.fullmatch(path.name))
             and path.is_file()
             and not path.is_symlink()
         ]
@@ -560,6 +572,28 @@ class Evidence:
             req = self.read(path)
             if not isinstance(req, dict):
                 unreadable_requests += bool(REQUEST.fullmatch(path.name))
+                continue
+            if SCOPE_EVENT.fullmatch(path.name):
+                continuation = path.name == "continuation.json"
+                rejected = path.name.startswith("scope-entry-rejected-")
+                records.append(
+                    {
+                        "id": path.stem,
+                        "at": path.stat().st_mtime,
+                        "kind": "context",
+                        "phase": "continuation" if continuation else "scope",
+                        "state": "sealed continuation / retained workspace"
+                        if continuation
+                        else "scope entry rejected"
+                        if rejected
+                        else "parent restored / return remains unverified",
+                        "reason": f"{req.get('case')} · {req.get('arm')} view"
+                        if continuation
+                        else req.get("reason"),
+                        "lifecycle": req,
+                        "artifact": path.name,
+                    }
+                )
                 continue
             if CONTEXT_EVENT.fullmatch(path.name):
                 status = req.get("status", "unknown")
@@ -681,6 +715,7 @@ class Evidence:
                 typed = req.get("mode") == "adapter-control" and req.get("name") in (
                     "finish_attempt",
                     "checkpoint_context",
+                    "return_scope",
                 )
                 read_only = (
                     req.get("mode") == "adapter-read" and req.get("name") == "read_file"
@@ -707,8 +742,11 @@ class Evidence:
                     checkpoint_control=result.get("checkpoint_control")
                     if result
                     else None,
+                    scope_control=result.get("scope_control") if result else None,
                     cleanup_required=result.get("cleanup_required") if result else None,
-                    state="checkpoint saved / unverified memory"
+                    state="scope return recorded / parent restoration pending"
+                    if typed and result and result.get("scope_control")
+                    else "checkpoint saved / unverified memory"
                     if typed and result and result.get("checkpoint_control")
                     else "review requested / not submitted"
                     if typed and result and result.get("review_control")
@@ -773,6 +811,8 @@ class Evidence:
                 "unreadable_events": len(files) - len(records),
             },
             "summary": summary or None,
+            "continuation": summary.get("continuation")
+            or self.read(root / "continuation.json"),
             "outer_adjudication": self.outer_adjudication(root, summary),
             "kind": "diagnostic"
             if self.is_diagnostic(summary)

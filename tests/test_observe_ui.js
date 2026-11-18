@@ -560,3 +560,16 @@ context.absentProgress=new Element();
 vm.runInContext('progressReport(absentProgress,null,null)',context);
 assert.equal(context.absentProgress.children.length,0);
 console.log('Progress claims, stale checks, inert text and absent reports remain distinct.');
+
+context.scopeEvent={id:'tool-007',kind:'tool',tool_name:'return_scope',adapter_control:true,
+  state:'scope return recorded / parent restoration pending',scope_control:'return_recorded',
+  executed:false,cleanup_required:false,result:{ok:true,stdout:'Return recorded'},arguments:{findings:'Unverified'}};
+const returnCard=vm.runInContext('eventCard(scopeEvent,true)',context);
+assert.match(text(returnCard),/RETURN/);
+assert.match(text(returnCard),/not submitted/);
+assert.doesNotMatch(text(returnCard),/FINALIZE|BASH/);
+context.scopeEvent={id:'continuation',kind:'context',phase:'continuation',state:'sealed continuation / retained workspace',lifecycle:{arm:'restored'}};
+assert.match(text(vm.runInContext('eventCard(scopeEvent,true)',context)),/CONTINUATION/);
+context.scopeEvent.phase='scope';
+assert.match(text(vm.runInContext('eventCard(scopeEvent,true)',context)),/SCOPE/);
+console.log('Scoped returns remain distinct from task finalization.');
