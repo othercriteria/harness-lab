@@ -404,6 +404,32 @@ assert.equal(elements.get('record-type').textContent,'DELEGATION LIFECYCLE ACCEP
 assert.match(text(elements.get('metrics')),/LIFECYCLE CHECK Use/);
 console.log('Delegated execution/checks/acceptance/application remain separate and text-only.');
 
+// Verification claims must stay paired with the matching operation even when
+// receipt ordering differs or an older summary lacks a citation row.
+context.handoffExample = {
+  handoff: {summary:'Two checks', evidence:[
+    {kind:'observation', observation_id:'o0002', supports:'Resolved links <script>'},
+    {kind:'observation', observation_id:'o0001'},
+    {kind:'observation', observation_id:'o0003', supports:'Unmatched citation'},
+    {kind:'public_contract', public_clause:'Time bound', supports:'Finite domain'}
+  ], unverified:['Unexamined target']},
+  execution_receipt: {selected_observations:{observations:[
+    {observation_id:'o0001', command:'test -e one', returncode:1, original_visible_excerpt:'File missing'},
+    {observation_id:'o0002', command:'print(links)', command_clipped:true, returncode:0,
+     original_visible_excerpt:'Two link strings', excerpt_clipped:true, originally_truncated:true}
+  ]},current_public_state:{file_comparison:'captured', changed_files:[], changed_files_omitted:0}}
+};
+vm.runInContext('handoffEvidence(handoffExample)',context);
+const claimsPanel = elements.get('handoff-evidence');
+assert.match(text(claimsPanel), /o0002.*Resolved links <script>.*command \(clipped\).*print\(links\).*exit 0.*original tool output truncated.*excerpt clipped.*Two link strings.*o0001.*test -e one.*exit 1.*File missing/s);
+assert.match(text(claimsPanel), /Unmatched citation.*unavailable.*Time bound.*Finite domain.*Unexamined target.*Harness file comparison/s);
+vm.runInContext('handoffEvidence({handoff:{summary:"Older summary"}})',context);
+assert.doesNotMatch(text(claimsPanel), /Two link strings|Harness file comparison/);
+vm.runInContext('handoffEvidence(null)',context);
+assert.equal(claimsPanel.hidden,true);
+assert.equal(claimsPanel.children.length,0);
+console.log('Handoff citations remain paired with historical operations and explicit limits.');
+
 // Exercise real asynchronous refresh/navigation, including stale responses.
 // Comparison validity is independent of raw canonical checks and source acceptance.
 const comparisonRun={name:'comparison',kind:'coding',state:'complete',restored:true,trials:[

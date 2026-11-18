@@ -123,6 +123,48 @@ function requestedTools(parent,calls){
   }
   rawDetails(parent,'Raw requested tools (API representation)',calls);
 }
+function handoffEvidence(envelope) {
+  const panel = $('handoff-evidence');
+  const handoff = envelope?.handoff;
+  panel.replaceChildren();
+  panel.hidden = !handoff;
+  if (!handoff) return;
+  panel.append(node('h2', 'Worker handoff and cited evidence'));
+  block(panel, 'Worker summary', handoff.summary);
+  const receipt = envelope.execution_receipt;
+  const observations = receipt?.selected_observations?.observations ?? [];
+  for (const item of handoff.evidence ?? []) {
+    if (item.kind === 'public_contract') {
+      block(panel, 'Public contract clause cited by Worker', item.public_clause);
+      block(panel, 'Worker interpretation', item.supports);
+      continue;
+    }
+    const row = observations.find(record => record.observation_id === item.observation_id);
+    panel.append(node('h3', 'Worker citation · ' + item.observation_id));
+    if (item.supports) panel.append(node('p', item.supports));
+    if (!row) {
+      panel.append(node('p', 'Recorded operation unavailable in this summary.'));
+      continue;
+    }
+    block(panel, row.command_clipped ? 'Recorded command (clipped)' : 'Recorded command', row.command);
+    const flags = [];
+    if (row.originally_truncated) flags.push('original tool output truncated');
+    if (row.excerpt_clipped) flags.push('excerpt clipped for display');
+    const status = row.returncode == null ? 'exit status unavailable' : 'exit ' + row.returncode;
+    block(panel, ['Recorded response', status, ...flags].join(' · '), row.original_visible_excerpt || '(no excerpt recorded)');
+  }
+  if (handoff.unverified?.length) block(panel, 'Worker limitations', handoff.unverified.join('\n'));
+  const files = receipt?.current_public_state;
+  if (files?.file_comparison === 'captured') {
+    block(panel, 'Harness file comparison since task start', {
+      changed_files: files.changed_files, omitted: files.changed_files_omitted
+    });
+  } else if (files) {
+    panel.append(node('p', 'File comparison since task start unavailable.'));
+  }
+  panel.append(node('p', 'Inspect final-handoff.json in Raw artifacts for the original cited observations. Compare verification claims in the submitted files as well.', 'hint'));
+}
+
 function progressReport(parent,report,measurement){
   if(report==null)return;
   const panel=node('section');
@@ -194,7 +236,7 @@ function jobDetails(run){
   $('record-type').textContent=delegated?(run.delegation?.classification?.kind==='lifecycle_acceptance'?'DELEGATION LIFECYCLE ACCEPTANCE':'DELEGATED REPOSITORY WORK'):run.kind==='continuation'?'CONTROLLED CONTINUATION EXPERIMENT':'EXPERIMENT RECORD';
   $('timing-note').textContent=delegated?'Dispatch includes setup, task, verification and cleanup; outer review is separate':run.kind==='continuation'?'Timings begin at a saved boundary; earlier work and priming are reported separately':'Refreshes every 2 seconds · task timing excludes model loading';
 }
-function render(run,trace){const scope=json([run.name,state.trial]);if(scope!==state.artifactScope){resetArtifact();state.artifactScope=scope;}if(scope===state.eventScope){for(const row of document.querySelectorAll('details.event'))state.eventOpen.set(row.dataset.event,row.open);for(const d of document.querySelectorAll('details.event details'))state.eventNested.set(json([d.closest('.event').dataset.event,d.querySelector('summary').textContent]),d.open);}else{state.eventOpen.clear();state.eventNested.clear();state.eventScope=scope;}const beforeOpen=new Set([...state.eventOpen].filter(([,open])=>open).map(([id])=>id));const nestedOpen=[...state.eventNested].filter(([,open])=>open).map(([key])=>JSON.parse(key));eventNavigation(trace);costBreakdown(trace?.cost_breakdown);jobDetails(run);const closeToBottom=state.signature&&window.innerHeight+window.scrollY>=document.body.scrollHeight-160;const scroll=window.scrollY;$('title').textContent=run.delegation?.label||run.name;$('subtitle').textContent=[run.model||'Preparing model',run.protocol||(run.kind==='control'?'Parser-only control':'Original MVP protocol'),run.kind==='continuation'?'Controlled fixed-world continuations; original budgets retained':run.budget?`${run.budget}s task ceiling`:''].filter(Boolean).join(' · ');$('run-state').textContent=run.state;$('run-state').className=`badge ${statusClass(run.state)}`;
+function render(run,trace){const scope=json([run.name,state.trial]);if(scope!==state.artifactScope){resetArtifact();state.artifactScope=scope;}if(scope===state.eventScope){for(const row of document.querySelectorAll('details.event'))state.eventOpen.set(row.dataset.event,row.open);for(const d of document.querySelectorAll('details.event details'))state.eventNested.set(json([d.closest('.event').dataset.event,d.querySelector('summary').textContent]),d.open);}else{state.eventOpen.clear();state.eventNested.clear();state.eventScope=scope;}const beforeOpen=new Set([...state.eventOpen].filter(([,open])=>open).map(([id])=>id));const nestedOpen=[...state.eventNested].filter(([,open])=>open).map(([key])=>JSON.parse(key));eventNavigation(trace);handoffEvidence(trace?.summary?.final_handoff);costBreakdown(trace?.cost_breakdown);jobDetails(run);const closeToBottom=state.signature&&window.innerHeight+window.scrollY>=document.body.scrollHeight-160;const scroll=window.scrollY;$('title').textContent=run.delegation?.label||run.name;$('subtitle').textContent=[run.model||'Preparing model',run.protocol||(run.kind==='control'?'Parser-only control':'Original MVP protocol'),run.kind==='continuation'?'Controlled fixed-world continuations; original budgets retained':run.budget?`${run.budget}s task ceiling`:''].filter(Boolean).join(' · ');$('run-state').textContent=run.state;$('run-state').className=`badge ${statusClass(run.state)}`;
 const current=run.trials.find(t=>t.name===state.trial);const summary=trace?.summary;const control=current?.kind==='control';const adjudication=current?.adjudication??trace?.outer_adjudication??summary?.task_adjudication;const pending=['pending_outer_rubric','pending_outer_review'].includes(adjudication?.status);const reviewed=adjudication?.status==='adjudicated';const blocker=reviewed&&adjudication?.disposition==='supported_blocker';const rejectedBlocker=reviewed&&adjudication?.disposition==='unsupported_blocker';const nonconforming=reviewed&&adjudication?.disposition==='nonconforming_run';const metrics=run.kind==='delegated'?delegatedMetrics(run,trace):current?.kind==='diagnostic'?diagnosticMetrics(current,adjudication):control?[['Control result',current?.passed===true?'PASS':current?.passed===false?'FAIL':'PENDING'],['Commands executed',current?.commands_executed??'PENDING'],['Control time',secs(current?.seconds)],['Service restoration',run.restored===true?'VERIFIED':run.restored===false?'FAILED':'PENDING']]:[[(blocker||rejectedBlocker)?'Blocker review':'Verified correctness',blocker?'SUPPORTED':rejectedBlocker?'UNSUPPORTED':nonconforming?'UNQUALIFIED':pending?'PENDING OUTER REVIEW':current?.correct===true?'PASS':current?.correct===false?'FAIL':'PENDING'],...(nonconforming?[['Runtime conformance','FAIL']]:[]),...(blocker?[['Canonical checks (diagnostic)',summary?.canonical_correctness===true?'SATISFIED':summary?.canonical_correctness===false?'NOT SATISFIED':'UNAVAILABLE','Coding checks are diagnostic for a supported blocker; a coding pass is not required.']]:((pending||reviewed)&&summary?.canonical_correctness!=null?[['Canonical checks'+(summary?.agent_outcome?.exit_status==='Blocked'?' (diagnostic)':''),summary?.canonical_correctness===true?'PASS':summary?.canonical_correctness===false?'FAIL':'PENDING']]:[])),[(pending||reviewed)&&summary?.agent_outcome?.exit_status==='Blocked'?'Clean halt':'Clean completion',(pending||reviewed)&&summary?.agent_outcome?.exit_status==='Blocked'?(summary?.clean_agent_halt===true?'YES':'NO'):current?.clean===true?'YES':current?.clean===false?'NO':'PENDING'],[current?.continuation?'Continuation time':'Task time',secs(current?.seconds),current?.continuation?'From sealed historical boundary; excludes prior work and inert cache priming. Not whole-task timing.':undefined],['Service restoration',run.restored===true?'VERIFIED':run.restored===false?'FAILED':'PENDING']];if(current?.comparison_review){const status=current.comparison_review.status;metrics.unshift(['Full-result review',status==='accepted'?'ACCEPTED':status==='rejected'?'REJECTED':status==='operationally_invalid'?'OPERATIONALLY INVALID':'PENDING',status==='operationally_invalid'?'Test scores below are preserved diagnostics; this attempt is excluded from model-quality comparisons.':'Source and handoff review is separate from canonical checks.']);}$('metrics').replaceChildren(...metrics.map(([label,value,note])=>{const m=node('div',undefined,'metric');m.append(node('strong',value),node('span',label));if(note)m.append(node('small',note));return m;}));
 $('trials').replaceChildren(...run.trials.map(t=>{const b=node('button',undefined,`trial ${t.name===state.trial?'selected':''}`);b.append(node('span',t.kind==='control'?(t.control_kind||t.task):`${t.task}${t.continuation?` · ${t.continuation.arm}`:''} · seed ${t.seed??'pending'}`),badge(t.state),node('span',secs(t.seconds),'meta'));b.onclick=()=>select(run.name,t.name);return b;}));
 $('events').replaceChildren(...(trace?.events.length?trace.events.map(e=>eventCard(e,beforeOpen.has(e.id))):[node('div','No model/tool events yet. Setup and server loading are visible in the Setup & restoration tab.','empty')]));for(const [id,title]of nestedOpen){for(const d of document.querySelectorAll('details.event details'))if(d.closest('.event').dataset.event===id&&d.querySelector('summary').textContent===title)d.open=true;}

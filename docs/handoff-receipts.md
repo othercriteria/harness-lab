@@ -134,23 +134,39 @@ neither supports nor refutes.
 
 ## Reviewer workflow
 
-1. Read `handoff` first: the claims in `summary` and each `evidence.supports`,
-   and the gaps the model itself admits in `unverified`.
-2. For each claim, find its cited `observation_id` in
-   `execution_receipt.selected_observations` (bounded) or in the full
-   `observations` of `final-handoff.json` (complete original messages).
-   Compare the claim against the literal output and recorded `returncode`.
-3. For checks included in the bounded `recent_checks` list, read
-   `current_files_match_after_check` and
-   `current_head_matches_observed_after_check`. `false` records a difference in
-   that comparison's scope; `null` or a missing entry means unknown. Older cited
-   checks need separate review; absence from this list is not a passing match.
-4. Read the final source in the workspace yourself. The receipt records
-   execution facts; semantic review is the reviewer's job.
-5. Retain qualifications: keep unsupported claims and missing evidence
-   (uncited claims, `null` comparisons, omitted entries, unavailable
-   snapshots) as explicit qualifications in the review, rather than dropping
-   them or treating absence as confirmation.
+Start with the strongest verification claim that would affect your decision.
+Look in the submitted file as well as the handoff. A report can describe a
+synthetic probe correctly under limitations and call it an exact replay in its
+summary.
+
+1. Identify the inputs, the operation Worker says it performed, and the result
+   it claims to have observed. In Observatory, open **Diff & verification →
+   Worker handoff and cited evidence**. Each observation ID pairs the Worker’s
+   interpretation with its recorded command and output excerpt. Open
+   `final-handoff.json` for the full originally visible observation if the
+   excerpt or command is clipped.
+2. Ask what would happen to that output if the claimed property were false.
+   A list of link strings stays the same when a target heading is renamed.
+   A check that opens the target, computes its heading IDs and reports whether
+   one matches can distinguish those cases. Manual inspection can establish a
+   match too. Record which operation supplied the evidence.
+3. Look elsewhere in the attempt when the citation is insufficient. A directory
+   listing shows names. The harness file comparison shows changes since task
+   start when captured. A check’s before/after identity covers the check’s own
+   execution and directory. If the relevant comparison is unavailable, clipped
+   or partly omitted, retain that qualification. Inspect the complete artifact
+   or diff when needed.
+4. Record what this changes for acceptance. If the evidence exists elsewhere,
+   keep the supported result and correct the attribution. If a false assurance
+   matters to the assignment, qualify or reject the handoff even when the patch
+   is sound. If a standalone check is missing, independent review can supply it.
+   Credit that check to its reviewer. Keep an accurate narrower claim, such as
+   “compiled both modules,” even when integration remains untested.
+
+The [worked example](../examples/reviewing-worker-output/README.md) includes
+the original disputed command and the historical decision. The [audit](../results/verification-claims-audit-001.json)
+includes cases where inspection supported the conclusion despite an imprecise
+citation, and cases where the conclusion itself failed.
 
 ## Related reading
 

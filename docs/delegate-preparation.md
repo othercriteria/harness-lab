@@ -90,6 +90,10 @@ not establish a general benefit or timing effect.
 
 ## Reviewing the result
 
+Read verification claims in both the proposed files and the final handoff. The
+[receipt review workflow](handoff-receipts.md#reviewer-workflow) shows how to
+qualify a citation while preserving an independently supported result.
+
 **Match each check's claim to what it executes.** Real-dependency checks
 establish only the behavior actually asserted in that environment. Source
 inspection and stubs establish narrower facts; neither substitutes for exercising
