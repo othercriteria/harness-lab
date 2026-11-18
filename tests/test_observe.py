@@ -152,6 +152,7 @@ class ObservatoryTests(unittest.TestCase):
                         "state": "completed",
                         "cleanup_verified": True,
                         "job_id": identifier,
+                        "package_id": "bound-package",
                         "owner": None,
                     }
                 )
@@ -161,6 +162,50 @@ class ObservatoryTests(unittest.TestCase):
             self.assertEqual(data["trials"][0]["state"], "awaiting outer review")
             self.assertIsNone(data["trials"][0]["passed"])
             self.assertEqual(data["delegation"]["label"], "Useful real work")
+            # Both paginated list and detail follow the later bound outer review,
+            # without turning a delegate into a scored benchmark trial.
+            (job / "artifact").mkdir()
+            artifact = b'{"changes": []}'
+            (job / "artifact/artifact.json").write_bytes(artifact)
+            review = {
+                "job_id": identifier,
+                "package_id": "bound-package",
+                "artifact": "artifact",
+                "artifact_sha256": hashlib.sha256(artifact).hexdigest(),
+                "decision": "accepted",
+            }
+            def assert_label(label):
+                for details in (False, True):
+                    item = Evidence(root).run(run.name, details)["trials"][0]
+                    self.assertEqual(item["state"], label)
+                    self.assertIsNone(item["passed"])
+                page = Evidence(root).runs()
+                self.assertEqual(page["runs"][0]["trials"][0]["state"], label)
+
+            for decision in ("accepted", "accepted_with_repairs", "rejected"):
+                review["decision"] = decision
+                (job / "review.json").write_text(json.dumps(review))
+                assert_label("outer review " + decision.replace("_", " "))
+            review["decision"] = "accepted"
+            raw = json.dumps(review).encode()
+            (job / "review.json").write_bytes(raw)
+            application = {
+                "job_id": identifier, "state": "applying", "applied": False,
+                "review_sha256": hashlib.sha256(raw).hexdigest(),
+                "artifact_sha256": review["artifact_sha256"],
+            }
+            (job / "application.json").write_text(json.dumps(application))
+            assert_label("outer review accepted")
+            application.update(state="applied", applied=True)
+            (job / "application.json").write_text(json.dumps(application))
+            assert_label("outer review accepted · applied")
+            application["review_sha256"] = "stale"
+            (job / "application.json").write_text(json.dumps(application))
+            assert_label("outer review accepted")
+            for field in ("job_id", "package_id", "artifact_sha256"):
+                altered = dict(review, **{field: "wrong"})
+                (job / "review.json").write_text(json.dumps(altered))
+                assert_label("outer review needs reconciliation")
 
     def test_rejected_checkpoint_and_summaryless_reset_are_timeline_events(self):
         fixtures = [
@@ -230,6 +275,11 @@ class ObservatoryTests(unittest.TestCase):
                     "context-checkpoint-response-085.json",
                     {"status": "valid_response"},
                     "checkpoint accepted / unverified memory",
+                ),
+                (
+                    "context-checkpoint-response-086.json",
+                    {"status": "valid_response", "accepted_tool": "finish_attempt"},
+                    "final handoff accepted for dispatch / unverified",
                 ),
                 (
                     "fresh-context-reset-085.json",

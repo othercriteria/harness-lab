@@ -10,6 +10,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from observe_costs import CostProjection
 from observe_jobs import projection as job_projection
+from observe_jobs import review_label as job_review_label
 
 PROJECT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = Path("/bulk/dlk/local-harness/runs")
@@ -335,6 +336,7 @@ class Evidence:
     def run(self, name, details=True):
         root = self.child(self.root, name)
         delegated = bool(re.fullmatch(r"delegate-[a-f0-9]{32}", name))
+        delegation_review = job_review_label(name, self.root.parent / "delegation") if delegated else None
         if not (root / "command.json").is_file():
             raise ValueError("Not a campaign directory")
         bg = self.read(root / "background/summary.json") or {}
@@ -437,7 +439,7 @@ class Evidence:
                     trial_state = "passed" if passed else "source/handoff rejected"
             if delegated:
                 passed = None
-                trial_state = (
+                trial_state = delegation_review or (
                     "awaiting outer review"
                     if summary.get("clean_agent_completion")
                     else "no clean submission"
@@ -689,6 +691,8 @@ class Evidence:
                     "bypassed": "context reset bypassed",
                     "refused": "context reset refused",
                 }.get(status, str(status))
+                if status == "valid_response" and req.get("accepted_tool") == "finish_attempt":
+                    state = "final handoff accepted for dispatch / unverified"
                 if "-repair-" in path.name and status == "requested":
                     state = "checkpoint repair requested"
                 if reset and status == "applied":
