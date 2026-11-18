@@ -1,0 +1,33 @@
+{
+  "job_id": "0f9ba02ee16a48b682e4a92ebbb65a33",
+  "package_id": "231247bb109f752a61543d116f52b0492dccf56d67e7b4ab26f03aa205e17e69",
+  "recipe": "apprentice-qwen-32k-v1",
+  "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "contribution": [
+    "scripts/checkpoint_policy.py",
+    "tests/test_checkpoint_policy.py"
+  ],
+  "clean_completion": true,
+  "outer_repairs": "none",
+  "review": "/bulk/dlk/local-harness/delegation/jobs/0f9ba02ee16a48b682e4a92ebbb65a33/review.json",
+  "independent_verification": "/bulk/dlk/local-harness/research/checkpoint-finalization-001/policy-verification.json",
+  "application": {
+    "job_id": "0f9ba02ee16a48b682e4a92ebbb65a33",
+    "applied": true,
+    "state": "applied",
+    "review_sha256": "6c7fd361d11cfddd8947fbdbedd7a244a1bd98e2968518d454adac3ac5cadfe6",
+    "artifact_sha256": "210d41228094d77225499e6d8d1fce19240dd07fefcd017da2380a8d5329f997",
+    "paths": [
+      {
+        "path": "scripts/checkpoint_policy.py",
+        "after_sha256": "417f969edf07fc89791608f69204c5dae9d6e93eac1ffcee387e3cb20c10a0d7"
+      },
+      {
+        "path": "tests/test_checkpoint_policy.py",
+        "after_sha256": "dc788e7b33180759aa50afaa58616abe766fbc9ba0b3abe70ee8fad4f8133453"
+      }
+    ],
+    "qualification": "Atomic per file, cooperating-writer lock; no automatic rollback of concurrent edits."
+  },
+  "qualification": "Worker-authored eligibility predicate and14 unit tests only. Maintainer source review and isolated independent cases/negative controls; dispatch/controller/audit integration is separate outer work."
+}
