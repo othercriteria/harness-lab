@@ -818,6 +818,7 @@ class IsolatedEnvironment:
                         "stderr": "",
                     },
                 )
+                self.scope_return_tools.add(self.calls)
                 return {
                     "returncode": 0,
                     "output": notice,

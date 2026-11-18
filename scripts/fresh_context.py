@@ -695,7 +695,20 @@ class FreshContext:
             }
         env = self.environment
         # Snapshot return alone is insufficient: cleanup must be authoritative.
-        for number in range(1, env.calls + 1):
+        # A fixed-world continuation may supply an outer-validated, closed
+        # historical prefix. Its receipts are archived separately, not invented
+        # in the new tool namespace. Every new boundary still needs validation.
+        for number in range(
+            getattr(self, "historical_boundary_through", 0) + 1, env.calls + 1
+        ):
+            if number in getattr(env, "scope_return_tools", set()):
+                from scoped_runtime import verify_return_receipt
+
+                try:
+                    verify_return_receipt(self.output / f"tool-{number:03d}")
+                except (OSError, ValueError, KeyError) as error:
+                    raise UnsafeCleanup("Invalid scope-return boundary") from error
+                continue
             if number in getattr(env, "read_tools", set()):
                 from read_file import verify_receipt
 

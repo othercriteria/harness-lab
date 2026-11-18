@@ -65,6 +65,30 @@ def tool():
     }
 
 
+def verify_return_receipt(prefix):
+    """A native scope return starts no process; verify both outer receipts."""
+    records = []
+    for suffix in ("request", "result"):
+        path = prefix.with_suffix(f".{suffix}.json")
+        if path.is_symlink() or path.stat().st_size > 65536:
+            raise ValueError("Invalid scope return receipt")
+        records.append(json.loads(path.read_text()))
+    request, result = records
+    if not isinstance(request, dict) or not isinstance(result, dict):
+        raise ValueError("Invalid scope return records")
+    if not (
+        request.get("mode") == "adapter-control"
+        and request.get("name") == NAME
+        and request.get("executed") is False
+        and result.get("scope_control") == "return_recorded"
+        and result.get("ok") is True
+        and result.get("executed") is False
+        and result.get("cleanup_required") is False
+        and "terminal_control" not in result
+    ):
+        raise ValueError("Invalid non-executing scope return")
+
+
 def publish_history(output, scope_id, messages):
     """Publish only visible fields as a bounded current-attempt read-only archive."""
     if not isinstance(scope_id, str) or not re.fullmatch(r"s[0-9]{4}", scope_id):
@@ -139,6 +163,7 @@ class ScopeRuntime:
         self.pending_return = None
         self.pending_identity = None
         self.pending_path = model.output / "scope-pending-return.json"
+        self.env.scope_return_tools = getattr(environment, "scope_return_tools", set())
         if self.pending_path.exists():
             saved = json.loads(self.pending_path.read_bytes())
             self.pending_return = validate_return(saved["value"], model.history)

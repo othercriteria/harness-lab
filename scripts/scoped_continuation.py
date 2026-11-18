@@ -12,6 +12,59 @@ from scoped_runtime import ScopeRuntime
 from stage_scoped_case import bounded_copy_file, copy_initial_tree, read, sha
 
 
+def archive_boundary_history(source, output, through):
+    """Validate closed historical tool boundaries without replay or fake receipts."""
+    from read_file import verify_receipt
+    from scoped_runtime import verify_return_receipt
+
+    directory = output / "historical-boundaries"
+    directory.mkdir()
+    files = {}
+    for number in range(1, through + 1):
+        prefix = directory / f"tool-{number:03d}"
+        for suffix in ("request", "result", "cleanup"):
+            name = f"tool-{number:03d}.{suffix}.json"
+            original = source / name
+            if original.exists():
+                bounded_copy_file(original, directory / name)
+                files[name] = sha(directory / name)
+        request = read(prefix.with_suffix(".request.json"))
+        result = read(prefix.with_suffix(".result.json"))
+        if request.get("mode") == "adapter-read":
+            verify_receipt(prefix)
+        elif request.get("mode") == "adapter-control":
+            if request.get("name") == "return_scope":
+                verify_return_receipt(prefix)
+            elif not (
+                request.get("executed") is False
+                and result.get("ok") is True
+                and result.get("executed") is False
+                and result.get("cleanup_required") is False
+                and "terminal_control" not in result
+                and (
+                    request.get("name") == "checkpoint_context"
+                    and result.get("checkpoint_control") == "summary_saved"
+                    or request.get("name") == "finish_attempt"
+                    and result.get("review_control") == "fresh_context_requested"
+                )
+            ):
+                raise ValueError("Invalid historical native boundary")
+        else:
+            receipt = read(prefix.with_suffix(".cleanup.json"))
+            if receipt.get("verified") is not True:
+                raise ValueError("Historical process cleanup is unverified")
+    write_json(
+        directory / "manifest.json",
+        {
+            "scope": "Outer-only closed historical prefix; never a new execution receipt",
+            "source": str(source),
+            "through_tool_call": through,
+            "files": files,
+        },
+    )
+    return through
+
+
 def load_case(directory):
     directory = Path(directory).resolve()
     if not directory.is_relative_to("/bulk/dlk/local-harness/research"):
@@ -95,6 +148,9 @@ def seed_attempt(case, model, env, arm):
             bounded_copy_file(path, history / path.name)
         env.history_archive = history
     if model.fresh_context:
+        model.fresh_context.historical_boundary_through = archive_boundary_history(
+            case["source"], output, env.calls
+        )
         resets = [
             read(p)
             for p in case["source"].glob("fresh-context-reset-*.json")
