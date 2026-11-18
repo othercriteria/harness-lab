@@ -170,8 +170,8 @@ citation, and cases where the conclusion itself failed.
 
 ## Asking Worker for a second reading
 
-A second reader is useful when a material check is disputed. Give it one
-attempt per assignment. Observation IDs are local to the attempt. Two runs
+For a disputed check, give a second reader one attempt per assignment.
+Observation IDs are local to the attempt. Two runs
 can each have an `o0013` for different operations. In a mixed packet a reader
 borrowed one run’s successful heading check to endorse a different run’s
 link-listing command.
@@ -200,6 +200,14 @@ A reader can notice that a comparison uses an embedded string, then still
 call the result byte-identical even though Python opened the file in text
 mode. Use the outcome to correct the current communication and preserve the
 original receipt for later audit.
+
+Check the reader's proposed remedy, too. A Worker correctly objected that
+a directory listing could hide an edit to an existing file, then suggested
+another listing as one way to settle the question. Compare file contents at
+both endpoints to check the net change. To decide whether a file was ever
+edited and restored, inspect the operations over the interval.
+The [six-case calibration](../results/advisory-claim-review-001.json) includes
+the original claims, commands, reader responses and independent judgments.
 
 ## Related reading
 
