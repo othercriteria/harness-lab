@@ -1,5 +1,5 @@
 {
-  description = "Local coding harness experiments";
+  description = "Local Harness Lab";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -16,6 +16,7 @@
             python313 uv ruff git curl jq ripgrep bubblewrap
             bash coreutils diffutils findutils gnugrep gnused patch
             util-linux procps time
+            opencode aider-chat
           ];
           UV_PYTHON = "${pkgs.python313}/bin/python3.13";
           UV_PYTHON_PREFERENCE = "only-system";
