@@ -12,6 +12,7 @@ import time
 from pathlib import Path
 
 from call_budget import MAX_CALLS
+from checkpoint_policy import MIN_CHECKPOINT_HEADROOM_TOKENS
 from control import DeadlineExceeded, UnsafeCleanup
 
 MAX_ENTRIES = 4 * MAX_CALLS + 1
@@ -450,9 +451,9 @@ class FreshContext:
             measured = {
                 "input_tokens": tokens,
                 "available_completion_tokens": available,
-                "required_completion_headroom": 2560,
+                "required_completion_headroom": MIN_CHECKPOINT_HEADROOM_TOKENS,
             }
-            if available < 2560:
+            if available < MIN_CHECKPOINT_HEADROOM_TOKENS:
                 reason = "insufficient measured context headroom"
             timing = self.timing(time.monotonic())
             if timing["remaining_agent_seconds"] < self.minimum_remaining:
@@ -797,7 +798,8 @@ class FreshContext:
         # the archive without sending an impossible/truncated checkpoint request.
         summary_fits = (
             self.pressure is None
-            or self.pressure["available_completion_tokens"] >= 2560
+            or self.pressure["available_completion_tokens"]
+            >= MIN_CHECKPOINT_HEADROOM_TOKENS
         )
         if self.summary_enabled and not self.checkpoint_requested and summary_fits:
             from context_checkpoint import request

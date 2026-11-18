@@ -4,6 +4,7 @@ import hashlib
 from pathlib import Path
 
 from checkpoint_evidence import read, require, verify_checkpoint_evidence
+from checkpoint_policy import MIN_CHECKPOINT_HEADROOM_TOKENS
 from fresh_context import validate_history_archive, visible_message
 
 
@@ -118,7 +119,9 @@ def verify_pressure_recovery(directory, limits, raw):
             == pressure["available_completion_tokens"],
             "Pressure arithmetic",
         )
-        skipped = pressure["available_completion_tokens"] < 2560
+        skipped = (
+            pressure["available_completion_tokens"] < MIN_CHECKPOINT_HEADROOM_TOKENS
+        )
         require(
             event["summary_skipped_insufficient_headroom"] == skipped,
             "Summary fallback trigger",

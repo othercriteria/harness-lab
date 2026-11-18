@@ -91,6 +91,13 @@ class CheckpointTests(unittest.TestCase):
         self.requests = []
         self.perform_options = []
 
+    def input_tokens_for_headroom(self, remaining):
+        return (
+            self.limits["context_capacity_tokens"]
+            - self.limits["context_policy"]["safety_tokens"]
+            - remaining
+        )
+
     def read(self, name):
         return json.loads((self.root / name).read_text())
 
@@ -646,11 +653,14 @@ class CheckpointTests(unittest.TestCase):
         )
 
     def test_prose_checkpoint_can_be_repaired_without_renewing_budgets(self):
+        at_cutoff = self.input_tokens_for_headroom(2560)
+        self.model.count_tokens = lambda payload, phase: at_cutoff
         deadline = self.env.agent_deadline
         self.run_sequence(
             checkpoint={"role": "assistant", "content": SUMMARY},
             finish_reason="stop",
             repair=call("checkpoint_context", {"summary": SUMMARY}, "repair-1"),
+            prompt_tokens=at_cutoff,
         )
         self.assertEqual(
             (self.model.calls, self.model.completion_tokens, self.env.calls), (5, 25, 4)
@@ -670,6 +680,8 @@ class CheckpointTests(unittest.TestCase):
         self.assertEqual(audit["known_completion_tokens"], 25)
         self.assertEqual(self.read("context-checkpoint-001.json")["model_call"], 3)
         decision = self.read("context-checkpoint-repair-request-001.json")
+        self.assertEqual(decision["context"]["available_completion_tokens"], 2560)
+        self.assertEqual(decision["context"]["required_completion_headroom"], 2560)
         decision["timing"]["original_agent_deadline_monotonic"] += 100
         (self.root / "context-checkpoint-repair-request-001.json").write_text(
             json.dumps(decision)
@@ -697,14 +709,14 @@ class CheckpointTests(unittest.TestCase):
 
     def test_repair_is_skipped_when_fresh_context_measurement_is_too_large(self):
         self.model.count_tokens = lambda payload, phase: (
-            32000 if phase == "checkpoint-repair" else 100
+            self.input_tokens_for_headroom(2559) if phase == "checkpoint-repair" else 100
         )
         self.run_sequence(checkpoint=call("bash", {"command": "must not execute"}))
         self.assertEqual(len(self.perform_options), 2)
-        self.assertEqual(
-            self.read("context-checkpoint-repair-decision-001.json")["reason"],
-            "insufficient measured context headroom",
-        )
+        decision = self.read("context-checkpoint-repair-decision-001.json")
+        self.assertEqual(decision["context"]["available_completion_tokens"], 2559)
+        self.assertEqual(decision["context"]["required_completion_headroom"], 2560)
+        self.assertEqual(decision["reason"], "insufficient measured context headroom")
         self.assertFalse(
             (self.root / "context-checkpoint-repair-request-001.json").exists()
         )

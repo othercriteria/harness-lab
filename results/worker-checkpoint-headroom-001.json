@@ -1,0 +1,38 @@
+{
+  "issue": 28,
+  "base_commit": "10477e38984f6ad260ac19cc7c7c20744de07696",
+  "recipe": "apprentice-qwen-32k-v1",
+  "review": {
+    "job_id": "54a45cdf5a3e49a89e527c43f0993147",
+    "package_id": "ff2132ffe456eecc5240d9c0b7c80732e075bb48db76a8db25660eb0d1931f61",
+    "reviewer": "Maintainer (Codex)",
+    "at": "2026-11-18T21:49:39.964607+00:00",
+    "decision": "accepted",
+    "artifact": "artifact",
+    "artifact_sha256": "304dea9dda43b6b9951434c6dc079b9527718d17a0778d5c131ba637e07ece9e",
+    "notes": "Accepted the four submitted production files without repair. Maintainer supplied boundary tests separately. The diff retains the operators and receipt fields at all five uses. The claim about bare literals applies to the supplied snapshot.",
+    "verification": "Independent isolated evaluators passed 58 tests each on the parent and candidate, exercising summary and repair decisions at 2,559 and 2,560 tokens. Both readers emitted identical audit output on a prior Worker trace. The SQLite trace replayed three resets using its own frozen reader."
+  },
+  "review_sha256": "9266af7dab80931a7dcd1a1344d9ae7aa5e61608e9c4f4c1e29491bce22dd326",
+  "applied": true,
+  "completion": "clean",
+  "repairs": "none",
+  "maintainer_tests": [
+    "tests/test_context_checkpoint.py",
+    "tests/test_pressure_recovery.py"
+  ],
+  "worker_seconds": 175.7614541919902,
+  "dispatch_seconds": 195.90824162005447,
+  "evaluation_directory": "/bulk/dlk/local-harness/research/checkpoint-headroom-001",
+  "isolated_result_sha256": {
+    "baseline-boundary": "94f3aa77cb2cb30e5f7d451eb471ab2e963ae8e58d75c584ce26e48405a1be28",
+    "candidate-boundary": "95c92ce47bc15f53c8c303f563a337b881ae217e74bef6c5c725cf2506d14372",
+    "baseline-prior-replay": "d9f3d60b11ff5bd55df4e9285634d55de5f1146c426823f0ecec5d4394992451",
+    "candidate-prior-replay": "6f590dcc486560a4aa2f928c16543ef83b5b0f6670378fe6867c0f270541fd05",
+    "frozen-replay": "247bfd7c4485986e9ba736e6c66a1ea1420b5e6a0a6c2c07aa31996bb0976a6d"
+  },
+  "replayed_worker": "delegate-4ba3e5be0d5c45ec89a3331612eb5c2b",
+  "historical_sqlite": "workflow-format-plain-sqlite-migrations-core-guided-v8-seed12040-001",
+  "historical_reader": "The pre-change current reader rejects this earlier checkpoint tool schema. The scripts frozen with that trial replay all three resets.",
+  "session_restoration": "/bulk/dlk/local-harness/sessions/2026-11-18-gpu-quiet-052/restoration-verification.json"
+}

@@ -10,7 +10,10 @@ import re
 from pathlib import Path
 from types import SimpleNamespace
 
-from checkpoint_policy import CheckpointResponses
+from checkpoint_policy import (
+    MIN_CHECKPOINT_HEADROOM_TOKENS,
+    CheckpointResponses,
+)
 from context_checkpoint import (
     REPLY_TOKENS,
     THINK_TOKENS,
@@ -155,7 +158,8 @@ def verify_checkpoint_evidence(directory, limits):
                 "Repair decision mismatch",
             )
             require(
-                offer["context"]["available_completion_tokens"] >= 2560
+                offer["context"]["available_completion_tokens"]
+                >= MIN_CHECKPOINT_HEADROOM_TOKENS
                 and offer["context"]["available_completion_tokens"]
                 == limits["context_capacity_tokens"]
                 - offer["context"]["input_tokens"]

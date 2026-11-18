@@ -7,6 +7,11 @@ execute a tool, or replace handoff validation. It never mutates its inputs.
 
 from enum import Enum, auto
 
+# Minimum measured completion headroom for a context checkpoint: completion
+# tokens remaining after the safety margin. Distinct from the configurable
+# earlier trigger (headroom_tokens) and from the reply budget.
+MIN_CHECKPOINT_HEADROOM_TOKENS = 2560
+
 
 class CheckpointResponses(Enum):
     """Responses the configuration permits when the Worker is outside a scope."""
