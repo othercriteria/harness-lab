@@ -43,12 +43,22 @@ NATIVE_ARTIFACT = re.compile(
     r"|context-\d+(?:\.usage)?\.json|control-result\.json|supplied-history\.json)\Z"
 )
 ARTIFACT = re.compile(
-    r"(?:context-\d+(?:\.usage)?\.json|behavioral-verification\.json|spec-blocker-claim\.json|final-handoff\.json|review-handoff\.json|finalization-review\.json|outer-adjudication\.json|summary\.json|trajectory\.json|changes\.diff|agent-config\.json|sampling\.json|inputs\.json|request-\d+\.(?:request\.json|response\.bin|timing\.json)|tool-\d+\.(?:request\.json|result\.json|cleanup\.json|stdout\.bin|stderr\.bin)|verification\.(?:result\.json|cleanup\.json))\Z"
+    r"(?:context-\d+(?:\.usage)?\.json|behavioral-verification\.json|spec-blocker-claim\.json|final-handoff\.json|review-handoff\.json|finalization-review\.json|outer-adjudication\.json|summary\.json|trajectory\.json|changes\.diff|reviewed-changes\.diff|acceptance-review\.json|agent-config\.json|sampling\.json|inputs\.json|request-\d+\.(?:request\.json|response\.bin|timing\.json)|tool-\d+\.(?:request\.json|result\.json|cleanup\.json|stdout\.bin|stderr\.bin)|verification\.(?:result\.json|cleanup\.json))\Z"
 )
 RECOVERY_ARTIFACT = re.compile(
     r"(?:case-a|case-b)/(?:"
     + ARTIFACT.pattern.removesuffix(r"\Z")
     + r"|parsed-handoff\.json)\Z"
+)
+
+
+STANDARD_WORKER_DIRS = ("backend", "native")
+STANDARD_WORKER_ARTIFACT = re.compile(
+    r"(?:backend/(?:request-\d+\.(?:request\.json|response\.bin|timing\.json|allocation\.json)"
+    r"|warmup\.json|scored-cache-usage\.json|usage(?:-\d+)?\.json|failure(?:-\d+)?\.json)"
+    r"|native/(?:request-\d+\.(?:request\.json|response\.bin)"
+    r"|tool-\d+\.(?:request\.json|result\.json|cleanup\.json|stdout\.bin|stderr\.bin)"
+    r"|native\.(?:stdout\.bin|stderr\.bin|cleanup\.json)|result\.json))\Z"
 )
 
 
@@ -238,6 +248,7 @@ class Evidence:
             ARTIFACT.fullmatch(name)
             or CONTROL_ARTIFACT.fullmatch(name)
             or NATIVE_ARTIFACT.fullmatch(name)
+            or STANDARD_WORKER_ARTIFACT.fullmatch(name)
             or RECOVERY_ARTIFACT.fullmatch(name)
             or CONTEXT_EVENT.fullmatch(name)
             or CONTEXT_ARTIFACT.fullmatch(name)
@@ -249,7 +260,7 @@ class Evidence:
         files = []
         for directory in [
             root,
-            *(root / name for name in (*NATIVE_CASES, *RECOVERY_CASES)),
+            *(root / name for name in (*NATIVE_CASES, *RECOVERY_CASES, *STANDARD_WORKER_DIRS)),
         ]:
             if directory.is_symlink() or not directory.is_dir():
                 continue
@@ -261,6 +272,10 @@ class Evidence:
                     directory == root
                     or NATIVE_ARTIFACT.fullmatch(f"{directory.name}/{path.name}")
                     or RECOVERY_ARTIFACT.fullmatch(f"{directory.name}/{path.name}")
+                    or (
+                        STANDARD_WORKER_ARTIFACT.fullmatch(f"{directory.name}/{path.name}")
+                        and (directory.name == "backend" or path.name.startswith("tool-"))
+                    )
                 )
                 and path.is_file()
                 and not path.is_symlink()
@@ -705,7 +720,7 @@ class Evidence:
                         directory
                         / (prefix.replace("request-", "context-") + ".usage.json")
                     ),
-                    seconds=timing.get("wall_seconds", case.get("elapsed_seconds")),
+                    seconds=timing.get("wall_seconds", timing.get("seconds", case.get("elapsed_seconds"))),
                     control_case=case or None,
                     seed=req.get("seed"),
                     limit=req.get("max_tokens"),
@@ -813,7 +828,9 @@ class Evidence:
             records.append(record)
         return {
             "events": records,
-            "cost_breakdown": self.costs.get(self, root) if not control else None,
+            "cost_breakdown": self.costs.get(self, root)
+            if not control and not (root / "backend").is_dir() else None,
+            "native_worker": summary.get("condition"),
             "event_window": {
                 "total_requests": total_requests,
                 "total_events": total_events,
@@ -840,7 +857,7 @@ class Evidence:
                 p.relative_to(root).as_posix()
                 for directory in [
                     root,
-                    *(root / name for name in (*NATIVE_CASES, *RECOVERY_CASES)),
+                    *(root / name for name in (*NATIVE_CASES, *RECOVERY_CASES, *STANDARD_WORKER_DIRS)),
                 ]
                 if directory.is_dir() and not directory.is_symlink()
                 for p in directory.iterdir()

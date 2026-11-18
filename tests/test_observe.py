@@ -994,6 +994,38 @@ class ObservatoryTests(unittest.TestCase):
             self.data.run("campaign")["trials"][0]["state"], "unsafe cleanup / stopped"
         )
 
+    def test_standard_worker_trace_uses_backend_and_command_receipts_once(self):
+        backend = self.trial / "backend"
+        native = self.trial / "native"
+        backend.mkdir()
+        native.mkdir()
+        request = {"messages": [{"role": "user", "content": "public brief"}], "max_tokens": 32768}
+        (backend / "request-001.request.json").write_text(json.dumps(request))
+        (native / "request-001.request.json").write_text(json.dumps(request))
+        response = {"choices": [{"message": {"content": "Done"}, "finish_reason": "stop"}], "usage": {"completion_tokens": 3}}
+        (backend / "request-001.response.bin").write_text(json.dumps(response))
+        (backend / "request-001.timing.json").write_text('{"seconds": 2.5}')
+        (native / "tool-001.request.json").write_text(json.dumps({"name": "execute", "arguments": {"command": "python -m unittest"}}))
+        (native / "tool-001.result.json").write_text('{"returncode": 0, "stdout": "OK"}')
+        (native / "native.stdout.bin").write_text("native log")
+        (self.trial / "summary.json").write_text('{"condition":"opencode","success":true}')
+        trace = self.data.trace("campaign", self.trial.name)
+        self.assertEqual(trace["kind"], "coding")
+        self.assertEqual(trace["native_worker"], "opencode")
+        self.assertEqual(trace["event_window"]["total_requests"], 2)
+        events = {event["id"]: event for event in trace["events"]}
+        self.assertEqual(events["backend/request-001"]["seconds"], 2.5)
+        self.assertEqual(events["native/tool-001"]["command"], "python -m unittest")
+        self.assertIn("native/native.stdout.bin", trace["artifacts"])
+        self.assertEqual(self.data.artifact("campaign", self.trial.name, "native/native.stdout.bin")["text"], "native log")
+        self.assertIsNone(trace["cost_breakdown"])
+        self.assertFalse(self.data.allowed_artifact("backend/../summary.json"))
+        self.assertFalse(self.data.allowed_artifact("native/settings/secrets.json"))
+        (backend / "request-002.request.json").symlink_to(native / "request-001.request.json")
+        self.assertEqual(len(self.data.request_files(self.trial)), 2)
+        with self.assertRaises(ValueError):
+            self.data.artifact("campaign", self.trial.name, "backend/request-002.request.json")
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
