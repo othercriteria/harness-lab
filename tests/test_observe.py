@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -1299,6 +1300,76 @@ class ObservatoryTests(unittest.TestCase):
             (event["seed"], event["finish"], event["reasoning"]), (43, "length", text)
         )
         self.assertEqual(event["usage"]["completion_tokens"], 2048)
+
+    def test_worker_diff_display_and_original_artifact(self):
+        from bounded_diff import file_diff
+
+        run = "delegate-" + "a" * 32
+        self.run.rename(self.root / run)
+        path = self.root / run / "experiment" / self.trial.name / "changes.diff"
+        old = [f"line {i}\r\n" for i in range(52)]
+        new = old.copy()
+        new[8:9] = ["added A\u2028B\r\n", "++ after/example\n"]
+        new[41] = "other\n"
+        recorded, _ = file_diff("example", "".join(old).encode(), "".join(new).encode())
+        addition, _ = file_diff("extra", None, b"added\n")
+        for suffix, fmt in (("", "compact"), (addition, "mixed")):
+            path.write_bytes((recorded + suffix).encode())
+            trace = self.data.trace(run, self.trial.name)
+            self.assertEqual(trace["diff_format"], fmt)
+            self.assertIn("@@ -6,7 +6,8 @@", trace["diff"])
+            self.assertIn("+added A\u2028B\r\n", trace["diff"])
+            self.assertNotIn("line 20", trace["diff"])
+            self.assertTrue(trace["diff"].endswith(suffix))
+            self.assertEqual(self.data.artifact(run, self.trial.name, "changes.diff")["text"],
+                             recorded + suffix)
+
+        for tail, fmt in [
+            ("unrecognized record\n", "recorded"),
+            ("\\ No newline at end of file\n", "recorded"),
+            ("x" * 65536, "recorded_truncated"),
+        ]:
+            raw = (recorded + tail).encode()
+            path.write_bytes(raw)
+            trace = self.data.trace(run, self.trial.name)
+            self.assertEqual(trace["diff_format"], fmt)
+            self.assertEqual(trace["diff"], raw[:65536].decode())
+
+    def test_archived_navigation_diff_applies_to_the_same_bytes(self):
+        from observe_diff import review_diff
+
+        fixture = Path(__file__).parent / "fixtures/navigation-review-diff.json"
+        lines = json.loads(fixture.read_text())
+        recorded = "\n".join(lines) + "\n"
+        self.assertEqual(hashlib.sha256(recorded.encode()).hexdigest(),
+                         "7f2ec7966db7c165b30b9675ed53806727cb9ca758f49145a22c17e6a3ec3df5")
+        display, fmt = review_diff(recorded, False)
+        self.assertEqual(fmt, "compact")
+        self.assertEqual(sum(line.startswith("@@ ") for line in display.split("\n")), 3)
+        self.assertLessEqual(display.count("\n"), 40)
+        # This archived single hunk starts at line one on both sides.
+        source = self.root / "docs/project-navigation.md"
+        source.parent.mkdir()
+        source.write_bytes("".join(line[1:] + "\n" for line in lines[3:] if line[0] in " -").encode())
+        expected = "".join(line[1:] + "\n" for line in lines[3:] if line[0] in " +").encode()
+        subprocess.run(["git", "apply", "--whitespace=nowarn", "-"], cwd=self.root,
+                       input=display.encode(), check=True)
+        self.assertEqual(source.read_bytes(), expected)
+
+    def test_diff_matching_budget_spans_files(self):
+        from bounded_diff import file_diff
+        from observe_diff import review_diff
+
+        old = [f"{i}\n" for i in range(60)]
+        new = old.copy()
+        new[2] = "early\n"
+        new[54] = "late\n"
+        recorded, _ = file_diff("sample", "".join(old).encode(), "".join(new).encode())
+        with patch("observe_diff.MATCH_PAIRS_PER_PREVIEW", 5000):
+            display, fmt = review_diff(recorded * 3, False)
+        self.assertEqual(fmt, "mixed")
+        self.assertTrue(display.endswith(recorded * 2))
+        self.assertLess(len(display), 3 * len(recorded))
 
     def test_reads_are_bounded_and_tail_is_current(self):
         path = self.trial / "changes.diff"

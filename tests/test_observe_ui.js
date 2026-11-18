@@ -400,6 +400,13 @@ assert.doesNotMatch(text(elements.get('metrics')),/USEFUL WORK|LIFECYCLE CHECK|D
 assert.equal(elements.get('record-type').textContent,'DELEGATED REPOSITORY WORK');
 assert.equal(elements.get('title').textContent,'Docs <script> remains text');
 assert.equal(elements.get('job-details').hidden,false);
+for(const [fmt,label] of [['compact','Compact review diff'],['mixed','Compact and recorded hunks'],['recorded','Recorded diff'],['recorded_truncated','Recorded diff · preview truncated']]){
+  context.delegatedTrace.diff_format=fmt;
+  context.delegatedTrace.diff='+<script>literal patch</script>';
+  vm.runInContext('render(delegatedRun,delegatedTrace)',context);
+  assert.ok(elements.get('diff-title').textContent.endsWith(label));
+  assert.equal(elements.get('diff').textContent,'+<script>literal patch</script>');
+}
 context.delegatedRun.delegation.classification={kind:'diagnostic_replay'};
 vm.runInContext('render(delegatedRun,delegatedTrace)',context);
 assert.match(text(elements.get('metrics')),/DIAGNOSTIC REPLAY Use/);

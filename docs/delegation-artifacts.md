@@ -72,6 +72,28 @@ Per-file input (256 KiB combined), LF-count (8192 newline bytes per side), and t
 Complete files, per-file digests, and the `artifact.json` manifest remain the
 source of truth.
 
+### Reviewing separated edits in Observatory
+
+Open **Diff & verification** on a delegated job. **Compact review diff** groups
+edits with three lines of context and keeps their original file coordinates.
+**Recorded diff** shows the stored representation. A mixed view labels the
+presence of both kinds of hunk. To inspect the recorded text directly, select
+`changes.diff` under **Raw artifacts**. The manifest's `diff_sha256` covers
+that recorded artifact.
+
+The trace preview reads up to 64 KiB. Refinement shares a budget of 65,536
+old-line/new-line pairs across its files. Truncated previews and unrecognized
+records keep their recorded text. The navigation replay fell from 130 lines
+to 38, exposing three edits. The test-writing replay fell from 390 to 124.
+Applying each displayed diff to its archived starter with Git reproduced the
+submitted file byte for byte.
+
+To rehearse the navigation case from this repository with Python 3.13 and Git:
+
+```sh
+python3 -S -m unittest tests.test_observe.ObservatoryTests.test_archived_navigation_diff_applies_to_the_same_bytes
+```
+
 ## Three distinct activities
 
 - **Validation/export** (`create_snapshot`, `export_candidate`): structural

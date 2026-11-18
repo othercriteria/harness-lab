@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from observe_costs import CostProjection
+from observe_diff import review_diff
 from observe_jobs import projection as job_projection
 from observe_jobs import review_label as job_review_label
 
@@ -880,6 +881,10 @@ class Evidence:
                         directory / (prefix + ".stderr.bin"), 16000
                     )[0]
             records.append(record)
+        diff, clipped = self.text(root / "changes.diff", 65536)
+        diff_format = "recorded_truncated" if clipped else "recorded"
+        if re.fullmatch(r"delegate-[a-f0-9]{32}", run):
+            diff, diff_format = review_diff(diff, clipped)
         return {
             "events": records,
             "cost_breakdown": self.costs.get(self, root)
@@ -907,7 +912,8 @@ class Evidence:
             else "control"
             if control
             else "coding",
-            "diff": self.text(root / "changes.diff", 65536)[0],
+            "diff": diff,
+            "diff_format": diff_format,
             "artifacts": sorted(
                 p.relative_to(root).as_posix()
                 for directory in [
