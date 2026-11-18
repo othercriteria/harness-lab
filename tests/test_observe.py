@@ -41,6 +41,44 @@ class ObservatoryTests(unittest.TestCase):
         self.assertEqual(self.data.trace("campaign", self.trial.name)["comparison_review"]["status"],
                          "operationally_invalid")
 
+    def test_rejected_review_labels_preserve_raw_correctness_and_binding(self):
+        error = {"type": "DeadlineExceeded", "message": "Whole-stage wall deadline expired"}
+        timeout = {"clean_agent_completion": False, "final_handoff": None, "agent_error": error}
+        cases = [
+            (timeout, True, False, "source accepted / handoff missing at timeout"),
+            ({"clean_agent_completion": True}, True, False, "source accepted / handoff rejected"),
+            ({}, True, False, "source accepted / handoff rejected"),
+            (timeout | {"agent_outcome": {"exit_status": []}}, True, False, "source accepted / handoff rejected"),
+            (timeout | {"agent_error": []}, True, False, "source accepted / handoff rejected"),
+            (timeout | {"agent_outcome": {"exit_status": "Submitted"}}, True, False,
+             "source accepted / handoff rejected"),
+            (timeout | {"agent_error": error | {"message": "Tool-call budget exhausted"}},
+             True, False, "source accepted / handoff rejected"),
+            ({}, False, True, "source rejected / handoff accepted"),
+            ({}, False, False, "source and handoff rejected"),
+            ({}, True, True, "trial failed / source and handoff accepted"),
+        ]
+        summary_path = self.trial / "summary.json"
+        for terminal, source, handoff, label in cases:
+            with self.subTest(terminal=terminal, source=source, handoff=handoff):
+                summary = {"task": "example", "seed": 1, "success": False,
+                           "verified_correctness": True, "source_handoff_review": "pending_outer_review",
+                           **terminal}
+                raw = json.dumps(summary).encode()
+                summary_path.write_bytes(raw)
+                review = {"status": "reviewed", "task": "example", "seed": 1,
+                          "raw_summary_sha256": hashlib.sha256(raw).hexdigest(),
+                          "source_accepted": source, "handoff_accepted": handoff, "full_acceptance": False,
+                          "agent_outcome": None, "agent_error": error, "clean_agent_completion": False,
+                          "final_handoff": None}
+                (self.trial / "acceptance-review.json").write_text(json.dumps(review))
+                row = self.data.run("campaign")["trials"][0]
+                self.assertEqual((row["state"], row["passed"], row["correct"]), (label, False, True))
+                self.assertEqual(summary_path.read_bytes(), raw)
+        summary_path.write_bytes(raw + b" ")
+        row = self.data.run("campaign")["trials"][0]
+        self.assertEqual((row["state"], row["passed"]), ("awaiting source/handoff review", None))
+
     def test_continuation_review_requires_checks_and_exact_summary_binding(self):
         summary = {
             "task": "delegated-task",

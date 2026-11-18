@@ -12,6 +12,7 @@ from observe_costs import CostProjection
 from observe_diff import review_diff
 from observe_jobs import projection as job_projection
 from observe_jobs import review_label as job_review_label
+from observe_review import rejected_trial_label
 
 PROJECT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = Path("/bulk/dlk/local-harness/runs")
@@ -437,7 +438,9 @@ class Evidence:
                     trial_state = "awaiting source/handoff review"
                 else:
                     passed = review_status == "accepted"
-                    trial_state = "passed" if passed else "source/handoff rejected"
+                    trial_state = "passed" if passed else rejected_trial_label(
+                        summary, comparison_review["receipt"]
+                    )
             if delegated:
                 passed = None
                 trial_state = delegation_review or (

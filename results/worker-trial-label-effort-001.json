@@ -1,0 +1,63 @@
+{
+  "issue": 14,
+  "effort_issue": 17,
+  "job": "bdd9d9cfa7af49629387fff596dccdbf",
+  "package": "6d06d5c3f3f1fb14a4c03ae840771ee2552755edf8c524a736e7b8a6f16c2367",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19117,
+  "admission": "ordinary outer-only assignment; Maintainer wrote the direct alternative before inspecting the candidate",
+  "worker_task_seconds": 85.04544767993502,
+  "dispatch_through_verified_cleanup_seconds": 110.71677867695689,
+  "clean_completion": true,
+  "prepared_checks": true,
+  "outer_decision": "rejected",
+  "applied": false,
+  "worker_artifact_manifest_sha256": "8d09154ba0e9b41579f1685d48004005752ac8d2eecaf6a19790db33a2cb2d2a",
+  "worker_source_sha256": "17b8a31afcd2fad91e74ab4be755a6a01ca3a22152bef5ee116d06944dd5c167",
+  "review_sha256": "e3532f15cd000f0a868319207cf621bcc01c405a171733568bbb68d90e3129cc",
+  "direct_sealed_source_sha256": "66afea6bc2d9cd74a1d3e9531d9fcaeb0106339d716dca61bf8211b16de86af8",
+  "landed_maintainer_source_sha256": "fb6b11afe046c6a9a3e8a52f87344de89eedec382d62ede4e1f0dd9d9da73b60",
+  "isolated_post_run_probes": {
+    "worker": "terminal source accepted / handoff missing at timeout\nmalformed TypeError\nextra source accepted / handoff missing at timeout\n",
+    "direct": "terminal source accepted / handoff rejected\nmalformed source accepted / handoff missing at timeout\nextra source accepted / handoff rejected\n"
+  },
+  "historical_rows": [
+    {
+      "run": "tinfield-viability-markdown-001",
+      "seed": 14831,
+      "state": "source accepted / handoff missing at timeout",
+      "passed": false,
+      "correct": true
+    },
+    {
+      "run": "tinfield-viability-markdown-cpu34-001",
+      "seed": 14831,
+      "state": "source accepted / handoff missing at timeout",
+      "passed": false,
+      "correct": true
+    },
+    {
+      "run": "standard-workers-opencode-tabreport-diff-seeds18100-18101-003",
+      "seed": 18101,
+      "state": "source accepted / handoff rejected",
+      "passed": false,
+      "correct": true
+    }
+  ],
+  "effort_seconds": {
+    "select_scope_design_package_and_oracle": 81.69,
+    "dispatch": 15.88,
+    "direct_implementation_and_seal": 17.45,
+    "shared_integration_oracle": 34.49,
+    "unrelated_backlog_and_wait": 70.1,
+    "restoration": 0.63,
+    "inspect_worker_and_probe": 50.5,
+    "fallback_repair_integrate_and_validate": 47.77
+  },
+  "observation_window_seconds": 318.51,
+  "clock_definition": "Sequential outer-agent wall intervals incl. tool/approval latency, a proxy for attention. Worker execution overlapped direct implementation, preparation of the public-path regression and other backlog work. Do not add the GPU duration to the outer intervals. Initial issue lookup before the first marker and post-validation recordkeeping, publication and CI monitoring are excluded. Planning the brief and oracle happened across the selection marker so these are pooled.",
+  "direct_control_limits": "Maintainer already knew the receipt schema and designed the contract/check. 17 s measures only the marginal implementation and its prepared check, not specifying, integrating or deploying a direct fix from scratch. The direct function gained a malformed-terminal fallback at integration.",
+  "conclusion": "Do directly for a tiny schema-sensitive decision once the Maintainer has essentially specified its algorithm. Count rejected delegation even with green prepared checks. Select a distinct assignment before making a general productivity claim.",
+  "host_evidence": "/bulk/dlk/local-harness/research/worker-trial-label-001",
+  "restoration_verified": true
+}
