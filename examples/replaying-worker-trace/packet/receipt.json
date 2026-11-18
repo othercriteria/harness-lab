@@ -1,0 +1,34 @@
+{
+  "job": "bdd9d9cfa7af49629387fff596dccdbf",
+  "trajectory_sha256": "906aa4090338247ae8bcaa99635485304e716dfefad5c963cc84db15d88d4ee4",
+  "prepared_check": {
+    "request": {
+      "mode": "grade",
+      "argv": [
+        "/bin/python3",
+        "-I",
+        "-S",
+        "/evaluation/check.py"
+      ],
+      "timeout": 6
+    },
+    "returncode": 0,
+    "stdout": "Dimension, timeout evidence, fallback and immutability checks passed\n",
+    "stderr": "",
+    "tested_file_sha256": "17b8a31afcd2fad91e74ab4be755a6a01ca3a22152bef5ee116d06944dd5c167"
+  },
+  "maintainer_probe": {
+    "request": {
+      "mode": "tool",
+      "name": "execute",
+      "arguments": {
+        "command": "python - <<'END'\nfrom observe_review import rejected_trial_label as label\ns={'agent_error':{'type':'DeadlineExceeded','message':'Whole-stage wall deadline expired'},'clean_agent_completion':False,'final_handoff':None}\nr={'source_accepted':True,'handoff_accepted':False,'full_acceptance':False}\nfor case,summary,review in [('terminal',s|{'agent_outcome':{'exit_status':'Submitted'}},r|{'agent_outcome':None}),('malformed',s|{'agent_outcome':{'exit_status':[]}},r),('extra',{},r|s)]:\n try:print(case,label(summary,review))\n except Exception as e:print(case,type(e).__name__)\nEND"
+      },
+      "timeout": 8
+    },
+    "returncode": 0,
+    "stdout": "terminal source accepted / handoff missing at timeout\nmalformed TypeError\nextra source accepted / handoff missing at timeout\n",
+    "stderr": "",
+    "tested_file_sha256": "17b8a31afcd2fad91e74ab4be755a6a01ca3a22152bef5ee116d06944dd5c167"
+  }
+}

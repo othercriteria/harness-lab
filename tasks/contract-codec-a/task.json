@@ -1,0 +1,17 @@
+{
+  "admission": "results/codec-direct-proof-v5-admission-001.json",
+  "entrypoint": "public/task.md",
+  "human_duration": {
+    "minutes": null,
+    "status": "uncalibrated"
+  },
+  "id": "contract-codec-a",
+  "kind": "contract-triage",
+  "requires_outer_adjudication": true,
+  "split": "development",
+  "test_counts": {
+    "acceptance": 5,
+    "public": 5
+  },
+  "version": 5
+}

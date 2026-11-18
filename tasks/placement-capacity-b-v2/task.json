@@ -1,0 +1,17 @@
+{
+  "id": "placement-capacity-b-v2",
+  "version": 2,
+  "kind": "contract-triage",
+  "split": "development",
+  "requires_outer_adjudication": true,
+  "test_counts": {
+    "public": 3,
+    "acceptance": 8
+  },
+  "entrypoint": "public/task.md",
+  "human_duration": {
+    "minutes": null,
+    "status": "uncalibrated"
+  },
+  "admission": "Wording-only revision: results/placement-capacity-wording-v2-admission-001.json. Separate observed discovery and final handoff; human duration unknown."
+}

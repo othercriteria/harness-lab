@@ -1,0 +1,21 @@
+[
+  {
+    "id": "decode",
+    "dependencies": []
+  },
+  {
+    "id": "redact",
+    "dependencies": [
+      {
+        "plugin": "decode",
+        "when": []
+      },
+      {
+        "plugin": "audit",
+        "when": [
+          "private"
+        ]
+      }
+    ]
+  }
+]

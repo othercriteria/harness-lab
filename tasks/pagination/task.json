@@ -1,0 +1,20 @@
+{
+  "id": "pagination",
+  "version": 3,
+  "kind": "api-edge-cases",
+  "split": "development",
+  "test_counts": {
+    "public": 2,
+    "acceptance": 9
+  },
+  "entrypoint": "public/task.md",
+  "specification_alignment": {
+    "public_bytes_changed": false,
+    "review": "/bulk/dlk/local-harness/reviews/pagination-contract-blind-001/review.md",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/pagination-contract-blind-001/solution-seal.json",
+    "interpretation": "Ordinary Python hash/equality semantics for repeated request cursors, including initial None; termination uses identity with None.",
+    "revision": "Prospective private/external coverage expansion: repeated hashable cursors must raise ValueError even when diagnostic formatting raises. Public bytes unchanged; prior frozen scores retained with separate source qualifications.",
+    "admission": "/bulk/dlk/local-harness/reviews/pagination-contract-blind-001/admission.json",
+    "prospective_v3_admission": "results/pagination-diagnostic-grader-admission-001.json"
+  }
+}

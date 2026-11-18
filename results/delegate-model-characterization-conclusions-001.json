@@ -1,0 +1,301 @@
+{
+  "status": "complete",
+  "main_panel": [
+    {
+      "model": "qwen",
+      "condition": "v2",
+      "tasks": 9,
+      "full_results": 7,
+      "task_seconds": 1334.2624081829563,
+      "dispatch_seconds": 1531.0948679056019,
+      "cases": [
+        {
+          "task": "case-p",
+          "job_id": "557d14fc88d44d89955ffe39a406d370",
+          "accepted": true,
+          "seconds": 115.92546959896572,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/557d14fc88d44d89955ffe39a406d370.json"
+        },
+        {
+          "task": "case-v",
+          "job_id": "2d4e7bb643bc49c29759551970c4dc8a",
+          "accepted": true,
+          "seconds": 90.04517640196718,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/2d4e7bb643bc49c29759551970c4dc8a.json"
+        },
+        {
+          "task": "summary-regressions",
+          "job_id": "33eaed10cbb04e15ac00219e9dfd67cf",
+          "accepted": true,
+          "seconds": 90.36247565411031,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/33eaed10cbb04e15ac00219e9dfd67cf.json"
+        },
+        {
+          "task": "item-limits",
+          "job_id": "b59ab7663fff42a2b66f0827da87d007",
+          "accepted": false,
+          "seconds": 246.51353859901428,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/b59ab7663fff42a2b66f0827da87d007.json"
+        },
+        {
+          "task": "navigation-repair",
+          "job_id": "0803fef6d92a4f16bd36dde5e3265c65",
+          "accepted": true,
+          "seconds": 186.90957358991727,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/0803fef6d92a4f16bd36dde5e3265c65.json"
+        },
+        {
+          "task": "case-r",
+          "job_id": "e37e3c551da64fc0a7a0a6f7af9957a8",
+          "accepted": true,
+          "seconds": 137.70768734789453,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/e37e3c551da64fc0a7a0a6f7af9957a8.json"
+        },
+        {
+          "task": "case-t",
+          "job_id": "27dc5057a0a94bc8b208afa1aade4b8e",
+          "accepted": true,
+          "seconds": 187.30223847320303,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/27dc5057a0a94bc8b208afa1aade4b8e.json"
+        },
+        {
+          "task": "case-x",
+          "job_id": "9caf84402fb94ae18f062892c5a41ca5",
+          "accepted": true,
+          "seconds": 122.504715151852,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/9caf84402fb94ae18f062892c5a41ca5.json"
+        },
+        {
+          "task": "case-z",
+          "job_id": "92f9f222307249a2b14f4eb6b590494c",
+          "accepted": false,
+          "seconds": 156.99153336603194,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/92f9f222307249a2b14f4eb6b590494c.json"
+        }
+      ]
+    },
+    {
+      "model": "flint",
+      "condition": "corrected_think2k",
+      "tasks": 9,
+      "full_results": 2,
+      "task_seconds": 1850.3154245452024,
+      "dispatch_seconds": 1975.666721741436,
+      "cases": [
+        {
+          "task": "case-p",
+          "job_id": "a13ce2c21d2b483c9af7a20ac34cf0bc",
+          "accepted": false,
+          "seconds": 220.64309285092168,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/a13ce2c21d2b483c9af7a20ac34cf0bc.json"
+        },
+        {
+          "task": "case-v",
+          "job_id": "4679bbc898304820aab1d5f9413a118c",
+          "accepted": true,
+          "seconds": 109.48474793508649,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/4679bbc898304820aab1d5f9413a118c.json"
+        },
+        {
+          "task": "summary-regressions",
+          "job_id": "19a94ca3e78f42b886f55ce8cb9c4801",
+          "accepted": true,
+          "seconds": 172.36013098899275,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/19a94ca3e78f42b886f55ce8cb9c4801.json"
+        },
+        {
+          "task": "item-limits",
+          "job_id": "a9dc3cd97958456a888d30dd93ec0c5d",
+          "accepted": false,
+          "seconds": 260.3445250149816,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/a9dc3cd97958456a888d30dd93ec0c5d.json"
+        },
+        {
+          "task": "navigation-repair",
+          "job_id": "33dd8d19c7a94cf9b38364874d6b74d1",
+          "accepted": false,
+          "seconds": 220.60863616503775,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/33dd8d19c7a94cf9b38364874d6b74d1.json"
+        },
+        {
+          "task": "case-r",
+          "job_id": "39698e2161e74e96a8e95c9c9d819492",
+          "accepted": false,
+          "seconds": 220.64478997909464,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/39698e2161e74e96a8e95c9c9d819492.json"
+        },
+        {
+          "task": "case-t",
+          "job_id": "91261d69d44f4685b28a70053983b45f",
+          "accepted": false,
+          "seconds": 219.1153838019818,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/91261d69d44f4685b28a70053983b45f.json"
+        },
+        {
+          "task": "case-x",
+          "job_id": "6dd6030c4bc341f5b150c44af37718c3",
+          "accepted": false,
+          "seconds": 220.6881327200681,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/6dd6030c4bc341f5b150c44af37718c3.json"
+        },
+        {
+          "task": "case-z",
+          "job_id": "7e70ee2d0a984e53981d51041239ba3e",
+          "accepted": false,
+          "seconds": 206.42598508903757,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/7e70ee2d0a984e53981d51041239ba3e.json"
+        }
+      ]
+    },
+    {
+      "model": "coder",
+      "condition": "v2",
+      "tasks": 9,
+      "full_results": 1,
+      "task_seconds": 1134.497489115689,
+      "dispatch_seconds": 1292.5016350108199,
+      "cases": [
+        {
+          "task": "case-p",
+          "job_id": "6b0f95a0b4fe449a9412604ebf572239",
+          "accepted": false,
+          "seconds": 211.69564697495662,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/6b0f95a0b4fe449a9412604ebf572239.json"
+        },
+        {
+          "task": "case-r",
+          "job_id": "13c8026bfa654e9bae4eff6feb235b79",
+          "accepted": false,
+          "seconds": 220.82389267603867,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/13c8026bfa654e9bae4eff6feb235b79.json"
+        },
+        {
+          "task": "case-t",
+          "job_id": "076515835e484323bf204e1833e1e8a0",
+          "accepted": false,
+          "seconds": 86.64700345392339,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/076515835e484323bf204e1833e1e8a0.json"
+        },
+        {
+          "task": "case-v",
+          "job_id": "11f63d35f4fa417a9061a9dc78482208",
+          "accepted": false,
+          "seconds": 118.13171188579872,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/11f63d35f4fa417a9061a9dc78482208.json"
+        },
+        {
+          "task": "case-x",
+          "job_id": "56297e3c9a1b42c2a19f05badb2b1b72",
+          "accepted": true,
+          "seconds": 69.7954145509284,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/56297e3c9a1b42c2a19f05badb2b1b72.json"
+        },
+        {
+          "task": "case-z",
+          "job_id": "227f6f918b8f40ec9d365440cc9025ed",
+          "accepted": false,
+          "seconds": 66.91131401387975,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/227f6f918b8f40ec9d365440cc9025ed.json"
+        },
+        {
+          "task": "summary-regressions",
+          "job_id": "782bf56a924142f889549dba06f0543d",
+          "accepted": false,
+          "seconds": 270.87727328017354,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/782bf56a924142f889549dba06f0543d.json"
+        },
+        {
+          "task": "item-limits",
+          "job_id": "ffb3d6c113fc448aa3571e80db021fd6",
+          "accepted": false,
+          "seconds": 23.039412171114236,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/ffb3d6c113fc448aa3571e80db021fd6.json"
+        },
+        {
+          "task": "navigation-repair",
+          "job_id": "ccbca418856a43019209c1bdaf14242a",
+          "accepted": false,
+          "seconds": 66.57582010887563,
+          "assessment": "/bulk/dlk/local-harness/research/delegate-models-001/assessments/ccbca418856a43019209c1bdaf14242a.json"
+        }
+      ]
+    }
+  ],
+  "scope": "Nine selected development cases: three clean/defective review pairs, one test-writing replay, one fresh refactor and one documentation-repair replay. One seed per case/model. Practical pinned recipes with different weights, sampling, context and placement; no pure model causal effect, held-out quality estimate or reliability claim.",
+  "recommendations": {
+    "qwen": "Retain default apprentice under independent outer review; seven full results, useful repaired refactor, but missed a second guide defect and a subtle refactor requirement.",
+    "flint": "No default promotion at tested short ceilings. Successful aliasing diagnosis and regression-test writing; repeated investigation and late context exhaustion prevent delivery elsewhere. Selected360s guide follow-up applies one reset but still ends at340.6s total task time without a review artifact. Narrow supervised work remains plausible; this does not prove incapacity at all budgets.",
+    "coder": "No default promotion for these review/maintenance assignments. Source recognition and test-writing ability coexist with missing artifacts/finalization, faulty documentation links and unsupported allegations. Actionable directory feedback restores work in one matched replay; later implementation still fails.",
+    "tinfield": "Operationally deferred: guarded loading failed before inference. No quality score or claim of incapacity."
+  },
+  "changed": {
+    "recipe_selection": "Explicit recipe selector and effective-protocol verification; restored previously omitted Flint/Tinfield2Kreasoning controls prospectively.",
+    "runtime_feedback": [
+      "Rejected-path/disposition feedback c4b619d",
+      "Root-directory guidance e0540fa corrected to public bash name in f945ad0 before probes;38 isolated checks."
+    ],
+    "useful_landing": {
+      "commit": "9493b60",
+      "job_id": "b59ab7663fff42a2b66f0827da87d007",
+      "original_full_result_accepted": false,
+      "review": "/bulk/dlk/local-harness/research/delegate-models-001/item-landing-review.json",
+      "validation": "101 isolated integration tests; original frozen checker,48public tests, defaultschema/behavior and altered sharedlimits."
+    }
+  },
+  "qualification_playbook": "docs/delegate-preparation.md#qualifying-a-model-recipe",
+  "decision_log": "/bulk/dlk/local-harness/research/delegate-models-001/qualification-decisions.json",
+  "evidence": "results/delegate-model-screen-progress-001.json",
+  "residency": "results/delegate-coder-residency-001.json",
+  "timing": "/bulk/dlk/local-harness/research/delegate-models-001/timing-projection.json",
+  "followups": "/bulk/dlk/local-harness/research/delegate-models-001/environment-friction.json",
+  "preserved": "Original artifacts and full-result assessments, partial recognition, startup failures, uncapped diagnostics, selected feedback probes and subsequent outer repairs remain distinct. Existing ladder champion recipes not replaced.",
+  "completed_utc": "2026-11-17T18:34:12.738070+00:00",
+  "completion_audit": "results/delegate-model-characterization-completion-audit-001.json",
+  "attempt_inventory": {
+    "total": 39,
+    "model_quality_attempts": 38,
+    "operational_only": 1,
+    "matched_main_panel": 27,
+    "residency_controls": 6,
+    "uncapped_flint_diagnostics": 2,
+    "directory_feedback_probes": 2,
+    "selected_budget_probe": 1
+  },
+  "targeted_followups": {
+    "directory_feedback": {
+      "evidence": "/bulk/dlk/local-harness/research/delegate-models-001/directory-feedback-recovery.json",
+      "coder": "First request and initial malformed call identical; actionable hint followed by immediate bash discovery. Later partial refactor times out and changes required default wording. Recovery success is distinct from full task success.",
+      "qwen": "Hint never activated. Clean completion, same missing dynamic diagnostic plus overstated own verification methods; rejected full result."
+    },
+    "guide_budget": {
+      "job_id": "5c297dbd8eba45e3a95e8044ea70836c",
+      "ceiling_seconds": 360,
+      "task_seconds": 340.6028408508282,
+      "context_resets": 1,
+      "full_result_accepted": false,
+      "interpretation": "Longer budget enables recovery but not delivery in this selected run; no automatic further extension."
+    }
+  },
+  "onboarding_lessons": [
+    "Qualify model/backend/recipe/interface for a role; audit effective client settings and emitted public tool names.",
+    "Start with common clean/defective and implementation controls, then broaden before expensive tuning.",
+    "Separate source recognition, artifact delivery, completion, verification support and outer repair.",
+    "Preserve grader gaps and original frozen scores; supplement with isolated targeted checks.",
+    "Record whether a change was exercised; same seed is not a guarantee of identical trajectories.",
+    "Budget changes alter recovery eligibility; extra context and raw token throughput do not guarantee useful delivery.",
+    "Stop/defer with explicit evidence and cost limits; automate identity, ownership, receipts and score projections before semantic judgment."
+  ],
+  "outer_effort": "Review effort recorded qualitatively per attempt; no reliable total human-equivalent stopwatch measurement. Many candidates need source/trace inspection beyond automated checks.",
+  "followup_priorities": [
+    "Preserve ordinary workspace timestamps safely; traces show unnecessary investigation after reconstruction.",
+    "Consider evidence-grounded early review drafts and narrower stopping guidance; test under new conditions rather than silently rescuing old results.",
+    "Keep context-recovery/reorientation cost visible, with larger budgets only where the role justifies them.",
+    "Coder CPU-thread/repacking probes remain plausible but deferred until a useful role warrants deeper tuning; Tinfield needs targeted startup diagnosis."
+  ],
+  "restoration": {
+    "session": "2026-11-17-gpu-quiet-028",
+    "verified": true,
+    "receipt": "/bulk/dlk/local-harness/sessions/2026-11-17-gpu-quiet-028/restoration-verification.json",
+    "flake_restart_required": false
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "git-config-backport-dual-public-tests",
+  "version": 8,
+  "kind": "git-backport",
+  "split": "development",
+  "maturity": "development",
+  "fixture_validation": "isolated-only",
+  "entrypoint": "public/task.md",
+  "git_repository": {
+    "bundle": "repository.bundle",
+    "directory": "repo",
+    "initial_branch": "release/stable",
+    "branches": {
+      "release/stable": "3d99279ab401a35c1cf41aa652fd492c70bc4be4",
+      "release/legacy": "f8e1a11af1eaac4b282ae6bdb89004aedc8d57fa"
+    },
+    "main": "215411f28feeb6dab7941797772f411b80864f8b",
+    "tags": {
+      "base-stable": "3d99279ab401a35c1cf41aa652fd492c70bc4be4",
+      "approved-write-safety": "215411f28feeb6dab7941797772f411b80864f8b",
+      "base-legacy": "f8e1a11af1eaac4b282ae6bdb89004aedc8d57fa"
+    }
+  },
+  "provenance": {
+    "upstream_tag": "v3.13.0",
+    "sha256": {
+      "LICENSE": "78b12c3a81360b357002334f0e70ea0e92eebf7a9b358805c03c48484945f3bb",
+      "configparser.rst": "e69ad4c9e00a8c975181498b441fb897e13d61b25f2424d9436e695467d8be4f",
+      "configparser.py": "ece1abea1ec68cae85b2532ade9a2156ce9b20ff38738ac4147744509f65490b"
+    },
+    "url": "https://github.com/python/cpython/tree/v3.13.0",
+    "scope": "Pinned parser/docs; authored downstream task, histories and policy."
+  },
+  "human_duration": {
+    "minutes": null,
+    "status": "Uncalibrated"
+  },
+  "admission_status": "admitted",
+  "test_counts": {
+    "stable": 19,
+    "legacy": 19
+  },
+  "limitations": [
+    "Related authored downstream tasks on pinned CPython source, not fresh independent task families.",
+    "Wall ceilings uncalibrated until local trials; no human-duration claim.",
+    "Finite tests and behavioral probes require source/handoff review."
+  ],
+  "evaluator_revision": {
+    "version": 5,
+    "public_contract_changed": false,
+    "change": "Promote established subclass write-state and identical-args unrelated-ValueError probes into canonical tests;19methods per branch. No public or bundle changes.",
+    "previous_frozen_version": "results/success-freeze-360.json",
+    "validation": "results/git-backport-evaluator-v5-validation-001.json"
+  },
+  "task_relaxation": {
+    "ancestor_task": "git-config-backport-dual",
+    "ancestor_version": 2,
+    "change": "Initial variant: add two public tests per target for unrelated stream/interpolation ValueError propagation, including matching validation text. Implementation scope, brief and policy unchanged. Private evaluation initially inherited unchanged; later coverage extensions are recorded in evaluator_revision.",
+    "interpretation": "Aligned-specification implementation with richer public feedback; original task remains a diagnostic. Not a fresh independent task family.",
+    "public_tests": "tests/test_export_propagation.py",
+    "test_sha256": "7e237d20f4a0e370defd10ee60a7a276e8dfba4ef190d8f85892e8d4841d9f57"
+  },
+  "public_fixture_revision": {
+    "version": 5,
+    "change": "Existing public invalid-key test also asserts the documented repr(key) diagnostic. Written contract, production starter, other public tests and private acceptance bytes remain unchanged.",
+    "previous_frozen_version": "results/success-freeze-319.json",
+    "test_path": "tests/test_write.py",
+    "test_sha256": "c66c1e8f5c79221c19b2f01d1dd03c5cc3952106776ebcbcce822f70270eb634"
+  },
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/reviews/git-message-blind-001/solution-seal.json",
+    "sha256": "fb1ad6b6d8175cb8d7b6539b66149860f19e22160bb25a403cd0163d4d25b026",
+    "feedback_driven_repair": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/git-message-blind-001/review.json",
+    "sha256": "83812b67908f16bc0b7a96eba52250dd14c5dd4da94e3dc3309c8972c6450ed0",
+    "gaps": [],
+    "public_only": true,
+    "change": "Existing public invalid-key check now asserts the already documented repr(key) error diagnostic; written contract, production starters and private tests unchanged."
+  }
+}

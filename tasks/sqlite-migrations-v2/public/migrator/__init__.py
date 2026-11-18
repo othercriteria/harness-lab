@@ -1,0 +1,1 @@
+"""Small SQLite migration runner."""

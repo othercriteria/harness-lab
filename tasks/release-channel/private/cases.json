@@ -1,0 +1,222 @@
+[
+  {
+    "name": "empty",
+    "records": [],
+    "channel": "stable",
+    "expected": null
+  },
+  {
+    "name": "fallback",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 8,
+        "revision": 2,
+        "state": "withdrawn"
+      },
+      {
+        "channel": "preview",
+        "build": 10,
+        "revision": 1,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 5,
+        "revision": 1,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 8,
+        "revision": 1,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 5
+  },
+  {
+    "name": "zero",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 0,
+        "revision": 0,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 0
+  },
+  {
+    "name": "foreign",
+    "records": [
+      {
+        "channel": "preview",
+        "build": 0,
+        "revision": 0,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": null
+  },
+  {
+    "name": "withdrawn",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 3,
+        "revision": 0,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 3,
+        "revision": 2,
+        "state": "withdrawn"
+      }
+    ],
+    "channel": "stable",
+    "expected": null
+  },
+  {
+    "name": "reinstated",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 4,
+        "revision": 4,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 4,
+        "revision": 2,
+        "state": "withdrawn"
+      },
+      {
+        "channel": "stable",
+        "build": 4,
+        "revision": 1,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 4
+  },
+  {
+    "name": "per-build revision",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 9,
+        "revision": 1,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 4,
+        "revision": 9,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 9
+  },
+  {
+    "name": "same build across channels",
+    "records": [
+      {
+        "channel": "preview",
+        "build": 8,
+        "revision": 99,
+        "state": "withdrawn"
+      },
+      {
+        "channel": "stable",
+        "build": 8,
+        "revision": 1,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 8
+  },
+  {
+    "name": "agreeing duplicate",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 5,
+        "revision": 2,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 5,
+        "revision": 2,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 5,
+        "revision": 1,
+        "state": "withdrawn"
+      }
+    ],
+    "channel": "stable",
+    "expected": 5
+  },
+  {
+    "name": "wide integer",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 4294967296,
+        "revision": 4294967296,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 4294967296,
+        "revision": 1,
+        "state": "withdrawn"
+      },
+      {
+        "channel": "stable",
+        "build": 22,
+        "revision": 3,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 4294967296
+  },
+  {
+    "name": "absent despite other activity",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 3,
+        "revision": 4,
+        "state": "withdrawn"
+      },
+      {
+        "channel": "stable",
+        "build": 3,
+        "revision": 1,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 4,
+        "revision": 9,
+        "state": "withdrawn"
+      }
+    ],
+    "channel": "stable",
+    "expected": null
+  }
+]

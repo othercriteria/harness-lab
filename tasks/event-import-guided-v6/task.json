@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v6",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 9,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v5",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after public-only blind review, sealed independent first solution, and isolated positive/negative controls.",
+  "revision_note": "Add explicit source-interruption guidance and one public transaction-unwinding example; production starter, existing tests and private checks unchanged."
+}

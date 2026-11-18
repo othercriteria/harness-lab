@@ -1,0 +1,82 @@
+{
+  "status": "Explicit outer-owned pinned recipes; registry entries do not establish task quality.",
+  "recipes": [
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-qwen-32k-v1",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "server_config_path": "configs/recipe-inputs/2e562a10a26b9377-servers.json",
+      "server_config_sha256": "2e562a10a26b93775969ed2140b6b353206fc3270d12f0466dff7a4a18339d61",
+      "protocol_path": "configs/recipe-inputs/166f69c7c3ef2da7-protocol.json",
+      "protocol_sha256": "166f69c7c3ef2da7516f96f47a5e745fdf06b7caa2f886049aad3f175c732c63",
+      "qualification": "Same common Qwen32K delegate tool/recovery policy; native nonthinking Coder omits reasoning cap/deadline. Recipe comparison, not isolated weights ablation."
+    },
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-coder-32k-v1",
+      "profile": "comparison-coder-32k-cpu32-fit2048-temp06",
+      "server_config_path": "configs/recipe-inputs/bc069c302e3370c6-servers.json",
+      "server_config_sha256": "bc069c302e3370c64e3cf11bfb6b76fbc4004f760c0ec2252f22a9049912e131",
+      "protocol_path": "configs/recipe-inputs/aa38e0cd84bd273a-protocol.json",
+      "protocol_sha256": "aa38e0cd84bd273a8fa0ab6fcf42769637b4952e95f9f78d6e42cddf1f17a0c7",
+      "qualification": "Historical CPU32 residency control. Current provisional placement is apprentice-coder-32k-cpu31-v1; neither profile establishes general apprentice quality."
+    },
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-flint-v1",
+      "profile": "frontier-flint-48k-fit2048",
+      "server_config_path": "configs/recipe-inputs/72b55061ab924822-servers.json",
+      "server_config_sha256": "72b55061ab9248229f575f4bf2a6e921456cda3fc21c99d79c9c5801df9ddefc",
+      "protocol_path": "configs/recipe-inputs/f4b856ca9fda8975-protocol.json",
+      "protocol_sha256": "f4b856ca9fda897588d5b1d6b74928cbaf6fd36bedc949955d3e3d49a1d5ba41",
+      "qualification": "Historical uncapped diagnostic recipe; it omitted prior 2K reasoning controls. New preparations should use apprentice-flint-think2k-v2. Original registered packages/results remain intact."
+    },
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-tinfield-v1",
+      "profile": "frontier-tinfield-low-64k-cpu36-temp06",
+      "server_config_path": "configs/recipe-inputs/bc069c302e3370c6-servers.json",
+      "server_config_sha256": "bc069c302e3370c64e3cf11bfb6b76fbc4004f760c0ec2252f22a9049912e131",
+      "protocol_path": "configs/recipe-inputs/eb35fee40bc0d0a4-protocol.json",
+      "protocol_sha256": "eb35fee40bc0d0a4295d81e9ea2d37cfd459a8ff6a71a4ec98f2549d4c7705a2",
+      "qualification": "Historical uncapped preparation, superseded by apprentice-tinfield-think2k-v2. No quality qualification; corrected recipe stopped during guarded startup before inference."
+    },
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-coder-32k-cpu31-v1",
+      "profile": "routing-coder-32k-cpu31-fit1536-temp06",
+      "server_config_path": "configs/recipe-inputs/aa4ecf4640015a9e-servers.json",
+      "server_config_sha256": "aa4ecf4640015a9e77f4d8fb92ba04794a0f8cb996431fc3ee06bca74ecdd922",
+      "protocol_path": "configs/recipe-inputs/aa38e0cd84bd273a-protocol.json",
+      "protocol_sha256": "aa38e0cd84bd273a8fa0ab6fcf42769637b4952e95f9f78d6e42cddf1f17a0c7",
+      "qualification": "Residency comparison: CPU32 to31 routed expert blocks and fit2048 to1536MiB only execution changes. Identical weights/backend/sampling/common32Kdelegate protocol. User requested increased VRAM. Inspect actual allocation and guards."
+    },
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-flint-think2k-v2",
+      "profile": "frontier-flint-48k-fit2048",
+      "server_config_path": "configs/recipe-inputs/72b55061ab924822-servers.json",
+      "server_config_sha256": "72b55061ab9248229f575f4bf2a6e921456cda3fc21c99d79c9c5801df9ddefc",
+      "protocol_path": "configs/recipe-inputs/c007369a4fa0e5b0-protocol.json",
+      "protocol_sha256": "c007369a4fa0e5b096f9ede9f5cc8b1c4e55cc4143e3e9f8e44b0f166cd4fe67",
+      "qualification": "Correct missing prior-recipe2K reasoning cap and deadline allocation. Same weights/backend/placement/sampling/common tools. Earlier uncapped apprentice packages remain diagnostics; no pure model attribution."
+    },
+    {
+      "runtime_freeze": "results/success-freeze-342.json",
+      "runtime_freeze_sha256": "ad3716d23fbacc008ca6f622f9768ef41728a565b3e0b45dbe5d076e2faea406",
+      "id": "apprentice-tinfield-think2k-v2",
+      "profile": "frontier-tinfield-low-64k-cpu36-temp06",
+      "server_config_path": "configs/recipe-inputs/bc069c302e3370c6-servers.json",
+      "server_config_sha256": "bc069c302e3370c64e3cf11bfb6b76fbc4004f760c0ec2252f22a9049912e131",
+      "protocol_path": "configs/recipe-inputs/04149e80186dfebf-protocol.json",
+      "protocol_sha256": "04149e80186dfebf6649653c8da1bed8789bf95dabf85b1ce4c25ffa5ad52c7d",
+      "qualification": "Correct missing prior-recipe2K reasoning cap and deadline allocation. Same weights/backend/placement/sampling/common tools. Earlier uncapped apprentice packages remain diagnostics; no pure model attribution."
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "schema_version": "ATIF-v1.8",
+  "session_id": "bdd9d9cfa7af49629387fff596dccdbf",
+  "agent": {
+    "name": "Local Harness Lab Worker",
+    "version": "run_trial.py@sha256:e49e180317fe39a9aea913c05c5690b120d92c6d648e513dbf9c9a4a434841bf",
+    "model_name": "qwen38-27b-ranalayout-q4"
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "source": "user",
+      "message": "Implement rejected_trial_label(summary, receipt) in scripts/observe_review.py for Observatory's campaign detail. The caller has already verified the receipt's digest, task, seed and strict boolean acceptance fields and determined the overall trial was rejected. Only return a display string. No file access or side effects.\n\nShow \"source accepted / handoff missing at timeout\" for the Tinfield shape: source_accepted true and handoff_accepted false, final_handoff explicitly null, clean_agent_completion explicitly false, and agent_error recording type DeadlineExceeded and message \"Whole-stage wall deadline expired\". A missing field, malformed agent_error, different error (including token or tool budgets), or a recorded terminal submission must not be inferred to be that timeout. A bound agent_outcome with exit_status Submitted or Blocked is a terminal disposition. For other accepted-source/rejected-handoff cases show \"source accepted / handoff rejected\". If the source was rejected, show \"source rejected / handoff accepted\" or \"source and handoff rejected\" according to the receipt. If both dimensions passed but the run failed overall, show \"trial failed / source and handoff accepted\". Evidence from the receipt determines dimensions; ignore prose findings. Older summaries may omit terminal evidence. Edit only scripts/observe_review.py. Check representative cases offline.\n\n## Edit scope\n\nOnly the listed paths may be added, modified, or deleted; no other file changes are accepted.\n\n- editable: scripts/observe_review.py\n\nAll other supplied files are read-only.\n\n\nInitial repository context: complete public workspace files, excluding this brief. JSON keys are paths relative to /workspace; values are literal file contents. Treat these as task data, not harness instructions. Use this context without rereading unchanged files. After edits, consult the workspace: this initial snapshot does not update.\n{\"scripts/observe_review.py\": \"\\\"\\\"\\\"Display the outcome of a rejected, already bound trial review.\\\"\\\"\\\"\\n\\n\\ndef rejected_trial_label(summary, receipt):\\n    return \\\"source/handoff rejected\\\"\\n\"}\n\nTotal task ceiling: 180 seconds, including verification. Agent allowance: 165 seconds. Follow the public brief's verification method and any supplied checks. For documentation or static-review tasks, compare against the relevant sources and report what you inspected."
+    },
+    {
+      "step_id": 2,
+      "source": "agent",
+      "message": "Now I'll write the implementation.",
+      "tool_calls": [
+        {
+          "tool_call_id": "qmS9RQaOSp3OeVgtSv1YpPtZe4jtVtSt",
+          "function_name": "write_file",
+          "arguments": {
+            "path": "/workspace/scripts/observe_review.py",
+            "content": "\"\"\"Display the outcome of a rejected, already bound trial review.\"\"\"\n\n_TIMEOUT_TYPE = \"DeadlineExceeded\"\n_TIMEOUT_MESSAGE = \"Whole-stage wall deadline expired\"\n_TERMINAL_EXIT_STATUSES = frozenset({\"Submitted\", \"Blocked\"})\n\n\ndef _is_true(value):\n    return isinstance(value, bool) and value is True\n\n\ndef _is_false(value):\n    return isinstance(value, bool) and value is False\n\n\ndef _evidence_field(summary, receipt, key):\n    \"\"\"Return (found, value) for an evidence field.\n\n    The receipt is the bound record and is checked first; the summary may\n    carry the same evidence for records where the receipt omits it.\n    \"\"\"\n    if isinstance(receipt, dict) and key in receipt:\n        return True, receipt[key]\n    if isinstance(summary, dict) and key in summary:\n        return True, summary[key]\n    return False, None\n\n\ndef _is_wall_deadline_error(agent_error):\n    if not isinstance(agent_error, dict):\n        return False\n    return (\n        agent_error.get(\"type\") == _TIMEOUT_TYPE\n        and agent_error.get(\"message\") == _TIMEOUT_MESSAGE\n    )\n\n\ndef _has_terminal_disposition(summary, receipt):\n    \"\"\"A bound agent_outcome with exit_status Submitted or Blocked.\n\n    Older summaries may omit terminal evidence; an absent or malformed\n    agent_outcome is not a terminal disposition.\n    \"\"\"\n    found, agent_outcome = _evidence_field(summary, receipt, \"agent_outcome\")\n    if not found:\n        return False\n    if not isinstance(agent_outcome, dict):\n        return False\n    return agent_outcome.get(\"exit_status\") in _TERMINAL_EXIT_STATUSES\n\n\ndef _is_missing_at_timeout(summary, receipt):\n    \"\"\"The Tinfield shape: the wall deadline expired before any handoff.\"\"\"\n    found, final_handoff = _evidence_field(summary, receipt, \"final_handoff\")\n    if not found or final_handoff is not None:\n        return False\n    found, clean = _evidence_field(summary, receipt, \"clean_agent_completion\")\n    if not found or not _is_false(clean):\n        return False\n    found, agent_error = _evidence_field(summary, receipt, \"agent_error\")\n    if not found or not _is_wall_deadline_error(agent_error):\n        return False\n    return not _has_terminal_disposition(summary, receipt)\n\n\ndef rejected_trial_label(summary, receipt):\n    receipt = receipt if isinstance(receipt, dict) else {}\n    summary = summary if isinstance(summary, dict) else {}\n\n    source_accepted = _is_true(receipt.get(\"source_accepted\", summary.get(\"source_accepted\")))\n    handoff_accepted = _is_true(receipt.get(\"handoff_accepted\", summary.get(\"handoff_accepted\")))\n\n    if source_accepted and handoff_accepted:\n        return \"trial failed / source and handoff accepted\"\n    if source_accepted and not handoff_accepted:\n        if _is_missing_at_timeout(summary, receipt):\n            return \"source accepted / handoff missing at timeout\"\n        return \"source accepted / handoff rejected\"\n    if not source_accepted and handoff_accepted:\n        return \"source rejected / handoff accepted\"\n    return \"source and handoff rejected\"\n"
+          }
+        }
+      ],
+      "extra": {
+        "worker_assistant_turn": 4
+      },
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "qmS9RQaOSp3OeVgtSv1YpPtZe4jtVtSt",
+            "content": "Tool result metadata: {\"exception_info\": \"\", \"remaining_agent_seconds\": 125.3, \"remaining_model_calls\": 60, \"remaining_tool_calls\": 123, \"returncode\": 0, \"truncated\": false, \"observation_id\": \"o0005\"}\nTool output (literal text):\n{\"ok\": true, \"changed\": true, \"created\": false, \"path\": \"scripts/observe_review.py\", \"before_bytes\": 152, \"after_bytes\": 3011}"
+          }
+        ]
+      }
+    },
+    {
+      "step_id": 3,
+      "source": "agent",
+      "message": "write_file is restricted to /workspace; I'll place the test in /tmp via bash instead (scratch, not submitted).",
+      "tool_calls": [
+        {
+          "tool_call_id": "G6j5ag2saA2o1wtCLFnwyJFTcGTq4QFr",
+          "function_name": "bash",
+          "arguments": {
+            "command": "cat > /tmp/check_label.py <<'EOF'\nimport sys\nsys.path.insert(0, \"/workspace/scripts\")\nfrom observe_review import rejected_trial_label\n\nTIMEOUT = {\"type\": \"DeadlineExceeded\", \"message\": \"Whole-stage wall deadline expired\"}\n\ndef tinfield(**over):\n    r = {\n        \"source_accepted\": True,\n        \"handoff_accepted\": False,\n        \"final_handoff\": None,\n        \"clean_agent_completion\": False,\n        \"agent_error\": dict(TIMEOUT),\n    }\n    r.update(over)\n    return r\n\ncases = [\n    (\"tinfield canonical\", {\"findings\": \"agent ran out of wall time\"}, tinfield(),\n     \"source accepted / handoff missing at timeout\"),\n    (\"tinfield, no agent_outcome key (older record)\", {}, tinfield(),\n     \"source accepted / handoff missing at timeout\"),\n    (\"tinfield, agent_outcome null\", {\"agent_outcome\": None}, tinfield(),\n     \"source accepted / handoff missing at timeout\"),\n    (\"terminal submission -> not timeout\", {\"agent_outcome\": {\"exit_status\": \"Submitted\"}}, tinfield(),\n     \"source accepted / handoff rejected\"),\n    (\"terminal blocked -> not timeout\", {\"agent_outcome\": {\"exit_status\": \"Blocked\"}}, tinfield(),\n     \"source accepted / handoff rejected\"),\n    (\"terminal evidence in receipt\", {}, {**tinfield(), \"agent_outcome\": {\"exit_status\": \"Submitted\"}},\n     \"source accepted / handoff rejected\"),\n    (\"exit_status Failed is not terminal\", {\"agent_outcome\": {\"exit_status\": \"Failed\"}}, tinfield(),\n     \"source accepted / handoff missing at timeout\"),\n    (\"exit_status lowercase not terminal\", {\"agent_outcome\": {\"exit_status\": \"submitted\"}}, tinfield(),\n     \"source accepted / handoff missing at timeout\"),\n    (\"final_handoff missing -> not timeout\", {}, {k: v for k, v in tinfield().items() if k != \"final_handoff\"},\n     \"source accepted / handoff rejected\"),\n    (\"final_handoff not null -> not timeout\", {}, tinfield(final_handoff={\"doc\": \"x\"}),\n     \"source accepted / handoff rejected\"),\n    (\"clean_agent_completion missing -> not timeout\", {}, {k: v for k, v in tinfield().items() if k != \"clean_agent_completion\"},\n     \"source accepted / handoff rejected\"),\n    (\"clean_agent_completion true -> not timeout\", {}, tinfield(clean_agent_completion=True),\n     \"source accepted / handoff rejected\"),\n    (\"agent_error missing -> not timeout\", {}, {k: v for k, v in tinfield().items() if k != \"agent_error\"},\n     \"source accepted / handoff rejected\"),\n    (\"agent_error null -> not timeout\", {}, tinfield(agent_error=None),\n     \"source accepted / handoff rejected\"),\n    (\"agent_error malformed (string) -> not timeout\", {}, tinfield(agent_error=\"DeadlineExceeded\"),\n     \"source accepted / handoff rejected\"),\n    (\"agent_error missing message -> not timeout\", {}, tinfield(agent_error={\"type\": \"DeadlineExceeded\"}),\n     \"source accepted / handoff rejected\"),\n    (\"token budget error -> not timeout\", {}, tinfield(agent_error={\"type\": \"TokenBudgetExceeded\", \"message\": \"Whole-stage wall deadline expired\"}),\n     \"source accepted / handoff rejected\"),\n    (\"tool budget error -> not timeout\", {}, tinfield(agent_error={\"type\": \"DeadlineExceeded\", \"message\": \"Tool budget exhausted\"}),\n     \"source accepted / handoff rejected\"),\n    (\"different message -> not timeout\", {}, tinfield(agent_error={\"type\": \"DeadlineExceeded\", \"message\": \"wall deadline expired\"}),\n     \"source accepted / handoff rejected\"),\n    (\"plain accepted/rejected\", {\"findings\": \"handoff doc invalid\"}, {\"source_accepted\": True, \"handoff_accepted\": False},\n     \"source accepted / handoff rejected\"),\n    (\"source rejected / handoff accepted\", {}, {\"source_accepted\": False, \"handoff_accepted\": True},\n     \"source rejected / handoff accepted\"),\n    (\"both rejected\", {}, {\"source_accepted\": False, \"handoff_accepted\": False},\n     \"source and handoff rejected\"),\n    (\"both accepted, overall failed\", {}, {\"source_accepted\": True, \"handoff_accepted\": True},\n     \"trial failed / source and handoff accepted\"),\n    (\"prose ignored: receipt dims win\", {\"source_accepted\": False, \"handoff_accepted\": True, \"findings\": \"source was rejected\"},\n     {\"source_accepted\": True, \"handoff_accepted\": False},\n     \"source accepted / handoff rejected\"),\n    (\"summary-only dims (receipt lacks booleans)\", {\"source_accepted\": True, \"handoff_accepted\": False,\n     \"final_handoff\": None, \"clean_agent_completion\": False, \"agent_error\": dict(TIMEOUT)}, {},\n     \"source accepted / handoff missing at timeout\"),\n    (\"non-bool truthy ignored\", {}, {\"source_accepted\": 1, \"handoff_accepted\": 0},\n     \"source and handoff rejected\"),\n    (\"receipt not a dict\", {}, None, \"source and handoff rejected\"),\n    (\"both None\", None, None, \"source and handoff rejected\"),\n]\n\nfails = 0\nfor name, summary, receipt, expected in cases:\n    got = rejected_trial_label(summary, receipt)\n    ok = got == expected\n    fails += 0 if ok else 1\n    print((\"PASS\" if ok else \"FAIL\"), name, \"->\", got, (\"\" if ok else f\"(expected {expected})\"))\n\nr = tinfield()\nassert rejected_trial_label({}, r) == rejected_trial_label({}, r)\nprint(\"TOTAL FAILS:\", fails)\nsys.exit(1 if fails else 0)\nEOF\npython3 /tmp/check_label.py"
+          }
+        }
+      ],
+      "extra": {
+        "worker_assistant_turn": 6
+      },
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "G6j5ag2saA2o1wtCLFnwyJFTcGTq4QFr",
+            "content": "Tool result metadata: {\"exception_info\": \"\", \"remaining_agent_seconds\": 97.9, \"remaining_model_calls\": 58, \"remaining_tool_calls\": 121, \"returncode\": 0, \"truncated\": false, \"observation_id\": \"o0007\"}\nTool output (literal text):\nPASS tinfield canonical -> source accepted / handoff missing at timeout \nPASS tinfield, no agent_outcome key (older record) -> source accepted / handoff missing at timeout \nPASS tinfield, agent_outcome null -> source accepted / handoff missing at timeout \nPASS terminal submission -> not timeout -> source accepted / handoff rejected \nPASS terminal blocked -> not timeout -> source accepted / handoff rejected \nPASS terminal evidence in receipt -> source accepted / handoff rejected \nPASS exit_status Failed is not terminal -> source accepted / handoff missing at timeout \nPASS exit_status lowercase not terminal -> source accepted / handoff missing at timeout \nPASS final_handoff missing -> not timeout -> source accepted / handoff rejected \nPASS final_handoff not null -> not timeout -> source accepted / handoff rejected \nPASS clean_agent_completion missing -> not timeout -> source accepted / handoff rejected \nPASS clean_agent_completion true -> not timeout -> source accepted / handoff rejected \nPASS agent_error missing -> not timeout -> source accepted / handoff rejected \nPASS agent_error null -> not timeout -> source accepted / handoff rejected \nPASS agent_error malformed (string) -> not timeout -> source accepted / handoff rejected \nPASS agent_error missing message -> not timeout -> source accepted / handoff rejected \nPASS token budget error -> not timeout -> source accepted / handoff rejected \nPASS tool budget error -> not timeout -> source accepted / handoff rejected \nPASS different message -> not timeout -> source accepted / handoff rejected \nPASS plain accepted/rejected -> source accepted / handoff rejected \nPASS source rejected / handoff accepted -> source rejected / handoff accepted \nPASS both rejected -> source and handoff rejected \nPASS both accepted, overall failed -> trial failed / source and handoff accepted \nPASS prose ignored: receipt dims win -> source accepted / handoff rejected \nPASS summary-only dims (receipt lacks booleans) -> source accepted / handoff missing at timeout \nPASS non-bool truthy ignored -> source and handoff rejected \nPASS receipt not a dict -> source and handoff rejected \nPASS both None -> source and handoff rejected \nTOTAL FAILS: 0\n"
+          }
+        ]
+      }
+    },
+    {
+      "step_id": 4,
+      "source": "agent",
+      "message": "All 28 representative cases pass. Let me record the check and confirm the workspace contains only the permitted change.",
+      "tool_calls": [
+        {
+          "tool_call_id": "6ZLtNn0Y3mxtRlYPrpY0ks5id4zPqkNC",
+          "function_name": "run_checks",
+          "arguments": {
+            "command": "python3 /tmp/check_label.py",
+            "cwd": "/workspace"
+          }
+        }
+      ],
+      "extra": {
+        "worker_assistant_turn": 7
+      },
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "6ZLtNn0Y3mxtRlYPrpY0ks5id4zPqkNC",
+            "content": "Tool result metadata: {\"check_record\": {\"after\": {\"bytes\": 4588, \"entries\": 3, \"git_head\": {\"status\": \"unavailable\"}, \"status\": \"captured\", \"tree_sha256\": \"bc2eef13b848d1b5df7f52c63a49e6d34be1d4bc84ae4ee153346b8b48444650\"}, \"before\": {\"bytes\": 4588, \"entries\": 3, \"git_head\": {\"status\": \"unavailable\"}, \"status\": \"captured\", \"tree_sha256\": \"bc2eef13b848d1b5df7f52c63a49e6d34be1d4bc84ae4ee153346b8b48444650\"}, \"cwd\": \".\", \"exception_info\": \"\", \"files_unchanged_by_command\": true, \"id\": \"c0008\", \"record_path\": \"/checks/c0008.json\", \"returncode\": 0, \"scope\": \"Selected cwd before/after this command, excluding .git; not comparison to task start or a coverage claim.\"}, \"exception_info\": \"\", \"output_window\": {\"captured_characters\": 2198, \"mode\": \"complete_capture\"}, \"remaining_agent_seconds\": 94.6, \"remaining_model_calls\": 57, \"remaining_tool_calls\": 120, \"returncode\": 0, \"truncated\": false, \"observation_id\": \"o0008\"}\nTool output (literal text):\nPASS tinfield canonical -> source accepted / handoff missing at timeout \nPASS tinfield, no agent_outcome key (older record) -> source accepted / handoff missing at timeout \nPASS tinfield, agent_outcome null -> source accepted / handoff missing at timeout \nPASS terminal submission -> not timeout -> source accepted / handoff rejected \nPASS terminal blocked -> not timeout -> source accepted / handoff rejected \nPASS terminal evidence in receipt -> source accepted / handoff rejected \nPASS exit_status Failed is not terminal -> source accepted / handoff missing at timeout \nPASS exit_status lowercase not terminal -> source accepted / handoff missing at timeout \nPASS final_handoff missing -> not timeout -> source accepted / handoff rejected \nPASS final_handoff not null -> not timeout -> source accepted / handoff rejected \nPASS clean_agent_completion missing -> not timeout -> source accepted / handoff rejected \nPASS clean_agent_completion true -> not timeout -> source accepted / handoff rejected \nPASS agent_error missing -> not timeout -> source accepted / handoff rejected \nPASS agent_error null -> not timeout -> source accepted / handoff rejected \nPASS agent_error malformed (string) -> not timeout -> source accepted / handoff rejected \nPASS agent_error missing message -> not timeout -> source accepted / handoff rejected \nPASS token budget error -> not timeout -> source accepted / handoff rejected \nPASS tool budget error -> not timeout -> source accepted / handoff rejected \nPASS different message -> not timeout -> source accepted / handoff rejected \nPASS plain accepted/rejected -> source accepted / handoff rejected \nPASS source rejected / handoff accepted -> source rejected / handoff accepted \nPASS both rejected -> source and handoff rejected \nPASS both accepted, overall failed -> trial failed / source and handoff accepted \nPASS prose ignored: receipt dims win -> source accepted / handoff rejected \nPASS summary-only dims (receipt lacks booleans) -> source accepted / handoff missing at timeout \nPASS non-bool truthy ignored -> source and handoff rejected \nPASS receipt not a dict -> source and handoff rejected \nPASS both None -> source and handoff rejected \nTOTAL FAILS: 0\n"
+          }
+        ]
+      }
+    },
+    {
+      "step_id": 5,
+      "source": "agent",
+      "message": "Workspace is clean — only `scripts/observe_review.py` was modified, and all checks pass. Handing off.",
+      "tool_calls": [
+        {
+          "tool_call_id": "EEJcHiIhTSGG5rnDcuweTjEY9nIBH5rO",
+          "function_name": "finish_attempt",
+          "arguments": {
+            "disposition": "submitted",
+            "summary": "Implemented rejected_trial_label in scripts/observe_review.py: receipt boolean dims drive the four labels; the \"handoff missing at timeout\" label requires the exact Tinfield evidence shape (final_handoff null, clean_agent_completion false, agent_error DeadlineExceeded/\"Whole-stage wall deadline expired\") and no terminal agent_outcome (exit_status Submitted/Blocked). Verified 28 representative cases offline, all passing.",
+            "evidence": [
+              {
+                "kind": "observation",
+                "observation_id": "o0008",
+                "supports": "Recorded run of /tmp/check_label.py: 28/28 PASS, exit 0, workspace files unchanged by the command. Covers canonical Tinfield shape, terminal Submitted/Blocked (summary and receipt), omitted terminal evidence, missing/malformed agent_error, token/tool-budget errors, non-null final_handoff, all four dimension combos, prose-ignored receipt dims, non-bool truthy, and None inputs."
+              },
+              {
+                "kind": "observation",
+                "observation_id": "o0009",
+                "supports": "Confirms only scripts/observe_review.py and task.md exist in /workspace (edit scope respected) and the modified file parses."
+              },
+              {
+                "kind": "public_contract",
+                "public_clause": "A bound agent_outcome with exit_status Submitted or Blocked is a terminal disposition. Older summaries may omit terminal evidence.",
+                "supports": "Implemented as: agent_outcome present as dict with exit_status in {Submitted, Blocked} blocks the timeout label; absent or malformed agent_outcome is not terminal, so older records can still match the Tinfield shape."
+              }
+            ],
+            "unverified": [
+              "The brief does not state which object (receipt vs summary) holds final_handoff/clean_agent_completion/agent_error/agent_outcome; the implementation checks receipt first then summary, so the canonical shape works whether evidence lives in either, but a grader expecting lookup in only one object could differ on contrived mixed records.",
+              "Field names (source_accepted, handoff_accepted, final_handoff, clean_agent_completion, agent_error, agent_outcome, exit_status) are taken directly from the brief's wording; no schema file was supplied to confirm.",
+              "No caller code exists in the workspace to integration-test against; verification is via the offline case matrix in /tmp/check_label.py only."
+            ],
+            "blocker": null
+          }
+        }
+      ],
+      "extra": {
+        "worker_assistant_turn": 9
+      }
+    }
+  ],
+  "extra": {
+    "scope": "Selected historical interactions for offline inspection",
+    "native_format": "mini-swe-agent-1.1",
+    "native_assistant_turns": 9
+  }
+}

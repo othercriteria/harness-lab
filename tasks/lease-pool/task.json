@@ -1,0 +1,29 @@
+{
+  "id": "lease-pool",
+  "version": 1,
+  "kind": "repository-debugging",
+  "origin": "authored",
+  "split": "development",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 4,
+    "acceptance": 14
+  },
+  "baseline_public_passes": false,
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted unchanged public contract; first five local-model confirmation attempts completed in frozen148. Now exposed development material.",
+  "human_duration": {
+    "minutes": null,
+    "status": "No human-duration calibration"
+  },
+  "exposure": "First local-model exposure in frozen148 confirmation, seeds1001\u20131005:1/5 fully accepted; four huge-integer TTL validation failures. Public brief/starter/tests/reference unchanged; future use is development, not fresh held-out evidence.",
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/research/reliability-lease-pool-blind-001/manifest.json",
+    "repair_after_feedback": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/research/reliability-lease-pool-blind-001/review.json",
+    "gaps": [],
+    "public_changed_after_review": false
+  }
+}

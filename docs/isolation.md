@@ -1,0 +1,5 @@
+# Execution boundaries
+
+The outer runner packages a selected source snapshot and an explicit set of writable paths. It keeps the model API client on the host. Worker commands run in disposable Bubblewrap namespaces with an allowlisted Nix tool closure. Systemd scopes bound resource use and the runner verifies cleanup. Submitted code is tested in a separate evaluator with private checks. The application step verifies the reviewed artifact and checks all supplied inputs for stale bytes before writing.
+
+The portable examples inspect historical evidence and exercise the policy on CPU. Live execution requires a configured host on which the outer runner can create the namespaces and scopes, monitor them and reach the local inference backend. Keep private credentials, the evaluator and the model endpoint outside the Worker workspace. Local test success alone establishes neither containment on a new machine nor acceptance of a handoff. [Sandbox implementation](../scripts/sandbox.py) · [Package application](../scripts/delegate_apply.py) · [Operator guide](operations.md)

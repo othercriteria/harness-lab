@@ -1,0 +1,26 @@
+{
+  "id": "sqlite-migrations-v4",
+  "version": 4,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 20
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-v3",
+  "revision_note": "Historical specification clarification: resolve public-only blind review ambiguities under post-alignment experimental scope. Implementation responsibilities, scaffold code, tests and reference bytes were unchanged by that clarification; explicit interpretations govern future runs. Subsequent private-check changes are recorded separately in evaluator_revision_note.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Previously model-exposed authored family, including this task version. Evaluator strengthening creates no fresh-task or human-duration claim.",
+  "specification_alignment": {
+    "review": "results/blind-public-spec-review-002.json",
+    "original_fixture": "tasks/sqlite-migrations-v3",
+    "scoring": "Prior scores retained under prior bytes; new version scored prospectively."
+  },
+  "evaluator_revision": 3,
+  "evaluator_revision_note": "Prospective private-check strengthening: retain revision2 checks and add real deferred-constraint COMMIT failure rollback in legacy and autocommit=True modes. Public/starter/reference bytes unchanged; old frozen scores and counts remain intact. Adoption applies only to subsequent admitted runs."
+}

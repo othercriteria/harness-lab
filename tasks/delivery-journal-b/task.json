@@ -1,0 +1,17 @@
+{
+  "id": "delivery-journal-b",
+  "version": 1,
+  "kind": "contract-triage",
+  "split": "development",
+  "requires_outer_adjudication": true,
+  "test_counts": {
+    "public": 3,
+    "acceptance": 7
+  },
+  "entrypoint": "public/task.md",
+  "human_duration": {
+    "minutes": null,
+    "status": "uncalibrated"
+  },
+  "admission": "Admitted for development contract-triage pilots; see results/delivery-journal-admission-001.json. Requires outer adjudication; ordinary host fixture checker must refuse."
+}

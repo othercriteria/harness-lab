@@ -1,0 +1,59 @@
+{
+  "id": "git-config-backport-smoke-basic",
+  "version": 1,
+  "kind": "git-backport",
+  "split": "development",
+  "maturity": "development",
+  "fixture_validation": "isolated-only",
+  "entrypoint": "public/task.md",
+  "git_repository": {
+    "bundle": "repository.bundle",
+    "directory": "repo",
+    "initial_branch": "release/stable",
+    "branches": {
+      "release/stable": "7c4925c8f3f61132fd352f314ba342bee4717c07"
+    },
+    "main": "99440ce4490f1eb676b4b18f9b7aa64d2f66a285",
+    "tags": {
+      "base-stable": "7c4925c8f3f61132fd352f314ba342bee4717c07",
+      "approved-write-safety": "99440ce4490f1eb676b4b18f9b7aa64d2f66a285"
+    },
+    "require_added_tests": false
+  },
+  "provenance": {
+    "upstream_tag": "v3.13.0",
+    "sha256": {
+      "LICENSE": "78b12c3a81360b357002334f0e70ea0e92eebf7a9b358805c03c48484945f3bb",
+      "configparser.rst": "e69ad4c9e00a8c975181498b441fb897e13d61b25f2424d9436e695467d8be4f",
+      "configparser.py": "ece1abea1ec68cae85b2532ade9a2156ce9b20ff38738ac4147744509f65490b"
+    },
+    "url": "https://github.com/python/cpython/tree/v3.13.0",
+    "scope": "Pinned parser/docs; authored downstream task, histories and policy."
+  },
+  "human_duration": {
+    "minutes": null,
+    "status": "Uncalibrated"
+  },
+  "admission_status": "admitted",
+  "test_counts": {
+    "stable": 16
+  },
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/reviews/git-smoke-basic-solution-001/solution-seal.json",
+    "feedback_driven_repair": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/git-smoke-basic-solution-001/review.json",
+    "gaps": []
+  },
+  "limitations": [
+    "Related authored downstream tasks on pinned CPython source, not fresh independent task families.",
+    "Wall ceilings uncalibrated until local trials; no human-duration claim.",
+    "Finite tests and behavioral probes require source/handoff review."
+  ],
+  "revision": {
+    "from": "git-config-backport-smoke",
+    "change": "Additional regression-test authoring optional; supplied tests are the required verification deliverable. All code behavior, Git delivery and finalization requirements retained.",
+    "reason": "Original90s screen1/3full despite3/3code correctness;110\u2013139lines of additional tests consumed the short ceiling."
+  }
+}

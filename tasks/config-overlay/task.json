@@ -1,0 +1,8 @@
+{
+  "id": "config-overlay",
+  "version": 1,
+  "kind": "bug-repair",
+  "split": "development",
+  "test_counts": {"public": 2, "acceptance": 6},
+  "entrypoint": "public/task.md"
+}

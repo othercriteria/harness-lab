@@ -1,0 +1,64 @@
+{
+  "protocol": "repo-120-context-none-64k-guided-think4k-finish-edit-literal-batch8-summary-progress-v1",
+  "status": "Fixed selected087recipe under shorter regression ceiling; benefit assessed through own evaluation.",
+  "coding_harness": "mini-swe-agent==2.4.6",
+  "task_wall_seconds": 120,
+  "agent_wall_seconds": 105,
+  "verification_reserve_seconds": 15,
+  "step_limit": 64,
+  "max_completion_tokens_per_request": 32768,
+  "total_completion_token_limit": 65536,
+  "tool_timeout_seconds": 10,
+  "request_timeout_seconds": 105,
+  "context_capacity_tokens": 65536,
+  "concurrent_model_runs": 1,
+  "gpu_lock": "/bulk/dlk/big-local-models/gpu-experiment.lock",
+  "isolation_design": "docs/isolation.md",
+  "timing": {
+    "primary": "fresh workspace preparation through canonical verification, with already-ready model",
+    "also_report": [
+      "model_load",
+      "cold_dispatch_to_verified_result",
+      "agent",
+      "verification",
+      "cleanup",
+      "restoration"
+    ],
+    "note": "A warm result does not establish cold two-minute performance. Always label server and prompt-cache state."
+  },
+  "success": "full canonical suite AND external behavioral gate AND clean completion AND <=120s AND no human repair",
+  "budget_note": "120s total/105s agent/15s verifier; all nonwall budgets, native4K reasoning and summary/reset policy unchanged from085. Reset after half original allocation only with>=180sremaining; no forced reset or renewed allowance. At120s this minimum prevents a checkpoint/reset. The same optional progress reminder follows a completed cycle after25%original agent time only with>=180sremaining; checkpoint/reset takes precedence. No budget is renewed.",
+  "tool_call_limit": 128,
+  "seed": 42,
+  "max_request_bytes": 524288,
+  "time_budget_feedback": true,
+  "recover_tool_limit_errors": true,
+  "context_policy": {
+    "mode": "none",
+    "keep_recent": 8,
+    "trigger_tokens": 22528,
+    "safety_tokens": 256
+  },
+  "behavioral_gate": "cli-state-v1",
+  "max_command_bytes": 32768,
+  "workspace_persistence_feedback": true,
+  "work_policy_feedback": true,
+  "context_budget_feedback": true,
+  "reasoning_budget_tokens": 4096,
+  "structured_finalization": true,
+  "concise_finalization": true,
+  "exact_text_edit": true,
+  "plain_tool_observations": true,
+  "max_tool_calls_per_response": 8,
+  "fresh_context": {
+    "after_elapsed_agent_fraction": 0.5,
+    "min_remaining_agent_seconds": 180,
+    "continuation_mode": "review",
+    "summary_checkpoint": true
+  },
+  "progress_reminder": {
+    "after_elapsed_agent_fraction": 0.25,
+    "min_remaining_agent_seconds": 180
+  },
+  "description": "Selected bounded-summary and progress-reminder recipe under the original 120-second regression ceiling."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v5",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 8,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v4",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after public-only blind review, sealed independent first solution, and isolated positive/negative controls.",
+  "revision_note": "Add a public resource-acquisition cleanup example and positive CLI cleanup-scope guidance. Existing owned-resource contract, production starter and private checks unchanged."
+}

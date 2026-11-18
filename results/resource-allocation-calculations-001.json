@@ -1,0 +1,2711 @@
+{
+  "cache_only_ceiling": {
+    "dispatch_fraction": 0.0811706724417434,
+    "qualification": "Hypothetical deletion of ALL measured prefill with fixed trajectories. Not achievable scoped-cache savings, and not a ceiling on behavioral or decode-context improvements.",
+    "scope": "Nine original Qwen v2 assignments, all recorded responses available",
+    "seconds": 124.28,
+    "task_fraction": 0.09314509592550742
+  },
+  "capacity": [
+    {
+      "binding_constraints": [
+        "gpu"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 64.0,
+        "human": 384.0,
+        "outer": 160.0
+      },
+      "change": "baseline",
+      "expected_accepted_capacity": 64.0,
+      "scenario": "gpu_limited"
+    },
+    {
+      "binding_constraints": [
+        "gpu"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 71.11111111111111,
+        "human": 384.0,
+        "outer": 160.0
+      },
+      "change": "ten_percent_less_gpu_time",
+      "expected_accepted_capacity": 71.11111111111111,
+      "scenario": "gpu_limited"
+    },
+    {
+      "binding_constraints": [
+        "gpu"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 64.0,
+        "human": 384.0,
+        "outer": 240.0
+      },
+      "change": "one_third_less_outer_effort",
+      "expected_accepted_capacity": 64.0,
+      "scenario": "gpu_limited"
+    },
+    {
+      "binding_constraints": [
+        "gpu"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 64.0,
+        "human": 576.0,
+        "outer": 160.0
+      },
+      "change": "one_third_less_human_attention",
+      "expected_accepted_capacity": 64.0,
+      "scenario": "gpu_limited"
+    },
+    {
+      "binding_constraints": [
+        "gpu"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 72.0,
+        "human": 432.0,
+        "outer": 180.0
+      },
+      "change": "acceptance_80_to_90_percent",
+      "expected_accepted_capacity": 72.0,
+      "scenario": "gpu_limited"
+    },
+    {
+      "binding_constraints": [
+        "outer"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 640.0,
+        "human": 384.0,
+        "outer": 32.0
+      },
+      "change": "baseline",
+      "expected_accepted_capacity": 32.0,
+      "scenario": "outer_review_limited"
+    },
+    {
+      "binding_constraints": [
+        "outer"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 711.1111111111111,
+        "human": 384.0,
+        "outer": 32.0
+      },
+      "change": "ten_percent_less_gpu_time",
+      "expected_accepted_capacity": 32.0,
+      "scenario": "outer_review_limited"
+    },
+    {
+      "binding_constraints": [
+        "outer"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 640.0,
+        "human": 384.0,
+        "outer": 48.0
+      },
+      "change": "one_third_less_outer_effort",
+      "expected_accepted_capacity": 48.0,
+      "scenario": "outer_review_limited"
+    },
+    {
+      "binding_constraints": [
+        "outer"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 640.0,
+        "human": 576.0,
+        "outer": 32.0
+      },
+      "change": "one_third_less_human_attention",
+      "expected_accepted_capacity": 32.0,
+      "scenario": "outer_review_limited"
+    },
+    {
+      "binding_constraints": [
+        "outer"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 720.0,
+        "human": 432.0,
+        "outer": 36.0
+      },
+      "change": "acceptance_80_to_90_percent",
+      "expected_accepted_capacity": 36.0,
+      "scenario": "outer_review_limited"
+    },
+    {
+      "binding_constraints": [
+        "human"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 640.0,
+        "human": 24.0,
+        "outer": 160.0
+      },
+      "change": "baseline",
+      "expected_accepted_capacity": 24.0,
+      "scenario": "human_attention_limited"
+    },
+    {
+      "binding_constraints": [
+        "human"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 711.1111111111111,
+        "human": 24.0,
+        "outer": 160.0
+      },
+      "change": "ten_percent_less_gpu_time",
+      "expected_accepted_capacity": 24.0,
+      "scenario": "human_attention_limited"
+    },
+    {
+      "binding_constraints": [
+        "human"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 640.0,
+        "human": 24.0,
+        "outer": 240.0
+      },
+      "change": "one_third_less_outer_effort",
+      "expected_accepted_capacity": 24.0,
+      "scenario": "human_attention_limited"
+    },
+    {
+      "binding_constraints": [
+        "human"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 640.0,
+        "human": 36.0,
+        "outer": 160.0
+      },
+      "change": "one_third_less_human_attention",
+      "expected_accepted_capacity": 36.0,
+      "scenario": "human_attention_limited"
+    },
+    {
+      "binding_constraints": [
+        "human"
+      ],
+      "bounds": {
+        "demand": 200,
+        "gpu": 720.0,
+        "human": 27.0,
+        "outer": 180.0
+      },
+      "change": "acceptance_80_to_90_percent",
+      "expected_accepted_capacity": 27.0,
+      "scenario": "human_attention_limited"
+    },
+    {
+      "binding_constraints": [
+        "demand"
+      ],
+      "bounds": {
+        "demand": 6,
+        "gpu": 640.0,
+        "human": 384.0,
+        "outer": 160.0
+      },
+      "change": "baseline",
+      "expected_accepted_capacity": 6,
+      "scenario": "demonstration_demand_limited"
+    },
+    {
+      "binding_constraints": [
+        "demand"
+      ],
+      "bounds": {
+        "demand": 6,
+        "gpu": 711.1111111111111,
+        "human": 384.0,
+        "outer": 160.0
+      },
+      "change": "ten_percent_less_gpu_time",
+      "expected_accepted_capacity": 6,
+      "scenario": "demonstration_demand_limited"
+    },
+    {
+      "binding_constraints": [
+        "demand"
+      ],
+      "bounds": {
+        "demand": 6,
+        "gpu": 640.0,
+        "human": 384.0,
+        "outer": 240.0
+      },
+      "change": "one_third_less_outer_effort",
+      "expected_accepted_capacity": 6,
+      "scenario": "demonstration_demand_limited"
+    },
+    {
+      "binding_constraints": [
+        "demand"
+      ],
+      "bounds": {
+        "demand": 6,
+        "gpu": 640.0,
+        "human": 576.0,
+        "outer": 160.0
+      },
+      "change": "one_third_less_human_attention",
+      "expected_accepted_capacity": 6,
+      "scenario": "demonstration_demand_limited"
+    },
+    {
+      "binding_constraints": [
+        "demand"
+      ],
+      "bounds": {
+        "demand": 6,
+        "gpu": 720.0,
+        "human": 432.0,
+        "outer": 180.0
+      },
+      "change": "acceptance_80_to_90_percent",
+      "expected_accepted_capacity": 6,
+      "scenario": "demonstration_demand_limited"
+    }
+  ],
+  "efficiency_break_even": [
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 399.99999999999994,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.95,
+        "100": -1.5,
+        "40": -1.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 133.33333333333334,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.85,
+        "100": -0.5,
+        "40": -1.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 66.66666666666667,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.7,
+        "100": 1.0,
+        "40": -0.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 133.33333333333334,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.85,
+        "100": -0.5,
+        "40": -1.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 44.44444444444444,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.55,
+        "100": 2.5,
+        "40": -0.20000000000000018
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 22.22222222222222,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.1,
+        "100": 7.0,
+        "40": 1.5999999999999996
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 40.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.5,
+        "100": 3.0,
+        "40": 0.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 13.333333333333334,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -0.5,
+        "100": 13.0,
+        "40": 4.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 6.666666666666667,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": 1.0,
+        "100": 28.0,
+        "40": 10.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 0
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 599.9999999999999,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.95,
+        "100": -2.5,
+        "40": -2.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 200.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.85,
+        "100": -1.5,
+        "40": -2.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 100.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.7,
+        "100": 0.0,
+        "40": -1.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 200.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.85,
+        "100": -1.5,
+        "40": -2.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 66.66666666666667,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.55,
+        "100": 1.5,
+        "40": -1.2000000000000002
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 33.333333333333336,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.1,
+        "100": 6.0,
+        "40": 0.5999999999999996
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 60.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -2.5,
+        "100": 2.0,
+        "40": -1.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 20.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -1.5,
+        "100": 12.0,
+        "40": 3.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 10.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": 0.0,
+        "100": 27.0,
+        "40": 9.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 0.25
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 1199.9999999999998,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.95,
+        "100": -5.5,
+        "40": -5.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 400.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.85,
+        "100": -4.5,
+        "40": -5.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 200.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.7,
+        "100": -3.0,
+        "40": -4.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 400.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.85,
+        "100": -4.5,
+        "40": -5.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 133.33333333333334,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.55,
+        "100": -1.5,
+        "40": -4.2
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 66.66666666666667,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.1,
+        "100": 3.0,
+        "40": -2.4000000000000004
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 120.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -5.5,
+        "100": -1.0,
+        "40": -4.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 40.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -4.5,
+        "100": 9.0,
+        "40": 0.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 20.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -3.0,
+        "100": 24.0,
+        "40": 6.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 1
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 3599.999999999999,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.95,
+        "100": -17.5,
+        "40": -17.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 1200.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.85,
+        "100": -16.5,
+        "40": -17.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 0.1,
+      "break_even_baseline_gpu_hours": 600.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.7,
+        "100": -15.0,
+        "40": -16.8
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 1200.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.85,
+        "100": -16.5,
+        "40": -17.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 400.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.55,
+        "100": -13.5,
+        "40": -16.2
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 0.3,
+      "break_even_baseline_gpu_hours": 200.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.1,
+        "100": -9.0,
+        "40": -14.4
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 360.0,
+      "fraction_time_saved_on_affected_work": 0.05,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -17.5,
+        "100": -13.0,
+        "40": -16.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 120.0,
+      "fraction_time_saved_on_affected_work": 0.15,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -16.5,
+        "100": -3.0,
+        "40": -12.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    },
+    {
+      "affected_runtime_fraction": 1.0,
+      "break_even_baseline_gpu_hours": 60.0,
+      "fraction_time_saved_on_affected_work": 0.3,
+      "net_gpu_hour_equivalents_by_exposure": {
+        "10": -15.0,
+        "100": 12.0,
+        "40": -6.0
+      },
+      "outer_to_gpu_shadow_price_ratio": 4
+    }
+  ],
+  "input_sha256": {
+    "config": "b6eb22d32b5e86e614660606bdcc06969a0f7135ea76318733d0dc4a75e3a1b9",
+    "evidence": "f9b9059c802655b0c57bcc32068447efc5f9ae71411d4314a1133adf84ed7430",
+    "script": "3dd99544c7e873e85ebbba6238953d774641e0a5f75bed45261103347b269ad2"
+  },
+  "precision": [
+    {
+      "approximate_pairs": 32,
+      "gpu_hours": 3.2,
+      "paired_difference_sd_fraction": 0.1,
+      "target_mean_reduction_fraction": 0.05
+    },
+    {
+      "approximate_pairs": 8,
+      "gpu_hours": 0.8,
+      "paired_difference_sd_fraction": 0.1,
+      "target_mean_reduction_fraction": 0.1
+    },
+    {
+      "approximate_pairs": 2,
+      "gpu_hours": 0.2,
+      "paired_difference_sd_fraction": 0.1,
+      "target_mean_reduction_fraction": 0.2
+    },
+    {
+      "approximate_pairs": 283,
+      "gpu_hours": 28.3,
+      "paired_difference_sd_fraction": 0.3,
+      "target_mean_reduction_fraction": 0.05
+    },
+    {
+      "approximate_pairs": 71,
+      "gpu_hours": 7.1,
+      "paired_difference_sd_fraction": 0.3,
+      "target_mean_reduction_fraction": 0.1
+    },
+    {
+      "approximate_pairs": 18,
+      "gpu_hours": 1.8,
+      "paired_difference_sd_fraction": 0.3,
+      "target_mean_reduction_fraction": 0.2
+    },
+    {
+      "approximate_pairs": 785,
+      "gpu_hours": 78.5,
+      "paired_difference_sd_fraction": 0.5,
+      "target_mean_reduction_fraction": 0.05
+    },
+    {
+      "approximate_pairs": 197,
+      "gpu_hours": 19.7,
+      "paired_difference_sd_fraction": 0.5,
+      "target_mean_reduction_fraction": 0.1
+    },
+    {
+      "approximate_pairs": 50,
+      "gpu_hours": 5.0,
+      "paired_difference_sd_fraction": 0.5,
+      "target_mean_reduction_fraction": 0.2
+    }
+  ],
+  "reliability": [
+    {
+      "n": 3,
+      "one_sided_95_lower_if_all_pass": 0.3684031498640387,
+      "p": 0.8,
+      "probability_all_pass": 0.5120000000000001
+    },
+    {
+      "n": 10,
+      "one_sided_95_lower_if_all_pass": 0.7411344491069477,
+      "p": 0.8,
+      "probability_all_pass": 0.10737418240000006
+    },
+    {
+      "n": 20,
+      "one_sided_95_lower_if_all_pass": 0.8608916593317348,
+      "p": 0.8,
+      "probability_all_pass": 0.011529215046068483
+    },
+    {
+      "n": 3,
+      "one_sided_95_lower_if_all_pass": 0.3684031498640387,
+      "p": 0.9,
+      "probability_all_pass": 0.7290000000000001
+    },
+    {
+      "n": 10,
+      "one_sided_95_lower_if_all_pass": 0.7411344491069477,
+      "p": 0.9,
+      "probability_all_pass": 0.3486784401000001
+    },
+    {
+      "n": 20,
+      "one_sided_95_lower_if_all_pass": 0.8608916593317348,
+      "p": 0.9,
+      "probability_all_pass": 0.12157665459056935
+    },
+    {
+      "n": 3,
+      "one_sided_95_lower_if_all_pass": 0.3684031498640387,
+      "p": 0.95,
+      "probability_all_pass": 0.8573749999999999
+    },
+    {
+      "n": 10,
+      "one_sided_95_lower_if_all_pass": 0.7411344491069477,
+      "p": 0.95,
+      "probability_all_pass": 0.5987369392383787
+    },
+    {
+      "n": 20,
+      "one_sided_95_lower_if_all_pass": 0.8608916593317348,
+      "p": 0.95,
+      "probability_all_pass": 0.3584859224085419
+    },
+    {
+      "n": 3,
+      "one_sided_95_lower_if_all_pass": 0.3684031498640387,
+      "p": 0.99,
+      "probability_all_pass": 0.970299
+    },
+    {
+      "n": 10,
+      "one_sided_95_lower_if_all_pass": 0.7411344491069477,
+      "p": 0.99,
+      "probability_all_pass": 0.9043820750088044
+    },
+    {
+      "n": 20,
+      "one_sided_95_lower_if_all_pass": 0.8608916593317348,
+      "p": 0.99,
+      "probability_all_pass": 0.8179069375972308
+    }
+  ],
+  "status": "Computed cartoons and descriptive bounds; not experimental findings",
+  "voi": [
+    {
+      "adaptive_boundaries": [
+        {
+          "action_after_setup_paid": "retain",
+          "n": 0,
+          "positive": 0,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 1,
+          "positive": 0,
+          "posterior_good": 0.12500000000000003
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 1,
+          "positive": 1,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 2,
+          "positive": 0,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 2,
+          "positive": 1,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 2,
+          "positive": 2,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 3,
+          "positive": 0,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 3,
+          "positive": 1,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 3,
+          "positive": 2,
+          "posterior_good": 0.5625000000000001
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 3,
+          "positive": 3,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 0,
+          "posterior_good": 0.005263157894736843
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 1,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 2,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 3,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 4,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 0,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 1,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 2,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 3,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 4,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 5,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 0,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 1,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 2,
+          "posterior_good": 0.04545454545454545
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 3,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 4,
+          "posterior_good": 0.7941176470588235
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 5,
+          "posterior_good": 0.9720000000000001
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 6,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 0,
+          "posterior_good": 0.00019592476489028215
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 1,
+          "posterior_good": 0.0017605633802816902
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 2,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 3,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 4,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 5,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 6,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 7,
+          "posterior_good": 0.9989342265529841
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 0,
+          "posterior_good": 6.531678641410842e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 1,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 2,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 3,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 4,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 5,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 6,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 7,
+          "posterior_good": 0.9968094804010939
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 8,
+          "posterior_good": 0.9996444895886236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 0,
+          "posterior_good": 2.17732102421181e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 1,
+          "posterior_good": 0.00019592476489028212
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 2,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 3,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 4,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 5,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 6,
+          "posterior_good": 0.9204545454545454
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 7,
+          "posterior_good": 0.9904891304347827
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 8,
+          "posterior_good": 0.9989342265529843
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 9,
+          "posterior_good": 0.9998814684367381
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 0,
+          "posterior_good": 7.257842098387308e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 1,
+          "posterior_good": 6.531678641410843e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 2,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 3,
+          "posterior_good": 0.005263157894736843
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 4,
+          "posterior_good": 0.04545454545454546
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 5,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 6,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 7,
+          "posterior_good": 0.9720000000000001
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 8,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 9,
+          "posterior_good": 0.9996444895886236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 10,
+          "posterior_good": 0.9999604863565034
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 0,
+          "posterior_good": 2.419292405357281e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 1,
+          "posterior_good": 2.1773210242118097e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 2,
+          "posterior_good": 0.00019592476489028212
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 3,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 4,
+          "posterior_good": 0.015625000000000003
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 5,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 6,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 7,
+          "posterior_good": 0.9204545454545454
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 8,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 9,
+          "posterior_good": 0.9989342265529841
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 10,
+          "posterior_good": 0.9998814684367381
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 11,
+          "posterior_good": 0.9999868284385303
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 0,
+          "posterior_good": 8.064321024491344e-07
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 1,
+          "posterior_good": 7.257842098387308e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 2,
+          "posterior_good": 6.531678641410843e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 3,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 4,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 5,
+          "posterior_good": 0.04545454545454545
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 6,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 7,
+          "posterior_good": 0.7941176470588235
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 8,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 9,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 10,
+          "posterior_good": 0.9996444895886237
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 11,
+          "posterior_good": 0.9999604863565034
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 12,
+          "posterior_good": 0.9999956094409563
+        }
+      ],
+      "adaptive_expected_observations": 0,
+      "adaptive_first_action": "retain",
+      "adaptive_net_gain": 0.0,
+      "best_fixed": {
+        "gross_evsi": 0.0,
+        "n": 0,
+        "net_gain": 0.0
+      },
+      "current_adopt_gain": -1.05,
+      "fixed_samples": [
+        {
+          "gross_evsi": 0.0,
+          "n": 0,
+          "net_gain": 0.0
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 1,
+          "net_gain": -0.22999999999999998
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 2,
+          "net_gain": -0.31
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 3,
+          "net_gain": -0.39
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 4,
+          "net_gain": -0.47
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 5,
+          "net_gain": -0.55
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 6,
+          "net_gain": -0.63
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 7,
+          "net_gain": -0.7100000000000001
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 8,
+          "net_gain": -0.79
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 9,
+          "net_gain": -0.87
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 10,
+          "net_gain": -0.9500000000000001
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 11,
+          "net_gain": -1.03
+        },
+        {
+          "gross_evsi": 0.0,
+          "n": 12,
+          "net_gain": -1.1099999999999999
+        }
+      ],
+      "free_perfect_information_value": 0.0,
+      "future_baseline_gpu_hours": 10
+    },
+    {
+      "adaptive_boundaries": [
+        {
+          "action_after_setup_paid": "sample",
+          "n": 0,
+          "positive": 0,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 1,
+          "positive": 0,
+          "posterior_good": 0.12500000000000003
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 1,
+          "positive": 1,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 2,
+          "positive": 0,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 2,
+          "positive": 1,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 2,
+          "positive": 2,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 3,
+          "positive": 0,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 3,
+          "positive": 1,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 3,
+          "positive": 2,
+          "posterior_good": 0.5625000000000001
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 3,
+          "positive": 3,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 0,
+          "posterior_good": 0.005263157894736843
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 1,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 4,
+          "positive": 2,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 4,
+          "positive": 3,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 4,
+          "positive": 4,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 0,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 1,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 5,
+          "positive": 2,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 5,
+          "positive": 3,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 5,
+          "positive": 4,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 5,
+          "positive": 5,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 0,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 1,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 2,
+          "posterior_good": 0.04545454545454545
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 6,
+          "positive": 3,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 6,
+          "positive": 4,
+          "posterior_good": 0.7941176470588235
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 6,
+          "positive": 5,
+          "posterior_good": 0.9720000000000001
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 6,
+          "positive": 6,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 0,
+          "posterior_good": 0.00019592476489028215
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 1,
+          "posterior_good": 0.0017605633802816902
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 2,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 7,
+          "positive": 3,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 7,
+          "positive": 4,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 7,
+          "positive": 5,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 7,
+          "positive": 6,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 7,
+          "positive": 7,
+          "posterior_good": 0.9989342265529841
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 0,
+          "posterior_good": 6.531678641410842e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 1,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 2,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 3,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 8,
+          "positive": 4,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 8,
+          "positive": 5,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 8,
+          "positive": 6,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 8,
+          "positive": 7,
+          "posterior_good": 0.9968094804010939
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 8,
+          "positive": 8,
+          "posterior_good": 0.9996444895886236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 0,
+          "posterior_good": 2.17732102421181e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 1,
+          "posterior_good": 0.00019592476489028212
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 2,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 3,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 9,
+          "positive": 4,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 9,
+          "positive": 5,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 6,
+          "posterior_good": 0.9204545454545454
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 7,
+          "posterior_good": 0.9904891304347827
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 8,
+          "posterior_good": 0.9989342265529843
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 9,
+          "posterior_good": 0.9998814684367381
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 0,
+          "posterior_good": 7.257842098387308e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 1,
+          "posterior_good": 6.531678641410843e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 2,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 3,
+          "posterior_good": 0.005263157894736843
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 4,
+          "posterior_good": 0.04545454545454546
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 10,
+          "positive": 5,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 10,
+          "positive": 6,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 7,
+          "posterior_good": 0.9720000000000001
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 8,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 9,
+          "posterior_good": 0.9996444895886236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 10,
+          "posterior_good": 0.9999604863565034
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 0,
+          "posterior_good": 2.419292405357281e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 1,
+          "posterior_good": 2.1773210242118097e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 2,
+          "posterior_good": 0.00019592476489028212
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 3,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 4,
+          "posterior_good": 0.015625000000000003
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 5,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 11,
+          "positive": 6,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 7,
+          "posterior_good": 0.9204545454545454
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 8,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 9,
+          "posterior_good": 0.9989342265529841
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 10,
+          "posterior_good": 0.9998814684367381
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 11,
+          "posterior_good": 0.9999868284385303
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 0,
+          "posterior_good": 8.064321024491344e-07
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 1,
+          "posterior_good": 7.257842098387308e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 2,
+          "posterior_good": 6.531678641410843e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 3,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 4,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 5,
+          "posterior_good": 0.04545454545454545
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 6,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 7,
+          "posterior_good": 0.7941176470588235
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 8,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 9,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 10,
+          "posterior_good": 0.9996444895886237
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 11,
+          "posterior_good": 0.9999604863565034
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 12,
+          "posterior_good": 0.9999956094409563
+        }
+      ],
+      "adaptive_expected_observations": 3.9752895355224607,
+      "adaptive_first_action": "probe",
+      "adaptive_net_gain": 0.25563868904113785,
+      "best_fixed": {
+        "gross_evsi": 0.5578125,
+        "n": 4,
+        "net_gain": 0.08781250000000007
+      },
+      "current_adopt_gain": -1.2,
+      "fixed_samples": [
+        {
+          "gross_evsi": 0.0,
+          "n": 0,
+          "net_gain": 0.0
+        },
+        {
+          "gross_evsi": 0.15,
+          "n": 1,
+          "net_gain": -0.07999999999999999
+        },
+        {
+          "gross_evsi": 0.375,
+          "n": 2,
+          "net_gain": 0.065
+        },
+        {
+          "gross_evsi": 0.4312500000000002,
+          "n": 3,
+          "net_gain": 0.041250000000000175
+        },
+        {
+          "gross_evsi": 0.5578125,
+          "n": 4,
+          "net_gain": 0.08781250000000007
+        },
+        {
+          "gross_evsi": 0.5894531250000001,
+          "n": 5,
+          "net_gain": 0.03945312500000009
+        },
+        {
+          "gross_evsi": 0.6685546875,
+          "n": 6,
+          "net_gain": 0.03855468750000002
+        },
+        {
+          "gross_evsi": 0.688330078125,
+          "n": 7,
+          "net_gain": -0.021669921875000053
+        },
+        {
+          "gross_evsi": 0.7402404785156249,
+          "n": 8,
+          "net_gain": -0.049759521484375124
+        },
+        {
+          "gross_evsi": 0.7532180786132813,
+          "n": 9,
+          "net_gain": -0.11678192138671872
+        },
+        {
+          "gross_evsi": 0.7882575988769532,
+          "n": 10,
+          "net_gain": -0.16174240112304683
+        },
+        {
+          "gross_evsi": 0.797017478942871,
+          "n": 11,
+          "net_gain": -0.23298252105712902
+        },
+        {
+          "gross_evsi": 0.8211071491241455,
+          "n": 12,
+          "net_gain": -0.28889285087585437
+        }
+      ],
+      "free_perfect_information_value": 0.8999999999999999,
+      "future_baseline_gpu_hours": 40
+    },
+    {
+      "adaptive_boundaries": [
+        {
+          "action_after_setup_paid": "sample",
+          "n": 0,
+          "positive": 0,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 1,
+          "positive": 0,
+          "posterior_good": 0.12500000000000003
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 1,
+          "positive": 1,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 2,
+          "positive": 0,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 2,
+          "positive": 1,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 2,
+          "positive": 2,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 3,
+          "positive": 0,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 3,
+          "positive": 1,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 3,
+          "positive": 2,
+          "posterior_good": 0.5625000000000001
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 3,
+          "positive": 3,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 4,
+          "positive": 0,
+          "posterior_good": 0.005263157894736843
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 4,
+          "positive": 1,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 4,
+          "positive": 2,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 4,
+          "positive": 3,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 4,
+          "positive": 4,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 0,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 5,
+          "positive": 1,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 5,
+          "positive": 2,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 5,
+          "positive": 3,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 5,
+          "positive": 4,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 5,
+          "positive": 5,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 0,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 6,
+          "positive": 1,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 6,
+          "positive": 2,
+          "posterior_good": 0.04545454545454545
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 6,
+          "positive": 3,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 6,
+          "positive": 4,
+          "posterior_good": 0.7941176470588235
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 6,
+          "positive": 5,
+          "posterior_good": 0.9720000000000001
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 6,
+          "positive": 6,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 0,
+          "posterior_good": 0.00019592476489028215
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 1,
+          "posterior_good": 0.0017605633802816902
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 7,
+          "positive": 2,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 7,
+          "positive": 3,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 7,
+          "positive": 4,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 7,
+          "positive": 5,
+          "posterior_good": 0.9204545454545455
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 7,
+          "positive": 6,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 7,
+          "positive": 7,
+          "posterior_good": 0.9989342265529841
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 0,
+          "posterior_good": 6.531678641410842e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 1,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 2,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 8,
+          "positive": 3,
+          "posterior_good": 0.045454545454545456
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 8,
+          "positive": 4,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 8,
+          "positive": 5,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 8,
+          "positive": 6,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 8,
+          "positive": 7,
+          "posterior_good": 0.9968094804010939
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 8,
+          "positive": 8,
+          "posterior_good": 0.9996444895886236
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 0,
+          "posterior_good": 2.17732102421181e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 1,
+          "posterior_good": 0.00019592476489028212
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 2,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 9,
+          "positive": 3,
+          "posterior_good": 0.015625
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 9,
+          "positive": 4,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 9,
+          "positive": 5,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 6,
+          "posterior_good": 0.9204545454545454
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 7,
+          "posterior_good": 0.9904891304347827
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 8,
+          "posterior_good": 0.9989342265529843
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 9,
+          "positive": 9,
+          "posterior_good": 0.9998814684367381
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 0,
+          "posterior_good": 7.257842098387308e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 1,
+          "posterior_good": 6.531678641410843e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 2,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 3,
+          "posterior_good": 0.005263157894736843
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 10,
+          "positive": 4,
+          "posterior_good": 0.04545454545454546
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 10,
+          "positive": 5,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 10,
+          "positive": 6,
+          "posterior_good": 0.7941176470588236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 7,
+          "posterior_good": 0.9720000000000001
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 8,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 9,
+          "posterior_good": 0.9996444895886236
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 10,
+          "positive": 10,
+          "posterior_good": 0.9999604863565034
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 0,
+          "posterior_good": 2.419292405357281e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 1,
+          "posterior_good": 2.1773210242118097e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 2,
+          "posterior_good": 0.00019592476489028212
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 3,
+          "posterior_good": 0.00176056338028169
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 4,
+          "posterior_good": 0.015625000000000003
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 11,
+          "positive": 5,
+          "posterior_good": 0.125
+        },
+        {
+          "action_after_setup_paid": "sample",
+          "n": 11,
+          "positive": 6,
+          "posterior_good": 0.5625
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 7,
+          "posterior_good": 0.9204545454545454
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 8,
+          "posterior_good": 0.9904891304347826
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 9,
+          "posterior_good": 0.9989342265529841
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 10,
+          "posterior_good": 0.9998814684367381
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 11,
+          "positive": 11,
+          "posterior_good": 0.9999868284385303
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 0,
+          "posterior_good": 8.064321024491344e-07
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 1,
+          "posterior_good": 7.257842098387308e-06
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 2,
+          "posterior_good": 6.531678641410843e-05
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 3,
+          "posterior_good": 0.0005875440658049354
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 4,
+          "posterior_good": 0.005263157894736842
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 5,
+          "posterior_good": 0.04545454545454545
+        },
+        {
+          "action_after_setup_paid": "retain",
+          "n": 12,
+          "positive": 6,
+          "posterior_good": 0.3
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 7,
+          "posterior_good": 0.7941176470588235
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 8,
+          "posterior_good": 0.972
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 9,
+          "posterior_good": 0.996809480401094
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 10,
+          "posterior_good": 0.9996444895886237
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 11,
+          "posterior_good": 0.9999604863565034
+        },
+        {
+          "action_after_setup_paid": "adopt",
+          "n": 12,
+          "positive": 12,
+          "posterior_good": 0.9999956094409563
+        }
+      ],
+      "adaptive_expected_observations": 5.6947847366333,
+      "adaptive_first_action": "probe",
+      "adaptive_net_gain": 1.8296203382015228,
+      "best_fixed": {
+        "gross_evsi": 2.2131591796875,
+        "n": 7,
+        "net_gain": 1.5031591796875001
+      },
+      "current_adopt_gain": -1.5,
+      "fixed_samples": [
+        {
+          "gross_evsi": 0.0,
+          "n": 0,
+          "net_gain": 0.0
+        },
+        {
+          "gross_evsi": 0.9749999999999999,
+          "n": 1,
+          "net_gain": 0.7449999999999999
+        },
+        {
+          "gross_evsi": 1.2562499999999999,
+          "n": 2,
+          "net_gain": 0.9462499999999998
+        },
+        {
+          "gross_evsi": 1.6218750000000002,
+          "n": 3,
+          "net_gain": 1.231875
+        },
+        {
+          "gross_evsi": 1.7800781249999997,
+          "n": 4,
+          "net_gain": 1.3100781249999998
+        },
+        {
+          "gross_evsi": 1.9857421875,
+          "n": 5,
+          "net_gain": 1.4357421875
+        },
+        {
+          "gross_evsi": 2.084619140625,
+          "n": 6,
+          "net_gain": 1.4546191406250002
+        },
+        {
+          "gross_evsi": 2.2131591796875,
+          "n": 7,
+          "net_gain": 1.5031591796875001
+        },
+        {
+          "gross_evsi": 2.278047180175781,
+          "n": 8,
+          "net_gain": 1.4880471801757809
+        },
+        {
+          "gross_evsi": 2.362401580810547,
+          "n": 9,
+          "net_gain": 1.4924015808105469
+        },
+        {
+          "gross_evsi": 2.406200981140137,
+          "n": 10,
+          "net_gain": 1.4562009811401366
+        },
+        {
+          "gross_evsi": 2.4631402015686037,
+          "n": 11,
+          "net_gain": 1.4331402015686037
+        },
+        {
+          "gross_evsi": 2.4932522892951967,
+          "n": 12,
+          "net_gain": 1.3832522892951968
+        }
+      ],
+      "free_perfect_information_value": 2.6999999999999997,
+      "future_baseline_gpu_hours": 100
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "bundle-reader",
+  "version": 2,
+  "kind": "repository-feature",
+  "origin": "authored",
+  "split": "reserved",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 4,
+    "acceptance": 21
+  },
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after revised public-only blind review, sealed first solution and isolated starter/reference/two-mutant controls. Reserved; no local-model exposure.",
+  "human_duration": {
+    "minutes": null,
+    "status": "No human-duration calibration"
+  },
+  "baseline_public_passes": false,
+  "exposure": "Fresh authored ZIP ingestion task. No local-model trials; reserve for prospective600s confirmation. Complexity/time fit is a hypothesis, not human calibration.",
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/research/bundle-reader-blind-002/solution/manifest.json",
+    "repair_after_feedback": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/research/bundle-reader-blind-002/solution/review.json",
+    "gaps": [],
+    "public_changed_after_review": false,
+    "prior_draft": "/bulk/dlk/local-harness/research/bundle-reader-draft-001",
+    "changes": "Clarified parser-defined ZIP envelope acceptance, complete payload integrity, original-name authority and valid destination path precondition before fresh independent review."
+  }
+}

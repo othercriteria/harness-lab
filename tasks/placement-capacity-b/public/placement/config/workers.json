@@ -1,0 +1,53 @@
+{
+  "workers": {
+    "atlas": {
+      "slots": 2
+    },
+    "birch": {
+      "slots": 2
+    },
+    "cedar": {
+      "slots": 2
+    },
+    "drift": {
+      "slots": 3
+    },
+    "ember": {
+      "slots": 3
+    },
+    "fjord": {
+      "slots": 3
+    },
+    "grove": {
+      "slots": 3
+    },
+    "harbor": {
+      "slots": 3
+    }
+  },
+  "profiles": {
+    "standard": {
+      "enabled_workers": [
+        "atlas",
+        "birch",
+        "cedar",
+        "drift",
+        "ember",
+        "fjord",
+        "grove",
+        "harbor"
+      ]
+    },
+    "reserve": {
+      "enabled_workers": [
+        "atlas",
+        "birch",
+        "cedar",
+        "ember",
+        "fjord",
+        "grove",
+        "harbor"
+      ]
+    }
+  }
+}

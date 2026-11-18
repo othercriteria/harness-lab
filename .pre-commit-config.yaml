@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: portable-lint
+        name: Ruff on the maintained Python slice
+        entry: poe lint
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: checkpoint-types
+        name: Check checkpoint policy types
+        entry: poe typecheck
+        language: system
+        pass_filenames: false
+        always_run: true

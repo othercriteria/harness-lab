@@ -1,0 +1,29 @@
+{
+  "id": "frame-decoder",
+  "version": 1,
+  "kind": "repository-debugging",
+  "origin": "authored",
+  "split": "reserved",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 4,
+    "acceptance": 12
+  },
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after blind public-contract review, sealed independent solution, canonical/external controls and isolated regressions; reserved for future confirmation.",
+  "human_duration": {
+    "minutes": null,
+    "status": "No human-duration calibration"
+  },
+  "exposure": "No local model exposure. Independent outer blind solution is fixture validation only.",
+  "baseline_public_passes": false,
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/research/frame-decoder-blind-001/manifest.json",
+    "repair_after_feedback": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/research/frame-decoder-blind-001/review.json",
+    "gaps": [],
+    "public_changed_after_review": false
+  }
+}

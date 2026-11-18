@@ -1,0 +1,17 @@
+{
+  "id": "placement-capacity-a",
+  "version": 1,
+  "kind": "contract-triage",
+  "split": "development",
+  "requires_outer_adjudication": true,
+  "test_counts": {
+    "public": 3,
+    "acceptance": 8
+  },
+  "entrypoint": "public/task.md",
+  "human_duration": {
+    "minutes": null,
+    "status": "uncalibrated"
+  },
+  "admission": "Admitted development contract triage: results/placement-capacity-admission-001.json. No local-model timing or human calibration yet."
+}

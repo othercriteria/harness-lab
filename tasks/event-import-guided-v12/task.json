@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v12",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 14,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v11",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after fresh blind review/sealed independent solution and isolated reference/blind24/24 plus behavioral/public checks. Preserved borrowed-stdin defect rejected.",
+  "revision_note": "Adds one public borrowed-stdin ownership example with lenient and strict subcases; brief, starter, private checks and prior public tests unchanged."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "event-import-guided-v11",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 13,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided-v10",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after fresh blind review and sealed independent solution; reference/blind23/23plusbehavioral/publicpass, known startup-cleanup defect rejected by new public example.",
+  "revision_note": "Clarifies transaction-start cleanup and supplies one real SQLite progress-interruption example. Prior tests, starter and private reference unchanged."
+}

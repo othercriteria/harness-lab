@@ -1,0 +1,59 @@
+{
+  "status": "Illustrative assumptions, not fitted parameters or an approved experiment plan",
+  "purpose": "Stress-test finite-horizon allocation decisions; keep preferences separate from observations",
+  "horizon_days": [14, 28],
+  "production_baseline": {
+    "acceptance_probability": 0.8,
+    "gpu_lease_seconds_per_attempt": 180,
+    "outer_active_seconds_per_attempt": 360,
+    "human_attention_seconds_per_attempt": 30
+  },
+  "capacity_scenarios": [
+    {"name": "gpu_limited", "gpu_hours": 4, "outer_hours": 20, "human_hours": 4, "accepted_demand": 200},
+    {"name": "outer_review_limited", "gpu_hours": 40, "outer_hours": 4, "human_hours": 4, "accepted_demand": 200},
+    {"name": "human_attention_limited", "gpu_hours": 40, "outer_hours": 20, "human_hours": 0.25, "accepted_demand": 200},
+    {"name": "demonstration_demand_limited", "gpu_hours": 40, "outer_hours": 20, "human_hours": 4, "accepted_demand": 6}
+  ],
+  "oracle_changes": [
+    {"name": "baseline", "overrides": {}},
+    {"name": "ten_percent_less_gpu_time", "overrides": {"gpu_lease_seconds_per_attempt": 162}},
+    {"name": "one_third_less_outer_effort", "overrides": {"outer_active_seconds_per_attempt": 240}},
+    {"name": "one_third_less_human_attention", "overrides": {"human_attention_seconds_per_attempt": 20}},
+    {"name": "acceptance_80_to_90_percent", "overrides": {"acceptance_probability": 0.9}}
+  ],
+  "efficiency_break_even": {
+    "qualification": "Known effect, fixed future workload, GPU is valuable at the margin. Ratios are scenario preferences, not wage estimates.",
+    "future_baseline_gpu_hours": [10, 40, 100],
+    "affected_runtime_fraction": [0.1, 0.3, 1.0],
+    "fraction_time_saved_on_affected_work": [0.05, 0.15, 0.3],
+    "investment_gpu_hours": 2,
+    "investment_outer_hours": 4,
+    "outer_to_gpu_shadow_price_ratio": [0, 0.25, 1, 4]
+  },
+  "voi_toy": {
+    "qualification": "Synthetic two-state example, NOT a forecast for scoped continuations. Outcomes are diagnostic signals, not task pass/fail labels.",
+    "future_baseline_gpu_hours": [10, 40, 100],
+    "prior_good": 0.3,
+    "good_fraction_time_saved": 0.1,
+    "bad_fraction_time_saved": -0.05,
+    "adoption_cost_gpu_hour_equivalents": 1,
+    "probe_setup_cost_gpu_hour_equivalents": 0.15,
+    "per_observation_cost_gpu_hour_equivalents": 0.08,
+    "positive_signal_probability_if_good": 0.75,
+    "positive_signal_probability_if_bad": 0.25,
+    "maximum_observations": 12
+  },
+  "precision_toy": {
+    "qualification": "Normal-approximation planning for paired continuous task-time differences only; not a reliability sample-size calculation",
+    "two_sided_alpha": 0.05,
+    "power": 0.8,
+    "paired_difference_sd_fraction": [0.1, 0.3, 0.5],
+    "target_mean_reduction_fraction": [0.05, 0.1, 0.2],
+    "two_arm_mean_gpu_seconds_per_pair": 360
+  },
+  "reliability_toy": {
+    "qualification": "IID illustration only; same-task seeds do not demonstrate transfer",
+    "true_success_probabilities": [0.8, 0.9, 0.95, 0.99],
+    "panel_sizes": [3, 10, 20]
+  }
+}

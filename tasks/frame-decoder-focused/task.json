@@ -1,0 +1,37 @@
+{
+  "id": "frame-decoder-focused",
+  "version": 1,
+  "kind": "repository-debugging",
+  "origin": "authored",
+  "split": "reserved",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 4,
+    "acceptance": 12
+  },
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted and reserved: blind review, sealed first solution and reference passed isolated controls; exact-ID routing16canonical/6external verified. No local-model exposure.",
+  "human_duration": {
+    "minutes": null,
+    "status": "No human-duration calibration"
+  },
+  "exposure": "Reserved; no local evaluated-model exposure. Original reserved task retained.",
+  "baseline_public_passes": false,
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/research/frame-decoder-blind-001/manifest.json",
+    "repair_after_feedback": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-focused-frame-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-focused-frame-001/manifest.json",
+    "findings": "Coherent contract; independent sealed solution passed all isolated controls unchanged."
+  },
+  "derived_from": "frame-decoder",
+  "revision_note": "Same smaller added-regression obligation as focused development tasks: one or two valid-input checks sufficient. Implementation behavior, starter, supplied tests and private checks unchanged.",
+  "scaffolding": {
+    "kind": "focused-regression-obligation",
+    "count_semantics": "Sufficient, not an exact-count grading constraint.",
+    "proposal": "results/focused-frame-proposal-001.json"
+  },
+  "admission": "results/focused-frame-admission-001.json"
+}

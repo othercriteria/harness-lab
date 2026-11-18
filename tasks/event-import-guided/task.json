@@ -1,0 +1,21 @@
+{
+  "id": "event-import-guided",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after blind public review, sealed independent first solution and reference passed isolated public/canonical/external checks; starter rejected; exact-ID integration verified.",
+  "admission": "results/longer-guided-admission-001.json",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-guided-event-transfer-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-guided-event-transfer-001/manifest.json"
+  },
+  "revision_note": "Two executable public contract examples and one/two-focused-regression guidance. Implementation requirements and starter bytes unchanged."
+}

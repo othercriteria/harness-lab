@@ -1,0 +1,7 @@
+{
+  "idempotency_key": "observatory-label-2026-11-18-gpu-quiet-040-5b1dd86067ce29f129b6c9bc608bc09a3cc6df673eb49f4ad60ef0ea39dd5f55",
+  "package_id": "5b1dd86067ce29f129b6c9bc608bc09a3cc6df673eb49f4ad60ef0ea39dd5f55",
+  "seed": 19012,
+  "session_id": "2026-11-18-gpu-quiet-040",
+  "total_seconds": 900
+}

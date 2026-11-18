@@ -1,0 +1,30 @@
+{
+  "id": "sqlite-migrations-core-guided-v7",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 12,
+    "acceptance": 22
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-core-guided-v6",
+  "revision_note": "Add one public history-dependent target example including zero and positive downgrades, current-version no-op, and forward application; unchanged contract, starter and private checks.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "evaluator_revision": 1,
+  "evaluator_revision_note": "Original22 private checks retained;12 public tests participate in34 canonical tests. Added target-history example follows unchanged public contract.",
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after blind public review, sealed independent first solution and isolated positive/negative controls.",
+  "blind_review": "/bulk/dlk/local-harness/reviews/blind-sqlite-target-history-001/review.json",
+  "sealed_first_submission": "/bulk/dlk/local-harness/reviews/blind-sqlite-target-history-001/manifest.json",
+  "admission": "results/sqlite-core-guided-v7-admission-001.json",
+  "specification_alignment": {
+    "independent_first_solution": "/bulk/dlk/local-harness/reviews/blind-sqlite-target-history-001/manifest.json",
+    "first_interpretation": "/bulk/dlk/local-harness/reviews/blind-sqlite-target-history-001/review.json"
+  }
+}

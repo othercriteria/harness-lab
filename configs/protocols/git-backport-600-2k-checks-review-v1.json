@@ -1,0 +1,77 @@
+{
+  "protocol": "git-backport-600-2k-checks-review-v1",
+  "status": "Exposed-seed diagnostic: reuse existing generic review instruction at ordinary headroom recovery, no new task feedback",
+  "coding_harness": "mini-swe-agent==2.4.6",
+  "task_wall_seconds": 600,
+  "agent_wall_seconds": 588,
+  "verification_reserve_seconds": 12,
+  "step_limit": 64,
+  "max_completion_tokens_per_request": 32768,
+  "total_completion_token_limit": 65536,
+  "tool_timeout_seconds": 10,
+  "request_timeout_seconds": 588,
+  "context_capacity_tokens": 24576,
+  "concurrent_model_runs": 1,
+  "gpu_lock": "/bulk/dlk/big-local-models/gpu-experiment.lock",
+  "isolation_design": "docs/isolation.md",
+  "timing": {
+    "primary": "Fresh workspace preparation through canonical and external verification, with already-ready model",
+    "also_report": [
+      "model_load",
+      "cold_dispatch_to_verified_result",
+      "agent",
+      "verification",
+      "cleanup",
+      "restoration"
+    ],
+    "note": "Ready-server result excludes model loading; loading and cache policy reported separately."
+  },
+  "success": "Independent branch graph/canonical/behavior checks, source/handoff acceptance and autonomous completion within600s.",
+  "budget_note": "600s dispatch-to-result, including offline Git preparation; 12s verification reserve. Existing128calls/64steps retained. No measured human-duration claim.",
+  "tool_call_limit": 128,
+  "seed": 42,
+  "max_request_bytes": 524288,
+  "time_budget_feedback": true,
+  "recover_tool_limit_errors": true,
+  "context_policy": {
+    "mode": "none",
+    "keep_recent": 8,
+    "trigger_tokens": 12288,
+    "safety_tokens": 256
+  },
+  "behavioral_gate": "cli-state-v1",
+  "max_command_bytes": 32768,
+  "workspace_persistence_feedback": true,
+  "work_policy_feedback": true,
+  "context_budget_feedback": false,
+  "reasoning_budget_tokens": 2048,
+  "structured_finalization": true,
+  "concise_finalization": true,
+  "exact_text_edit": true,
+  "plain_tool_observations": true,
+  "max_tool_calls_per_response": 8,
+  "reasoning_deadline": {
+    "decode_tokens_per_second": 75,
+    "reasoning_fraction": 0.75,
+    "response_reserve_seconds": 15
+  },
+  "initial_repository": {
+    "max_files": 16,
+    "max_bytes": 16384
+  },
+  "python_test_library": "hypothesis",
+  "whole_file_write": true,
+  "fresh_context": {
+    "trigger": "context_headroom",
+    "headroom_tokens": 8192,
+    "max_resets": 8,
+    "min_remaining_agent_seconds": 60,
+    "continuation_mode": "review",
+    "summary_checkpoint": true
+  },
+  "read_file": true,
+  "persistent_scratch": true,
+  "shared_evidence": true,
+  "deduplicate_file_reads": false,
+  "run_checks": true
+}

@@ -1,0 +1,42 @@
+{
+  "id": "tabreport-diff",
+  "version": 3,
+  "kind": "repository-feature",
+  "split": "development",
+  "maturity": "active-development",
+  "freeze_policy": "Task specification, starter and canonical tests remain open to revision. Per-experiment snapshots preserve reproducibility; they do not establish a settled task or complete evaluator. Preserve historical scores under their exact evaluator revision.",
+  "entrypoint": "public/task.md",
+  "test_counts": {
+    "public": 21,
+    "acceptance": 11
+  },
+  "baseline_public_passes": false,
+  "fixture_validation": "isolated-only",
+  "admission_status": "Public contract, starter files, public tests and sealed blind solution unchanged. Evaluator revision3 promotes the established output-encoding outer probe; isolated replay in results/tabreport-diff-evaluator-v3-validation-001.json. Known development task; frozen earlier versions preserved.",
+  "human_duration": {
+    "minutes": null,
+    "status": "Uncalibrated authored feature on an exposed package."
+  },
+  "calibration_note": "Breadth diagnostic; no twelve-minute difficulty or fresh-package claim.",
+  "reference_provenance": {
+    "seal": "/bulk/dlk/local-harness/reviews/tabreport-diff-blind-001/solution-seal.json",
+    "repair_after_feedback": false
+  },
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/tabreport-diff-blind-001/review.json",
+    "gaps": [],
+    "public_changed_after_review": false
+  },
+  "limitations": [
+    "Feature on a previously exposed package; not a fresh-package holdout.",
+    "Human duration and local model task difficulty unmeasured; no twelve-minute scope claim.",
+    "Finite canonical and external coverage; no full adversarial robustness claim."
+  ],
+  "evaluator_revision": {
+    "version": 3,
+    "public_contract_changed": false,
+    "change": "Real ASCII stdout encoding failure for valid UTF-8 input must return2, diagnose and preserve caller streams; JSON escaping may instead succeed. Existing output-write contract unchanged.",
+    "prior_evidence": "results/frontier-reliability-frozen-cohort-001.json",
+    "validation": "results/tabreport-diff-evaluator-v3-validation-001.json"
+  }
+}

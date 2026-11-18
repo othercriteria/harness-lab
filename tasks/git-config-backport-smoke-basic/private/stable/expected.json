@@ -1,0 +1,14 @@
+{
+  "safe": [
+    "[second]\nz = 9\na = 1\n\n[first]\nc = 3\n\n",
+    true,
+    "bool"
+  ],
+  "invalid": [
+    false,
+    "bool",
+    "retain",
+    6,
+    false
+  ]
+}

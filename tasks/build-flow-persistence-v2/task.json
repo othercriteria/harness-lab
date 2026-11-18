@@ -1,0 +1,39 @@
+{
+  "id": "build-flow-persistence-v2",
+  "version": 2,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 29
+  },
+  "entrypoint": "public/task.md",
+  "baseline_public_passes": false,
+  "derived_from": "build-flow-persistence",
+  "provided_implementations": {
+    "buildflow/spec.py": {
+      "sha256": "1a0806a91a41f90eb295b565acd687a624f3eeffd9c31586e308a189f22aa9a5",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/spec.py"
+    },
+    "buildflow/cli.py": {
+      "sha256": "6d2b89f7e966c3e37e2bc06a7ef29803d892eb3c581ec248ae3528bf078df7be",
+      "source": "tasks/build-flow-artifacts/private/reference/buildflow/cli.py"
+    }
+  },
+  "calibration_note": "Retains the substantive state validation/normalization/atomic-persistence responsibility added over core. This is a previously exposed authored family with unchanged implementation scaffolds; original 32 checks are now 34 after private evaluator strengthening. No additional specification scope, fresh transfer or human-duration claim.",
+  "scaffold_provenance": {
+    "buildflow/state.py": {
+      "sha256": "5578300a69fd02ebd24084fee075fc1affb4b037cf417c8af7acecd84f299a3a",
+      "source": "tasks/build-flow-artifacts/public/buildflow/state.py"
+    }
+  },
+  "revision_note": "Historical specification clarification: resolve public-only blind review ambiguities under post-alignment experimental scope. Implementation responsibilities, scaffold code, tests and reference bytes were unchanged by that clarification; explicit interpretations govern future runs. Subsequent private-check changes are recorded separately in evaluator_revision_note.",
+  "exposure": "Previously model-exposed authored family, including this task version. Evaluator strengthening creates no fresh-task or human-duration claim.",
+  "specification_alignment": {
+    "review": "results/blind-public-spec-review-002.json",
+    "original_fixture": "tasks/build-flow-persistence",
+    "scoring": "Prior scores retained under prior bytes; new version scored prospectively."
+  },
+  "evaluator_revision": 1,
+  "evaluator_revision_note": "Prospective private-check strengthening after the seed-53 contract diagnostic; public and reference bytes unchanged. Original frozen campaign scores remain unchanged. New evaluator hashes and counts apply only to separately admitted future runs."
+}

@@ -1,0 +1,139 @@
+{
+  "routing-coder-32k-cpu31-fit1536-temp06": {
+    "source_profile": "qwen3-coder-next-expansion-4k-smoke (actually launched guarded rerun002)",
+    "source_launch_path": "/bulk/dlk/big-local-models/runs/qwen3-coder-next-guarded-rerun-001/qwen3-coder-next/smoke/launch.json",
+    "source_launch_sha256": "bc60235994a75682da4f9454ca3c4975ce3879ef3a5a5449819fdfeb2ef655f1",
+    "source_profile_sha256": "55d5e51ec37c8862c51d7006dfb0ee04c89366a1d20179d17d3703adb694d385",
+    "source_profile_hash_encoding": "UTF-8 sorted compact JSON; not source-file bytes",
+    "source_result_path": "/home/dlk/workspace/2026-10-31-big-local-models/results/qwen3-coder-next-expansion-4k-smoke-002.json",
+    "changes": [
+      "Context capacity4096 to32768 only server-argument change; runtime placement, prompt depth and tools require new admission.",
+      "Host owner allowances copy existing tinfield-low-64k-cpu40 profile; no resource guard relaxed.",
+      "Comparison placement revision: CPU36to32 routed expert blocks and fit margin3072to2048MiB; unchanged32Kf16KV,batch512,threads24,sampling,backend,weights. Inspect actual placement and headroom; no throughput guarantee.",
+      "Finalscheduledcomparisonrevision: temperature1.0to0.6 inserverandclient; top-p/top-k andallotherdeployment/context/tool/tasklimits unchanged. Exploratory, notvendordefaultorreliabilityclaim.",
+      "User-requested prospective residency screen:CPU32\u219231 expert blocks and fit2048\u21921536MiB; same context/KV/threads/sampling/weights/backend. No throughput/stability claim until measured."
+    ],
+    "artifact": {
+      "id": "qwen3-coder-next",
+      "name": "Qwen3-Coder-Next",
+      "repo": "unsloth/Qwen3-Coder-Next-GGUF",
+      "revision": "ce09c67b53bc8739eef83fe67b2f5d293c270632",
+      "quantization": "Q4_K_M",
+      "files": [
+        {
+          "path": "Qwen3-Coder-Next-Q4_K_M.gguf",
+          "size": 48528320544,
+          "sha256": "9e6032d2f3b50a60f17ce8bf5a1d85c71af9b53b89c7978020ae7c660f29b090"
+        }
+      ],
+      "total_bytes": 48528320544,
+      "catalog_repo": "Qwen/Qwen3-Coder-Next",
+      "status": "eligible-pinned-not-runtime-validated",
+      "source_model": {
+        "repo": "Qwen/Qwen3-Coder-Next",
+        "revision": "a7fbcb5c0e12d62a448eaa0e260346bf5dcc0feb",
+        "provenance_note": "Pinned original and quantizer revisions; quantizer attribution does not establish exact source-revision linkage."
+      },
+      "architecture": "qwen3next",
+      "license": {
+        "id": "apache-2.0",
+        "name": null
+      },
+      "metadata_source": "https://huggingface.co/api/models/unsloth/Qwen3-Coder-Next-GGUF/revision/ce09c67b53bc8739eef83fe67b2f5d293c270632?blobs=true",
+      "model_card_url": "https://huggingface.co/unsloth/Qwen3-Coder-Next-GGUF/blob/ce09c67b53bc8739eef83fe67b2f5d293c270632/README.md",
+      "settings_source_url": "https://huggingface.co/Qwen/Qwen3-Coder-Next/blob/a7fbcb5c0e12d62a448eaa0e260346bf5dcc0feb/README.md",
+      "notes": [
+        "Native nonthinking coding specialist; 80B total/3B active hybrid between GPU-fit and Flash-Next.",
+        "No runtime validation yet. Exact file sizes exclude KV/runtime; no full-GPU claim."
+      ],
+      "chat_template": {
+        "source": "repository API metadata; verify embedded template at runtime",
+        "present": true,
+        "sha256_of_api_template_text": "7fe136834ecf141f590ea2cd9f07a030bf92436520f5f031d7f6a97d13d22b05"
+      },
+      "recommended_sampling": {
+        "all_modes": {
+          "temperature": 1.0,
+          "top_p": 0.95,
+          "top_k": 40,
+          "min_p": 0.0,
+          "presence_penalty": 0.0,
+          "repetition_penalty": 1.0
+        }
+      },
+      "expansion_reason": "Native nonthinking coding specialist; 80B total/3B active hybrid between GPU-fit and Flash-Next."
+    },
+    "binary": "/nix/store/szszkf7z2psfrp91m9194hhdn30d3ilf-llama-cpp-skaia-2026-10-31-ddf48f85/bin/llama-server",
+    "binary_sha256": "1658ae63f912a851c5333aa402ede5cd7d4d76a0b88ab9e074dfda8ae7076d71",
+    "backend_revision": "ddf48f85c933c1f438212a02eb21e7b001d2d37d",
+    "server_args": [
+      "--ctx-size",
+      "32768",
+      "--parallel",
+      "1",
+      "--threads",
+      "24",
+      "--threads-batch",
+      "24",
+      "--batch-size",
+      "512",
+      "--ubatch-size",
+      "512",
+      "--flash-attn",
+      "on",
+      "--gpu-layers",
+      "auto",
+      "--fit",
+      "on",
+      "--fit-target",
+      "1536",
+      "--load-mode",
+      "mmap",
+      "--lazy-mode",
+      "off",
+      "--cache-type-k",
+      "f16",
+      "--cache-type-v",
+      "f16",
+      "--jinja",
+      "--no-mmproj",
+      "--reasoning",
+      "auto",
+      "--metrics",
+      "--log-verbosity",
+      "4",
+      "--moe-cache-mib",
+      "0",
+      "--no-context-shift",
+      "--n-cpu-moe",
+      "31",
+      "--no-repack",
+      "--temp",
+      "0.6",
+      "--top-p",
+      "0.95",
+      "--top-k",
+      "40",
+      "--min-p",
+      "0.0",
+      "--presence-penalty",
+      "0.0",
+      "--repeat-penalty",
+      "1.0"
+    ],
+    "sampling": {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 40,
+      "min_p": 0.0,
+      "presence_penalty": 0.0,
+      "repeat_penalty": 1.0
+    },
+    "server_resources": {
+      "memory_max_gib": 140,
+      "minimum_available_gib": 160,
+      "startup_timeout_seconds": 1200,
+      "setup_allowance_seconds": 1800
+    }
+  }
+}

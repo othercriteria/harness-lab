@@ -1,0 +1,49 @@
+[project]
+name = "local-harness"
+version = "0.1.0"
+description = "Small Python repository tasks for local coding agents"
+requires-python = ">=3.13,<3.14"
+dependencies = ["mini-swe-agent==2.4.6"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+# Preserve the reviewed SQLite fixture bytes.
+extend-exclude = ["tasks/sqlite-migrations-v5"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP"]
+
+[tool.poe]
+executor.type = "simple"
+
+[tool.poe.tasks]
+lint.help = "Run Ruff on maintained checkpoint and replay code"
+lint.cmd = """
+ruff check scripts/checkpoint_policy.py scripts/checkpoint_evidence.py scripts/fresh_context.py
+tests/test_checkpoint_policy.py tests/test_context_checkpoint.py tests/portable.py examples/replaying-worker-trace
+"""
+test = { cmd = "python -S -m unittest tests.portable", help = "Run the portable Python tests" }
+typecheck.help = "Check types at the checkpoint policy and audit boundary"
+typecheck.cmd = "ty check scripts/checkpoint_policy.py scripts/checkpoint_evidence.py tests/test_checkpoint_policy.py"
+check = { sequence = ["lint", "typecheck", "test"], help = "Run lint, type checking and portable tests" }
+install-hooks = { cmd = "pre-commit install", help = "Opt this checkout into lint and type checks at commit time" }
+coverage.help = "Measure statement and branch coverage for the portable tests"
+coverage.sequence = [
+    { cmd = "coverage run -m unittest tests.portable" },
+    { cmd = "coverage report" },
+]
+
+[tool.coverage.run]
+branch = true
+source = ["scripts"]
+relative_files = true
+
+[tool.ty.environment]
+extra-paths = ["scripts"]
+
+[tool.coverage.report]
+precision = 2

@@ -1,0 +1,23 @@
+{
+  "hypothesis": {
+    "python_version": "3.13",
+    "nixpkgs_revision": "34ab99075ac4f7e40cf037eef32cb1c360bb85e9",
+    "packages": [
+      {
+        "name": "hypothesis",
+        "version": "6.156.1",
+        "store_path": "/nix/store/hlh9j2dpbasbpfnj8pphgmjbnkcgm5g4-python3.13-hypothesis-6.156.1"
+      },
+      {
+        "name": "attrs",
+        "version": "26.1.0",
+        "store_path": "/nix/store/knnf5kaps5jhjmzaiks7713xamdh9r1d-python3.13-attrs-26.1.0"
+      },
+      {
+        "name": "sortedcontainers",
+        "version": "2.4.0",
+        "store_path": "/nix/store/kif2yzz14sjqxwxaifz41m7p2gqqw0bi-python3.13-sortedcontainers-2.4.0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "event-import-guided-v2",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 6,
+    "acceptance": 10
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "event-import-guided",
+  "fixture_validation": "isolated-only",
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "admission_status": "Admitted after fresh blind review, corrected public-contract review and isolated starter/reference/sealed-first-solution controls.",
+  "admission": "results/event-import-guided-v2-admission-001.json",
+  "revision_note": "Positive transaction-boundary guidance and one public real SQLite commit-failure example. Existing implementation scope and private graders retained.",
+  "specification_alignment": {
+    "independent_first_solution": "/bulk/dlk/local-harness/reviews/blind-event-import-guided-v2-001/solution.sha256",
+    "first_interpretation": "/bulk/dlk/local-harness/reviews/blind-event-import-guided-v2-001/review.json",
+    "revised_public_review": "/bulk/dlk/local-harness/reviews/blind-event-import-v2-wording-001/review.json",
+    "replay": "Independent sealed implementation and added tests unchanged; revised supplied brief/tests are task inputs. No feedback repair."
+  }
+}

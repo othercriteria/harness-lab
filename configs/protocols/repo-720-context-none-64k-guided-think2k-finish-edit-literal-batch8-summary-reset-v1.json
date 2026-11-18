@@ -1,0 +1,59 @@
+{
+  "protocol": "repo-720-context-none-64k-guided-think2k-finish-edit-literal-batch8-summary-reset-v1",
+  "status": "Prospective 2K native thinking-block cap candidate; not launched. Frozen075 remains unchanged.",
+  "coding_harness": "mini-swe-agent==2.4.6",
+  "task_wall_seconds": 720,
+  "agent_wall_seconds": 705,
+  "verification_reserve_seconds": 15,
+  "step_limit": 64,
+  "max_completion_tokens_per_request": 32768,
+  "total_completion_token_limit": 65536,
+  "tool_timeout_seconds": 10,
+  "request_timeout_seconds": 705,
+  "context_capacity_tokens": 65536,
+  "concurrent_model_runs": 1,
+  "gpu_lock": "/bulk/dlk/big-local-models/gpu-experiment.lock",
+  "isolation_design": "docs/isolation.md",
+  "timing": {
+    "primary": "fresh workspace preparation through canonical verification, with already-ready model",
+    "also_report": [
+      "model_load",
+      "cold_dispatch_to_verified_result",
+      "agent",
+      "verification",
+      "cleanup",
+      "restoration"
+    ],
+    "note": "A warm result does not establish cold two-minute performance. Always label server and prompt-cache state."
+  },
+  "success": "full canonical suite AND external behavioral gate AND clean completion AND <=720s AND no human repair",
+  "budget_note": "Same720s task/705s agent,64K context,32K reply and64K cumulative completion limits. Native per-thinking-block cap4096->2048; no extra calls or wall time. Existing elapsed reset and remaining180s floor unchanged. One metered checkpoint still has2048reply/256native thinking tokens and4096UTF-8summary bytes, with no retry or renewed allowance.",
+  "tool_call_limit": 128,
+  "seed": 42,
+  "max_request_bytes": 524288,
+  "time_budget_feedback": true,
+  "recover_tool_limit_errors": true,
+  "context_policy": {
+    "mode": "none",
+    "keep_recent": 8,
+    "trigger_tokens": 22528,
+    "safety_tokens": 256
+  },
+  "behavioral_gate": "cli-state-v1",
+  "max_command_bytes": 32768,
+  "workspace_persistence_feedback": true,
+  "work_policy_feedback": true,
+  "context_budget_feedback": true,
+  "reasoning_budget_tokens": 2048,
+  "structured_finalization": true,
+  "concise_finalization": true,
+  "exact_text_edit": true,
+  "plain_tool_observations": true,
+  "max_tool_calls_per_response": 8,
+  "fresh_context": {
+    "after_elapsed_agent_fraction": 0.5,
+    "min_remaining_agent_seconds": 180,
+    "continuation_mode": "review",
+    "summary_checkpoint": true
+  }
+}

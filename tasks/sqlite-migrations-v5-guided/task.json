@@ -1,0 +1,30 @@
+{
+  "id": "sqlite-migrations-v5-guided",
+  "version": 1,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 5,
+    "acceptance": 22
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-v5",
+  "revision_note": "Two executable public contract examples and one/two-focused-regression guidance. Implementation requirements and starter bytes unchanged.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-guided-sqlite-transfer-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-guided-sqlite-transfer-001/manifest.json"
+  },
+  "evaluator_revision": 1,
+  "evaluator_revision_note": "Retain v4 canonical checks, add apply container rejection and caller-transaction preservation checks; new external API observations supplement the existing CLI gate.",
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after blind public review, sealed independent first solution and reference passed isolated public/canonical/external checks; starter rejected; exact-ID integration verified.",
+  "blind_review": "/bulk/dlk/local-harness/research/sqlite-migrations-v5-blind-001/review.json",
+  "sealed_first_submission": "/bulk/dlk/local-harness/research/sqlite-migrations-v5-blind-001/manifest.json",
+  "admission": "results/longer-guided-admission-001.json"
+}

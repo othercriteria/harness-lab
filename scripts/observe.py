@@ -1,0 +1,1032 @@
+"""Read-only loopback observatory for outer-harness evidence. No execution APIs."""
+
+import argparse
+import hashlib
+import json
+import re
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
+
+from observe_costs import CostProjection
+from observe_diff import review_diff
+from observe_jobs import projection as job_projection
+from observe_jobs import review_label as job_review_label
+from observe_review import rejected_trial_label
+
+PROJECT = Path(__file__).resolve().parents[1]
+DEFAULT_ROOT = Path("/bulk/dlk/local-harness/runs")
+NAME = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_.-]{0,180}\Z")
+# Parser-control inference calls use case names, not the coding harness sequence.
+# Keep case-name families explicit: template/tokenizer files are not model calls.
+CONTROL_PREFIX = r"(?:unrestricted|bounded\d+|insufficient|long_prefix_bounded\d+)"
+REQUEST = re.compile(
+    rf"(?P<prefix>request-\d+|tool-\d+|{CONTROL_PREFIX})\.request\.json\Z"
+)
+CONTROL_ARTIFACT = re.compile(
+    rf"{CONTROL_PREFIX}\.(?:request\.json|response\.bin|timing\.json)\Z"
+)
+NATIVE_CASES = (
+    "observation_submitted",
+    "contract_blocked",
+    "honest_unverified",
+    "representative_fields",
+)
+RECOVERY_CASES = ("case-a", "case-b")
+CONTEXT_EVENT = re.compile(
+    r"(?:context-checkpoint-(?:(?:repair-)?(?:request|response)|repair-decision)|fresh-context-(?:reset|bypassed|refused))-\d+\.json\Z"
+)
+CONTEXT_ARTIFACT = re.compile(r"context-checkpoint-\d+\.json\Z")
+SCOPE_EVENT = re.compile(
+    r"(?:continuation|scope-return-s\d{4}|scope-entry-rejected-\d{3})\.json\Z"
+)
+NATIVE_ARTIFACT = re.compile(
+    r"(?:" + "|".join(NATIVE_CASES) + r")/"
+    r"(?:request-\d+\.(?:request\.json|response\.bin|timing\.json)"
+    r"|context-\d+(?:\.usage)?\.json|control-result\.json|supplied-history\.json)\Z"
+)
+ARTIFACT = re.compile(
+    r"(?:context-\d+(?:\.usage)?\.json|behavioral-verification\.json|spec-blocker-claim\.json|final-handoff\.json|review-handoff\.json|finalization-review\.json|outer-adjudication\.json|summary\.json|trajectory\.json|changes\.diff|reviewed-changes\.diff|acceptance-review\.json|agent-config\.json|sampling\.json|inputs\.json|request-\d+\.(?:request\.json|response\.bin|timing\.json)|tool-\d+\.(?:request\.json|result\.json|cleanup\.json|stdout\.bin|stderr\.bin)|verification\.(?:result\.json|cleanup\.json))\Z"
+)
+RECOVERY_ARTIFACT = re.compile(
+    r"(?:case-a|case-b)/(?:"
+    + ARTIFACT.pattern.removesuffix(r"\Z")
+    + r"|parsed-handoff\.json)\Z"
+)
+
+
+STANDARD_WORKER_DIRS = ("backend", "native")
+STANDARD_WORKER_ARTIFACT = re.compile(
+    r"(?:backend/(?:request-\d+\.(?:request\.json|response\.bin|timing\.json|allocation\.json)"
+    r"|warmup\.json|scored-cache-usage\.json|usage(?:-\d+)?\.json|failure(?:-\d+)?\.json)"
+    r"|native/(?:request-\d+\.(?:request\.json|response\.bin)"
+    r"|tool-\d+\.(?:request\.json|result\.json|cleanup\.json|stdout\.bin|stderr\.bin)"
+    r"|native\.(?:stdout\.bin|stderr\.bin|cleanup\.json)|result\.json))\Z"
+)
+
+
+class Evidence:
+    def __init__(self, root=DEFAULT_ROOT):
+        self.root = root.resolve()
+        self.costs = CostProjection()
+
+    def child(self, parent, name):
+        if not NAME.fullmatch(name) or name in (".", ".."):
+            raise ValueError("Invalid identifier")
+        path = parent / name
+        if path.is_symlink() or not path.resolve().is_relative_to(self.root):
+            raise ValueError("Path outside evidence root")
+        return path
+
+    def text(self, path, limit=262144):
+        if path.is_symlink() or not path.resolve().is_relative_to(self.root):
+            raise ValueError("Path outside evidence root")
+        try:
+            with path.open("rb") as stream:
+                raw = stream.read(limit + 1)
+            return raw[:limit].decode("utf-8", errors="replace"), len(raw) > limit
+        except FileNotFoundError:
+            return "", False
+
+    def tail(self, path, limit=12000):
+        if path.is_symlink() or not path.resolve().is_relative_to(self.root):
+            raise ValueError("Path outside evidence root")
+        try:
+            with path.open("rb") as stream:
+                stream.seek(0, 2)
+                stream.seek(max(0, stream.tell() - limit))
+                return stream.read(limit).decode("utf-8", errors="replace")
+        except FileNotFoundError:
+            return ""
+
+    def read(self, path):
+        raw, truncated = self.text(path)
+        if not raw or truncated:
+            return None
+        try:
+            return json.loads(raw)
+        except (ValueError, UnicodeError):
+            return None  # Writer may still be publishing this artifact.
+
+    def live_owner(self, root):
+        child = self.read(root / "background/child.json") or {}
+        pid = child.get("pid")
+        if type(pid) is not int or pid <= 0:
+            return False
+        try:
+            argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+            return str(root / "voice").encode() in argv and any(
+                b"with_speech_released.py" in a for a in argv
+            )
+        except (FileNotFoundError, PermissionError):
+            return False
+
+    def comparison_review(self, trial, summary):
+        """Separate operational validity/full acceptance from immutable test scores."""
+        raw, truncated = self.text(trial / "summary.json")
+        if not raw or truncated:
+            return None
+        digest = hashlib.sha256(raw.encode()).hexdigest()
+        invalid = self.read(trial / "outer-adjudication.json")
+        if (
+            isinstance(invalid, dict)
+            and invalid.get("raw_summary_sha256") == digest
+            and invalid.get("classification") == "operationally_invalid"
+            and invalid.get("model_quality_inference") is False
+            and isinstance(invalid.get("cause"), str)
+            and invalid["cause"].strip()
+        ):
+            return {"status": "operationally_invalid", "receipt": invalid}
+        review = self.read(trial / "acceptance-review.json")
+        if (
+            isinstance(review, dict)
+            and review.get("raw_summary_sha256") == digest
+            and review.get("status") == "reviewed"
+            and review.get("task") == summary.get("task")
+            and review.get("seed") == summary.get("seed")
+            and all(type(review.get(key)) is bool for key in
+                    ("source_accepted", "handoff_accepted", "full_acceptance"))
+        ):
+            accepted = (
+                summary.get("success") is True
+                and review["source_accepted"] and review["handoff_accepted"]
+                and review["full_acceptance"]
+                and not any(key in summary for key in ("unsafe_cleanup", "cancelled", "error"))
+            )
+            return {"status": "accepted" if accepted else "rejected", "receipt": review}
+        if summary.get("source_handoff_review") == "pending_outer_review":
+            return {"status": "pending_outer_review"}
+        return None
+
+    def outer_adjudication(self, trial, summary):
+        """Read an outer-owned verdict bound to the exact immutable raw summary."""
+        if "unsafe_cleanup" in summary or "cancelled" in summary:
+            return None
+        verdict = self.read(trial / "outer-adjudication.json")
+        raw, truncated = self.text(trial / "summary.json")
+        if not isinstance(verdict, dict) or truncated:
+            return None
+        posthoc_failure = False
+        review_status = summary.get("task_adjudication", {}).get("status")
+        continuation_review = (
+            review_status == "pending_outer_review"
+            and summary.get("work_kind") == "delegated_repository"
+            and isinstance(summary.get("continuation"), dict)
+            and verdict.get("review_kind") == "continuation_contract"
+            and isinstance(verdict.get("rationale"), str)
+            and bool(verdict["rationale"].strip())
+            and isinstance(verdict.get("evidence"), list)
+            and bool(verdict["evidence"])
+        )
+        if continuation_review and verdict.get("coding_correctness") is True:
+            if summary.get("independent_checks_passed") is not True:
+                return None
+        if review_status != "pending_outer_rubric" and not continuation_review:
+            # Later contract or runtime findings may reject a frozen raw result.
+            # This path cannot promote a failed result.
+            if (
+                (verdict.get("review_kind"), verdict.get("disposition"))
+                not in {
+                    ("posthoc_contract", "failed_coding"),
+                    ("posthoc_handoff", "verified_coding_bad_handoff"),
+                    ("posthoc_protocol", "nonconforming_run"),
+                }
+                or not isinstance(verdict.get("rationale"), str)
+                or not verdict["rationale"].strip()
+                or not isinstance(verdict.get("evidence"), list)
+                or not verdict["evidence"]
+            ):
+                return None
+            if verdict.get("review_kind") == "posthoc_handoff" and not (
+                summary.get("canonical_correctness") is True
+                and summary.get("verified_correctness") is True
+                and summary.get("clean_agent_completion") is True
+                and summary.get("within_budget") is True
+                and (summary.get("agent_outcome") or {}).get("exit_status")
+                == "Submitted"
+            ):
+                # This narrow review may reject reporting, never promote failed code.
+                return None
+            posthoc_failure = True
+        disposition = verdict.get("disposition")
+        expected = {
+            "verified_coding": (True, True, "Submitted"),
+            "verified_coding_bad_handoff": (True, False, "Submitted"),
+            "supported_blocker": (None, True, "Blocked"),
+            "supported_blocker_bad_handoff": (None, False, "Blocked"),
+            "unsupported_blocker": (False, False, "Blocked"),
+            "failed_coding": (False, False, "Submitted"),
+            "nonconforming_run": (None, False, "Submitted"),
+        }
+        if disposition == "nonconforming_run" and (
+            verdict.get("review_kind") != "posthoc_protocol"
+            or verdict.get("protocol_conforming") is not False
+            or not posthoc_failure
+        ):
+            return None
+        diagnostic = self.is_diagnostic(summary)
+        if diagnostic:
+            expected = {"reviewed_diagnostic": (None, None, "Submitted")}
+            results = verdict.get("diagnostic_results")
+            if summary.get("diagnostic_kind") == "input-probe":
+                if not isinstance(results, dict) or any(
+                    type(results.get(key)) is not bool
+                    for key in (
+                        "format_valid",
+                        "inputs_valid",
+                        "deterministic",
+                        "difference_found",
+                    )
+                ):
+                    return None
+            elif (
+                not isinstance(results, dict)
+                or type(results.get("sound_on_controls")) is not bool
+                or type(results.get("incorrect_controls_detected")) is not int
+                or type(results.get("incorrect_controls_total")) is not int
+                or not 0
+                <= results["incorrect_controls_detected"]
+                <= results["incorrect_controls_total"]
+                or results["incorrect_controls_total"] <= 0
+            ):
+                return None
+        if (
+            type(verdict.get("version")) is not int
+            or verdict["version"] != 1
+            or verdict.get("status") != "adjudicated"
+            or verdict.get("task") != summary.get("task")
+            or verdict.get("raw_summary_sha256")
+            != hashlib.sha256(raw.encode()).hexdigest()
+            or not isinstance(disposition, str)
+            or disposition not in expected
+            or verdict.get("coding_correctness") is not expected[disposition][0]
+            or verdict.get("task_handling_correctness") is not expected[disposition][1]
+            or (
+                not posthoc_failure
+                and not diagnostic
+                and (
+                    not summary.get("clean_agent_halt")
+                    or not summary.get("within_budget")
+                    or (summary.get("agent_outcome") or {}).get("exit_status")
+                    != expected[disposition][2]
+                )
+            )
+        ):
+            return None
+        return verdict
+
+    @staticmethod
+    def is_diagnostic(summary):
+        return (
+            summary.get("diagnostic_kind") in ("independent-test-author", "input-probe")
+            and summary.get("coding_goal_credit") == 0
+        )
+
+    @staticmethod
+    def allowed_artifact(name):
+        return bool(
+            ARTIFACT.fullmatch(name)
+            or CONTROL_ARTIFACT.fullmatch(name)
+            or NATIVE_ARTIFACT.fullmatch(name)
+            or STANDARD_WORKER_ARTIFACT.fullmatch(name)
+            or RECOVERY_ARTIFACT.fullmatch(name)
+            or CONTEXT_EVENT.fullmatch(name)
+            or CONTEXT_ARTIFACT.fullmatch(name)
+            or SCOPE_EVENT.fullmatch(name)
+        )
+
+    @staticmethod
+    def request_files(root):
+        files = []
+        for directory in [
+            root,
+            *(root / name for name in (*NATIVE_CASES, *RECOVERY_CASES, *STANDARD_WORKER_DIRS)),
+        ]:
+            if directory.is_symlink() or not directory.is_dir():
+                continue
+            files.extend(
+                path
+                for path in directory.glob("*.request.json")
+                if REQUEST.fullmatch(path.name)
+                and (
+                    directory == root
+                    or NATIVE_ARTIFACT.fullmatch(f"{directory.name}/{path.name}")
+                    or RECOVERY_ARTIFACT.fullmatch(f"{directory.name}/{path.name}")
+                    or (
+                        STANDARD_WORKER_ARTIFACT.fullmatch(f"{directory.name}/{path.name}")
+                        and (directory.name == "backend" or path.name.startswith("tool-"))
+                    )
+                )
+                and path.is_file()
+                and not path.is_symlink()
+            )
+        return files
+
+    @staticmethod
+    def is_control(summary, files):
+        return (
+            isinstance(summary.get("kind"), str)
+            and "control" in summary["kind"].lower()
+            and isinstance(summary.get("cases"), list)
+        ) or any(
+            CONTROL_ARTIFACT.fullmatch(path.name)
+            or NATIVE_ARTIFACT.fullmatch(f"{path.parent.name}/{path.name}")
+            or RECOVERY_ARTIFACT.fullmatch(f"{path.parent.name}/{path.name}")
+            for path in files
+        )
+
+    def run(self, name, details=True):
+        root = self.child(self.root, name)
+        delegated = bool(re.fullmatch(r"delegate-[a-f0-9]{32}", name))
+        delegation_review = job_review_label(name, self.root.parent / "delegation") if delegated else None
+        if not (root / "command.json").is_file():
+            raise ValueError("Not a campaign directory")
+        bg = self.read(root / "background/summary.json") or {}
+        exp = self.read(root / "experiment/summary.json") or {}
+        if bg:
+            state = "complete" if bg.get("ok") else "stopped with error"
+        elif self.live_owner(root):
+            state = "live"
+        else:
+            state = "unfinished / owner not observed"
+        trials = []
+        experiment = self.child(root, "experiment")
+        for trial in sorted(experiment.glob("trial-*")):
+            if trial.is_symlink() or not trial.is_dir():
+                continue
+            summary = self.read(trial / "summary.json") or {}
+            continuation = summary.get("continuation") or self.read(
+                trial / "continuation.json"
+            )
+            adjudication = self.outer_adjudication(trial, summary)
+            pending = (
+                summary.get("task_adjudication", {}).get("status")
+                == "pending_outer_rubric"
+            ) or bool(
+                continuation
+                and summary.get("task_adjudication", {}).get("status")
+                == "pending_outer_review"
+            )
+            events = self.request_files(trial)
+            control = self.is_control(summary, events)
+            diagnostic = self.is_diagnostic(summary)
+            passed = summary.get("passed" if control else "success")
+            if control and (
+                summary.get("completed") is False
+                or summary.get("error")
+                or "unsafe_cleanup" in summary
+                or "cancelled" in summary
+            ):
+                # A successful sub-step is not a completed control. Preserve
+                # the raw summary, but do not promote a stale success flag.
+                passed = False
+            trial_name = trial.name
+            trial_state = (
+                ("passed" if passed else "failed")
+                if type(passed) is bool
+                else ("in progress" if state == "live" else "unfinished")
+            )
+            if (
+                summary.get("verified_correctness") is True
+                and summary.get("delivery_correctness") is False
+            ):
+                trial_state = "correct code / delivery failed"
+            if pending:
+                passed = None
+                terminal = summary.get("agent_outcome", {}).get("exit_status")
+                if "unsafe_cleanup" in summary:
+                    trial_state = "unsafe cleanup / stopped"
+                elif "cancelled" in summary:
+                    trial_state = "cancelled / unadjudicated"
+                elif not summary.get("clean_agent_halt", False):
+                    trial_state = "stopped / unadjudicated"
+                else:
+                    trial_state = (
+                        "blocked claim / unadjudicated"
+                        if terminal == "Blocked"
+                        else "awaiting outer adjudication"
+                    )
+            if adjudication:
+                trial_state = {
+                    "verified_coding": "passed",
+                    "verified_coding_bad_handoff": "correct code / handoff failed",
+                    "supported_blocker": "supported blocker",
+                    "supported_blocker_bad_handoff": "supported blocker / handoff failed",
+                    "unsupported_blocker": "unsupported blocker",
+                    "failed_coding": "failed",
+                    "reviewed_diagnostic": "diagnostic reviewed",
+                    "nonconforming_run": "runtime nonconformance",
+                }[adjudication["disposition"]]
+                passed = (
+                    False
+                    if adjudication["disposition"]
+                    in {
+                        "nonconforming_run",
+                        "verified_coding_bad_handoff",
+                        "supported_blocker_bad_handoff",
+                    }
+                    else adjudication["coding_correctness"]
+                )
+            comparison_review = self.comparison_review(trial, summary)
+            if comparison_review:
+                review_status = comparison_review["status"]
+                if review_status == "operationally_invalid":
+                    passed = None
+                    trial_state = "operationally invalid"
+                elif review_status == "pending_outer_review":
+                    passed = None
+                    trial_state = "awaiting source/handoff review"
+                else:
+                    passed = review_status == "accepted"
+                    trial_state = "passed" if passed else rejected_trial_label(
+                        summary, comparison_review["receipt"]
+                    )
+            if delegated:
+                passed = None
+                trial_state = delegation_review or (
+                    "awaiting outer review"
+                    if summary.get("clean_agent_completion")
+                    else "no clean submission"
+                    if summary
+                    else trial_state
+                )
+            trials.append(
+                {
+                    "name": trial_name,
+                    "state": trial_state,
+                    "kind": "delegated"
+                    if delegated
+                    else "continuation"
+                    if continuation
+                    else "diagnostic"
+                    if diagnostic
+                    else "control"
+                    if control
+                    else "coding",
+                    "diagnostic_kind": summary.get("diagnostic_kind")
+                    if diagnostic
+                    else None,
+                    "passed": passed,
+                    "comparison_review": comparison_review,
+                    "continuation": continuation,
+                    "control_kind": summary.get("kind") if control else None,
+                    "commands_executed": summary.get("commands_executed")
+                    if control
+                    else None,
+                    "task": summary.get("task", trial_name[9:]),
+                    "seed": summary.get("seed"),
+                    "correct": adjudication["coding_correctness"]
+                    if adjudication
+                    else None
+                    if pending
+                    else summary.get(
+                        "verified_correctness", summary.get("canonical_correctness")
+                    ),
+                    "clean": summary.get("clean_agent_completion"),
+                    "delivery": summary.get("delivery_correctness"),
+                    **(
+                        {
+                            "clean_halt": summary.get("clean_agent_halt"),
+                            "blocker_claim": summary.get("spec_blocker_claim"),
+                            "adjudication": adjudication
+                            or summary["task_adjudication"],
+                        }
+                        if "task_adjudication" in summary or adjudication
+                        else {}
+                    ),
+                    "seconds": summary.get(
+                        "elapsed_seconds" if control else "task_wall_seconds"
+                    ),
+                    "events": len(events),
+                    "outcome": (summary.get("interpretation") or summary.get("error"))
+                    if control
+                    else (summary.get("agent_outcome") or summary.get("agent_error")),
+                }
+            )
+        profile = self.read(root / "experiment/profile.json") or {}
+        protocol = self.read(root / "experiment/protocol.json") or {}
+        result = {
+            "name": name,
+            "state": state,
+            "modified": (root / "command.json").stat().st_mtime,
+            "trials": trials,
+            "kind": "delegated"
+            if delegated
+            else "continuation"
+            if trials and all(t["kind"] == "continuation" for t in trials)
+            else "control"
+            if trials and all(t["kind"] == "control" for t in trials)
+            else "diagnostic"
+            if trials and all(t["kind"] == "diagnostic" for t in trials)
+            else "coding",
+            "model": profile.get("artifact", {}).get("name"),
+            "protocol": protocol.get("protocol"),
+            "budget": protocol.get("task_wall_seconds"),
+            "restored": bg.get("restored"),
+        }
+        if details:
+            result["delegation"] = (
+                job_projection(name, self.root.parent / "delegation")
+                if delegated
+                else None
+            )
+            result["lifecycle"] = {
+                "background": bg,
+                "voice": self.read(root / "voice/result.json"),
+                "ollama": self.read(root / "ollama/result.json"),
+                "experiment": exp,
+            }
+            result["server_tail"] = self.tail(root / "experiment/server.log")
+            result["config"] = {
+                "protocol": protocol,
+                "sampling": profile.get("sampling"),
+                "server_args": profile.get("server_args"),
+                "artifact": {
+                    k: profile.get("artifact", {}).get(k)
+                    for k in ("id", "revision", "quantization")
+                },
+            }
+        return result
+
+    def runs(self, page=1, page_size=20, query=""):
+        """Index names/mtimes globally, then read evidence only for the visible page.
+
+        No persistent cache: new campaigns, terminal receipts and outer verdicts
+        remain visible on the next refresh. Search covers all campaign names.
+        """
+        if type(page) is not int or page < 1:
+            raise ValueError("page must be a positive integer")
+        if type(page_size) is not int or not 1 <= page_size <= 50:
+            raise ValueError("page_size must be between 1 and 50")
+        if not isinstance(query, str) or len(query) > 200:
+            raise ValueError("query must be at most 200 characters")
+        index = []
+        for path in self.root.iterdir():
+            try:
+                if (
+                    not NAME.fullmatch(path.name)
+                    or path.is_symlink()
+                    or not path.is_dir()
+                    or (path / "command.json").is_symlink()
+                    or not (path / "command.json").is_file()
+                ):
+                    continue
+                index.append((path.name, (path / "command.json").stat().st_mtime))
+            except (OSError, ValueError):
+                continue
+        index.sort(key=lambda item: (-item[1], item[0]))
+        matching = [item for item in index if query.casefold() in item[0].casefold()]
+        pages = max(1, (len(matching) + page_size - 1) // page_size)
+        page = min(page, pages)
+        start = (page - 1) * page_size
+        output = []
+        unavailable = []
+        for name, _ in matching[start : start + page_size]:
+            try:
+                output.append(self.run(name, False))
+            except (OSError, ValueError):
+                # Preserve index totals during concurrent publication/removal,
+                # and explicitly distinguish an unreadable row from no match.
+                unavailable.append(name)
+        return {
+            "runs": output,
+            "total": len(index),
+            "matching": len(matching),
+            "page": page,
+            "page_size": page_size,
+            "pages": pages,
+            "query": query,
+            "newest": index[0][0] if index else None,
+            "unavailable": unavailable,
+        }
+
+    def trial(self, run, trial):
+        return self.child(self.child(self.child(self.root, run), "experiment"), trial)
+
+    def artifact(self, run, trial, name):
+        if not self.allowed_artifact(name):
+            raise ValueError("Artifact is not in the read-only allowlist")
+        path = self.trial(run, trial)
+        for component in name.split("/"):
+            path = self.child(path, component)
+        if not path.is_file():
+            raise ValueError("Artifact not available")
+        content, truncated = self.text(path, 131072)
+        return {"name": name, "text": content, "truncated": truncated}
+
+    def trace(self, run, trial, start=None):
+        """Read at most 80 events; an absolute start stays fixed as events append."""
+        if start is not None and (type(start) is not int or not 0 <= start <= 10**9):
+            raise ValueError("Trace start must be an integer between 0 and 1000000000")
+        root = self.trial(run, trial)
+        if not root.is_dir():
+            raise ValueError("Trial unavailable")
+        records = []
+        files = self.request_files(root)
+        summary = self.read(root / "summary.json") or {}
+        cases = {
+            case["name"]: case
+            for case in summary.get("cases", [])
+            if isinstance(case, dict) and isinstance(case.get("name"), str)
+        }
+        total_requests = len(files)
+        control = self.is_control(summary, files)
+        files += [
+            path
+            for path in root.glob("*.json")
+            if (CONTEXT_EVENT.fullmatch(path.name) or SCOPE_EVENT.fullmatch(path.name))
+            and path.is_file()
+            and not path.is_symlink()
+        ]
+        total_events = len(files)
+        files = sorted(
+            files, key=lambda p: (p.stat().st_mtime, p.relative_to(root).as_posix())
+        )
+        last_model_request = {}
+        for path in files:
+            if REQUEST.fullmatch(path.name) and not path.name.startswith("tool-"):
+                last_model_request[path.parent] = path
+        latest = start is None
+        start = (
+            max(0, total_events - 80)
+            if latest
+            else min(start, max(0, total_events - 1))
+        )
+        end = min(total_events, start + 80)
+        files = files[start:end]
+        unreadable_requests = 0
+        for path in files:
+            req = self.read(path)
+            if not isinstance(req, dict):
+                unreadable_requests += bool(REQUEST.fullmatch(path.name))
+                continue
+            if SCOPE_EVENT.fullmatch(path.name):
+                continuation = path.name == "continuation.json"
+                rejected = path.name.startswith("scope-entry-rejected-")
+                records.append(
+                    {
+                        "id": path.stem,
+                        "at": path.stat().st_mtime,
+                        "kind": "context",
+                        "phase": "continuation" if continuation else "scope",
+                        "state": "sealed continuation / retained workspace"
+                        if continuation
+                        else "scope entry rejected"
+                        if rejected
+                        else "parent restored / return remains unverified",
+                        "reason": f"{req.get('case')} · {req.get('arm')} view"
+                        if continuation
+                        else req.get("reason"),
+                        "lifecycle": req,
+                        "artifact": path.name,
+                    }
+                )
+                continue
+            if CONTEXT_EVENT.fullmatch(path.name):
+                status = req.get("status", "unknown")
+                reset = path.name.startswith("fresh-context-")
+                summary_status = (req.get("summary_checkpoint") or {}).get("status")
+                state = {
+                    "requested": "checkpoint requested",
+                    "valid_response": "checkpoint accepted / unverified memory",
+                    "rejected_response": "checkpoint rejected",
+                    "offered": "checkpoint repair offered",
+                    "skipped": "checkpoint repair skipped",
+                    "bypassed": "context reset bypassed",
+                    "refused": "context reset refused",
+                }.get(status, str(status))
+                if status == "valid_response" and req.get("accepted_tool") == "finish_attempt":
+                    state = "final handoff accepted for dispatch / unverified"
+                if "-repair-" in path.name and status == "requested":
+                    state = "checkpoint repair requested"
+                if reset and status == "applied":
+                    state = (
+                        "context reset / summary retained (unverified)"
+                        if summary_status == "retained"
+                        else "context reset / no summary"
+                        if summary_status in (None, "fallback_without_summary")
+                        else "context reset / summary status unknown"
+                    )
+                records.append(
+                    {
+                        "id": path.stem,
+                        "at": path.stat().st_mtime,
+                        "kind": "context",
+                        "phase": "reset" if reset else "checkpoint",
+                        "state": state,
+                        "reason": req.get("error")
+                        or req.get("reason")
+                        or req.get("trigger"),
+                        "lifecycle": req,
+                        "artifact": path.name,
+                    }
+                )
+                continue
+            prefix = path.name.removesuffix(".request.json")
+            directory = path.parent
+            nested = directory != root
+            record = {
+                "id": f"{directory.name}/{prefix}" if nested else prefix,
+                "at": path.stat().st_mtime,
+                "kind": "tool" if prefix.startswith("tool-") else "model",
+            }
+            if record["kind"] == "model":
+                response = self.read(directory / (prefix + ".response.bin")) or {}
+                choice = (response.get("choices") or [{}])[0]
+                msg = choice.get("message") or {}
+                timing = self.read(directory / (prefix + ".timing.json")) or {}
+                case = cases.get(directory.name if nested else prefix, {})
+                if nested and not case:
+                    case = self.read(directory / "control-result.json") or {}
+                    if directory.name in RECOVERY_CASES and not case:
+                        case = self.read(directory / "summary.json") or {}
+                state = "returned" if response else "awaiting response"
+                request_end = None
+                end_evidence = case or summary
+                if not response and end_evidence:
+                    state = "attempt ended / response unavailable"
+                    error = end_evidence.get("agent_error") or end_evidence.get("error")
+                    error = error if isinstance(error, dict) else {"message": error}
+                    reason = error.get("message") or end_evidence.get("cancelled")
+                    # DeadlineExceeded also denotes exhausted context/token budgets.
+                    # Attribute timeout only to the final model request in this scope.
+                    if path == last_model_request.get(directory):
+                        if (
+                            error.get("type") == "TimeoutError"
+                            or "timed out" in str(reason).lower()
+                        ):
+                            state = "request timed out"
+                        elif "wall deadline expired" in str(reason).lower():
+                            state = "attempt deadline reached"
+                    request_end = {
+                        "state": state,
+                        "reason": reason,
+                        "error_type": error.get("type"),
+                        "response": "No readable response payload was recorded.",
+                        "accounting": "No client-reported token usage is available for this request; completed-response totals omit it.",
+                        "note": "This describes the outer attempt's recorded end, not a backend completion acknowledgement.",
+                    }
+                record.update(
+                    state=state,
+                    request_end=request_end,
+                    finish=choice.get("finish_reason"),
+                    usage=response.get("usage"),
+                    context=self.read(
+                        directory / (prefix.replace("request-", "context-") + ".json")
+                    ),
+                    context_usage=self.read(
+                        directory
+                        / (prefix.replace("request-", "context-") + ".usage.json")
+                    ),
+                    seconds=timing.get("wall_seconds", timing.get("seconds", case.get("elapsed_seconds"))),
+                    control_case=case or None,
+                    seed=req.get("seed"),
+                    limit=req.get("max_tokens"),
+                    messages=len(req.get("messages", [])),
+                    content=(msg.get("content") or "")[:24000],
+                    reasoning=(msg.get("reasoning_content") or "")[:24000],
+                    tool_calls=msg.get("tool_calls") or [],
+                )
+                if prefix == "request-001" or CONTROL_ARTIFACT.fullmatch(path.name):
+                    record["initial_prompt"] = req.get("messages", [])[:2]
+            else:
+                result = self.read(directory / (prefix + ".result.json"))
+                cleanup = self.read(directory / (prefix + ".cleanup.json"))
+                if result:
+                    result = dict(result)
+                    for key in ("stdout", "stderr"):
+                        value = result.get(key, "")
+                        if len(value) > 24000:
+                            result[key] = (
+                                value[:24000]
+                                + "\n[Display truncated; see raw artifact.]"
+                            )
+                typed = req.get("mode") == "adapter-control" and req.get("name") in (
+                    "finish_attempt",
+                    "checkpoint_context",
+                    "return_scope",
+                )
+                read_only = (
+                    req.get("mode") == "adapter-read" and req.get("name") == "read_file"
+                )
+                if read_only and result and isinstance(result.get("visible"), dict):
+                    result["visible"] = dict(result["visible"])
+                    output = result["visible"].get("output")
+                    if isinstance(output, str) and len(output) > 24000:
+                        result["visible"]["output"] = (
+                            output[:24000] + "\n[Display truncated; see raw artifact.]"
+                        )
+                record.update(
+                    tool_name=req.get("public_interface", {}).get(
+                        "tool", req.get("name", "bash")
+                    ),
+                    arguments=req.get("public_interface", {}).get(
+                        "arguments", req.get("arguments")
+                    ),
+                    adapter_control=typed,
+                    read_only=read_only,
+                    executed=req.get("executed") if typed or read_only else None,
+                    terminal_control=result.get("terminal_control") if result else None,
+                    review_control=result.get("review_control") if result else None,
+                    checkpoint_control=result.get("checkpoint_control")
+                    if result
+                    else None,
+                    scope_control=result.get("scope_control") if result else None,
+                    cleanup_required=result.get("cleanup_required") if result else None,
+                    state="scope return recorded / parent restoration pending"
+                    if typed and result and result.get("scope_control")
+                    else "checkpoint saved / unverified memory"
+                    if typed and result and result.get("checkpoint_control")
+                    else "review requested / not submitted"
+                    if typed and result and result.get("review_control")
+                    else (
+                        "adapter terminal / "
+                        + str(result.get("terminal_control", "unknown"))
+                    )
+                    if typed and result
+                    else "attempt ended / tool receipt unavailable"
+                    if not result and summary
+                    else "adapter pending"
+                    if typed
+                    else "read returned"
+                    if read_only and result and result.get("ok")
+                    else "read failed"
+                    if read_only and result
+                    else "reading"
+                    if read_only
+                    else "adapter terminal / unadjudicated"
+                    if result and result.get("terminal_control") == "Blocked"
+                    else "returned"
+                    if result
+                    else ("transport stopped" if cleanup else "executing"),
+                    command=req.get("arguments", {}).get("command"),
+                    timeout=req.get("timeout"),
+                    result=result,
+                    check_record=self.read(directory / (prefix + ".check.json")),
+                    cleanup=cleanup,
+                )
+                if typed and req.get("name") == "checkpoint_context":
+                    number = int(prefix.removeprefix("tool-"))
+                    for saved_path in sorted(
+                        directory.glob("context-checkpoint-[0-9]*.json")
+                    ):
+                        saved = self.read(saved_path)
+                        if saved.get("tool_call") == number:
+                            record["progress_measurement"] = saved.get(
+                                "progress_measurement"
+                            )
+                            break
+                if not result:
+                    record["transport_stdout"] = self.text(
+                        directory / (prefix + ".stdout.bin"), 16000
+                    )[0]
+                    record["transport_stderr"] = self.text(
+                        directory / (prefix + ".stderr.bin"), 16000
+                    )[0]
+            records.append(record)
+        diff, clipped = self.text(root / "changes.diff", 65536)
+        diff_format = "recorded_truncated" if clipped else "recorded"
+        if re.fullmatch(r"delegate-[a-f0-9]{32}", run):
+            diff, diff_format = review_diff(diff, clipped)
+        return {
+            "events": records,
+            "cost_breakdown": self.costs.get(self, root)
+            if not control and not (root / "backend").is_dir() else None,
+            "native_worker": summary.get("condition"),
+            "event_window": {
+                "total_requests": total_requests,
+                "total_events": total_events,
+                "start": start,
+                "end": end,
+                "limit": 80,
+                "latest": latest,
+                "older_start": max(0, start - 80) if start else None,
+                "newer_start": end if end < total_events else None,
+                "unreadable_requests": unreadable_requests,
+                "unreadable_events": len(files) - len(records),
+            },
+            "summary": summary or None,
+            "continuation": summary.get("continuation")
+            or self.read(root / "continuation.json"),
+            "outer_adjudication": self.outer_adjudication(root, summary),
+            "comparison_review": self.comparison_review(root, summary),
+            "kind": "diagnostic"
+            if self.is_diagnostic(summary)
+            else "control"
+            if control
+            else "coding",
+            "diff": diff,
+            "diff_format": diff_format,
+            "artifacts": sorted(
+                p.relative_to(root).as_posix()
+                for directory in [
+                    root,
+                    *(root / name for name in (*NATIVE_CASES, *RECOVERY_CASES, *STANDARD_WORKER_DIRS)),
+                ]
+                if directory.is_dir() and not directory.is_symlink()
+                for p in directory.iterdir()
+                if p.is_file()
+                and not p.is_symlink()
+                and self.allowed_artifact(p.relative_to(root).as_posix())
+            ),
+        }
+
+
+class Handler(BaseHTTPRequestHandler):
+    evidence = None
+
+    def do_GET(self):
+        port = self.server.server_port
+        allowed = {f"127.0.0.1:{port}", f"localhost:{port}"}
+        if (
+            self.headers.get("Host") not in allowed
+            or self.headers.get("Origin")
+            not in (None, *("http://" + h for h in allowed))
+            or self.headers.get("Sec-Fetch-Site") == "cross-site"
+        ):
+            self.send_error(403)
+            return
+        route = urlsplit(self.path)
+        params = parse_qs(route.query)
+
+        def arg(key):
+            return params.get(key, [""])[0]
+
+        try:
+            if route.path == "/api/runs":
+                data = self.evidence.runs(
+                    page=int(arg("page") or "1"),
+                    page_size=int(arg("page_size") or "20"),
+                    query=arg("q"),
+                )
+            elif route.path == "/api/run":
+                data = self.evidence.run(arg("run"))
+            elif route.path == "/api/trace":
+                data = self.evidence.trace(
+                    arg("run"),
+                    arg("trial"),
+                    start=int(arg("start")) if arg("start") else None,
+                )
+            elif route.path == "/api/artifact":
+                data = self.evidence.artifact(arg("run"), arg("trial"), arg("name"))
+            elif route.path in ("/", "/app.js", "/style.css"):
+                filename = {
+                    "/": "index.html",
+                    "/app.js": "app.js",
+                    "/style.css": "style.css",
+                }[route.path]
+                mime = {
+                    "/": "text/html",
+                    "/app.js": "text/javascript",
+                    "/style.css": "text/css",
+                }[route.path]
+                self.respond((PROJECT / "observatory" / filename).read_bytes(), mime)
+                return
+            else:
+                self.send_error(404)
+                return
+            self.respond(
+                json.dumps(data, ensure_ascii=True).encode(), "application/json"
+            )
+        except (ValueError, OSError, KeyError) as error:
+            self.respond(
+                json.dumps({"error": str(error)}).encode(), "application/json", 400
+            )
+
+    def respond(self, body, mime, status=200):
+        self.send_response(status)
+        self.send_header("Content-Type", mime + "; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header(
+            "Content-Security-Policy",
+            "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'",
+        )
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, fmt, *args):
+        if args and str(args[1] if len(args) > 1 else "") not in ("200",):
+            super().log_message(fmt, *args)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--port", type=int, default=8765)
+    args = parser.parse_args()
+    Handler.evidence = Evidence()
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    print(
+        f"Local Harness Lab Observatory: http://127.0.0.1:{server.server_port}", flush=True
+    )
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,9 @@
+{
+  "expected": "supported_blocker",
+  "proof_obligations": [
+    "Supported private+durable target store selects redact,store,audit.",
+    "Active precedence requires store<audit<redact<store, impossible in a strict linear order.",
+    "Identify a capability/contract change: permit rejecting cyclic supported combinations, restrict supported configurations, or change an upstream dependency. Dropping edges or returning partial plans violates current contract."
+  ],
+  "finite_tests": "Canonical code checks alone never establish a supported blocker; outer adjudication required. Expected values generated independently by enumerating all permutations of each selected closure."
+}

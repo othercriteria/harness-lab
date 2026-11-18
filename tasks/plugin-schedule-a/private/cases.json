@@ -1,0 +1,197 @@
+[
+  {
+    "features": [],
+    "target": "audit",
+    "expected": [
+      "decode",
+      "audit"
+    ]
+  },
+  {
+    "features": [],
+    "target": "decode",
+    "expected": [
+      "decode"
+    ]
+  },
+  {
+    "features": [],
+    "target": "export",
+    "expected": [
+      "decode",
+      "audit",
+      "redact",
+      "store",
+      "export"
+    ]
+  },
+  {
+    "features": [],
+    "target": "redact",
+    "expected": [
+      "decode",
+      "redact"
+    ]
+  },
+  {
+    "features": [],
+    "target": "store",
+    "expected": [
+      "decode",
+      "redact",
+      "store"
+    ]
+  },
+  {
+    "features": [
+      "private"
+    ],
+    "target": "audit",
+    "expected": [
+      "decode",
+      "audit"
+    ]
+  },
+  {
+    "features": [
+      "private"
+    ],
+    "target": "decode",
+    "expected": [
+      "decode"
+    ]
+  },
+  {
+    "features": [
+      "private"
+    ],
+    "target": "export",
+    "expected": [
+      "decode",
+      "audit",
+      "redact",
+      "store",
+      "export"
+    ]
+  },
+  {
+    "features": [
+      "private"
+    ],
+    "target": "redact",
+    "expected": [
+      "decode",
+      "audit",
+      "redact"
+    ]
+  },
+  {
+    "features": [
+      "private"
+    ],
+    "target": "store",
+    "expected": [
+      "decode",
+      "audit",
+      "redact",
+      "store"
+    ]
+  },
+  {
+    "features": [
+      "durable"
+    ],
+    "target": "audit",
+    "expected": [
+      "decode",
+      "redact",
+      "store",
+      "audit"
+    ]
+  },
+  {
+    "features": [
+      "durable"
+    ],
+    "target": "decode",
+    "expected": [
+      "decode"
+    ]
+  },
+  {
+    "features": [
+      "durable"
+    ],
+    "target": "export",
+    "expected": [
+      "decode",
+      "redact",
+      "store",
+      "audit",
+      "export"
+    ]
+  },
+  {
+    "features": [
+      "durable"
+    ],
+    "target": "redact",
+    "expected": [
+      "decode",
+      "redact"
+    ]
+  },
+  {
+    "features": [
+      "durable"
+    ],
+    "target": "store",
+    "expected": [
+      "decode",
+      "redact",
+      "store"
+    ]
+  },
+  {
+    "features": [
+      "private",
+      "durable"
+    ],
+    "target": "audit",
+    "expected": null
+  },
+  {
+    "features": [
+      "private",
+      "durable"
+    ],
+    "target": "decode",
+    "expected": [
+      "decode"
+    ]
+  },
+  {
+    "features": [
+      "private",
+      "durable"
+    ],
+    "target": "export",
+    "expected": null
+  },
+  {
+    "features": [
+      "private",
+      "durable"
+    ],
+    "target": "redact",
+    "expected": null
+  },
+  {
+    "features": [
+      "private",
+      "durable"
+    ],
+    "target": "store",
+    "expected": null
+  }
+]

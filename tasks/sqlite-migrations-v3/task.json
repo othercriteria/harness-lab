@@ -1,0 +1,19 @@
+{
+  "id": "sqlite-migrations-v3",
+  "version": 3,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 17
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-v2",
+  "revision_note": "Clarifies the existing validate_migrations ValueError policy after the public-contract audit; scaffold, all tests, reference and behavioral coverage unchanged. Fairness repair, not scope increase.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Previously exposed and tuned authored family; v3 has no model observations yet. Not a fresh independent task. Prior v2 results do not substitute for v3 calibration."
+}

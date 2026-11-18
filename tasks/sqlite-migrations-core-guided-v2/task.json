@@ -1,0 +1,30 @@
+{
+  "id": "sqlite-migrations-core-guided-v2",
+  "version": 2,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 8,
+    "acceptance": 22
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-core-guided",
+  "revision_note": "Positive guidance and three executable contract examples for existing empty history, arbitrary caller input order, and ledger read-error propagation. Original starter/support modules and full functional obligations retained; development derivative.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Development derivative of exposed task; no heldout or calibrated human-duration claim.",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/reviews/blind-sqlite-core-examples-001/review.json",
+    "independent_first_solution_seal": "/bulk/dlk/local-harness/reviews/blind-sqlite-core-examples-001/manifest.json"
+  },
+  "evaluator_revision": 1,
+  "evaluator_revision_note": "Original22private tests and external gate retained. Three added public examples also participate in canonical verification, for30canonical cases total.",
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted: fresh blind review and sealed first solution; exact-ID isolated starter rejection and reference/solution public,30canonical and external passes. No local-model exposure yet.",
+  "blind_review": "/bulk/dlk/local-harness/reviews/blind-sqlite-core-examples-001/review.json",
+  "sealed_first_submission": "/bulk/dlk/local-harness/reviews/blind-sqlite-core-examples-001/manifest.json",
+  "admission": "results/sqlite-core-guided-v2-admission-001.json"
+}

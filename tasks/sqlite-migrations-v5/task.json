@@ -1,0 +1,29 @@
+{
+  "id": "sqlite-migrations-v5",
+  "version": 5,
+  "kind": "repository-feature",
+  "split": "development",
+  "test_counts": {
+    "public": 3,
+    "acceptance": 22
+  },
+  "entrypoint": "public/task.md",
+  "derived_from": "sqlite-migrations-v4",
+  "revision_note": "Prospective public clarification: apply rejects non-list migration containers with ValueError before SQL; fresh blind contract review and sealed independent solution required. Prior version bytes/scores retained.",
+  "provenance": {
+    "contract_audit": "/bulk/dlk/local-harness/reviews/sqlite-validation-contract-review-001",
+    "contract_audit_manifest_sha256": "e056b062e0d8dbeb8ca2b4e5366c81bd52c632f0e9a3e08e76c77a8b6ea09540",
+    "source_fixture": "tasks/sqlite-migrations-v2"
+  },
+  "exposure": "Previously model-exposed authored family, including this task version. Evaluator strengthening creates no fresh-task or human-duration claim.",
+  "specification_alignment": {
+    "review": "/bulk/dlk/local-harness/research/sqlite-migrations-v5-blind-001/review.json",
+    "scoring": "Prospective version; no retroactive score changes."
+  },
+  "evaluator_revision": 1,
+  "evaluator_revision_note": "Retain v4 canonical checks, add apply container rejection and caller-transaction preservation checks; new external API observations supplement the existing CLI gate.",
+  "fixture_validation": "isolated-only",
+  "admission_status": "Admitted after blind public review and unchanged sealed first solution passed isolated checks; starter and targeted mutants rejected.",
+  "blind_review": "/bulk/dlk/local-harness/research/sqlite-migrations-v5-blind-001/review.json",
+  "sealed_first_submission": "/bulk/dlk/local-harness/research/sqlite-migrations-v5-blind-001/manifest.json"
+}

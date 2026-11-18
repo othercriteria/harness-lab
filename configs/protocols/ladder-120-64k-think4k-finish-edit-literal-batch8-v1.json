@@ -1,0 +1,53 @@
+{
+  "protocol": "ladder-120-64k-think4k-finish-edit-literal-batch8-v1",
+  "status": "Prospective current-recipe ladder revalidation; exposed development tasks.",
+  "coding_harness": "mini-swe-agent==2.4.6",
+  "task_wall_seconds": 120,
+  "agent_wall_seconds": 105,
+  "verification_reserve_seconds": 15,
+  "step_limit": 64,
+  "max_completion_tokens_per_request": 32768,
+  "total_completion_token_limit": 65536,
+  "tool_timeout_seconds": 10,
+  "request_timeout_seconds": 105,
+  "context_capacity_tokens": 65536,
+  "concurrent_model_runs": 1,
+  "gpu_lock": "/bulk/dlk/big-local-models/gpu-experiment.lock",
+  "isolation_design": "docs/isolation.md",
+  "timing": {
+    "primary": "fresh workspace preparation through canonical verification, with already-ready model",
+    "also_report": [
+      "model_load",
+      "cold_dispatch_to_verified_result",
+      "agent",
+      "verification",
+      "cleanup",
+      "restoration"
+    ],
+    "note": "A warm result does not establish cold two-minute performance. Always label server and prompt-cache state."
+  },
+  "success": "Full canonical+applicable external gate, clean autonomous completion <= 120s; no repair.",
+  "budget_note": "120s total/105s agent/15s verification reserve; same non-wall limits as051. No masking/reset or extensions.",
+  "tool_call_limit": 128,
+  "seed": 42,
+  "max_request_bytes": 524288,
+  "time_budget_feedback": true,
+  "recover_tool_limit_errors": true,
+  "context_policy": {
+    "mode": "none",
+    "keep_recent": 8,
+    "trigger_tokens": 22528,
+    "safety_tokens": 256
+  },
+  "behavioral_gate": "cli-state-v1",
+  "max_command_bytes": 32768,
+  "workspace_persistence_feedback": true,
+  "work_policy_feedback": true,
+  "context_budget_feedback": true,
+  "reasoning_budget_tokens": 4096,
+  "structured_finalization": true,
+  "concise_finalization": true,
+  "exact_text_edit": true,
+  "plain_tool_observations": true,
+  "max_tool_calls_per_response": 8
+}

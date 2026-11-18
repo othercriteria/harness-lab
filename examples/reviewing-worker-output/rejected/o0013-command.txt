@@ -1,0 +1,21 @@
+cd /workspace && python3 - <<'EOF'
+import re
+guide = open('docs/delegate-preparation.md').read()
+readme = open('README.md').read()
+art = open('docs/delegation-artifacts.md').read()
+rec = open('docs/handoff-receipts.md').read()
+
+# Check every backticked token in the guide against the sources
+tokens = sorted(set(re.findall(r'`([^`]+)`', guide)))
+print("guide backtick tokens:")
+for t in tokens: print("  ", t)
+print()
+# which tokens appear in README/artifacts/receipts
+for t in tokens:
+    in_r = t in readme; in_a = t in art; in_c = t in rec
+    if not (in_r or in_a or in_c):
+        print("NOT FOUND in sources:", t, "readme:", in_r, "art:", in_a, "rec:", in_c)
+print()
+# markdown links in guide
+print("guide links:", re.findall(r'\]\(([^)]+)\)', guide))
+EOF

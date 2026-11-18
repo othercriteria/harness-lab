@@ -1,0 +1,20 @@
+[
+  {
+    "condition": "candidate",
+    "returncode": 0,
+    "stdout": "31 independent eligibility cases passed\n",
+    "stderr": ""
+  },
+  {
+    "condition": "always-true",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/evaluation/check_policy.py\", line 21, in <module>\n    assert type(actual) is bool and actual is expected,(name,limits,scoped,actual,expected)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('malformed limits', None, False, True, False)\n"
+  },
+  {
+    "condition": "always-false",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/evaluation/check_policy.py\", line 21, in <module>\n    assert type(actual) is bool and actual is expected,(name,limits,scoped,actual,expected)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('default continue', {'structured_finalization': True, 'fresh_context': {'trigger': 'context_headroom', 'summary_checkpoint': True}}, False, False, True)\n"
+  }
+]
