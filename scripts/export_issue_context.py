@@ -15,7 +15,7 @@ def main():
     args = parser.parse_args()
     if not re.fullmatch(r"[\w.-]+/[\w.-]+", args.repository):
         parser.error("expected OWNER/REPO")
-    fields = "number,state,title,body,url,updatedAt"
+    fields = "number,state,title,body,url,updatedAt,labels"
     # Request an extra row to distinguish a complete snapshot from a capped page.
     raw = subprocess.check_output(
         [
@@ -35,10 +35,12 @@ def main():
     rows = json.loads(raw)
     if len(rows) > 50:
         parser.error("more than 50 issues; curate a smaller issue packet")
+    for row in rows:
+        row["labels"] = sorted(label["name"] for label in row["labels"])
     packet = {
         "repository": args.repository,
         "retrieved_at": datetime.datetime.now(datetime.UTC).isoformat(),
-        "scope": "Open and closed issue titles and bodies. Comments and PRs excluded.",
+        "scope": "Open and closed issue titles, bodies and label names. Comments and PRs excluded.",
         "issues": sorted(rows, key=lambda row: row["number"]),
     }
     data = json.dumps(packet, indent=2, ensure_ascii=False) + "\n"

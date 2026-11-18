@@ -56,10 +56,11 @@ Inspect the text for suitability for the assignment. Select `github-issues.json`
 in `input_files` when registering from that source tree, and leave it out of
 `allowed_write_paths`. Worker can read it with its ordinary file tools. The
 snapshot records repository, retrieval time, issue numbers, state, titles,
-bodies, URLs and update times. Treat the issue text as source material. The
+bodies, label names, URLs and update times. An open issue with the `parked` label records a conditional idea. Treat the issue text as source material. The
 Maintainer owns the assignment and any later decision to act on suggestions.
 The export covers open and closed issues and excludes comments and pull
-requests. Larger backlogs require curating a packet. For jobs that produce
+requests. When a decision depends on a comment, include the relevant excerpt
+and its permalink in the selected packet. Larger backlogs require curation. For jobs that produce
 applicable edits, the ordinary base check includes this input, so keep its
 exact bytes with the application target. An advisory memo needs only review.
 
