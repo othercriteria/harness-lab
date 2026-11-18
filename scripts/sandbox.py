@@ -20,6 +20,7 @@ import tarfile
 import time
 import uuid
 from pathlib import Path
+from decimal import Decimal, InvalidOperation, localcontext
 
 from call_budget import MAX_CALLS, MAX_OBSERVATION_BYTES
 from control import UnsafeCleanup, defer_launch_signals
@@ -599,11 +600,31 @@ class Runtime:
         return result, export_path
 
 
+def snapshot_mtime_ns(member):
+    """Parse untrusted PAX/legacy time without float rounding or huge integers."""
+    raw = member.pax_headers.get("mtime", str(member.mtime))
+    if len(raw) > 64:
+        raise ValueError("Invalid snapshot timestamp")
+    try:
+        with localcontext() as context:
+            context.prec = 80
+            seconds = Decimal(raw)
+            if not seconds.is_finite() or not -9223372037 <= seconds <= 9223372037:
+                raise ValueError("Invalid snapshot timestamp")
+            nanos = seconds * 1_000_000_000
+            if not -(2**63) <= nanos <= 2**63 - 1:
+                raise ValueError("Invalid snapshot timestamp")
+            return int(nanos)
+    except (InvalidOperation, OverflowError) as error:
+        raise ValueError("Invalid snapshot timestamp") from error
+
+
 def _unpack_snapshot(archive_path, destination):
     if archive_path.stat().st_size > 32 * 1024 * 1024:
         raise ValueError("Oversized snapshot archive")
     destination.mkdir(exist_ok=False)
     total, seen = 0, set()
+    directories = []
     with tarfile.open(archive_path, "r:") as archive:
         for index, member in enumerate(archive):
             path = Path(member.name)
@@ -619,8 +640,10 @@ def _unpack_snapshot(archive_path, destination):
                 raise ValueError("Unsafe snapshot entry")
             seen.add(member.name)
             target = destination / path
+            stamp = snapshot_mtime_ns(member)
             if member.isdir():
                 target.mkdir(parents=True, exist_ok=True)
+                directories.append((target, stamp))
                 continue
             total += member.size
             if total > WORK_BYTES:
@@ -631,6 +654,10 @@ def _unpack_snapshot(archive_path, destination):
             # Git tracks executability. Preserve that ordinary file property,
             # while retaining safe permissions and discarding setuid/setgid bits.
             target.chmod(0o644 | (member.mode & 0o111))
+            os.utime(target, ns=(stamp, stamp), follow_symlinks=False)
+    # Creating children changes parent mtimes; restore directories last.
+    for target, stamp in sorted(directories, key=lambda item: len(item[0].parts), reverse=True):
+        os.utime(target, ns=(stamp, stamp), follow_symlinks=False)
     return destination
 
 

@@ -480,9 +480,21 @@ def export_tree(root, destination):
             files.append(path)
             if len(files) > MAX_FILES or total > WORK_BYTES:
                 raise ValueError("Snapshot size/file-count limit exceeded")
-    with tarfile.open(destination, "w", format=tarfile.USTAR_FORMAT) as archive:
+    with tarfile.open(destination, "w", format=tarfile.PAX_FORMAT) as archive:
         for path in files:
-            archive.add(path, arcname=str(path.relative_to(root)), recursive=False)
+            member = archive.gettarinfo(path, arcname=str(path.relative_to(root)))
+            # PAX decimal seconds preserve nanoseconds without a float roundtrip.
+            stamp = path.stat().st_mtime_ns
+            seconds, nanos = divmod(abs(stamp), 1_000_000_000)
+            member.mtime = stamp // 1_000_000_000
+            member.pax_headers["mtime"] = (
+                f"{'-' if stamp < 0 else ''}{seconds}.{nanos:09d}"
+            )
+            if member.isreg():
+                with path.open("rb") as source:
+                    archive.addfile(member, source)
+            else:
+                archive.addfile(member)
     return {"files": len(files), "file_bytes": total}
 
 
