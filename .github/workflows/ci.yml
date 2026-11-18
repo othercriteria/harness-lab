@@ -29,6 +29,8 @@ jobs:
         run: python -S scripts/check_docs_spacing.py
       - name: Rebuild the historical Worker assignment
         run: python -S examples/preparing-worker-package/prepare.py "$RUNNER_TEMP/assignment"
+      - name: Replay the portable Worker decision
+        run: python -S examples/replaying-worker-trace/replay.py
       - name: Test Delegate artifacts, reviewed application, checkpoint policy and Observatory
         run: |
           python -S -m unittest \
