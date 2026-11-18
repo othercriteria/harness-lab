@@ -1,4 +1,4 @@
-"""Project conveniences. Only pilot launches inference and changes GPU services."""
+"""Local Harness Lab project conveniences. Only pilot launches inference and changes GPU services."""
 
 import argparse
 import datetime

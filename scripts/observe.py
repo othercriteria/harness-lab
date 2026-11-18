@@ -937,7 +937,7 @@ def main():
     Handler.evidence = Evidence()
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(
-        f"Local harness observatory: http://127.0.0.1:{server.server_port}", flush=True
+        f"Local Harness Lab Observatory: http://127.0.0.1:{server.server_port}", flush=True
     )
     try:
         server.serve_forever()
