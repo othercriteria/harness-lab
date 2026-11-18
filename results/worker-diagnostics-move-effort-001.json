@@ -1,0 +1,49 @@
+{
+  "issue": 9,
+  "effort_issue": 17,
+  "job": "ccfb1933055c4755814a09f25088a8d5",
+  "package": "b4cf500f4aaa2f7dea77d6be0778fea454da0d6b410a2d0a9f51190c69f0372c",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19118,
+  "base_commit": "be3bc99",
+  "snapshot": "354037cd59eb9364fbf44afbdd0f3dcfd3a2ff3a9e19313924eb0802623bcdf8",
+  "admission": "Ordinary outer-only assignment. The Maintainer chose the destination and both link targets before dispatch and sealed a direct implementation before inspecting the submission.",
+  "worker_task_seconds": 70.44974773400463,
+  "dispatch_through_verified_cleanup_seconds": 94.48507346608676,
+  "clean_completion": true,
+  "prepared_checks": true,
+  "outer_decision": "accepted",
+  "applied": true,
+  "outer_repairs": null,
+  "worker_artifact_manifest_sha256": "02ad3b0515c97baaa0fcda24ac63186ed70b64b023db49227a3ef8ca1e06dfc8",
+  "review_sha256": "322f519d3ca006ce09b2a4172df8fc6faf3fe24fc68da2f46447f51277fbf243",
+  "application_sha256": "b4a365ab6f5b5f2fd23fdfa1be71afa441beaebb4fd3d8dba63a74087e11f8f7",
+  "independent_verification": {
+    "direct_seal_sha256": "412dbc61e394d9d615fc144623c4bdf670f12ab81c004db737c006dc137fdfc2",
+    "expected_and_landed_sha256": {
+      "docs/archive/file-index-serialization-v1/README.md": "ba1ecee82776e1d83a6880f354173f786a3d8fb47cd95ee0a7a0e9bfab6d5aa4",
+      "docs/archive/file-index-serialization-v1/test_acceptance.py": "35159cbdaaeed90227831dd52cac15aadf7d06b8cd4078ce8091cc1b21c81ec3",
+      "docs/archive/file-index-serialization-v1/test_public.py": "cf37a94530c5d82928bd89b4be87580cdcf62e0de394db636f1714771526aa1e",
+      "docs/development-history-2026-11-02.md": "7f57c6d13811d86607733c2a5dd63035232ed26067c6a676eb3f0b867f98207e"
+    },
+    "frozen_audit_sha256": "a81b9a9d15dbe1be8dec2efd4b7d70bc055db2d50c86bf579cf912f9c59ebbfb",
+    "findings": "Exactly three file relocations with matching bytes and executable bits, plus two link-target changes in one bullet. Both links resolve beside the note in the full checkout. The handoff identified the audit as absent from the packet. The Maintainer removed the two empty directories after file-level application. Historical test files were preserved as evidence."
+  },
+  "effort_seconds": {
+    "selection": 20.6,
+    "specify_and_package": 26.93,
+    "dispatch": 23.37,
+    "direct_control": 0.08,
+    "other_work": 119.54,
+    "review": 22.91,
+    "restoration": 8.1,
+    "artifact_review": 26.55,
+    "apply_and_verify": 0.27
+  },
+  "clock_definition": "Consecutive outer-agent wall intervals. The other_work interval includes independent reliability analysis, handoff and waiting. Review includes orientation and issue lookup. Command preparation sometimes preceded its marker. Pool dispatch and direct_control when interpreting the comparator, and artifact_review with apply_and_verify for verification. The GPU job overlapped other work. Post-validation recordkeeping, CI and issue publication are excluded.",
+  "direct_control_limits": "The direct comparator used the same destination, link choices and hash oracle. Its authoring and execution fit inside the combined 23.46 s dispatch/control interval. The direct_control interval alone measures shell execution. The measurements do not isolate active human labor or establish a speed ratio.",
+  "conclusion": "Prefer a direct change when enumerating the writes and spelling out the oracle already describes almost the whole patch. Byte preservation made the Worker submission cheap to trust once specified. Look for more implementation or search left to delegate after specifying the outcome.",
+  "host_evidence": "/bulk/dlk/local-harness/research/worker-diagnostics-move-001",
+  "restoration_verified": true,
+  "restoration_verification": "/bulk/dlk/local-harness/sessions/2026-11-18-gpu-quiet-046/restoration-verification.json"
+}
