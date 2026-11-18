@@ -1,0 +1,19 @@
+guide backtick tokens:
+   .venv
+   SUBAGENTS.md
+   admission.mode: "outer_only_experimental"
+   allowed_write_paths
+   apprentice_notes: false
+   apprentice_notes: true
+   approved: true
+   input_files
+   mode
+   private
+   public_contract_sha256
+   reason
+   reference
+   results
+   task.md
+
+
+guide links: ['../README.md#delegated-work-mvp', 'delegation-artifacts.md', 'handoff-receipts.md']
