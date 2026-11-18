@@ -405,6 +405,20 @@ assert.match(text(elements.get('metrics')),/LIFECYCLE CHECK Use/);
 console.log('Delegated execution/checks/acceptance/application remain separate and text-only.');
 
 // Exercise real asynchronous refresh/navigation, including stale responses.
+// Comparison validity is independent of raw canonical checks and source acceptance.
+const comparisonRun={name:'comparison',kind:'coding',state:'complete',restored:true,trials:[
+  {name:'trial-00-example',kind:'coding',passed:true,state:'passed',correct:true,clean:true,
+   comparison_review:{status:'accepted'}},
+  {name:'trial-01-example',kind:'coding',passed:null,state:'operationally invalid',correct:false,clean:false,
+   comparison_review:{status:'operationally_invalid'}}]};
+context.comparisonRun=comparisonRun;
+assert.equal(vm.runInContext('runOutcomeSummary(comparisonRun)',context),'1/1 accepted · 1 operationally invalid');
+context.comparisonTrace={kind:'coding',summary:{canonical_correctness:false},events:[],artifacts:[]};
+vm.runInContext("state.trial='trial-01-example';render(comparisonRun,comparisonTrace)",context);
+assert.match(text(elements.get('metrics')),/OPERATIONALLY INVALID Full-result review/);
+assert.match(text(elements.get('metrics')),/excluded from model-quality comparisons/);
+console.log('Comparison acceptance and operational-invalid counts remain separate.');
+
 async function paginationRefreshChecks(){
   const calls=[];
   let hold=null;

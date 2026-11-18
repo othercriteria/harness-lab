@@ -118,6 +118,43 @@ class Evidence:
         except (FileNotFoundError, PermissionError):
             return False
 
+    def comparison_review(self, trial, summary):
+        """Separate operational validity/full acceptance from immutable test scores."""
+        raw, truncated = self.text(trial / "summary.json")
+        if not raw or truncated:
+            return None
+        digest = hashlib.sha256(raw.encode()).hexdigest()
+        invalid = self.read(trial / "outer-adjudication.json")
+        if (
+            isinstance(invalid, dict)
+            and invalid.get("raw_summary_sha256") == digest
+            and invalid.get("classification") == "operationally_invalid"
+            and invalid.get("model_quality_inference") is False
+            and isinstance(invalid.get("cause"), str)
+            and invalid["cause"].strip()
+        ):
+            return {"status": "operationally_invalid", "receipt": invalid}
+        review = self.read(trial / "acceptance-review.json")
+        if (
+            isinstance(review, dict)
+            and review.get("raw_summary_sha256") == digest
+            and review.get("status") == "reviewed"
+            and review.get("task") == summary.get("task")
+            and review.get("seed") == summary.get("seed")
+            and all(type(review.get(key)) is bool for key in
+                    ("source_accepted", "handoff_accepted", "full_acceptance"))
+        ):
+            accepted = (
+                summary.get("success") is True
+                and review["source_accepted"] and review["handoff_accepted"]
+                and review["full_acceptance"]
+                and not any(key in summary for key in ("unsafe_cleanup", "cancelled", "error"))
+            )
+            return {"status": "accepted" if accepted else "rejected", "receipt": review}
+        if summary.get("source_handoff_review") == "pending_outer_review":
+            return {"status": "pending_outer_review"}
+        return None
+
     def outer_adjudication(self, trial, summary):
         """Read an outer-owned verdict bound to the exact immutable raw summary."""
         if "unsafe_cleanup" in summary or "cancelled" in summary:
@@ -386,6 +423,18 @@ class Evidence:
                     }
                     else adjudication["coding_correctness"]
                 )
+            comparison_review = self.comparison_review(trial, summary)
+            if comparison_review:
+                review_status = comparison_review["status"]
+                if review_status == "operationally_invalid":
+                    passed = None
+                    trial_state = "operationally invalid"
+                elif review_status == "pending_outer_review":
+                    passed = None
+                    trial_state = "awaiting source/handoff review"
+                else:
+                    passed = review_status == "accepted"
+                    trial_state = "passed" if passed else "source/handoff rejected"
             if delegated:
                 passed = None
                 trial_state = (
@@ -412,6 +461,7 @@ class Evidence:
                     if diagnostic
                     else None,
                     "passed": passed,
+                    "comparison_review": comparison_review,
                     "continuation": continuation,
                     "control_kind": summary.get("kind") if control else None,
                     "commands_executed": summary.get("commands_executed")
@@ -847,6 +897,7 @@ class Evidence:
             "continuation": summary.get("continuation")
             or self.read(root / "continuation.json"),
             "outer_adjudication": self.outer_adjudication(root, summary),
+            "comparison_review": self.comparison_review(root, summary),
             "kind": "diagnostic"
             if self.is_diagnostic(summary)
             else "control"

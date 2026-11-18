@@ -12,6 +12,34 @@ from observe import NATIVE_CASES, Evidence
 
 
 class ObservatoryTests(unittest.TestCase):
+    def test_comparison_review_is_bound_and_cannot_promote_failed_checks(self):
+        summary = {"task": "example", "seed": 1, "success": True,
+                   "source_handoff_review": "pending_outer_review"}
+        raw = json.dumps(summary)
+        (self.trial / "summary.json").write_text(raw)
+        self.assertIsNone(self.data.run("campaign")["trials"][0]["passed"])
+        review = {"status": "reviewed", "task": "example", "seed": 1,
+                  "raw_summary_sha256": hashlib.sha256(raw.encode()).hexdigest(),
+                  "source_accepted": True, "handoff_accepted": True, "full_acceptance": True}
+        path = self.trial / "acceptance-review.json"
+        path.write_text(json.dumps(review))
+        self.assertTrue(self.data.run("campaign")["trials"][0]["passed"])
+        summary["success"] = False
+        raw = json.dumps(summary)
+        (self.trial / "summary.json").write_text(raw)
+        self.assertIsNone(self.data.run("campaign")["trials"][0]["passed"])
+        review["raw_summary_sha256"] = hashlib.sha256(raw.encode()).hexdigest()
+        path.write_text(json.dumps(review))
+        self.assertFalse(self.data.run("campaign")["trials"][0]["passed"])
+        invalid = {"classification": "operationally_invalid", "model_quality_inference": False,
+                   "cause": "Transport defect", "raw_summary_sha256": review["raw_summary_sha256"]}
+        (self.trial / "outer-adjudication.json").write_text(json.dumps(invalid))
+        row = self.data.run("campaign")["trials"][0]
+        self.assertIsNone(row["passed"])
+        self.assertEqual(row["state"], "operationally invalid")
+        self.assertEqual(self.data.trace("campaign", self.trial.name)["comparison_review"]["status"],
+                         "operationally_invalid")
+
     def test_continuation_review_requires_checks_and_exact_summary_binding(self):
         summary = {
             "task": "delegated-task",
