@@ -370,13 +370,12 @@ class FreshContext:
         return self.checkpoint_requested and not self.checkpoint_attempted
 
     @property
-    def checkpoint_finalization_allowed(self):
-        from checkpoint_policy import allow_finalization
+    def checkpoint_finalization_allowed(self) -> bool:
+        from checkpoint_policy import CheckpointResponses
 
+        responses = CheckpointResponses.from_limits(getattr(self.model, "limits", None))
         scope = getattr(self.model, "scope_runtime", None)
-        return allow_finalization(
-            getattr(self.model, "limits", None), scoped=bool(scope and scope.active)
-        )
+        return responses.allows_finalization(scoped=bool(scope and scope.active))
 
     def checkpoint_response(self, *, accepted, error=None, accepted_tool=None):
         """Called after ordinary request/usage accounting, before any tool dispatch."""

@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
-from checkpoint_policy import allow_finalization
+from checkpoint_policy import CheckpointResponses, allow_finalization
 
 
 def eligible_limits():
@@ -22,6 +22,12 @@ def eligible_limits():
 
 
 class AllowFinalizationTests(unittest.TestCase):
+    def test_validated_choices_follow_the_current_scope(self):
+        choices = CheckpointResponses.from_limits(eligible_limits())
+        self.assertIs(choices, CheckpointResponses.CHECKPOINT_OR_FINISH)
+        self.assertFalse(choices.allows_finalization(scoped=True))
+        self.assertTrue(choices.allows_finalization(scoped=False))
+
     def test_positive_case_omitted_continuation_mode(self):
         self.assertIs(allow_finalization(eligible_limits()), True)
 

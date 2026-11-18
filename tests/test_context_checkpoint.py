@@ -226,7 +226,8 @@ class CheckpointTests(unittest.TestCase):
         ]:
             path = self.root / name
             original = path.read_bytes()
-            altered = json.loads(original); altered[key] = value
+            altered = json.loads(original)
+            altered[key] = value
             path.write_text(json.dumps(altered))
             with self.subTest(name=name), self.assertRaises(ValueError):
                 self.checkpoint_audit()

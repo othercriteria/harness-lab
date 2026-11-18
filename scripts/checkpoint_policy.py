@@ -5,39 +5,36 @@ not validate all limits, certify work complete, grant additional budget,
 execute a tool, or replace handoff validation. It never mutates its inputs.
 """
 
+from enum import Enum, auto
 
-def allow_finalization(limits, *, scoped=False):
-    """Return True exactly when a context-headroom summary checkpoint is eligible.
 
-    Eligible means all of the following hold:
+class CheckpointResponses(Enum):
+    """Responses the configuration permits when the Worker is outside a scope."""
 
-    - ``limits`` is a dict and ``limits["structured_finalization"]`` is
-      exactly the boolean ``True`` (the integer ``1`` is not accepted).
-    - ``limits["fresh_context"]`` is a dict whose ``trigger`` is
-      ``"context_headroom"``, whose ``summary_checkpoint`` is exactly the
-      boolean ``True``, and whose ``continuation_mode`` is ``"continue"``
-      or omitted (omission means ``"continue"``).
-    - ``scoped`` is exactly ``False``; ``True`` or any other supplied value
-      does not permit this option.
+    CHECKPOINT_ONLY = auto()
+    CHECKPOINT_OR_FINISH = auto()
 
-    Absent, malformed or ineligible settings return ``False``. Extra
-    configuration keys are accepted without changing their meaning.
-    Explicit ``"review"`` continuations and ``"first_submission"`` or
-    ``"elapsed"`` triggers are ineligible.
-    """
-    if scoped is not False:
-        return False
-    if not isinstance(limits, dict):
-        return False
-    if limits.get("structured_finalization") is not True:
-        return False
-    policy = limits.get("fresh_context")
-    if not isinstance(policy, dict):
-        return False
-    if policy.get("trigger") != "context_headroom":
-        return False
-    if policy.get("summary_checkpoint") is not True:
-        return False
-    if policy.get("continuation_mode", "continue") != "continue":
-        return False
-    return True
+    @classmethod
+    def from_limits(cls, limits: object) -> "CheckpointResponses":
+        """Parse the finalization-related fields from live or archived JSON."""
+        if isinstance(limits, dict) and limits.get("structured_finalization") is True:
+            policy = limits.get("fresh_context")
+            if (
+                isinstance(policy, dict)
+                and policy.get("trigger") == "context_headroom"
+                and policy.get("summary_checkpoint") is True
+                and policy.get("continuation_mode", "continue") == "continue"
+            ):
+                return cls.CHECKPOINT_OR_FINISH
+        return cls.CHECKPOINT_ONLY
+
+    def allows_finalization(self, *, scoped: bool = False) -> bool:
+        return self is CheckpointResponses.CHECKPOINT_OR_FINISH and scoped is False
+
+
+def allow_finalization(limits: object, *, scoped: object = False) -> bool:
+    """Check raw settings. Only the exact boolean False denotes an inactive scope."""
+    return (
+        scoped is False
+        and CheckpointResponses.from_limits(limits).allows_finalization()
+    )

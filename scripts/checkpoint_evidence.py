@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 from types import SimpleNamespace
 
+from checkpoint_policy import CheckpointResponses
 from context_checkpoint import (
     REPLY_TOKENS,
     THINK_TOKENS,
@@ -20,7 +21,6 @@ from context_checkpoint import (
     tool,
 )
 from mini_bootstrap import FormatError
-from checkpoint_policy import allow_finalization
 
 
 def require(condition, message):
@@ -187,13 +187,14 @@ def verify_checkpoint_evidence(directory, limits):
             require(index not in indices, "Duplicate repair request")
             indices.add(index)
             repairs[n] = True
+    responses = CheckpointResponses.from_limits(limits)
     rows = []
     for n in sequences or [1]:
         first = _verify_checkpoint(
-            root, limits, n, indices, followed_by_repair=n in repairs
+            root, limits, n, indices, responses, followed_by_repair=n in repairs
         )
         if n in repairs:
-            row = _verify_checkpoint(root, limits, n, indices, repair=True)
+            row = _verify_checkpoint(root, limits, n, indices, responses, repair=True)
             row["initial_attempt"] = first
             rows.append(row)
         else:
@@ -214,6 +215,7 @@ def _verify_checkpoint(
     limits,
     sequence,
     checkpoint_indices,
+    responses: CheckpointResponses,
     *,
     repair=False,
     followed_by_repair=False,
@@ -229,7 +231,7 @@ def _verify_checkpoint(
     shared = limits.get("shared_evidence", False)
     # Pressure checkpoints are offered only outside active scoped subtasks.
     # Scoped projection/return conformance remains a separate audit.
-    can_finish = allow_finalization(limits)
+    can_finish = responses.allows_finalization()
     history = None
     if offer is not None and shared:
         pointer = offer["observation_manifest"]
@@ -295,7 +297,7 @@ def _verify_checkpoint(
         )
         if index in checkpoint_indices:
             cap = min(cap, REPLY_TOKENS)
-        if index == checkpoint_index:
+        if offer is not None and index == checkpoint_index:
             before_tokens = total
             require(
                 offer["completion_tokens"] == total, "Checkpoint offer renewed tokens"
@@ -440,7 +442,8 @@ def _verify_checkpoint(
     saved_path = root / f"context-checkpoint-{sequence:03d}.json"
     saved = read(saved_path) if saved_path.exists() else None
     if saved:
-        require(accepted is not None, "Rejected response produced saved memory")
+        if accepted is None:
+            raise ValueError("Rejected response produced saved memory")
         require(
             saved["summary"] == accepted["payload"]["summary"],
             "Saved memory differs from response",
@@ -508,7 +511,7 @@ def _verify_checkpoint(
         require(
             reset["summary_checkpoint"] == expected, "Reset memory provenance differs"
         )
-        if saved:
+        if saved and accepted is not None:
             suffix = json.dumps(accepted["payload"], ensure_ascii=False)
             if shared:
                 from evidence import render
