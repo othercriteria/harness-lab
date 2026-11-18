@@ -467,7 +467,8 @@ def run_command(argv, timeout):
 
 
 def export_tree(root, destination):
-    files = []
+    entries = []
+    regular_files = 0
     total = 0
     for directory, directories, names in os.walk(root, followlinks=False):
         for name in sorted(directories + names):
@@ -476,12 +477,15 @@ def export_tree(root, destination):
             if not (stat.S_ISREG(mode) or stat.S_ISDIR(mode)):
                 raise ValueError("Snapshots allow only regular files/directories")
             if stat.S_ISREG(mode):
+                regular_files += 1
                 total += path.stat().st_size
-            files.append(path)
-            if len(files) > MAX_FILES or total > WORK_BYTES:
+            entries.append(path)
+            # Aggregate limit: every archive entry (files and directories)
+            # counts toward MAX_FILES and regular-file contents toward WORK_BYTES.
+            if len(entries) > MAX_FILES or total > WORK_BYTES:
                 raise ValueError("Snapshot size/file-count limit exceeded")
     with tarfile.open(destination, "w", format=tarfile.PAX_FORMAT) as archive:
-        for path in files:
+        for path in entries:
             member = archive.gettarinfo(path, arcname=str(path.relative_to(root)))
             # PAX decimal seconds preserve nanoseconds without a float roundtrip.
             stamp = path.stat().st_mtime_ns
@@ -495,7 +499,11 @@ def export_tree(root, destination):
                     archive.addfile(member, source)
             else:
                 archive.addfile(member)
-    return {"files": len(files), "file_bytes": total}
+    return {
+        "entries": len(entries),
+        "regular_files": regular_files,
+        "file_bytes": total,
+    }
 
 
 def export_workspace():
