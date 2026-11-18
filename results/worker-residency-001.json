@@ -1,0 +1,561 @@
+{
+  "cutoff_utc_exclusive": "2026-11-18T19:20:00+00:00",
+  "first_submission": "2026-11-16T18:10:29.451074+00:00",
+  "jobs_seen": 157,
+  "sessions": 26,
+  "incomplete_phase_jobs": [
+    "108d3fb24cd744fdad85ab41fc166770",
+    "cc44fb7ff1ce469098d3cea06d79a73e",
+    "3f1844b8513a42029be0daf0bf924db1",
+    "830f487491ca4762b386ee6256cebf26",
+    "ec4f0fbadb5649d2adbf4aa8c58c0ea3",
+    "44b891f063ec49ae8d660182d76fbe59"
+  ],
+  "all_measured": {
+    "jobs": 151,
+    "total_dispatch_seconds": 25242.2,
+    "seconds": {
+      "load_to_ready": 2265.71,
+      "discarded_prefix_warmup": 0,
+      "timed_model_requests": 20489.56,
+      "agent_other_or_untimed": 1172.07,
+      "verification": 93.98,
+      "post_server_cleanup_and_restoration": 502.63,
+      "other_dispatch": 718.25
+    },
+    "median_load_seconds": 15.8
+  },
+  "by_profile": {
+    "comparison-coder-32k-cpu32-fit2048-temp06": {
+      "jobs": 3,
+      "total_dispatch_seconds": 399.92,
+      "seconds": {
+        "load_to_ready": 42.28,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 301.78,
+        "agent_other_or_untimed": 20.74,
+        "verification": 1.83,
+        "post_server_cleanup_and_restoration": 16.94,
+        "other_dispatch": 16.34
+      },
+      "median_load_seconds": 8.66
+    },
+    "frontier-flint-48k-fit2048": {
+      "jobs": 14,
+      "total_dispatch_seconds": 2968.37,
+      "seconds": {
+        "load_to_ready": 172.64,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 2475.74,
+        "agent_other_or_untimed": 210.55,
+        "verification": 9.79,
+        "post_server_cleanup_and_restoration": 46.32,
+        "other_dispatch": 53.33
+      },
+      "median_load_seconds": 8.42
+    },
+    "frontier-tinfield-low-64k-cpu36-temp06": {
+      "jobs": 4,
+      "total_dispatch_seconds": 771.85,
+      "seconds": {
+        "load_to_ready": 36.39,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 683.54,
+        "agent_other_or_untimed": 17.65,
+        "verification": 2.65,
+        "post_server_cleanup_and_restoration": 5.61,
+        "other_dispatch": 26.0
+      },
+      "median_load_seconds": 9.11
+    },
+    "qwen38-27b-ranalayout-24k-temp06-dflash3-fit2304-dio": {
+      "jobs": 3,
+      "total_dispatch_seconds": 346.2,
+      "seconds": {
+        "load_to_ready": 47.4,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 254.38,
+        "agent_other_or_untimed": 13.36,
+        "verification": 0.84,
+        "post_server_cleanup_and_restoration": 16.71,
+        "other_dispatch": 13.49
+      },
+      "median_load_seconds": 15.8
+    },
+    "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio": {
+      "jobs": 110,
+      "total_dispatch_seconds": 18385.36,
+      "seconds": {
+        "load_to_ready": 1735.99,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 14908.19,
+        "agent_other_or_untimed": 807.68,
+        "verification": 68.03,
+        "post_server_cleanup_and_restoration": 351.28,
+        "other_dispatch": 514.2
+      },
+      "median_load_seconds": 15.81
+    },
+    "routing-coder-32k-cpu31-fit1536-temp06": {
+      "jobs": 17,
+      "total_dispatch_seconds": 2370.51,
+      "seconds": {
+        "load_to_ready": 230.99,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 1865.93,
+        "agent_other_or_untimed": 102.08,
+        "verification": 10.85,
+        "post_server_cleanup_and_restoration": 65.76,
+        "other_dispatch": 94.9
+      },
+      "median_load_seconds": 8.59
+    }
+  },
+  "other_recorded_experiments": {
+    "starts": 56,
+    "server_owner_wall_seconds": 29814.97
+  },
+  "classified_demand": {
+    "diagnostic_replay": {
+      "jobs": 11,
+      "in_single_job_session": 0,
+      "later_jobs_in_ten_second_links": 5
+    },
+    "lifecycle_acceptance": {
+      "jobs": 4,
+      "in_single_job_session": 0,
+      "later_jobs_in_ten_second_links": 0
+    },
+    "unclassified": {
+      "jobs": 136,
+      "in_single_job_session": 7,
+      "later_jobs_in_ten_second_links": 79
+    },
+    "useful_work": {
+      "jobs": 6,
+      "in_single_job_session": 6,
+      "later_jobs_in_ten_second_links": 0
+    }
+  },
+  "ten_second_links_without_displacement": {
+    "links": 53,
+    "sessions": 7,
+    "batches": 14,
+    "jobs_in_batches": 67,
+    "dispatch_seconds_in_batches": 11316.69,
+    "later_load_seconds": 772.4,
+    "inter_job_gap_seconds": 126.56,
+    "links_with_displacement_on_either_job": 0
+  },
+  "ten_second_same_package_links": {
+    "links": 8,
+    "sessions": 4,
+    "batches": 8,
+    "jobs_in_batches": 16,
+    "dispatch_seconds_in_batches": 2754.91,
+    "later_load_seconds": 125.48,
+    "inter_job_gap_seconds": 14.03,
+    "links_with_displacement_on_either_job": 1
+  },
+  "entry_model_displaced_jobs": 74,
+  "timestamped_ollama_restore": {
+    "jobs": 69,
+    "median_seconds": 4.42
+  },
+  "gap_sensitivity_seconds": {
+    "2": {
+      "links": 35,
+      "sessions": 8,
+      "batches": 26,
+      "jobs_in_batches": 61,
+      "dispatch_seconds_in_batches": 10280.44,
+      "later_load_seconds": 485.26,
+      "inter_job_gap_seconds": 34.01,
+      "links_with_displacement_on_either_job": 13
+    },
+    "5": {
+      "links": 82,
+      "sessions": 10,
+      "batches": 28,
+      "jobs_in_batches": 110,
+      "dispatch_seconds_in_batches": 17681.52,
+      "later_load_seconds": 1135.06,
+      "inter_job_gap_seconds": 180.96,
+      "links_with_displacement_on_either_job": 31
+    },
+    "10": {
+      "links": 84,
+      "sessions": 10,
+      "batches": 27,
+      "jobs_in_batches": 111,
+      "dispatch_seconds_in_batches": 17820.48,
+      "later_load_seconds": 1159.91,
+      "inter_job_gap_seconds": 194.53,
+      "links_with_displacement_on_either_job": 31
+    },
+    "30": {
+      "links": 85,
+      "sessions": 10,
+      "batches": 27,
+      "jobs_in_batches": 112,
+      "dispatch_seconds_in_batches": 17986.3,
+      "later_load_seconds": 1175.7,
+      "inter_job_gap_seconds": 219.04,
+      "links_with_displacement_on_either_job": 31
+    },
+    "60": {
+      "links": 86,
+      "sessions": 10,
+      "batches": 27,
+      "jobs_in_batches": 113,
+      "dispatch_seconds_in_batches": 18258.24,
+      "later_load_seconds": 1191.49,
+      "inter_job_gap_seconds": 252.96,
+      "links_with_displacement_on_either_job": 31
+    }
+  },
+  "ten_second_links_by_profile": {
+    "comparison-coder-32k-cpu32-fit2048-temp06": {
+      "links": 2,
+      "sessions": 1,
+      "batches": 1,
+      "jobs_in_batches": 3,
+      "dispatch_seconds_in_batches": 399.92,
+      "later_load_seconds": 17.28,
+      "inter_job_gap_seconds": 5.22,
+      "links_with_displacement_on_either_job": 2
+    },
+    "frontier-flint-48k-fit2048": {
+      "links": 8,
+      "sessions": 2,
+      "batches": 5,
+      "jobs_in_batches": 13,
+      "dispatch_seconds_in_batches": 2615.26,
+      "later_load_seconds": 67.25,
+      "inter_job_gap_seconds": 11.15,
+      "links_with_displacement_on_either_job": 4
+    },
+    "frontier-tinfield-low-64k-cpu36-temp06": {
+      "links": 2,
+      "sessions": 1,
+      "batches": 1,
+      "jobs_in_batches": 3,
+      "dispatch_seconds_in_batches": 534.87,
+      "later_load_seconds": 18.21,
+      "inter_job_gap_seconds": 7.73,
+      "links_with_displacement_on_either_job": 0
+    },
+    "qwen38-27b-ranalayout-24k-temp06-dflash3-fit2304-dio": {
+      "links": 0,
+      "sessions": 0,
+      "batches": 0,
+      "jobs_in_batches": 0,
+      "dispatch_seconds_in_batches": 0,
+      "later_load_seconds": 0,
+      "inter_job_gap_seconds": 0,
+      "links_with_displacement_on_either_job": 0
+    },
+    "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio": {
+      "links": 60,
+      "sessions": 8,
+      "batches": 16,
+      "jobs_in_batches": 76,
+      "dispatch_seconds_in_batches": 12184.96,
+      "later_load_seconds": 944.71,
+      "inter_job_gap_seconds": 140.3,
+      "links_with_displacement_on_either_job": 17
+    },
+    "routing-coder-32k-cpu31-fit1536-temp06": {
+      "links": 12,
+      "sessions": 2,
+      "batches": 4,
+      "jobs_in_batches": 16,
+      "dispatch_seconds_in_batches": 2085.48,
+      "later_load_seconds": 112.46,
+      "inter_job_gap_seconds": 30.13,
+      "links_with_displacement_on_either_job": 8
+    }
+  },
+  "recent_ten_sessions": {
+    "sessions": [
+      "2026-11-18-gpu-quiet-037",
+      "2026-11-18-gpu-quiet-039",
+      "2026-11-18-gpu-quiet-040",
+      "2026-11-18-gpu-quiet-041",
+      "2026-11-18-gpu-quiet-042",
+      "2026-11-18-gpu-quiet-043",
+      "2026-11-18-gpu-quiet-045",
+      "2026-11-18-gpu-quiet-046",
+      "2026-11-18-gpu-quiet-047",
+      "2026-11-18-gpu-quiet-048"
+    ],
+    "jobs": 27,
+    "single_job_sessions": 7,
+    "phases": {
+      "jobs": 26,
+      "total_dispatch_seconds": 3895.54,
+      "seconds": {
+        "load_to_ready": 440.03,
+        "discarded_prefix_warmup": 0,
+        "timed_model_requests": 3066.74,
+        "agent_other_or_untimed": 133.8,
+        "verification": 16.08,
+        "post_server_cleanup_and_restoration": 107.73,
+        "other_dispatch": 131.16
+      },
+      "median_load_seconds": 15.8
+    },
+    "ten_second_links": {
+      "links": 12,
+      "sessions": 3,
+      "batches": 5,
+      "jobs_in_batches": 17,
+      "dispatch_seconds_in_batches": 2030.76,
+      "later_load_seconds": 162.97,
+      "inter_job_gap_seconds": 29.64,
+      "links_with_displacement_on_either_job": 7
+    }
+  },
+  "samples": {
+    "coder_issue_23": {
+      "jobs": [
+        {
+          "id": "7f5900bb45dd4457a846280f8ae04278",
+          "dispatch": 164.88,
+          "seconds": {
+            "load_to_ready": 84.02,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 69.28,
+            "agent_other_or_untimed": 4.12,
+            "verification": 0.61,
+            "post_server_cleanup_and_restoration": 1.29,
+            "other_dispatch": 5.56
+          }
+        },
+        {
+          "id": "739b2bc972134af498f418ce4e5d8cd1",
+          "dispatch": 84.8,
+          "seconds": {
+            "load_to_ready": 18.33,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 56.36,
+            "agent_other_or_untimed": 2.85,
+            "verification": 0.63,
+            "post_server_cleanup_and_restoration": 1.41,
+            "other_dispatch": 5.22
+          }
+        },
+        {
+          "id": "2428558733da4c95a7f84f84f6ea390f",
+          "dispatch": 92.87,
+          "seconds": {
+            "load_to_ready": 8.56,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 73.82,
+            "agent_other_or_untimed": 2.83,
+            "verification": 0.6,
+            "post_server_cleanup_and_restoration": 1.63,
+            "other_dispatch": 5.44
+          }
+        },
+        {
+          "id": "9faf08ec35ed4cf18e9d201255ff1b32",
+          "dispatch": 107.87,
+          "seconds": {
+            "load_to_ready": 8.26,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 89.56,
+            "agent_other_or_untimed": 3.42,
+            "verification": 0.58,
+            "post_server_cleanup_and_restoration": 1.47,
+            "other_dispatch": 4.58
+          }
+        }
+      ],
+      "phases": {
+        "jobs": 4,
+        "total_dispatch_seconds": 450.42,
+        "seconds": {
+          "load_to_ready": 119.17,
+          "discarded_prefix_warmup": 0,
+          "timed_model_requests": 289.02,
+          "agent_other_or_untimed": 13.23,
+          "verification": 2.41,
+          "post_server_cleanup_and_restoration": 5.8,
+          "other_dispatch": 20.8
+        },
+        "median_load_seconds": 13.44
+      },
+      "ten_second_links": {
+        "links": 3,
+        "sessions": 1,
+        "batches": 1,
+        "jobs_in_batches": 4,
+        "dispatch_seconds_in_batches": 450.42,
+        "later_load_seconds": 35.15,
+        "inter_job_gap_seconds": 10.3,
+        "links_with_displacement_on_either_job": 0
+      }
+    },
+    "qwen_checkpoint_screen": {
+      "jobs": [
+        {
+          "id": "0f9ba02ee16a48b682e4a92ebbb65a33",
+          "dispatch": 96.43,
+          "seconds": {
+            "load_to_ready": 15.79,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 64.8,
+            "agent_other_or_untimed": 4.86,
+            "verification": 0.62,
+            "post_server_cleanup_and_restoration": 5.3,
+            "other_dispatch": 5.05
+          }
+        },
+        {
+          "id": "ed231f0287ec41a8bdd5dda6257aee42",
+          "dispatch": 152.88,
+          "seconds": {
+            "load_to_ready": 14.75,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 128.1,
+            "agent_other_or_untimed": 3.91,
+            "verification": 0.65,
+            "post_server_cleanup_and_restoration": 1.18,
+            "other_dispatch": 4.31
+          }
+        },
+        {
+          "id": "8118601576284efa88ed3caaa9cec04f",
+          "dispatch": 148.88,
+          "seconds": {
+            "load_to_ready": 15.81,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 122.6,
+            "agent_other_or_untimed": 3.76,
+            "verification": 0.59,
+            "post_server_cleanup_and_restoration": 1.54,
+            "other_dispatch": 4.59
+          }
+        },
+        {
+          "id": "36092549196d4149972bfa92be80e495",
+          "dispatch": 127.89,
+          "seconds": {
+            "load_to_ready": 14.77,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 103.7,
+            "agent_other_or_untimed": 3.78,
+            "verification": 0.59,
+            "post_server_cleanup_and_restoration": 0.88,
+            "other_dispatch": 4.17
+          }
+        },
+        {
+          "id": "6f41a0f77fef41d0901c3141a692eff0",
+          "dispatch": 165.89,
+          "seconds": {
+            "load_to_ready": 14.8,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 140.65,
+            "agent_other_or_untimed": 3.88,
+            "verification": 0.57,
+            "post_server_cleanup_and_restoration": 1.74,
+            "other_dispatch": 4.25
+          }
+        },
+        {
+          "id": "8a155407fb704896bc8fc87fcdd165fc",
+          "dispatch": 118.91,
+          "seconds": {
+            "load_to_ready": 14.81,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 93.26,
+            "agent_other_or_untimed": 4.4,
+            "verification": 0.63,
+            "post_server_cleanup_and_restoration": 1.31,
+            "other_dispatch": 4.5
+          }
+        },
+        {
+          "id": "9f404eb642af4f2c86325e7968957fd6",
+          "dispatch": 120.86,
+          "seconds": {
+            "load_to_ready": 15.83,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 95.44,
+            "agent_other_or_untimed": 3.73,
+            "verification": 0.6,
+            "post_server_cleanup_and_restoration": 1.32,
+            "other_dispatch": 3.95
+          }
+        }
+      ],
+      "phases": {
+        "jobs": 7,
+        "total_dispatch_seconds": 931.76,
+        "seconds": {
+          "load_to_ready": 106.55,
+          "discarded_prefix_warmup": 0,
+          "timed_model_requests": 748.54,
+          "agent_other_or_untimed": 28.31,
+          "verification": 4.27,
+          "post_server_cleanup_and_restoration": 13.27,
+          "other_dispatch": 30.81
+        },
+        "median_load_seconds": 14.81
+      },
+      "ten_second_links": {
+        "links": 5,
+        "sessions": 1,
+        "batches": 1,
+        "jobs_in_batches": 6,
+        "dispatch_seconds_in_batches": 835.32,
+        "later_load_seconds": 76.01,
+        "inter_job_gap_seconds": 10.83,
+        "links_with_displacement_on_either_job": 0
+      }
+    },
+    "qwen_issue_advice_singleton": {
+      "jobs": [
+        {
+          "id": "187ba40cdb8a4ea7b76df2f01dd46873",
+          "dispatch": 389.06,
+          "seconds": {
+            "load_to_ready": 17.89,
+            "discarded_prefix_warmup": 0,
+            "timed_model_requests": 338.84,
+            "agent_other_or_untimed": 19.97,
+            "verification": 0.62,
+            "post_server_cleanup_and_restoration": 5.65,
+            "other_dispatch": 6.09
+          }
+        }
+      ],
+      "phases": {
+        "jobs": 1,
+        "total_dispatch_seconds": 389.06,
+        "seconds": {
+          "load_to_ready": 17.89,
+          "discarded_prefix_warmup": 0,
+          "timed_model_requests": 338.84,
+          "agent_other_or_untimed": 19.97,
+          "verification": 0.62,
+          "post_server_cleanup_and_restoration": 5.65,
+          "other_dispatch": 6.09
+        },
+        "median_load_seconds": 17.89
+      },
+      "ten_second_links": {
+        "links": 0,
+        "sessions": 0,
+        "batches": 0,
+        "jobs_in_batches": 0,
+        "dispatch_seconds_in_batches": 0,
+        "later_load_seconds": 0,
+        "inter_job_gap_seconds": 0,
+        "links_with_displacement_on_either_job": 0
+      }
+    }
+  }
+}
