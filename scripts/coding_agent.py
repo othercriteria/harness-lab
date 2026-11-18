@@ -525,6 +525,7 @@ class LocalModel:
                     shared=self.limits.get("shared_evidence", False),
                     progress=self.limits.get("checkpoint_progress", False),
                     history=self.history,
+                    allow_finish=self.fresh_context.checkpoint_finalization_allowed,
                 )
             except FormatError as error:
                 if checkpoint_request:
@@ -532,7 +533,9 @@ class LocalModel:
                         accepted=False, error=error.messages[0]["content"]
                     )
                 raise
-            self.fresh_context.checkpoint_response(accepted=True)
+            self.fresh_context.checkpoint_response(
+                accepted=True, accepted_tool=actions[0]["tool"]
+            )
         elif self.limits.get("structured_finalization", False):
             from finish_attempt import actions as parse_finish_actions
 

@@ -16,9 +16,7 @@ INSTRUCTION = (
     " note. This saves unverified memory; it does not submit work or execute commands."
     " Summary generation consumes your existing time, token and call allowances."
 )
-REQUEST = (
-    "Context checkpoint requested. Your next response must call checkpoint_context"
-    " alone; no implementation tools will execute in this checkpoint response."
+REQUEST_DETAILS = (
     " Use only the space needed, up to 250 words and below 4096 UTF-8 bytes; shorter is fine."
     " Lead with unfinished deliverables, any established blocker and concrete next actions."
     " Then list changed"
@@ -30,6 +28,11 @@ REQUEST = (
     " tokens and at most 256 thinking tokens when a native thinking cap is configured."
     " If validation fails, the harness may offer one repair using the same budgets;"
     " otherwise it may reset without a summary."
+)
+REQUEST = (
+    "Context checkpoint requested. Your next response must call checkpoint_context"
+    " alone; no implementation tools will execute in this checkpoint response."
+    + REQUEST_DETAILS
 )
 TOOL = {
     "type": "function",
@@ -78,9 +81,22 @@ def tool(shared=False, *, progress=False):
     return result
 
 
-def request(shared=False, *, progress=False):
+def request(shared=False, *, progress=False, allow_finish=False):
+    opening = (
+        "Context checkpoint requested. If your work is ready for final handoff, call"
+        " finish_attempt alone using its ordinary schema and evidence requirements."
+        " A supported blocker may also use that tool. This ends the attempt; it does"
+        " not certify correctness or renew any budget. If work remains, call"
+        " checkpoint_context alone to save continuation memory. No implementation"
+        " tools will execute in this response. Both choices use the existing"
+        " checkpoint response caps. The following note requirements apply only"
+        " to checkpoint_context:"
+        + REQUEST_DETAILS
+        if allow_finish
+        else REQUEST
+    )
     if progress:
-        return REQUEST + (
+        return opening + (
             " Include progress with concise implemented work, check outcomes, remaining"
             " public requirements, obstacle and next action. Report change since the"
             " previous report (or task start for the first). Aim for 100–150 words"
@@ -93,7 +109,7 @@ def request(shared=False, *, progress=False):
             " Populate remaining from explicit public requirements; put optional"
             " verification plans in next_action when relevant."
         )
-    return REQUEST + (
+    return opening + (
         " Optionally include evidence using the same references as final handoff;"
         " selected historical tool results will accompany your continuation note."
         if shared
@@ -159,7 +175,24 @@ def failure(error, response):
     )
 
 
-def repair_request(shared=False, *, progress=False):
+def repair_request(shared=False, *, progress=False, allow_finish=False):
+    if allow_finish:
+        return (
+            "Repair the rejected checkpoint-boundary response with one complete call"
+            " alone: finish_attempt if ready for ordinary final handoff, otherwise"
+            " checkpoint_context. Follow the chosen tool's schema and correct the"
+            " reported validation error without inventing work or evidence."
+            + (
+                " For checkpoint_context, supply summary and progress, with citations"
+                " in progress.evidence."
+                if progress
+                else " For checkpoint_context, supply summary."
+            )
+            + " Finalization uses its ordinary evidence fields, not a progress report."
+            " No implementation tools will execute. This is the only checkpoint"
+            " repair opportunity; existing time, token and call budgets continue"
+            " unchanged. If repair fails, continuation may reset without a summary."
+        )
     if progress:
         return (
             "Repair the rejected checkpoint with one checkpoint_context call alone."
@@ -193,6 +226,7 @@ def action(
     shared=False,
     history=None,
     progress=False,
+    allow_finish=False,
 ):
     try:
         if not requested:
@@ -217,8 +251,18 @@ def action(
             or len(identifier.encode()) > 256
         ):
             raise ValueError("Invalid checkpoint tool-call ID")
+        if allow_finish and isinstance(fn, dict) and fn.get("name") == "finish_attempt":
+            from finish_attempt import actions
+
+            return actions(
+                message, response, history, finish_reason=finish_reason, max_calls=1
+            )
         if not isinstance(fn, dict) or fn.get("name") != NAME:
-            raise ValueError("Only checkpoint_context is accepted for this response")
+            raise ValueError(
+                "Only checkpoint_context or finish_attempt is accepted for this response"
+                if allow_finish
+                else "Only checkpoint_context is accepted for this response"
+            )
         raw = fn.get("arguments")
         if not isinstance(raw, str) or len(raw.encode()) > MAX_BYTES:
             raise ValueError("Checkpoint arguments exceed 8192 bytes or are not text")

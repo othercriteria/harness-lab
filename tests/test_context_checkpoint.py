@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from checkpoint_evidence import verify_checkpoint_evidence
 from coding_agent import IsolatedEnvironment, LocalModel
 from context_checkpoint import action, validate
-from control import UnsafeCleanup
+from control import DeadlineExceeded, UnsafeCleanup
 from fresh_context import FreshContext, validate_history_archive, validate_policy
 from mini_bootstrap import DefaultAgent, FormatError
 from observations import ObservationHistory
@@ -93,6 +93,153 @@ class CheckpointTests(unittest.TestCase):
 
     def read(self, name):
         return json.loads((self.root / name).read_text())
+
+    def use_headroom(self, mode="continue", max_resets=2):
+        policy = {
+            "trigger": "context_headroom", "min_remaining_agent_seconds": 180,
+            "headroom_tokens": 8192, "max_resets": max_resets, "summary_checkpoint": True,
+            "continuation_mode": mode,
+        }
+        self.limits["fresh_context"] = policy
+        self.controller = FreshContext(self.root, policy, self.env, model=self.model)
+        self.model.fresh_context = self.env.fresh_context = self.controller
+        self.controller.start(self.env.agent_deadline, 705)
+        self.model.count_tokens = lambda *args: 26000
+
+    def terminal_call(self):
+        return call("finish_attempt", {
+            "disposition": "submitted", "summary": "Ready for independent review",
+            "evidence": [], "unverified": ["Independent checks pending"], "blocker": None,
+        }, "final")
+
+    def checkpoint_audit(self):
+        return verify_checkpoint_evidence(self.root, self.limits)["checkpoints"][0]
+
+    def test_pressure_checkpoint_can_finalize_without_reset_or_budget_renewal(self):
+        self.use_headroom()
+        deadline = self.env.agent_deadline
+        self.run_sequence(checkpoint=self.terminal_call(), prompt_tokens=26000)
+        self.assertEqual((self.model.calls, self.model.completion_tokens, self.env.calls), (2, 10, 2))
+        self.assertEqual(self.env.agent_deadline, deadline)
+        self.assertEqual(len(self.perform_options), 1)
+        self.assertEqual(self.requests[1]["max_tokens"], 2048)
+        self.assertEqual(self.requests[1]["reasoning_budget_tokens"], 256)
+        self.assertFalse(list(self.root.glob("fresh-context-reset-*.json")))
+        self.assertFalse((self.root / "context-checkpoint-001.json").exists())
+        self.assertEqual(self.read("tool-002.result.json")["terminal_control"], "Submitted")
+        audit = self.checkpoint_audit()
+        self.assertEqual(audit["status"], "finalized")
+        self.assertEqual(audit["summary_completion_tokens"], 0)
+        self.assertEqual(audit["finalization_completion_tokens"], 5)
+
+    def test_pressure_checkpoint_finalization_uses_ordinary_evidence_validation_and_repair(self):
+        self.use_headroom()
+        bad = self.terminal_call()
+        value = json.loads(bad["tool_calls"][0]["function"]["arguments"])
+        value["evidence"] = [{"kind": "observation", "observation_id": "o9999"}]
+        bad["tool_calls"][0]["function"]["arguments"] = json.dumps(value)
+        self.run_sequence(checkpoint=bad, repair=self.terminal_call(), prompt_tokens=26000)
+        self.assertEqual((self.model.calls, self.env.calls), (3, 2))
+        self.assertEqual(len(self.perform_options), 1)
+        audit = self.checkpoint_audit()
+        self.assertEqual(audit["status"], "finalized")
+        self.assertEqual(audit["initial_attempt"]["status"], "rejected")
+
+    def test_pressure_checkpoint_rejects_mixed_terminal_and_execution_batch(self):
+        self.use_headroom()
+        bad = self.terminal_call()
+        bad["tool_calls"] += call("bash", {"command": "must not execute"}, "bad")["tool_calls"]
+        self.run_sequence(checkpoint=bad, repair=self.terminal_call(), prompt_tokens=26000)
+        self.assertEqual(len(self.perform_options), 1)
+        self.assertEqual(self.checkpoint_audit()["initial_attempt"]["status"], "rejected")
+
+    def test_pressure_checkpoint_second_bad_finalization_falls_back_without_extra_retry(self):
+        self.use_headroom()
+        bad = call("finish_attempt", {"summary": "missing required fields"})
+        self.run_sequence(checkpoint=bad, repair=bad, prompt_tokens=26000)
+        self.assertEqual(self.model.calls, 5)
+        self.assertEqual(self.checkpoint_audit()["status"], "rejected")
+        self.assertEqual(self.read("fresh-context-reset-001.json")["summary_checkpoint"]["status"],
+                         "fallback_without_summary")
+        self.assertEqual(len(list(self.root.glob("context-checkpoint-repair-request-*.json"))), 1)
+
+    def test_review_mode_cannot_finalize_instead_of_checkpoint(self):
+        self.use_headroom("review", max_resets=1)
+        self.assertFalse(self.controller.checkpoint_finalization_allowed)
+        self.run_sequence(checkpoint=self.terminal_call(),
+                          repair=call("checkpoint_context", {"summary": SUMMARY}), prompt_tokens=26000)
+        self.assertEqual(self.model.calls, 5)
+        self.assertEqual(self.checkpoint_audit()["status"], "saved")
+        self.assertTrue((self.root / "fresh-context-reset-001.json").exists())
+
+    def test_pressure_checkpoint_can_report_an_ordinary_supported_blocker(self):
+        self.use_headroom()
+        blocked = call("finish_attempt", {
+            "disposition": "blocked", "summary": "Conflicting requirements",
+            "evidence": [{"kind": "public_contract", "public_clause": "Return zero and one",
+                          "supports": "The same result cannot equal both"}],
+            "unverified": [],
+            "blocker": {"category": "contradictory_requirements", "argument": "Both results required",
+                        "necessary_change": "Choose one result"},
+        })
+        self.run_sequence(checkpoint=blocked, prompt_tokens=26000)
+        self.assertEqual(self.read("tool-002.result.json")["terminal_control"], "Blocked")
+        self.assertEqual(self.checkpoint_audit()["disposition"], "blocked")
+        self.assertFalse(list(self.root.glob("fresh-context-reset-*.json")))
+
+    def test_truncated_terminal_response_at_checkpoint_is_rejected_then_repaired(self):
+        self.use_headroom()
+        self.run_sequence(checkpoint=self.terminal_call(), finish_reason="length",
+                          repair=self.terminal_call(), prompt_tokens=26000)
+        audit = self.checkpoint_audit()
+        self.assertEqual(audit["status"], "finalized")
+        self.assertEqual(audit["initial_attempt"]["status"], "rejected")
+        self.assertEqual(len(self.perform_options), 1)
+
+    def test_active_scope_disables_checkpoint_finalization(self):
+        self.use_headroom()
+        self.model.scope_runtime = SimpleNamespace(active=True)
+        self.assertFalse(self.controller.checkpoint_finalization_allowed)
+        self.controller.checkpoint_requested = True
+        with self.assertRaisesRegex(ValueError, "Ineligible"):
+            self.controller.checkpoint_response(accepted=True, accepted_tool="finish_attempt")
+
+    def test_deadline_between_terminal_response_and_dispatch_is_not_submission(self):
+        self.use_headroom()
+        now = time.monotonic()
+        with patch("time.monotonic", return_value=now) as clock:
+            def advance(n):
+                if n == 2:
+                    clock.return_value = self.env.agent_deadline + 1
+            with self.assertRaises(DeadlineExceeded):
+                self.run_sequence(checkpoint=self.terminal_call(), after_response=advance, prompt_tokens=26000)
+        self.assertFalse((self.root / "final-handoff.json").exists())
+        self.assertEqual(self.checkpoint_audit()["status"], "valid_finalization_not_dispatched")
+
+    def test_terminal_checkpoint_audit_rejects_forged_receipts_and_later_activity(self):
+        self.use_headroom()
+        self.run_sequence(checkpoint=self.terminal_call(), prompt_tokens=26000)
+        for name, key, value in [
+            ("tool-002.result.json", "terminal_control", "Blocked"),
+            ("context-checkpoint-response-001.json", "accepted_tool", "checkpoint_context"),
+            ("final-handoff.json", "handoff", {"summary": "forged"}),
+        ]:
+            path = self.root / name
+            original = path.read_bytes()
+            altered = json.loads(original); altered[key] = value
+            path.write_text(json.dumps(altered))
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                self.checkpoint_audit()
+            path.write_bytes(original)
+        (self.root / "tool-003.request.json").write_text("{}")
+        with self.assertRaisesRegex(ValueError, "Continued tools"):
+            self.checkpoint_audit()
+        (self.root / "tool-003.request.json").unlink()
+        (self.root / "tool-002.result.json").unlink()
+        self.assertEqual(self.checkpoint_audit()["status"], "finalization_dispatch_incomplete")
+        (self.root / "summary.json").write_text('{"clean_agent_completion":true}')
+        with self.assertRaisesRegex(ValueError, "without result"):
+            self.checkpoint_audit()
 
     def run_sequence(
         self,

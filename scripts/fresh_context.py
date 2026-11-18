@@ -339,6 +339,7 @@ class FreshContext:
         self.checkpoint_attempts = 0
         self.checkpoint_repair_considered = False
         self.checkpoint_valid_response = False
+        self.checkpoint_response_tool = None
         self.checkpoint_tool = None
         self.checkpoint = None
         self.cycles = 0
@@ -368,15 +369,31 @@ class FreshContext:
     def checkpoint_pending(self):
         return self.checkpoint_requested and not self.checkpoint_attempted
 
-    def checkpoint_response(self, *, accepted, error=None):
+    @property
+    def checkpoint_finalization_allowed(self):
+        from checkpoint_policy import allow_finalization
+
+        scope = getattr(self.model, "scope_runtime", None)
+        return allow_finalization(
+            getattr(self.model, "limits", None), scoped=bool(scope and scope.active)
+        )
+
+    def checkpoint_response(self, *, accepted, error=None, accepted_tool=None):
         """Called after ordinary request/usage accounting, before any tool dispatch."""
         if not self.checkpoint_pending:
             raise ValueError("No pending checkpoint response")
+        kind = (accepted_tool or "checkpoint_context") if accepted else None
+        if kind not in (None, "checkpoint_context", "finish_attempt") or (
+            kind == "finish_attempt" and not self.checkpoint_finalization_allowed
+        ):
+            raise ValueError("Ineligible checkpoint response tool")
         self.checkpoint_attempted = True
         self.checkpoint_attempts += 1
         self.checkpoint_valid_response = accepted
+        self.checkpoint_response_tool = kind
         record = {
             "status": "valid_response" if accepted else "rejected_response",
+            "accepted_tool": kind,
             "model_calls": self.model.calls,
             "completion_tokens": self.model.completion_tokens,
             "timing": self.timing(time.monotonic()),
@@ -416,6 +433,7 @@ class FreshContext:
             "content": repair_request(
                 model.limits.get("shared_evidence", False),
                 progress=model.limits.get("checkpoint_progress", False),
+                allow_finish=self.checkpoint_finalization_allowed,
             ),
         }
         measured = None
@@ -475,6 +493,7 @@ class FreshContext:
             self.summary_enabled
             and self.checkpoint_attempted
             and self.checkpoint_valid_response
+            and self.checkpoint_response_tool == "checkpoint_context"
             and self.checkpoint_requested
             and self.checkpoint is None
             and not self.attempted
@@ -655,6 +674,7 @@ class FreshContext:
             self.checkpoint_attempts = 0
             self.checkpoint_repair_considered = False
             self.checkpoint_valid_response = False
+            self.checkpoint_response_tool = None
             self.checkpoint_tool = self.checkpoint = None
             self.pressure = None
         if (
@@ -800,6 +820,7 @@ class FreshContext:
                 "content": request(
                     model.limits.get("shared_evidence", False),
                     progress=model.limits.get("checkpoint_progress", False),
+                    allow_finish=self.checkpoint_finalization_allowed,
                 ),
             }
             record = {

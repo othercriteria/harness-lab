@@ -20,6 +20,7 @@ from context_checkpoint import (
     tool,
 )
 from mini_bootstrap import FormatError
+from checkpoint_policy import allow_finalization
 
 
 def require(condition, message):
@@ -32,6 +33,58 @@ def read(path):
         raw = stream.read(4 * 1024 * 1024 + 1)
     require(len(raw) <= 4 * 1024 * 1024, "Checkpoint evidence size bound")
     return json.loads(raw)
+
+
+def terminal_checkpoint(root, sequence, model_index, tool_index, action, request_count):
+    """Audit terminal dispatch separately from merely accepting its response."""
+    require(model_index == request_count, "Continued inference after terminal checkpoint response")
+    require(
+        not (root / f"context-checkpoint-{sequence:03d}.json").exists()
+        and not (root / f"fresh-context-reset-{sequence:03d}.json").exists(),
+        "Terminal checkpoint produced memory or reset",
+    )
+    later = [
+        p for p in root.glob("tool-*.request.json")
+        if re.fullmatch(r"tool-[0-9]+\.request\.json", p.name)
+        and int(p.name.split("-")[1].split(".")[0]) > tool_index
+    ]
+    require(not later, "Continued tools after terminal checkpoint response")
+    control_path = root / f"tool-{tool_index:03d}.request.json"
+    result_path = root / f"tool-{tool_index:03d}.result.json"
+    handoff_path = root / "final-handoff.json"
+    summary_path = root / "summary.json"
+    claimed_complete = summary_path.exists() and read(summary_path).get("clean_agent_completion") is True
+    if not control_path.exists():
+        require(not result_path.exists() and not handoff_path.exists() and not claimed_complete,
+                "Terminal completion claimed without dispatch")
+        return "valid_finalization_not_dispatched"
+    control = read(control_path)
+    require(
+        control.get("mode") == "adapter-control"
+        and control.get("name") == "finish_attempt"
+        and control.get("executed") is False
+        and control.get("arguments") == action["payload"],
+        "Invalid checkpoint finalization dispatch",
+    )
+    if not result_path.exists():
+        require(not claimed_complete, "Terminal completion claimed without result")
+        return "finalization_dispatch_incomplete"
+    result = read(result_path)
+    expected = "Submitted" if action["payload"]["disposition"] == "submitted" else "Blocked"
+    require(
+        result.get("terminal_control") == expected
+        and result.get("ok") is True
+        and result.get("executed") is False
+        and result.get("cleanup_required") is False
+        and result.get("handoff_status") == "unverified_model_handoff"
+        and "review_control" not in result
+        and "checkpoint_control" not in result,
+        "Invalid checkpoint terminal receipt",
+    )
+    handoff = read(handoff_path)
+    require(handoff.get("handoff") == action["payload"], "Terminal handoff differs from response")
+    require(handoff.get("status") == "unverified_model_handoff", "Terminal handoff claimed verification")
+    return "finalized"
 
 
 def verify_checkpoint_evidence(directory, limits):
@@ -174,6 +227,9 @@ def _verify_checkpoint(
     offer_path = root / f"{prefix}-request-{sequence:03d}.json"
     offer = read(offer_path) if offer_path.exists() else None
     shared = limits.get("shared_evidence", False)
+    # Pressure checkpoints are offered only outside active scoped subtasks.
+    # Scoped projection/return conformance remains a separate audit.
+    can_finish = allow_finalization(limits)
     history = None
     if offer is not None and shared:
         pointer = offer["observation_manifest"]
@@ -247,10 +303,12 @@ def _verify_checkpoint(
             notice = {
                 "role": "user",
                 "content": repair_request(
-                    shared, progress=limits.get("checkpoint_progress", False)
+                    shared, progress=limits.get("checkpoint_progress", False),
+                    allow_finish=can_finish,
                 )
                 if repair
-                else request(shared, progress=limits.get("checkpoint_progress", False)),
+                else request(shared, progress=limits.get("checkpoint_progress", False),
+                             allow_finish=can_finish),
             }
             require(offer["notice"] == notice, "Checkpoint instructions changed")
             require(
@@ -336,6 +394,7 @@ def _verify_checkpoint(
             shared=shared,
             progress=limits.get("checkpoint_progress", False),
             history=history,
+            allow_finish=can_finish,
         )[0]
     except FormatError:
         accepted = None
@@ -354,6 +413,8 @@ def _verify_checkpoint(
         "Parser verdict differs",
     )
     require(receipt["executed"] is False, "Response claimed command execution")
+    require(receipt.get("accepted_tool") == (accepted["tool"] if accepted else None),
+            "Checkpoint response tool differs from parser verdict")
     if followed_by_repair:
         require(accepted is None, "Only rejected responses may be repaired")
         return {
@@ -364,6 +425,17 @@ def _verify_checkpoint(
             **accounting,
         }
     tool_index = offer["tool_calls"] + 1
+    if accepted is not None and accepted["tool"] == "finish_attempt":
+        status = terminal_checkpoint(
+            root, sequence, checkpoint_index, tool_index, accepted, len(requests)
+        )
+        return {
+            "status": status,
+            "disposition": accepted["payload"]["disposition"],
+            "summary_completion_tokens": 0,
+            "finalization_completion_tokens": checkpoint_response["usage"]["completion_tokens"],
+            **accounting,
+        }
     control_path = root / f"tool-{tool_index:03d}.request.json"
     saved_path = root / f"context-checkpoint-{sequence:03d}.json"
     saved = read(saved_path) if saved_path.exists() else None
