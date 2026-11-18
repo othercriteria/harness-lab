@@ -1,0 +1,130 @@
+{
+  "task": "Selected GitHub issue export, first fresh in-repo comparison",
+  "starter_revision": "3ae3ff7269cd2870c71d900e1e5cec1f31b411e8",
+  "setup": "Skaia, frozen standard-workers v4 adapters, Qwen3.8-27B RANA-layout 32k, 2048 thinking tokens, seed 19100, one serial run each. Task time includes verification and excludes model load and first-prefix warmup.",
+  "task_ceiling_seconds": 240,
+  "freeze_manifest_sha256": "2adcf720a39eebfeade0487ba1ef81c27eaf96d00cec2f91985f36a39c87b1da",
+  "public_brief": "The Maintainer prepares small GitHub issue packets for planning agents. Add targeted issue export to scripts/export_issue_context.py so an operator can select a handful of known issues even when the repository has more than 50. The existing unfiltered command must keep its behavior.\n\nAdd repeatable --issue NUMBER to the existing CLI (repository and new output path are still positional). In selected mode accept positive decimal integers (ASCII digits only, at least one nonzero digit; 007 and 7 select issue 7), deduplicate repeated numbers, and fetch only the selected issues with gh issue view NUMBER --repo OWNER/REPO --json FIELDS. Fetch each unique number once; the order of requests and field names is flexible. Limit selection to 50 distinct issues. Reject invalid numbers or excessive selections before calling gh or creating output. A failed lookup must leave no partial packet.\n\nKeep the existing fields, normalized label names, numeric issue order, output size limit and exclusive file creation. Use \"Selected issue titles, bodies and label names. Comments and PRs excluded.\" as the scope in selected mode. Open and closed issues are both valid. Only edit scripts/export_issue_context.py. You can run python -m unittest discover -s tests offline. Supplied tests use a stand-in for gh.",
+  "admission": {
+    "public_contract_sha256": "6eeb6c67b514a5b2757ebfc1f1d2624f56d8313c82969bfda6a7a612b213a888",
+    "sealed_blind_solution_sha256": "10028d4ffb6364ad2879ae2f134118e6eb29694d463ad5a7c6352d4c27936d0d",
+    "finding": "Clarified ASCII digits, nonzero and leading zeroes before freezing. Unchanged starter failed both graders; sealed independent solution passed both."
+  },
+  "bulk_evidence": "/bulk/dlk/local-harness/research/harness-comparison-002",
+  "rows": [
+    {
+      "condition": "opencode",
+      "run": "harness-comparison-issues-opencode-seed19100-002",
+      "raw_summary_sha256": "d8e339dfae64790c7d8eaba2c8d52f9718e2a17be8a8e6726e4effd3fea806ee",
+      "terminal_review_sha256": "f7cde2149783f75151c426d38f9888cc180c83072a9906cc319f546245fb76cc",
+      "submitted_exporter_sha256": "c822cc88d188fe786e9480112093b0726266ed5e4ea6ee01e3ab40caaa927e81",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "within_budget": true,
+      "task_seconds": 95.96,
+      "model_load_seconds": 15.79,
+      "first_prompt_tokens": 7718,
+      "first_cached_tokens": 7714,
+      "completion_tokens": 6929,
+      "requests": 10,
+      "long_padded_number": false,
+      "source_accepted": false,
+      "handoff_accepted": true,
+      "full_acceptance": false,
+      "review_seconds": 31.12,
+      "review": "Both frozen checks pass and terminal verification claims match the successful rerun of its probes. Source needs one small change before acceptance: int(value) rejects a valid spelling of issue 7 with more than 4300 total digits. Native config mountpoints are adapter-owned. No other source changes."
+    },
+    {
+      "condition": "worker",
+      "run": "harness-comparison-issues-worker-seed19100-001",
+      "raw_summary_sha256": "e89d408113b8552695c55e40b995dad05b914d7f7bbc3470d759c37f949573bc",
+      "terminal_review_sha256": "1d9781929faa7d3105b7ac526464f00cce5169a22b94ef2c23ab171663fa01aa",
+      "submitted_exporter_sha256": "626fcf4799b63555c3c6d9e55aba34f5bdf445e5d73972af83b8197a68d02bac",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "within_budget": true,
+      "task_seconds": 166.84,
+      "model_load_seconds": 15.81,
+      "first_prompt_tokens": 5100,
+      "first_cached_tokens": 5096,
+      "completion_tokens": 14095,
+      "requests": 11,
+      "long_padded_number": false,
+      "source_accepted": false,
+      "handoff_accepted": true,
+      "full_acceptance": false,
+      "review_seconds": 23.03,
+      "review": "Both frozen checks pass. The post-freeze valid padded issue 7 fails before lookup because of int(value). Terminal observations support the reported three public and nine scratch tests, and the handoff accurately describes their scope. Scratch is attempt-local."
+    },
+    {
+      "condition": "aider",
+      "run": "harness-comparison-issues-aider-seed19100-001",
+      "raw_summary_sha256": "7cd3cb8b199a944b9a9cdea5f3ffcdf3081f6ac2f15124f7b046981e5a664fff",
+      "terminal_review_sha256": "3c390cce35eb955d048455c99139e2266e060c43c4a98cf712c0919e8e8c0cf8",
+      "submitted_exporter_sha256": "f1aea10c76035a4a00416ca56d4dd6f335e12f23d44ed8d7b7f0fcf5d680b1f1",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "within_budget": true,
+      "task_seconds": 106.55,
+      "model_load_seconds": 15.79,
+      "first_prompt_tokens": 3625,
+      "first_cached_tokens": 3621,
+      "completion_tokens": 7970,
+      "requests": 3,
+      "long_padded_number": false,
+      "source_accepted": false,
+      "handoff_accepted": true,
+      "full_acceptance": false,
+      "review_seconds": 10.25,
+      "review": "Both frozen checks pass. The applied edit and automatic three-test result in the native transcript are supported; the Aider-specific history, cache and masked paths are adapter bookkeeping. int(raw_number) rejects the additional valid padded issue 7. No claim of live GitHub verification."
+    }
+  ],
+  "excluded_attempt": {
+    "run": "/bulk/dlk/local-harness/runs/harness-comparison-issues-opencode-seed19100-001",
+    "reason": "Controller replaced two seed arguments in a one-seed command and consumed --kind; argument parsing rejected the launch before server load or inference. All four closure checks verified. New launch restores --kind; same freeze and seed."
+  },
+  "advisory": {
+    "job": "230544f846d0473aa3788aa2812f37ea",
+    "package": "677cb8436c03c9d22cd4d4663d847a1c6ecd2e790d9989bf2b71b6f37dce4048",
+    "ranked_issues": [
+      16,
+      17,
+      2
+    ],
+    "snapshot_issue_count": 34,
+    "assessment": "Accepted as planning input. Pinned comparison findings check out. Reviewer time could reverse the ranking. Portable summaries do not make bulk traces available from a clone, a status document cannot establish live host availability, and release preparation can start before the owner chooses a license. No workspace patch applied."
+  },
+  "review_measure": "Elapsed outer Codex review interval per raw submission, unblinded. Includes retrieval/tool latency within the interval. The supplementary input was identified in the first review and checked across arms. Probe preparation, shared task preparation, and integration were not timed consistently across arms. These intervals do not estimate human effort or delegation savings.",
+  "post_freeze_probe": "Export existing issue 7 spelled with 4500 preceding ASCII zeroes. The public contract permits this. Probe is additional evidence and does not change either frozen score.",
+  "limits": "One task, one seed and fixed arm order. Native edit, test and context workflows differ. Raw traces require the bulk evidence tree. No reliability or general speed ranking inferred.",
+  "integration": {
+    "starting_source_sha256": "6f812dfe58626501be402b5849feb90fbd6bcf2f4806ae7d7761f959ef5310ed",
+    "original_candidate_sha256": "c822cc88d188fe786e9480112093b0726266ed5e4ea6ee01e3ab40caaa927e81",
+    "original_run": "harness-comparison-issues-opencode-seed19100-002",
+    "reason": "Shared packet normalization and formatting across both CLI modes. All raw submissions failed the same supplemental check.",
+    "outer_changes": "Validate the ASCII spelling at argument parsing, strip leading zeroes as text and deduplicate canonical strings. Name the issue when a lookup fails. Added portable regression tests.",
+    "landed_exporter_sha256": "1f8c5c82fbd478bb8ae6799d64f38fd77cdbba3e85a16d06f91de210198c44a9",
+    "isolated_replay": {
+      "canonical": true,
+      "external": true,
+      "canonical_count": 6,
+      "external_count": 5
+    },
+    "live_read": {
+      "requested": [
+        "35",
+        "034",
+        "35"
+      ],
+      "exported": [
+        34,
+        35
+      ],
+      "packet": "selected-issues.json"
+    },
+    "portable_regressions": 3
+  }
+}

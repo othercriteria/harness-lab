@@ -60,7 +60,14 @@ bodies, label names, URLs and update times. An open issue with the `parked` labe
 Maintainer owns the assignment and any later decision to act on suggestions.
 The export covers open and closed issues and excludes comments and pull
 requests. When a decision depends on a comment, include the relevant excerpt
-and its permalink in the selected packet. Larger backlogs require curation. For jobs that produce
+and its permalink in the selected packet. The full export accepts up to 50 issues. For a larger backlog or a narrower
+assignment, select the issues explicitly. Duplicate numbers count once.
+
+```sh
+python3 scripts/export_issue_context.py othercriteria/local-harness-lab "$packet/selected-issues.json" --issue 34 --issue 35
+```
+
+For jobs that produce
 applicable edits, the ordinary base check includes this input, so keep its
 exact bytes with the application target. An advisory memo needs only review.
 

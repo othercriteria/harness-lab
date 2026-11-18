@@ -32,7 +32,7 @@ jobs:
       - name: Test Delegate artifacts, reviewed application, checkpoint policy and Observatory
         run: |
           python -S -m unittest \
-            tests/test_delegate_artifacts.py tests/test_delegate_apply.py \
+            tests/test_export_issue_context.py tests/test_delegate_artifacts.py tests/test_delegate_apply.py \
             tests/test_checkpoint_policy.py tests/test_observe.py tests/test_observe_costs.py \
             tests.test_delegate_job.DelegateJobTests.test_dispatch_records_only_explicit_classification
       - name: Test Observatory rendering
