@@ -1,9 +1,14 @@
 # Preparing and reviewing small apprentice assignments
 
-A practical guide for the outer maintainer running apprentice jobs through the
-delegated-work mechanics in the [README](../README.md#delegated-work-mvp).
-This adds no approval layer; existing admission, isolation, GPU ownership,
-review, and application requirements still govern the work.
+A practical guide for the Maintainer — the trusted outer human or hosted-agent
+role that prepares work, operates the host and reviews results — running
+apprentice jobs through the delegated-work mechanics in the
+[README](../README.md#delegated-work-mvp). The Worker is the inner agent that
+receives only the frozen package's public inputs and brief; the Delegate is the
+packaging, dispatch, result collection and reviewed application around it; and
+the Verifier runs the separate executable checks. This adds no approval layer;
+existing admission, isolation, GPU ownership, review, and application
+requirements still govern the work.
 
 ## Preparing the assignment
 
@@ -20,7 +25,7 @@ path. Forbidden path parts (`private`, `reference`, `results`, `.venv`, and the
 rest listed in the artifact guide) are refused by construction.
 
 **Separate allowed outputs from read-only context.** `input_files` is context:
-everything the worker may read, including files that must not change.
+everything the Worker may read, including files that must not change.
 `allowed_write_paths` is the output set. Existing writable files must also be
 selected inputs; new output files can be listed without already existing.
 Select status and campaign files as read-only context unless the assignment
