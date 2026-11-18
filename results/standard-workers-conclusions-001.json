@@ -1,0 +1,77 @@
+{
+  "status": "complete",
+  "decision": "Retain Local Harness Lab Worker for current supervised work; retain OpenCode as a viable measured alternative; retain Aider as a bounded editing baseline. Do not replace the production Worker or claim general superiority from this screen.",
+  "scope": "two unchanged known development tasks, two seeds each, three coding harnesses; compatibility and friction screen, not reliability or held-out superiority",
+  "counts": {
+    "valid_trials": 12,
+    "canonical_and_external_passes": 12,
+    "source_conforming": 12,
+    "clean_within_budget": 12,
+    "strict_full_acceptance": 11,
+    "preserved_operational_invalid_attempts": 5
+  },
+  "total_task_seconds": {
+    "worker": 398.9264932209626,
+    "opencode": 346.55767759890296,
+    "aider": 432.42143639805727
+  },
+  "timing_qualification": "Raw sums across two short and two moderate trials; includes the OpenCode handoff-error row, excludes declared prefix warmup/model loading. Not a failure-adjusted utility score or a reliability estimate.",
+  "handoff_finding": "OpenCode moderate seed18101 correctly reported40 passing tests but falsely split them into31existing+9new instead of21+19. Source and checks pass; strict honest-handoff review fails. Reporting error, not evidence of deliberate deception.",
+  "lessons": [
+    "Standard local coding agents are viable on this backend. The custom loop is not necessary for these two implementation tasks.",
+    "Lab differentiation is measured resource control, isolated verification, preserved failures, source/handoff review and inspected application, not novelty of local delegation or trace viewing.",
+    "Native lint/test feedback repairs generated tests, but those tests are not automatically authoritative. Incorrect sort/null/CSV expectations also occurred in other Workers and were reviewed against the public contract.",
+    "Aider native32k metadata derives a2048 chat-history budget in this pinned release. Its three summary calls cost61.35s in the208.93s first moderate trial; second moderate has two summary calls. These are serialized on the single backend.",
+    "Default-disabled features are not an isolation boundary: OpenCode project plugin import and Aider native subprocess/new-file Git behavior needed explicit qualification.",
+    "Native and custom contexts/tools remain treatment-specific. Worker headroom clamps output below a common32768 ceiling; native clients retain their own recovery schedules."
+  ],
+  "retain": [
+    "Worker current deployment and existing larger ladder evidence",
+    "Trials/Verifier/Delegate/Observatory separation",
+    "OpenCode pinned non-Git alternative and Aider adapted editing baseline",
+    "Five operationally invalid attempts as integration evidence"
+  ],
+  "adapt_now": [
+    "Pinned OpenCode and Aider flake packages",
+    "Current component naming and attributed Worker contributions",
+    "Observatory native request/command traces and bound full-result/operational-validity labels"
+  ],
+  "defer": [
+    "Production Worker replacement or native Git task qualification",
+    "Aider max-chat-history-token tuning: promising narrow follow-up, not measured here",
+    "Broad reliability claims and automatic20-trial sweeps",
+    "Portable public evidence bundle/Harbor-ATIF assessment to a focused demonstration goal"
+  ],
+  "worker_contributions": [
+    {
+      "job": "fae9695bff1c4e66b9e4afbd19f307eb",
+      "commit": "b8d4697",
+      "work": "README/Delegate vocabulary",
+      "outer_repairs": false
+    },
+    {
+      "job": "0fb781b9f7964faf95f3b932647bb249",
+      "commit": "0b4e2d0",
+      "work": "Pinned Nix tools/description, independently evaluated",
+      "outer_repairs": false
+    },
+    {
+      "job": "ded7a674dcd74a1fb0476fca965e1002",
+      "commit": "044fdda",
+      "work": "Observatory/CLI display vocabulary",
+      "outer_repairs": false
+    }
+  ],
+  "evidence": [
+    "results/standard-workers-screen-001.json",
+    "results/standard-workers-completion-audit-001.json",
+    "docs/standard-worker-comparison.md"
+  ],
+  "limitations": [
+    "Known development tasks; two seeds per cell; fixed order and no held-out superiority claim",
+    "Native agents adapted to immutable Git and isolated commands, not stock unrestricted installations",
+    "No general security proof; no native Git ladder qualification",
+    "Preparation/review time not experimentally measured; no economic advantage claim",
+    "Raw evidence and executable freezes are local bulk artifacts; a portable public package remains follow-up work"
+  ]
+}
