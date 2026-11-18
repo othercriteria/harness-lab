@@ -1,0 +1,254 @@
+{
+  "historical_audit": "results/verification-claims-audit-001.json",
+  "producer_design": "Six prospective existing-task development probes in three matched seed pairs. Same public bytes, model/recipe, private checks and budgets within each pair. Candidate adds a single passage to the structured finalization instruction that applies to written deliverables too. Static and reader tasks exercise observed mechanisms. Policy helper coding task probes transfer/preservation of concrete positive test evidence. No inferred incidence from probes; elapsed-clock feedback and trajectories may diverge.",
+  "producer_instruction": "In deliverables and the handoff, say what each check did, on which inputs, and what it showed. Cite the observation that shows that operation. If the same output could appear with the claimed property false, narrow the claim or run a check that distinguishes the two cases. Identify stand-in inputs and results read from historical records.",
+  "pair_integrity": "Compared file hashes for the six registered runtimes, including their generated public task, checks and configs. Within each pair only scripts/finish_attempt.py differs. Same seed and time budgets; trajectories and elapsed-time feedback can diverge.",
+  "second_reader_design": "The interrupted control is permanently recorded. Retry the same coding control and run the frozen candidate. Two ordinary-recipe second readers independently assess six original claims from known historical records, with supplied observations but no historical verdicts or answer key. A–F: retain measured anchor on tested paths, narrow decoded text vs bytes, recover heading under separate ID, narrow exact count to at least one, preserve token membership but not link resolution, preserve tests but not proof of unchanged content. Report missed distinctions, false corrections and reviewer-only use. Case D count gap discovered by blind reviewer before local runs. Diagnostic challenge panel; no prevalence or automated acceptance inference.",
+  "single_attempt_design": "Two targeted replays use the original B and E records and the first pooled-reader seed. Third is the most recent remaining eligible archive job outside selection and illustrations, first two observation claims. Newly written single-attempt brief, substantially shorter packets and fresh model calls preclude attributing all differences to isolation alone. Do not credit absence of foreign citations alone: retain valid clauses while narrowing unsupported ones. Each case includes selected recorded command, exit and stdout; excludes unselected outer file snapshots or check identities. Reach no conclusions about checks elsewhere.",
+  "records": [
+    {
+      "task": "reader",
+      "condition": "control",
+      "seed": 18600,
+      "package_id": "d48b31839224d8fc6a92f00c3bedd41ae0ae0a26ceb6b79ffb75c46ab9a778c5",
+      "job_id": "de76b99a12a346559f948082e61d00d7",
+      "execution": "completed",
+      "dispatch_seconds": 111.66,
+      "task_seconds": 88.1,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Correct decisions and 14 tests. o0017 reproduces both processing steps on explicitly substituted inputs. The broader statement in o0018 about c0019 confirming all other files unchanged is unsupported. sha256sum was unavailable, the piped check returned zero, and its before/after identity covers only that command. The separate outer delta supports the actual sole addition. Qualify that citation.",
+      "artifact_sha256": "7dd946bfd3416b9d7326116e8747a20317c66ede16a72ab4362a99666c32c68c"
+    },
+    {
+      "task": "reader",
+      "condition": "candidate",
+      "seed": 18600,
+      "package_id": "13c01078518be796ac5cac500062bbe22326018d6655d17ecbde2c0f561fa163",
+      "job_id": "8c19e6c495d640aca5cbe2a66f4b1f2f",
+      "execution": "completed",
+      "dispatch_seconds": 105.72,
+      "task_seconds": 81.8,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Accurate narrow stand-in description in memo and handoff, historical independent verification identified as such, actual 14 tests and missing Git history retained. o0019 is a regex-only probe, correctly labeled. No corresponding claim that a listing or check proves tree identity.",
+      "artifact_sha256": "54927dd9f48f8f7e5204da10dc9c1c8b4f8cadb4f8ea9f6e8e89e6dc2899acd8"
+    },
+    {
+      "task": "static",
+      "condition": "candidate",
+      "seed": 18601,
+      "package_id": "e3e67727cdd41ca1dd32e6fcf1c3e83bab7397644a0a9227dfa2f359276c8b00",
+      "job_id": "1d35d6c3ac0647019f2a67a6aa55e74b",
+      "execution": "completed",
+      "dispatch_seconds": 187.58,
+      "task_seconds": 162.71,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "rejected",
+      "assessment": "Correct clean review verdict, schema check and static-only limitations. The report attributes an unchanged source tree to ls. The summary calls GPU ownership a verified faithful paraphrase of a process ownership observer; the excerpt establishes no such equivalence. Retain source conclusion, reject the full verification assurances.",
+      "artifact_sha256": "eb7e4753b76760c0a78d9bc72da2bbcd7737f1c05cb970c6d5ef4119944bb396"
+    },
+    {
+      "task": "static",
+      "condition": "control",
+      "seed": 18601,
+      "package_id": "f6a25b1d6647bf6db0a4598564484ca2630aff8f502bc6620d07af75a32b4480",
+      "job_id": "523c950eac964a63a8fe9920cd84688d",
+      "execution": "completed",
+      "dispatch_seconds": 116.84,
+      "task_seconds": 91.56,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Correct clean verdict. o0011 reads the README and document headings plus the links, supporting the specific manual match. o0012 distinguishes a partial excerpt from an actual conflict. o0014 tests the report structure.",
+      "artifact_sha256": "b3cb02ff0c774dbaebb1991a239d12866cca8bc13b5a5388ee318eabd6eefc0f"
+    },
+    {
+      "task": "policy",
+      "condition": "control",
+      "seed": 18602,
+      "package_id": "4ef94812a1408eab0355e42b30354738ac3d93a39b3c796007a6960677cfabde",
+      "job_id": "44b891f063ec49ae8d660182d76fbe59",
+      "execution": "failed",
+      "dispatch_seconds": 68.3,
+      "task_seconds": null,
+      "clean_completion": null,
+      "checks_passed": null,
+      "assessment": "Operationally interrupted; no completed handoff. Global swap guard fired during an outer Nix store filename search. Its process consumed substantial memory and was stopped. Host counters cannot attribute every page-out. Original immutable record retained; same package and seed retried after stable swap-out."
+    },
+    {
+      "task": "policy",
+      "condition": "control",
+      "seed": 18602,
+      "package_id": "4ef94812a1408eab0355e42b30354738ac3d93a39b3c796007a6960677cfabde",
+      "job_id": "d60a1786c6ae4d74a8d235a257d13e2e",
+      "execution": "completed",
+      "dispatch_seconds": 105.44,
+      "task_seconds": 80.82,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Both actual checks run: 11 focused tests and an AST import search plus top-level behavior probe. Independent 31-case check passed in isolation. o0006 proves creation only; the missing directory and directory creation are elsewhere in the trace. The separate file delta supplies the write-scope check. Retain code and test evidence; qualify citation.",
+      "artifact_sha256": "d5a8b94da7b89352aa0bd0306cd10b95fc8f512a65f9ea6278ca2b9d70c23982"
+    },
+    {
+      "task": "policy",
+      "condition": "candidate",
+      "seed": 18602,
+      "package_id": "d21e58c2bd18d85f897d8dbbcdacdd319133dea6319f12bee4c5a7fc57884559",
+      "job_id": "5525c0fed2ea4040b20eec3b4ba302c7",
+      "execution": "completed",
+      "dispatch_seconds": 106.71,
+      "task_seconds": 81.26,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Observed the initial test failure, later 13 passing tests and standalone examples. Independent 31-case check passed. o0013 lists current files, searches lines beginning with import/from and runs a small behavior probe. The initial inventory and outer diff support the claimed additions; listing alone cannot establish a delta. The grep alone cannot exclude indented imports. Integration remained unchecked as stated.",
+      "artifact_sha256": "f6dcc84f58b1dbb4b5820589f1d52d4e72d9fd1c6885a81144765088093d5d5a"
+    },
+    {
+      "task": "second-reader",
+      "condition": "ordinary-recipe",
+      "seed": 18620,
+      "package_id": "a09bc947f15afe035427031471d1e5be336d0242765e6cb2cfe36cc14f6fec04",
+      "job_id": "4b2847a5980f4b7f95ccb6542b58b987",
+      "execution": "completed",
+      "dispatch_seconds": 92.64,
+      "task_seconds": 68.17,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "rejected",
+      "assessment": "In the six-case diagnostic, correctly separated at least one from exactly one (D) and recovered the direct 14-test report (F). Borrowed evidence across independent cases in A, C and E; notably re-certified E using A. Identified provenance and scope problems in B but retained byte-identical after a text-mode comparison. Reject as a pass-through memo.",
+      "artifact_sha256": "494eb58e666085cfb9a65e52b052b3a68b391bcccaf656ffd37cc8b09ffe0260"
+    },
+    {
+      "task": "second-reader",
+      "condition": "ordinary-recipe",
+      "seed": 18621,
+      "package_id": "a09bc947f15afe035427031471d1e5be336d0242765e6cb2cfe36cc14f6fec04",
+      "job_id": "637ba67a3faf4ab2838a40f4c6a7ca71",
+      "execution": "completed",
+      "dispatch_seconds": 118.71,
+      "task_seconds": 93.98,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Identified core limitations in B/D/E/F, preserved A and recovered the heading under the same case in C. Explicitly labels cross-case comparisons as illustrative. Qualify details before reuse: E counts 16 instead of 15 backtick tokens; A claims the regex excludes inline-code links despite raw regex scanning; C treats an ambiguous L1 as definitely level one. Review aid only.",
+      "artifact_sha256": "205f542fa0c31b6b3636413671031e25a2c29cd2f6f5e60d7bd92beb6a1dc59b"
+    },
+    {
+      "task": "links",
+      "condition": "one-attempt-packet",
+      "seed": 18620,
+      "package_id": "dc8ba14f57e794915b0ec20c8d1a6be2ce14015908c87f26c949ab81de43ed4e",
+      "job_id": "a6b178c7657d45adb9d9d6540b61f1e8",
+      "execution": "completed",
+      "dispatch_seconds": 62.75,
+      "task_seconds": 38.87,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "accepted",
+      "assessment": "Recovered the supported 15 substring matches and three printed link targets from o0013 alone; kept heading resolution unchecked. No foreign citation. The three source files were actually opened by explicit paths, which supplies existence evidence independent of following links. Qualify the wording about existence; retain the narrower verification claim.",
+      "artifact_sha256": "ba1a366bd6853b894c3e75cffa3816e49e12adeb84038e36403cd292f0d16dc3"
+    },
+    {
+      "task": "text",
+      "condition": "one-attempt-packet",
+      "seed": 18620,
+      "package_id": "7a97aa6f129d87b11d038cca7139894ae650be03f7a9372d2c8af57810388db2",
+      "job_id": "044f5573e3564f09906956dff379bd69",
+      "execution": "completed",
+      "dispatch_seconds": 70.41,
+      "task_seconds": 46.72,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "rejected",
+      "assessment": "Read the embedded literals and recognized the text-mode comparison and unverified baseline provenance, then endorsed byte identity and edit scope anyway. ASCII does not prevent universal-newline normalization. Separate LF/CRLF control produced identical decoded text and different bytes. False assurance remains in the final handoff.",
+      "artifact_sha256": "3a702a1b8b778b586318009f1bfbae4ae578631c5e8e10551a2d41aaaf6f6fd1"
+    },
+    {
+      "task": "transfer",
+      "condition": "one-attempt-packet",
+      "seed": 18622,
+      "package_id": "3be7bbc424b8b1ac75da9327e18d77a64ba42cc96dda6cef06c0ec56f6e7c5d0",
+      "job_id": "7e67a34311da431898ba2a74f46d4048",
+      "execution": "completed",
+      "dispatch_seconds": 85.69,
+      "task_seconds": 60.96,
+      "clean_completion": true,
+      "checks_passed": true,
+      "decision": "rejected",
+      "assessment": "Useful draft preserves 41 passing tests, eight listed item-limit cases, schema bounds 2/2/4 and equality to embedded descriptions. But the terminal summary says seven NEW tests is wrong solely because eight ran. The supplied listing cannot establish which are new. The archive independently has eight in a newly added module and its outer file identities do match after both checks, but neither fact occurs in the provided packet. Do not transfer those outer facts back to the reader. The claimed byte comparison in tool 003 compares parsed strings. Qualify its method as string equality.",
+      "artifact_sha256": "6d5be18b1687d417688389da383c20e21fda0983ac0ffcf96397d7b66c7d8b7a"
+    }
+  ],
+  "decision": {
+    "production": "Keep the existing global Worker prompt. One matched reader pair improved attribution, one static-review pair regressed from a qualified clean report to a false assurance, and both coding helpers passed the same 31-case independent verifier with incidental attribution issues. Three development pairs cannot measure prevalence or a timing effect.",
+    "outer_review": "Use the claim-to-operation view and review both submitted prose and terminal claims. For a material assertion ask which bad state would produce the same result. Check the original attempt for an alternative source before judging a check absent. Correct or reject unsupported handoff language independently of accepting the code. Treat global file-change facts as an outer snapshot comparison.",
+    "mechanism": "Workers sometimes convert a checked proxy into a claim about the intended property, or group independent facts under the nearest citation. The error can first appear in the saved artifact and survive into finalization, can arise without a context reset, and can persist in a verdict even after the limitations name the missing evidence. The data identify observable failure modes, not an internal model cause.",
+    "second_reader": "Use one attempt per optional local review when an expensive decision warrants it. Leave final acceptance with the Maintainer. In a six-case packet one reader used observations from other attempts as affirmative evidence. Separate contexts structurally remove that source of evidence contamination. The isolated text reviewer still endorsed byte equality and overall edit scope despite acknowledging its input was decoded text and provenance was missing.",
+    "counterexample": {
+      "question": "Can two ASCII files compare equal under a default-newline text read and differ byte for byte?",
+      "method": "Wrote the same two ASCII lines with LF and CRLF. Compared a text-mode read to the LF string and the bytes on disk to the LF bytes. This is a separate Maintainer control; it does not assert a historical file had CRLF.",
+      "source": "\"\"\"Maintainer's counterexample to inferring byte equality from a text read.\"\"\"\nimport json\nfrom pathlib import Path\nfrom tempfile import TemporaryDirectory\n\nexpected = b\"first\\nsecond\\n\"\nwith TemporaryDirectory() as directory:\n    path = Path(directory) / \"sample.txt\"\n    for name, data in [(\"LF\", expected), (\"CRLF\", expected.replace(b\"\\n\", b\"\\r\\n\"))]:\n        path.write_bytes(data)\n        with path.open(encoding=\"ascii\") as stream:\n            text_matches = stream.read() == expected.decode(\"ascii\")\n        print(json.dumps(dict(line_endings=name, ascii=data.isascii(), text_matches=text_matches,\n                              bytes_match=path.read_bytes() == expected)))\n",
+      "results": [
+        {
+          "line_endings": "LF",
+          "ascii": true,
+          "text_matches": true,
+          "bytes_match": true
+        },
+        {
+          "line_endings": "CRLF",
+          "ascii": true,
+          "text_matches": true,
+          "bytes_match": false
+        }
+      ]
+    },
+    "cost_and_scope": "Ten historical discovery jobs, six reserved, two named illustrations separate. The timed six-case retrospective pass took 63.1 seconds of hosted reviewer wall time, median 9.5 seconds. This is neither human review time nor an A/B time saving. Five accepted source outcomes and one rejected outcome remained so when applying the rubric to those six. Reader GPU dispatch time and task time are recorded per job. Case selection is enriched and related; no global rate or universal prevention claim.",
+    "transfer": "On the previously unused coding record, a reader preserved the 41-test result and correctly questioned tree identity given the limited packet. It inferred that eight tests running contradicts seven being new. The original file diff separately establishes eight methods in a new module. The outer receipt independently establishes matching final trees. Both facts illustrate why source provenance matters even when a guessed conclusion happens to be correct."
+  },
+  "public_review_packet_hashes": {
+    "audit-packet/claims.json": "62546d1a8b4c5a753329781d8f737d14cf1479ad71e37a54acaac7b1da1fbe37",
+    "single-reader/text/claims.json": "b5647b95d71109150a7f8ccefdfea2253884f70c43bdad757c10e3ba575c9360",
+    "single-reader/links/claims.json": "3d8080380f4829f1039dc9404261974002c729d4d65e7f254e7d5dbcc2a8f36e",
+    "single-reader/transfer/claims.json": "668b1208dafd6d4887472db77c7152e95fa45622013f03231660ed36b751ad77"
+  },
+  "bulk": "/bulk/dlk/local-harness/research/verification-claims-001",
+  "restoration": "/bulk/dlk/local-harness/sessions/2026-11-18-gpu-quiet-037/restoration-verification.json",
+  "initial_repository_revision": "a456e03",
+  "blind_admission": {
+    "six-case": {
+      "public_review": "/bulk/dlk/local-harness/research/verification-claims-001/blind-review.json",
+      "sealed_first_submission": "/bulk/dlk/local-harness/research/verification-claims-001/blind-first.md",
+      "sha256": "b82917ad1263e916bc485563df5cdc4cc455f715e9bc9ab10e3470669796914b",
+      "isolated_nonempty_check": "/bulk/dlk/local-harness/research/verification-claims-001/sealed-first-check.result.json",
+      "note": "Qualitative reference from a fresh hosted reader. No local Worker authorship."
+    },
+    "links": {
+      "public_review": "/bulk/dlk/local-harness/research/verification-claims-001/single-reader/blind-review.json",
+      "sealed_first_submission": "/bulk/dlk/local-harness/research/verification-claims-001/single-links/sealed/audit.md",
+      "sha256": "06ac1dae61e691cc51a315ae670bbe0c8c7a9c556d5dfee5a6ba64ea4474c3a8",
+      "isolated_nonempty_check": "/bulk/dlk/local-harness/research/verification-claims-001/single-links/sealed-check.result.json",
+      "note": "Qualitative reference from a fresh hosted reader. No local Worker authorship."
+    },
+    "text": {
+      "public_review": "/bulk/dlk/local-harness/research/verification-claims-001/single-reader/blind-review.json",
+      "sealed_first_submission": "/bulk/dlk/local-harness/research/verification-claims-001/single-text/sealed/audit.md",
+      "sha256": "bf2e4a413f2b8bf4de0bc2cbc52defb2ea78ff476233b99758c05df9a743480f",
+      "isolated_nonempty_check": "/bulk/dlk/local-harness/research/verification-claims-001/single-text/sealed-check.result.json",
+      "note": "Qualitative reference from a fresh hosted reader. No local Worker authorship."
+    },
+    "transfer": {
+      "public_review": "/bulk/dlk/local-harness/research/verification-claims-001/single-reader/blind-review.json",
+      "sealed_first_submission": "/bulk/dlk/local-harness/research/verification-claims-001/single-transfer/sealed/audit.md",
+      "sha256": "80dfc80640ee106ea6f2e4ed24816e49cf3bca524202b0e4e454a29ebf906b0f",
+      "isolated_nonempty_check": "/bulk/dlk/local-harness/research/verification-claims-001/single-transfer/sealed-check.result.json",
+      "note": "Qualitative reference from a fresh hosted reader. No local Worker authorship."
+    }
+  }
+}

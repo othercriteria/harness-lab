@@ -168,6 +168,39 @@ the original disputed command and the historical decision. The [audit](../result
 includes cases where inspection supported the conclusion despite an imprecise
 citation, and cases where the conclusion itself failed.
 
+## Asking Worker for a second reading
+
+A second reader is useful when a material check is disputed. Give it one
+attempt per assignment. Observation IDs are local to the attempt. Two runs
+can each have an `o0013` for different operations. In a mixed packet a reader
+borrowed one run’s successful heading check to endorse a different run’s
+link-listing command.
+
+In the Maintainer shell, this extracts the cited claims and their original
+model-visible observations from one terminal receipt. Run it in the trial
+directory and save the output in your staging tree before preparing the
+assignment.
+
+```sh
+jq '{handoff, observations: [.observations[] | {
+  id: .record.id, command: .record.command, visible: .original_visible
+}]}' final-handoff.json
+```
+
+Select the relevant claim, command and output for the review. Include the
+submitted passage if it makes a stronger claim. If the handoff appears to
+cite the wrong operation, include the relevant alternative observation from
+that same attempt with its ID. Retain any original truncation notice. A
+small packet can leave the source of a comparison unknown even when the
+complete trace settles it.
+
+Ask for the sentence the Maintainer could pass on, the operation and inputs
+behind it, and any qualification that matters. Check that sentence yourself.
+A reader can notice that a comparison uses an embedded string, then still
+call the result byte-identical even though Python opened the file in text
+mode. Use the outcome to correct the current communication and preserve the
+original receipt for later audit.
+
 ## Related reading
 
 - [Progress reports and checkpoint integration](progress-reports.md) — the
