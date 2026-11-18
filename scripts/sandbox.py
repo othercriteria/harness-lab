@@ -19,8 +19,8 @@ import sys
 import tarfile
 import time
 import uuid
-from pathlib import Path
 from decimal import Decimal, InvalidOperation, localcontext
+from pathlib import Path
 
 from call_budget import MAX_CALLS, MAX_OBSERVATION_BYTES
 from control import UnsafeCleanup, defer_launch_signals
@@ -111,7 +111,9 @@ def tool_path(name):
 
 
 class Runtime:
-    def __init__(self, bwrap=None, *, python_test_library=None, library_catalog=None):
+    def __init__(
+        self, bwrap=None, *, python_test_library=None, library_catalog=None, node=False
+    ):
         candidates = sorted(Path("/nix/store").glob("*-bubblewrap-0.11.2/bin/bwrap"))
         self.bwrap = (
             str(Path(bwrap).resolve())
@@ -155,6 +157,8 @@ class Runtime:
         self.tools.update(
             python3=self.python, python=self.python, sh=self.tools["bash"]
         )
+        if node:
+            self.tools["node"] = tool_path("node")
         roots = set()
         for path in self.tools.values():
             parts = Path(path).parts
@@ -525,6 +529,12 @@ class Runtime:
             command.extend(
                 ("--setenv", "HYPOTHESIS_STORAGE_DIRECTORY", "/tmp/hypothesis")
             )
+        if "node" in self.tools:
+            # Keep V8 within the same address-space limit as all other commands.
+            command.extend((
+                "--setenv", "NODE_OPTIONS",
+                "--jitless --disable-wasm-trap-handler --max-old-space-size=96",
+            ))
         for name, value in {
             "PATH": "/bin",
             "HOME": "/tmp/home",

@@ -1,0 +1,27 @@
+{
+  "suite_sha256": "2de7156242d55002b162341b2fe4c700500d997f8d6d763a999b1188aa8271dc",
+  "expected_assertion_text": "'2/2 accepted'",
+  "cases": {
+    "candidate": {
+      "renderer_sha256": "7591278ff57213c72501fbea2754d50256c3bb90ababb29b7cc571cfe69277f3",
+      "returncode": 0,
+      "matched": true
+    },
+    "baseline": {
+      "renderer_sha256": "375dbe52de8269905a1920196ac3ac6a1f3b676d704eea2eaa4364d7160c6e54",
+      "returncode": 1,
+      "matched": true
+    }
+  },
+  "passed": true,
+  "runtime_node": {
+    "invocation_path": "/nix/store/k3nz3s314bipvqbcbw3faq823hxpwbn1-nodejs-slim-24.19.0/bin/node",
+    "resolved_path": "/nix/store/k3nz3s314bipvqbcbw3faq823hxpwbn1-nodejs-slim-24.19.0/bin/node",
+    "sha256": "a4c7d261ae62215e73edd637711f09a545535226ae9932c3148342f0b027d56b"
+  },
+  "output": "/bulk/dlk/local-harness/research/release-channel-001/replay39",
+  "controls_cleanup": {
+    "candidate": true,
+    "baseline": true
+  }
+}
