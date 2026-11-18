@@ -91,6 +91,7 @@ class LocalModel:
         self.history = None
         self.tool_environment = None
         self.fresh_context = None
+        self.scope_runtime = None
         self.progress_reminder = None
         self.agent_deadline = None
         self.budget_feedback_sent = False
@@ -171,9 +172,15 @@ class LocalModel:
 
     def request_messages(self, messages):
         """One projection for every initial preparation and notice recount."""
-        return self.fresh_context.project(messages) if self.fresh_context else messages
+        base = self.fresh_context.project(messages) if self.fresh_context else messages
+        return (
+            self.scope_runtime.project(messages, base) if self.scope_runtime else base
+        )
 
     def query(self, messages):
+        if self.scope_runtime is not None:
+            self.scope_runtime.before_query(messages)
+        scoped_child = bool(self.scope_runtime and self.scope_runtime.active)
         remaining = self.limits["total_completion_token_limit"] - self.completion_tokens
         if remaining <= 0:
             raise DeadlineExceeded("Completion-token budget exhausted")
@@ -181,9 +188,11 @@ class LocalModel:
             raise ValueError("Fresh context requires measured observation history")
         reset_applied = (
             self.fresh_context.before_query(messages, self)
-            if self.fresh_context is not None
+            if self.fresh_context is not None and not scoped_child
             else False
         )
+        if self.scope_runtime is not None:
+            self.scope_runtime.after_reset(messages)
         reset_applied = reset_applied or bool(
             self.fresh_context and self.fresh_context.measurement_pending
         )
@@ -267,6 +276,10 @@ class LocalModel:
                     payload["reasoning_budget_tokens"] = min(
                         payload["reasoning_budget_tokens"], THINK_TOKENS
                     )
+        if self.scope_runtime is not None:
+            from scoped_runtime import tool as scope_return_tool
+
+            payload["tools"].append(scope_return_tool())
         if thinking_enabled and "reasoning_deadline" in self.limits:
             from reasoning_deadline import allocate
 
@@ -304,6 +317,7 @@ class LocalModel:
             )
             if (
                 self.fresh_context is not None
+                and not scoped_child
                 and not checkpoint_request
                 and not reset_applied
             ):
@@ -339,6 +353,13 @@ class LocalModel:
                             self.output / (pressure_prefix + ".reasoning-budget.json")
                         )
                     return self.query(messages)
+            if (
+                self.scope_runtime is not None
+                and not checkpoint_request
+                and not reset_applied
+                and self.scope_runtime.consider_context(messages, context_report)
+            ):
+                return self.query(messages)
             available = context_report["available_completion_tokens"]
             if (
                 self.limits.get("context_budget_feedback", False)
@@ -475,6 +496,11 @@ class LocalModel:
         message = dict(choice["message"])
         max_calls = self.limits.get("max_tool_calls_per_response", 4)
         response_calls = message.get("tool_calls")
+        scope_actions = (
+            self.scope_runtime.actions(message, response, choice.get("finish_reason"))
+            if self.scope_runtime is not None
+            else None
+        )
         checkpoint_call = (
             isinstance(response_calls, list)
             and bool(self.fresh_context and self.fresh_context.summary_enabled)
@@ -485,7 +511,9 @@ class LocalModel:
                 for call in response_calls
             )
         )
-        if checkpoint_request or checkpoint_call:
+        if scope_actions is not None:
+            actions = scope_actions
+        elif checkpoint_request or checkpoint_call:
             from context_checkpoint import action as checkpoint_action
 
             try:
@@ -740,6 +768,7 @@ class IsolatedEnvironment:
         self.observations = None
         self.history_archive = None
         self.fresh_context = None
+        self.scope_runtime = None
 
     def execute(self, action):
         self.calls += 1
@@ -761,6 +790,42 @@ class IsolatedEnvironment:
                 and time.monotonic() >= self.agent_deadline
             ):
                 raise DeadlineExceeded("Agent wall budget exhausted")
+            if action.get("tool") == "return_scope":
+                if self.scope_runtime is None:
+                    raise ValueError("Scope return requires an owning controller")
+                notice = self.scope_runtime.accept(
+                    action["payload"], action["tool_call_id"]
+                )
+                prefix = self.output / f"tool-{self.calls:03d}"
+                write_json(
+                    prefix.with_suffix(".request.json"),
+                    {
+                        "mode": "adapter-control",
+                        "executed": False,
+                        "name": "return_scope",
+                        "arguments": action["payload"],
+                        "tool_call_id": action.get("tool_call_id"),
+                    },
+                )
+                write_json(
+                    prefix.with_suffix(".result.json"),
+                    {
+                        "ok": True,
+                        "executed": False,
+                        "cleanup_required": False,
+                        "scope_control": "return_recorded",
+                        "stdout": notice,
+                        "stderr": "",
+                    },
+                )
+                return {
+                    "returncode": 0,
+                    "output": notice,
+                    "truncated": False,
+                    "remaining_agent_seconds": max(
+                        0, round(self.agent_deadline - time.monotonic(), 1)
+                    ),
+                }
             if action.get("tool") == "checkpoint_context":
                 if self.fresh_context is None:
                     raise ValueError("Checkpoint requires an owning reset controller")
@@ -860,7 +925,9 @@ class IsolatedEnvironment:
                 try:
                     value = validate(action["payload"], self.history)
                     handoff = envelope(
-                        value, self.history, workspace=self.workspace,
+                        value,
+                        self.history,
+                        workspace=self.workspace,
                         initial_workspace=self.initial_workspace,
                     )
                     projection = compact_handoff(handoff)

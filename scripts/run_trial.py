@@ -490,11 +490,27 @@ def run(args):
     if not output.is_relative_to("/bulk/dlk/local-harness/runs"):
         raise ValueError("Trial output must be a fresh project bulk run directory")
     output.mkdir(parents=True, exist_ok=False)
-    admit_tasks([args.task], args.split)
-    task = PROJECT / "tasks" / args.task
+    continuation = None
+    if getattr(args, "continuation_case", None):
+        from scoped_continuation import load_case
+
+        if args.mode != "model":
+            raise ValueError("Fixed continuation is a model experiment")
+        continuation = load_case(args.continuation_case)
+        if args.task is not None and args.task != continuation["task_name"]:
+            raise ValueError("Continuation task differs from sealed source")
+        args.task = continuation["task_name"]
+        task = continuation["source_task"]
+    else:
+        admit_tasks([args.task], args.split)
+        task = PROJECT / "tasks" / args.task
     inputs = freeze(output, task)
     task = inputs / "task"
-    limits = load_protocol(args.protocol, inputs)
+    limits = (
+        dict(continuation["limits"])
+        if continuation
+        else load_protocol(args.protocol, inputs)
+    )
     limits["seed"] = args.seed
     metadata = json.loads((task / "task.json").read_text())
     require_task_protocol(metadata, limits)
@@ -509,6 +525,9 @@ def run(args):
         require_protocol(limits)
     config = json.loads((inputs / "configs/agent.json").read_text())
     config = configure_agent(config, limits, args.protocol)
+    if continuation:
+        config["system_template"] = "{{original_system}}"
+        config["instance_template"] = "{{task}}"
     policy = limits.get("context_policy")
     sampling = json.loads(args.sampling.read_text()) if args.sampling else {}
     if "seed" in sampling:
@@ -548,7 +567,12 @@ def run(args):
     started = ENTRY_STARTED
     end = started + limits["task_wall_seconds"]
     workspace = output / "workspaces/0000"
-    shutil.copytree(task / "public", workspace)
+    if continuation:
+        from stage_scoped_case import copy_initial_tree
+
+        copy_initial_tree(continuation["directory"] / "workspace", workspace)
+    else:
+        shutil.copytree(task / "public", workspace)
     runtime = (
         Runtime(
             python_test_library=limits["python_test_library"],
@@ -557,7 +581,7 @@ def run(args):
         if "python_test_library" in limits
         else Runtime()
     )
-    if metadata.get("kind") == "git-backport":
+    if metadata.get("kind") == "git-backport" and not continuation:
         from git_task import prepare
 
         bootstrap = output / "git-bootstrap"
@@ -620,7 +644,25 @@ def run(args):
         from progress_reminder import ProgressReminder
 
         model.progress_reminder = ProgressReminder(output, limits, env)
-    agent = DefaultAgent(model, env, **config, output_path=output / "trajectory.json")
+    if continuation:
+        from scoped_continuation import ContinuationAgent, seed_attempt
+
+        seed_attempt(continuation, model, env, args.continuation_arm)
+        agent = ContinuationAgent(
+            model,
+            env,
+            continuation=continuation,
+            **config,
+            output_path=output / "trajectory.json",
+        )
+        report["continuation"] = json.loads((output / "continuation.json").read_text())
+        report["limitations"].append(
+            "Controlled fixed-world continuation with historical spent counters; not a whole-task time or reliability estimate"
+        )
+    else:
+        agent = DefaultAgent(
+            model, env, **config, output_path=output / "trajectory.json"
+        )
     try:
         with cancellation():
             agent_started = time.monotonic()
@@ -639,13 +681,28 @@ def run(args):
                 with deadline(budget):
                     from initial_repository import build_task
 
-                    task_text, initial = build_task(
-                        task, limits.get("initial_repository")
-                    )
+                    if continuation:
+                        prefix = json.loads(
+                            (
+                                continuation["directory"] / "outer-prefix.json"
+                            ).read_text()
+                        )
+                        task_text, initial = prefix[1]["content"], None
+                    else:
+                        task_text, initial = build_task(
+                            task, limits.get("initial_repository")
+                        )
                     if initial is not None:
                         write_json(output / "initial-repository.json", initial)
                         (output / "initial-task.txt").write_text(task_text)
-                    outcome = agent.run(task_text)
+                    outcome = agent.run(
+                        task_text,
+                        **(
+                            {"original_system": prefix[0]["content"]}
+                            if continuation
+                            else {}
+                        ),
+                    )
                 report["agent_outcome"] = outcome
                 if (
                     limits.get("spec_blocker_exit", False)
@@ -747,6 +804,17 @@ def run(args):
         report["final_workspace"] = str(env.workspace)
         report["usage"] = model.serialize()["info"]["local_model"]
         report["tool_calls"] = env.calls
+        if continuation:
+            spent = report["continuation"]["spent_counters"]
+            report["continuation_usage"] = {
+                "model_calls": model.calls - spent["model_calls_already_spent"],
+                "tool_calls": env.calls - spent["tool_calls_already_spent"],
+                "completion_tokens": model.completion_tokens
+                - spent["completion_tokens_already_spent"],
+                "prompt_tokens": model.prompt_tokens
+                - spent["prompt_tokens_already_spent"],
+                "scope": "New continuation usage only; ordinary usage/tool_calls fields include historical spent counters.",
+            }
         report["runtime"] = runtime.manifest
         report["agent_source_sha256"] = hashlib.sha256(
             Path(__file__).read_bytes()
@@ -801,7 +869,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--task", choices=[p.name for p in (PROJECT / "tasks").iterdir()], required=True
+        "--task", choices=[p.name for p in (PROJECT / "tasks").iterdir()]
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--mode", choices=["model", "reference"], default="model")
@@ -811,10 +879,17 @@ def main():
     parser.add_argument("--prefix-warmup-receipt", type=Path)
     parser.add_argument("--protocol", choices=protocols(), default="mvp")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--continuation-case", type=Path)
+    parser.add_argument(
+        "--continuation-arm", choices=["full", "restored", "fresh"], default="restored"
+    )
     parser.add_argument(
         "--split", choices=["development", "reserved"], default="development"
     )
-    return run(parser.parse_args())
+    args = parser.parse_args()
+    if not args.task and not args.continuation_case:
+        parser.error("--task or --continuation-case is required")
+    return run(args)
 
 
 if __name__ == "__main__":

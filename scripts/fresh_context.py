@@ -31,6 +31,7 @@ HISTORICAL_EXECUTION_TOOLS = frozenset(
         "submit_attempt",
         "report_blocker",
         "checkpoint_context",
+        "return_scope",
     }
 )
 MAX_HISTORY_TOOL_CALLS = 8
@@ -228,7 +229,9 @@ def validate_history_archive(history, prefix):
     if (
         archive.is_symlink()
         or archive.parent.resolve() != expected.resolve()
-        or not re.fullmatch(r"history(?:-00[2-8])?", archive.name)
+        or not re.fullmatch(
+            r"history(?:-00[2-8])?|scope-history-[0-9]{4}", archive.name
+        )
     ):
         raise ValueError("History archive must belong to this attempt")
     entries = []
