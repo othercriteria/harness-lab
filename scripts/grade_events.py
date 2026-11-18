@@ -115,6 +115,7 @@ def observe(gate, previous, name, expected):
     probe = gate.step(previous, "python -I -S probe/read.py")
     actual = decoded(probe)
     gate.record(name, transport(probe) and same(actual, expected), {
+        "observation_source": "Fresh process calling the submitted EventStore.count and EventStore.get",
         "actual": actual, "expected": expected, "transport": probe.result,
     })
     return probe

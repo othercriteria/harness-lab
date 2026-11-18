@@ -1,0 +1,121 @@
+{
+  "issue": 26,
+  "source_parent": "76b6a4ee17b43d024c22669b64fcc0cf65e585ea",
+  "sources": {
+    "scripts/grade_events.py": "ded50ad9c7d12a4be9596087d2a919616529d812ea8b01bc28fb10f9b1fbea46",
+    "scripts/behavioral_grade.py": "d41e9db07b8d060823f55d3d28edbae5aac2582ace743f80eacdd16fb6ecffb0",
+    "scripts/with_memory_scope.py": "7f116b01c56f9e3ad9f6397650c4922d03abfa4bdb22eae798f92625eabadfa2",
+    "scripts/sandbox.py": "d225ee9d1fe5ed203d7ee37806ec9947d9dad9e254a07e558e3937ca1bc9a855",
+    "scripts/sandbox_worker.py": "bcaf73e9b2b5f07471b6f50d8fa4654e7107637a6a093e73ed0aa6d6dfa2eb85",
+    "scripts/delegate_job.py": "f0664fa7f154f5603b762d49ed14e74bd12a9b7570ebf65fc390003f7d076edf"
+  },
+  "host_evidence": "/bulk/dlk/local-harness/research/evidence-scope-audit-001/final",
+  "replay": "Two existing Event fixtures replayed under verify_behavior on CPU. The historical fixture hashes and expected verdicts were checked before and after isolated evaluation. No new model attempts or changes to original trial scores.",
+  "historical_controls_sha256": "9b52d29943aa8980a7127ac2c568722e2f6e9e76f7f0d44d1e090f0525746a98",
+  "fixtures": [
+    {
+      "fixture": "reference",
+      "source_manifest": {
+        "eventlog/__init__.py": "0183b07738432d9c2ab8ddba1be7a9c899d0d04fdec101877318c9baa95dcf15",
+        "eventlog/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "eventlog/cli.py": "90a8da24d38c1c5c0b410a455efe8bab385d341008fe8f745339030a40a3fa0e",
+        "eventlog/importer.py": "d7d8215ea3f34cb12a249ca8a92dd8e37812bc6ccd8f4a8f6d57a0ceae68dc41",
+        "eventlog/model.py": "dc603f5a5f2d9accd2bc64f4f926befc87ba3dc3ecb6b95e4888d45f8b71bcdb",
+        "eventlog/store.py": "d3c6badf497a4183979c223f368e94503fb5d89b189b170a2728036bc989dd3e",
+        "task.md": "3d66483cc96fdcae5f8b908dd8557aaa2a294b3e1b478a6b893a9b602cc08d0e",
+        "tests/test_public.py": "1fb8bb8da0ae0eef8c865a0738bfad94aa6c7322668b29cbc59fa9c89de1cc06"
+      },
+      "original_summary_sha256": "cca790c746081d7faad483bfd0c658b72c9a4c2682afc4c060d1eadc73500a25",
+      "replay_summary_sha256": "a162a504bc05e25d4d1a8d6d1b16d8074eee34d6088c1b8cb9c3153d81c07bbc",
+      "checks": 10,
+      "passed": 10,
+      "failed": [],
+      "fresh_api_readbacks": [
+        "event-persistence-normalization",
+        "event-strict-rollback",
+        "event-first-wins-across-processes",
+        "event-source-failure-persistence"
+      ],
+      "verified_command_receipts": 10
+    },
+    {
+      "fixture": "submitted",
+      "source_manifest": {
+        "eventlog/__init__.py": "0183b07738432d9c2ab8ddba1be7a9c899d0d04fdec101877318c9baa95dcf15",
+        "eventlog/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "eventlog/cli.py": "6c8c05d5511bb517fe1e7b1affe8d789e49b3bb56557435ea939833543bf862c",
+        "eventlog/importer.py": "2fbf935d3f208d9f2f84fb173437aa4fc8ec0ed5656135bbaf24540a8458d6c3",
+        "eventlog/model.py": "2a94cd6630894fb4db6a0baeb1b68b6f12e48bb2ab1826281dc961ff6984ba3b",
+        "eventlog/store.py": "54649d282c0742cd4ac3839e212767807c0b69feb3f74a5317312899f3206214",
+        "task.md": "3d66483cc96fdcae5f8b908dd8557aaa2a294b3e1b478a6b893a9b602cc08d0e",
+        "tests/test_public.py": "e80e4d13e4d9d6fef7fc609a5fa1df34655ebdbf4547ba8c624f2103a3378383"
+      },
+      "original_summary_sha256": "533ef3c0884f71f4ace0eeb82725266b7f8742f299de4f77666af8d947cccb62",
+      "replay_summary_sha256": "c77dfa54a9827a8fb0ec1b4e39908681601ce2ca4ab6659c2445e73e7a97d5a7",
+      "checks": 10,
+      "passed": 9,
+      "failed": [
+        "event-cli-source-read-failure"
+      ],
+      "fresh_api_readbacks": [
+        "event-persistence-normalization",
+        "event-strict-rollback",
+        "event-first-wins-across-processes",
+        "event-source-failure-persistence"
+      ],
+      "verified_command_receipts": 10
+    }
+  ],
+  "one_command": {
+    "check": "event-persistence-normalization",
+    "reader": "Fresh process calling the submitted EventStore.count and EventStore.get",
+    "outer_comparison": true,
+    "check_sha256": "694134d4efe1e48b41401e1a7a5082127bc1834d10bb4aed4315e9bde38569b5",
+    "unit": "big-model-agent-a7d0912eecf04540b2dd3d3c307a4a5b.scope",
+    "invocation_sha256": "b6bc913053829cd24084417f8f845744cc54b68dc5ba99f3c15c9821abc024cc",
+    "cleanup_sha256": "1b5233780ea01dafad481400327ba0b8cba2bc4fc29f9d49a38820354c9ddb57",
+    "unit_state": "inactive",
+    "owned_process_reaped": true,
+    "namespace_final_quiescence": true,
+    "inner_cgroup_population": "unmeasured"
+  },
+  "whole_job": {
+    "scope": "big-model-memory-fb37022c681740518876e01c8aa79c75.scope",
+    "start_cgroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/big-model-memory-fb37022c681740518876e01c8aa79c75.scope",
+    "memory_receipt_sha256": "1711c58d811f0654704920049cf87bc267c021163be9e97722ec9f2b4eb8aad3",
+    "cgroup_population": "absent",
+    "verified": true,
+    "anchor_returncode": -15
+  },
+  "legacy_incomplete_job_closures": [
+    {
+      "job": "108d3fb24cd744fdad85ab41fc166770",
+      "original_receipt_sha256": "5f661e0449c8747464883164193b7dc8a47ca35f594eaac66cf29d8116c4b359",
+      "verified": true,
+      "trial_results_complete": false
+    },
+    {
+      "job": "3f1844b8513a42029be0daf0bf924db1",
+      "original_receipt_sha256": "802f917dcb38bf854901887c01365c35b1f8acc9ce13e34a73162cc0a3ffc447",
+      "verified": true,
+      "trial_results_complete": false
+    },
+    {
+      "job": "830f487491ca4762b386ee6256cebf26",
+      "original_receipt_sha256": "37d2fadb027e36772949363eb1005382c33fd10836152ffd91b7f050bbb899cc",
+      "verified": true,
+      "trial_results_complete": false
+    },
+    {
+      "job": "cc44fb7ff1ce469098d3cea06d79a73e",
+      "original_receipt_sha256": "7ff046046dc66c6d8f9d1d37de1a799031ebccd8e273ee98ce144f24dab80019",
+      "verified": true,
+      "trial_results_complete": false
+    }
+  ],
+  "focused_tests": {
+    "passed": 47,
+    "command": ".venv/bin/python -m unittest tests.test_behavioral_grade tests.test_memory_scope.MemoryScopeTests tests.test_memory_scope.WholeCommandGlobalGuardTests tests.test_delegate_job"
+  },
+  "scope": "Event persistence is an API readback in a fresh isolated process. The SQLite migrations data-only reader is a code-path comparison. Inner command cleanup relies on namespace and manager/process evidence. The outer supervisor separately observes its memory cgroup. The pre-readiness path was exercised with synthetic unit fixtures."
+}

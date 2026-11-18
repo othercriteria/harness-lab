@@ -312,6 +312,22 @@ def cancel(identifier, reason, store=STORE):
     }
 
 
+def observed_memory_scope_closure(run, cleanup):
+    if cleanup.get("cgroup_empty_or_absent") is not True:
+        return False
+    if "cgroup_population" in cleanup:
+        return cleanup["cgroup_population"] in ("empty", "absent")
+    # Older supervisors also emitted True before learning the scope path.
+    # A bound readiness receipt distinguishes the ordinary historical case.
+    memory = run / "memory"
+    try:
+        start = read(memory / "scope-start.json")["properties"]["values"]
+        unit = read(memory / "launch.json")["unit"]
+        return bool(unit) and unit == start["Id"] == Path(start["ControlGroup"]).name
+    except (FileNotFoundError, KeyError, TypeError):
+        return False
+
+
 def closure(run):
     """Require positive outer receipts, including partial/failed/cancelled jobs."""
     bg = read(run / "background/summary.json")
@@ -355,7 +371,7 @@ def closure(run):
             # Cancellation can stop the client before it journals its result.
             # All independent sandbox invocations above still need receipts;
             # the model/client additionally need positive whole-scope closure.
-            if mem.get("cgroup_empty_or_absent") is not True:
+            if not observed_memory_scope_closure(run, mem):
                 raise RuntimeError("Missing trial result without whole-scope closure")
             missing_summaries.append(str(trial))
             continue

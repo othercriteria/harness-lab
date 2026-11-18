@@ -132,9 +132,41 @@ class MemoryScopeTests(unittest.TestCase):
         ):
             result = scope.cleanup("owned.scope", child, None, 0.001)
         self.assertTrue(result["verified"], result)
+        self.assertEqual(result["cgroup_population"], "path_unobserved")
+        self.assertIsNone(result["cgroup_empty_or_absent"])
         self.assertIn(("kill", "--kill-whom=all", "--signal=SIGKILL"), calls)
         self.assertIn(("stop",), calls)
         self.assertIn("error", result["actions"][0])
+
+    def test_cleanup_requires_a_valid_population_read_for_a_known_scope(self):
+        child = mock.Mock(returncode=0)
+        child.poll.return_value = 0
+        inactive = {"returncode": 0, "values": {"ActiveState": "inactive"}}
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            mock.patch.object(scope, "systemctl", return_value=subprocess.CompletedProcess([], 0, "", "")),
+            mock.patch.object(scope, "properties", return_value=inactive),
+        ):
+            path = Path(directory) / "owned.scope"
+            result = scope.cleanup(path.name, child, path, 0)
+            self.assertEqual(result["cgroup_population"], "absent")
+            self.assertIs(result["cgroup_empty_or_absent"], True)
+            self.assertTrue(result["verified"])
+            path.mkdir()
+            for events, population, empty, verified in (
+                (None, "unreadable", None, False),
+                ("frozen 0\n", "unreadable", None, False),
+                ("populated ?\n", "unreadable", None, False),
+                ("populated 1\n", "populated", False, False),
+                ("populated 0\nfrozen 0\n", "empty", True, True),
+            ):
+                with self.subTest(events=events):
+                    if events is not None:
+                        (path / "cgroup.events").write_text(events)
+                    result = scope.cleanup(path.name, child, path, 0)
+                    self.assertEqual(result["cgroup_population"], population)
+                    self.assertIs(result["cgroup_empty_or_absent"], empty)
+                    self.assertIs(result["verified"], verified)
 
     def test_unavailable_manager_is_not_cleanup_proof(self):
         self.assertFalse(

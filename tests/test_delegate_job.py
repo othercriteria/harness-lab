@@ -279,6 +279,27 @@ class DelegateJobTests(unittest.TestCase):
             run / "memory/cleanup.json",
             {"verified": True, "cgroup_empty_or_absent": True},
         )
+        with self.assertRaisesRegex(RuntimeError, "whole-scope"):
+            jobs.closure(run)
+        jobs.atomic(run / "memory/launch.json", {"unit": "owned.scope"})
+        jobs.atomic(run / "memory/scope-start.json", {
+            "properties": {"values": {"Id": "other.scope", "ControlGroup": "/a/other.scope"}}
+        })
+        with self.assertRaisesRegex(RuntimeError, "whole-scope"):
+            jobs.closure(run)
+        jobs.atomic(run / "memory/scope-start.json", {
+            "properties": {"values": {"Id": "owned.scope", "ControlGroup": "/a/owned.scope"}}
+        })
+        self.assertTrue(jobs.closure(run)["verified"])
+        for population in ("path_unobserved", "unreadable", "populated"):
+            jobs.atomic(run / "memory/cleanup.json", {
+                "verified": True, "cgroup_population": population, "cgroup_empty_or_absent": None,
+            })
+            with self.assertRaisesRegex(RuntimeError, "whole-scope"):
+                jobs.closure(run)
+        jobs.atomic(run / "memory/cleanup.json", {
+            "verified": True, "cgroup_population": "absent", "cgroup_empty_or_absent": True,
+        })
         evidence = jobs.closure(run)
         self.assertTrue(evidence["verified"])
         self.assertFalse(evidence["trial_results_complete"])

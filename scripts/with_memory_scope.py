@@ -341,14 +341,22 @@ def inside(output, control_fd, gpu_lock_fd):
     return 0
 
 
-def populated(path):
+def cgroup_population(path):
     try:
-        data = dict(
-            line.split() for line in (path / "cgroup.events").read_text().splitlines()
-        )
-        return data.get("populated") == "1"
+        events = (path / "cgroup.events").read_text()
     except FileNotFoundError:
-        return False
+        try:
+            path.stat()
+        except FileNotFoundError:
+            return "absent"
+        raise
+    fields = [line.split() for line in events.splitlines()]
+    population = [row for row in fields if row and row[0] == "populated"]
+    if population == [["populated", "0"]]:
+        return "empty"
+    if population == [["populated", "1"]]:
+        return "populated"
+    raise ValueError("Missing or invalid populated counter in cgroup.events")
 
 
 def inactive(props):
@@ -383,17 +391,20 @@ def cleanup(unit, child, path, grace):
     until = time.monotonic() + grace
     while time.monotonic() < until:
         try:
-            if child.poll() is not None and path is not None and not populated(path):
-                break
-            if path is None and child.poll() is not None and inactive(properties(unit)):
-                break
+            if child.poll() is not None:
+                if path is not None and cgroup_population(path) != "populated":
+                    break
+                if path is None and inactive(properties(unit)):
+                    break
         except (OSError, ValueError, subprocess.SubprocessError) as error:
             errors.append(repr(error))
             break
         time.sleep(0.1)
     try:
-        needs_kill = child.poll() is None or path is None or populated(path)
-    except OSError as error:
+        needs_kill = (
+            child.poll() is None or path is None or cgroup_population(path) == "populated"
+        )
+    except (OSError, ValueError) as error:
         errors.append(repr(error))
         needs_kill = True
     if needs_kill:
@@ -409,20 +420,31 @@ def cleanup(unit, child, path, grace):
             child.wait(timeout=10)
         except subprocess.TimeoutExpired as error:
             errors.append(repr(error))
+    population = "path_unobserved"
+    if path is not None:
+        try:
+            population = cgroup_population(path)
+        except (OSError, ValueError) as error:
+            errors.append(repr(error))
+            population = "unreadable"
     try:
         final = properties(unit)
-        empty = path is None or not populated(path)
-        # Missing path before readiness is safe only with manager proof of inactivity.
-        clean = child.poll() is not None and empty and inactive(final)
+        # Before readiness the owned command has not been released.
+        clean = (
+            child.poll() is not None
+            and inactive(final)
+            and population in {"absent", "empty", "path_unobserved"}
+        )
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         errors.append(repr(error))
-        final, empty, clean = {}, None, False
+        final, clean = {}, False
     return {
         "verified": clean,
         "actions": actions,
         "errors": errors,
         "properties": final,
-        "cgroup_empty_or_absent": empty,
+        "cgroup_population": population,
+        "cgroup_empty_or_absent": {"absent": True, "empty": True, "populated": False}.get(population),
         "anchor_returncode": child.returncode,
     }
 
