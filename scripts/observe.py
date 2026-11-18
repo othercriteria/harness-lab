@@ -117,7 +117,21 @@ class Evidence:
         if not isinstance(verdict, dict) or truncated:
             return None
         posthoc_failure = False
-        if summary.get("task_adjudication", {}).get("status") != "pending_outer_rubric":
+        review_status = summary.get("task_adjudication", {}).get("status")
+        continuation_review = (
+            review_status == "pending_outer_review"
+            and summary.get("work_kind") == "delegated_repository"
+            and isinstance(summary.get("continuation"), dict)
+            and verdict.get("review_kind") == "continuation_contract"
+            and isinstance(verdict.get("rationale"), str)
+            and bool(verdict["rationale"].strip())
+            and isinstance(verdict.get("evidence"), list)
+            and bool(verdict["evidence"])
+        )
+        if continuation_review and verdict.get("coding_correctness") is True:
+            if summary.get("independent_checks_passed") is not True:
+                return None
+        if review_status != "pending_outer_rubric" and not continuation_review:
             # Later contract or runtime findings may reject a frozen raw result.
             # This path cannot promote a failed result.
             if (
@@ -292,6 +306,10 @@ class Evidence:
             pending = (
                 summary.get("task_adjudication", {}).get("status")
                 == "pending_outer_rubric"
+            ) or bool(
+                continuation
+                and summary.get("task_adjudication", {}).get("status")
+                == "pending_outer_review"
             )
             events = self.request_files(trial)
             control = self.is_control(summary, events)
@@ -317,10 +335,8 @@ class Evidence:
                 and summary.get("delivery_correctness") is False
             ):
                 trial_state = "correct code / delivery failed"
-            if (
-                summary.get("task_adjudication", {}).get("status")
-                == "pending_outer_rubric"
-            ):
+            if pending:
+                passed = None
                 terminal = summary.get("agent_outcome", {}).get("exit_status")
                 if "unsafe_cleanup" in summary:
                     trial_state = "unsafe cleanup / stopped"

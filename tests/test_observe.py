@@ -12,6 +12,46 @@ from observe import NATIVE_CASES, Evidence
 
 
 class ObservatoryTests(unittest.TestCase):
+    def test_continuation_review_requires_checks_and_exact_summary_binding(self):
+        summary = {
+            "task": "delegated-task",
+            "work_kind": "delegated_repository",
+            "continuation": {"arm": "full"},
+            "success": False,
+            "task_adjudication": {"status": "pending_outer_review"},
+            "independent_checks_passed": True,
+            "clean_agent_halt": True,
+            "clean_agent_completion": True,
+            "within_budget": True,
+            "agent_outcome": {"exit_status": "Submitted"},
+        }
+        raw = json.dumps(summary)
+        (self.trial / "summary.json").write_text(raw)
+        trial = self.data.run("campaign")["trials"][0]
+        self.assertIsNone(trial["passed"])
+        self.assertEqual(trial["state"], "awaiting outer adjudication")
+        verdict = {
+            "version": 1,
+            "task": "delegated-task",
+            "status": "adjudicated",
+            "review_kind": "continuation_contract",
+            "disposition": "verified_coding",
+            "coding_correctness": True,
+            "task_handling_correctness": True,
+            "rationale": "Bounded review meets the supplied contract.",
+            "evidence": ["changes.diff"],
+            "raw_summary_sha256": hashlib.sha256(raw.encode()).hexdigest(),
+        }
+        (self.trial / "outer-adjudication.json").write_text(json.dumps(verdict))
+        self.assertTrue(self.data.run("campaign")["trials"][0]["passed"])
+        summary["independent_checks_passed"] = False
+        raw = json.dumps(summary)
+        (self.trial / "summary.json").write_text(raw)
+        self.assertIsNone(self.data.outer_adjudication(self.trial, summary))
+        verdict["raw_summary_sha256"] = hashlib.sha256(raw.encode()).hexdigest()
+        (self.trial / "outer-adjudication.json").write_text(json.dumps(verdict))
+        self.assertIsNone(self.data.outer_adjudication(self.trial, summary))
+
     def test_scoped_continuation_is_labeled_and_return_is_not_finalization(self):
         continuation = {
             "case": "example",
