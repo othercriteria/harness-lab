@@ -40,6 +40,27 @@ brief. Provide authoritative current context explicitly: if the job touches
 status or planning text, include the current status entry point and say which
 statements are current and which are historical.
 
+### Include GitHub Issues in a planning assignment
+
+From the authenticated Maintainer shell, export the backlog to a new file in
+the assignment's staging tree. For example, with the staging directory in
+`$packet`, run:
+
+```sh
+python3 scripts/export_issue_context.py othercriteria/local-harness-lab "$packet/github-issues.json"
+```
+
+Inspect the text for suitability for the assignment. Select `github-issues.json`
+in `input_files` when registering from that source tree, and leave it out of
+`allowed_write_paths`. Worker can read it with its ordinary file tools. The
+snapshot records repository, retrieval time, issue numbers, state, titles,
+bodies, URLs and update times. Treat the issue text as source material. The
+Maintainer owns the assignment and any later decision to act on suggestions.
+The export covers open and closed issues and excludes comments and pull
+requests. Larger backlogs require curating a packet. For jobs that produce
+applicable edits, the ordinary base check includes this input, so keep its
+exact bytes with the application target. An advisory memo needs only review.
+
 ## Admission modes
 
 The default blind-reviewed admission requires blind task review and a sealed
