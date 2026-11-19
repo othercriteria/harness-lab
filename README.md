@@ -31,7 +31,7 @@ The Maintainer selects the source files the Worker can see and the paths it can 
 - **Compare coding agents.** Worker, Aider and OpenCode attempted the same two Python tasks on the same local model. All 12 valid trials passed code checks. Eleven passed full review. The report also accounts for five attempts affected by integration problems. [Comparison and results](docs/standard-worker-comparison.md)
 - **Run or review a job.** Prepare the inputs for a real Observatory fix from a fresh clone, then follow the job through review. [Prepare a Worker package](examples/preparing-worker-package/README.md) · [Preparing an assignment](docs/delegate-preparation.md) · [Operator guide](docs/operations.md)
 - **Explore the ladder.** The published tasks range from a 60-second JavaScript repair to a 720-second Git backport. [Tasks, ceilings and evidence](docs/ladder.md)
-- **Understand this release.** This is a selection from a longer private development history. The three offline examples include the historical files they need. [Snapshot provenance and scope](SNAPSHOT.md)
+- **Understand this release.** Browse the public development history and [issue tracker](https://github.com/othercriteria/harness-lab/issues). The three offline examples include the historical files they need. [Snapshot provenance and scope](SNAPSHOT.md)
 
 ## License
 
