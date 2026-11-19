@@ -1,0 +1,59 @@
+{
+  "issue": 56,
+  "base_commit": "25ad3245c50fbdabbb2160fee7cb901bd564f267",
+  "platform": "Reference x86-64 Linux workstation, RTX 4090",
+  "assignment": "In examples/reviewing-worker-output/README.md, the link labeled Landing commit opens a patch instead of the commit that credits Worker. Set just that link's destination to https://github.com/othercriteria/harness-lab/commit/1410543b7ca025d219d6d9400272a64d9ca01d0f. Keep the label, all other links and the rest of the file as supplied. Verify the edit locally. The public URL is supplied by the Maintainer.",
+  "admission": "outer_only_experimental",
+  "job_id": "70203f58f7df470c94ce2ba3c8240f53",
+  "package_id": "3e3a98b3e0848009c940bdf0d2d35a8e1ff3f64c065bf2aefa5762c541eb0d59",
+  "snapshot_id": "4e26ae9935cf6bee8cbfe8747ca575c8efd601ff284ac84612175fa1a6761fbf",
+  "recipe": "apprentice-qwen-32k-v1",
+  "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "seed": 19561,
+  "task_ceiling_seconds": 180,
+  "worker_seconds": 34.51701440801844,
+  "dispatch_seconds": 55.864411721006036,
+  "disposition": "Submitted",
+  "clean_completion": true,
+  "independent_check": {
+    "name": "exact landing link edit",
+    "returncode": 0,
+    "expected_file_sha256": "06fa120b4e858e1523596c064b9e4b064c86796300047a2a17589c6fbdaf1c39",
+    "checker_sha256": "9a37ddbc291370587530e6e93c017dd72f17e6a76dea34b01681a95304cf9236",
+    "oracle": "SHA-256 of the complete original Markdown file after substituting only the supplied link destination."
+  },
+  "review": {
+    "job_id": "70203f58f7df470c94ce2ba3c8240f53",
+    "package_id": "3e3a98b3e0848009c940bdf0d2d35a8e1ff3f64c065bf2aefa5762c541eb0d59",
+    "decision": "accepted",
+    "reviewer": "Outer Maintainer",
+    "notes": "Worker changed exactly the requested link. The handoff accurately described the saved original, the one-line diff, the 16 Markdown links and the absence of an in-sandbox reachability check.",
+    "verification": "Compared the complete file with the public Git base after substituting the one requested destination. Checked the isolated private oracle and the cited observations, counted all 16 links independently, and resolved the target with the GitHub commit API.",
+    "artifact": "artifact",
+    "artifact_sha256": "383beceb5ebbb2d705dca6c44b28aa34ebdd9d7ae3833b3782d2931c30ac8a3a"
+  },
+  "review_sha256": "4ab10f99a5265e77275ac0ec00204757995f03e28a2e674d2e1fa28a47b7b37d",
+  "applied_without_repairs": true,
+  "application_receipt_sha256": "a53a1b5f99d2cec9dc1700beab8b9b69abdab6bded0af8a0621a1eeb15c284fd",
+  "execution": {
+    "harness_scripts_compared_with_git": 91,
+    "venv": "Fresh installation from the public uv.lock using uv sync --locked --offline --link-mode copy. The package launcher pointed to this installation.",
+    "frozen_dependency_files": 168,
+    "venv_files": 140,
+    "external_inputs": "Reference workstation Nix tools and llama.cpp backend, local model and draft weights, uv cache, GPU lock, systemd and service controls, and writable experiment storage. The historical freeze also checks a stored chat template from an earlier campaign.",
+    "backend_revision": "ddf48f85c933c1f438212a02eb21e7b001d2d37d",
+    "weight_verification": [
+      "metadata",
+      "metadata"
+    ],
+    "solver_tool_invocations_checked": 3,
+    "boundary": "Tool invocation receipts record Bubblewrap with a cleared environment and unshared network. The private checker was mounted only in the independent evaluator."
+  },
+  "cleanup": {
+    "verified": true,
+    "receipt_sha256": "70df06397689c1af129f7628efee086b088c8ccc3676dcc97d025564b58250f8",
+    "session": "2026-11-19-gpu-quiet-055",
+    "entry_service_states_restored": true,
+    "restoration_receipt_sha256": "8eeee2618da2f0f3d0124f78078599d28ddef178487b96e6fef4aa46639bd4eb"
+  }
+}
