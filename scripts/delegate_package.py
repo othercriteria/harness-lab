@@ -94,6 +94,10 @@ def task_text(brief, snapshot, apprentice_notes=False):
 
 def verify_package(identifier, store=STORE):
     root = package_path(identifier, store)
+    return root, verify_contents(root, identifier)
+
+
+def verify_contents(root, identifier):
     record = read(root / "package.json")
     if hashlib.sha256(encoded(record)).hexdigest() != identifier:
         raise ValueError("Package identity mismatch")
@@ -101,15 +105,29 @@ def verify_package(identifier, store=STORE):
     actual.pop("package.json")
     if actual != record["files"]:
         raise ValueError("Package file integrity mismatch")
-    for name, expected_digest in record["runtime_dependencies"].items():
-        if sha(name) != expected_digest:
-            raise ValueError(f"Changed harness dependency: {name}")
+    runtime_venv = root / "runtime/.venv"
+    if runtime_venv.resolve() != Path(record["venv"]).resolve():
+        raise ValueError("Changed runtime environment link")
+    dependencies = record["runtime_dependencies"]
+    # Historical freezes store absolute paths. Identify their environment from
+    # the pinned launcher without opening anything in the originating checkout.
+    launchers = [
+        path for path in map(Path, dependencies)
+        if path.parts[-3:] == (".venv", "bin", "python")
+    ]
+    if len(launchers) != 1:
+        raise ValueError("Expected one frozen .venv/bin/python launcher")
+    frozen_venv = launchers[0].parents[1]
+    for name, expected_digest in dependencies.items():
+        path = Path(name)
+        if path.is_relative_to(frozen_venv):
+            path = runtime_venv / path.relative_to(frozen_venv)
+        if sha(path) != expected_digest:
+            raise ValueError(f"Changed harness dependency: {path}")
     snapshot, _ = load_snapshot(root / "source")
     if snapshot["snapshot_id"] != record["snapshot_id"]:
         raise ValueError("Registered snapshot mismatch")
-    if (root / "runtime/.venv").resolve() != Path(record["venv"]).resolve():
-        raise ValueError("Changed runtime environment link")
-    return root, record
+    return record
 
 
 def register(specification, *, project=PROJECT, store=STORE, source_project=None):
@@ -311,8 +329,8 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
             verify_package(identifier, store)
             shutil.rmtree(pending)
         else:
+            verify_contents(pending, identifier)
             pending.rename(destination)
-        verify_package(identifier, store)
         return {
             "package_id": identifier,
             "label": s["label"],

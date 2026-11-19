@@ -44,12 +44,10 @@ statements are current and which are historical.
 
 ### Include GitHub Issues in a planning assignment
 
-From the authenticated Maintainer shell, export the backlog to a new file in
-the assignment's staging tree. For example, with the staging directory in
-`$packet`, run:
+From the authenticated Maintainer shell, select the issues needed for the assignment. To write issues 34 and 35 to a new file in the staging directory named by `$packet`, run
 
 ```sh
-python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/github-issues.json"
+python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/github-issues.json" --issue 34 --issue 35
 ```
 
 Inspect the text for suitability for the assignment. Select `github-issues.json`
@@ -60,12 +58,7 @@ bodies, label names, URLs and update times. An open issue with the `parked` labe
 Maintainer owns the assignment and any later decision to act on suggestions.
 The export covers open and closed issues and excludes comments and pull
 requests. When a decision depends on a comment, include the relevant excerpt
-and its permalink in the selected packet. The full export accepts up to 50 issues. For a larger backlog or a narrower
-assignment, select the issues explicitly. Duplicate numbers count once.
-
-```sh
-python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/selected-issues.json" --issue 34 --issue 35
-```
+and its permalink in the selected packet. Omit the `--issue` arguments for a full export on a tracker with at most 50 issues. Duplicate issue numbers count once.
 
 For jobs that produce
 applicable edits, the ordinary base check includes this input, so keep its
