@@ -12,7 +12,7 @@ python3 -S examples/preparing-worker-package/prepare.py "$scratch/assignment"
 cat "$scratch/assignment/task.md"
 ```
 
-The generator reads the two files in `starter/`, exported byte for byte from private revision `0deaaef`. It verifies the reconstructed snapshot, public contract, spec and historical request against the recorded identities. Expect identifiers beginning `b1b9242a` and `ac5fc85e`.
+The generator reads the two files in `starter/`, exported byte for byte from development revision `0deaaef`. [Browse the corresponding public commit](https://github.com/othercriteria/harness-lab/commit/6a18691d6be8e5a35219e4ea1d0b94782b2f7c3d) It verifies the reconstructed snapshot, public contract, spec and historical request against the recorded identities. Expect identifiers beginning `b1b9242a` and `ac5fc85e`.
 
 | Open | What to look for |
 | --- | --- |

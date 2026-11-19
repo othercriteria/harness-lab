@@ -1,6 +1,6 @@
 # Review two Worker submissions
 
-One Worker wrote a change that landed. Another produced a reasonable review whose handoff the Maintainer rejected. Follow the evidence for each decision. You can read both cases on GitHub. To run the first check, use a full clone, Git, and Python 3.13 on Linux. The historical source and tests below come from private development revision `8f98938c` and are included in this snapshot.
+One Worker wrote a change that landed. Another produced a reasonable review whose handoff the Maintainer rejected. Follow the evidence for each decision. You can read both cases on GitHub. To run the first check, use a full clone, Git, and Python 3.13 on Linux. The walkthrough includes the source and tests from development revision `8f98938c`. [Browse the corresponding public commit](https://github.com/othercriteria/harness-lab/commit/af8a47a87b0d122066bde0e3bc73a57c089f008b)
 
 From the root of a current clone, you can check the bytes of three recorded
 evidence files against the example inventory before running the historical tests. A missing or changed file produces its own entry and exit status 1.

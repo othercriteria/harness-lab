@@ -49,7 +49,7 @@ the assignment's staging tree. For example, with the staging directory in
 `$packet`, run:
 
 ```sh
-python3 scripts/export_issue_context.py othercriteria/local-harness-lab "$packet/github-issues.json"
+python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/github-issues.json"
 ```
 
 Inspect the text for suitability for the assignment. Select `github-issues.json`
@@ -64,7 +64,7 @@ and its permalink in the selected packet. The full export accepts up to 50 issue
 assignment, select the issues explicitly. Duplicate numbers count once.
 
 ```sh
-python3 scripts/export_issue_context.py othercriteria/local-harness-lab "$packet/selected-issues.json" --issue 34 --issue 35
+python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/selected-issues.json" --issue 34 --issue 35
 ```
 
 For jobs that produce
