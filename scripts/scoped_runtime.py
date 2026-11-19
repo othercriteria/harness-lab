@@ -18,7 +18,7 @@ from fresh_context import (
     visible_message,
 )
 from scoped_context import ScopedContext, capture_world, ledger, validate_return
-from spec_blocker import _constant, _object
+from tool_arguments import load_arguments
 from tool_repair import failure
 
 NAME = "return_scope"
@@ -375,9 +375,7 @@ class ScopeRuntime:
                 ):
                     raise ValueError("Invalid return call identity")
                 value = validate_return(
-                    json.loads(
-                        raw, object_pairs_hook=_object, parse_constant=_constant
-                    ),
+                    load_arguments(raw),
                     self.model.history,
                 )
                 return [

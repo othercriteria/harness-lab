@@ -5,7 +5,8 @@ from types import SimpleNamespace
 
 from evidence_contract import bounded_text, require_fields
 from mini_bootstrap import FormatError, parse_toolcall_actions
-from spec_blocker import CATEGORIES, _constant, _object
+from spec_blocker import CATEGORIES
+from tool_arguments import load_arguments
 
 NAME = "finish_attempt"
 MAX_BYTES = 8192
@@ -226,9 +227,7 @@ def validate(value, history):
 def parse(raw, history):
     if not isinstance(raw, str) or len(raw.encode()) > MAX_BYTES:
         raise ValueError("Expected at most8192 argument bytes")
-    return validate(
-        json.loads(raw, object_pairs_hook=_object, parse_constant=_constant), history
-    )
+    return validate(load_arguments(raw), history)
 
 
 def actions(

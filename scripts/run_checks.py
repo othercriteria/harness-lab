@@ -10,7 +10,7 @@ from pathlib import Path
 
 from call_budget import MAX_CALLS
 from read_file import read_bytes
-from spec_blocker import _constant, _object
+from tool_arguments import load_arguments
 
 NAME = "run_checks"
 MAX_COMMAND_BYTES = 8192
@@ -104,9 +104,7 @@ def action(call):
     raw = call["function"]["arguments"]
     if not isinstance(raw, str) or len(raw.encode()) > 65536:
         raise ValueError("Oversized run_checks arguments")
-    arguments = validate(
-        json.loads(raw, object_pairs_hook=_object, parse_constant=_constant)
-    )
+    arguments = validate(load_arguments(raw))
     return {
         "tool": NAME,
         "arguments": arguments,

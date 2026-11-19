@@ -14,6 +14,9 @@ CASES = (
     "tests.test_observe_costs",
     "tests.test_summarize_runs",
     "tests.test_progress_reports",
+    "tests.test_initial_repository",
+    "tests.test_read_file",
+    "tests.test_read_observations",
     "tests.test_delegate_job",
     "tests.test_memory_scope.MemoryScopeTests",
 )

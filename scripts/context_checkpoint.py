@@ -3,7 +3,7 @@
 import copy
 import json
 
-from spec_blocker import _constant, _object
+from tool_arguments import load_arguments
 
 NAME = "checkpoint_context"
 MAX_BYTES = 8192
@@ -267,7 +267,7 @@ def action(
         if not isinstance(raw, str) or len(raw.encode()) > MAX_BYTES:
             raise ValueError("Checkpoint arguments exceed 8192 bytes or are not text")
         value = validate(
-            json.loads(raw, object_pairs_hook=_object, parse_constant=_constant),
+            load_arguments(raw),
             shared=shared,
             history=history,
             progress=progress,

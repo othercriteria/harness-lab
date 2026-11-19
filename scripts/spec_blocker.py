@@ -1,8 +1,7 @@
 """Opt-in data-only blocked claim; no model-controlled paths or executable fields."""
 
-import json
-
 from mini_bootstrap import FormatError, exceptions
+from tool_arguments import load_arguments
 
 COMMAND = "REPORT_SPEC_BLOCKER"
 MAX_BYTES = 8192
@@ -68,30 +67,13 @@ def _string(value, bound, field):
         raise ValueError(f"{field} exceeds its text limit")
 
 
-def _object(pairs):
-    result = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError("Duplicate JSON field")
-        result[key] = value
-    return result
-
-
-def _constant(value):
-    raise ValueError("Nonfinite JSON constant")
-
-
 def parse(command):
     """Return a validated claim, or None for an ordinary bash command."""
     if not reserved(command):
         return None
     if len(command.encode("utf-8")) > MAX_BYTES:
         raise ValueError("Blocker command exceeds 8192 bytes")
-    claim = json.loads(
-        command.strip()[len(COMMAND) :].strip(),
-        object_pairs_hook=_object,
-        parse_constant=_constant,
-    )
+    claim = load_arguments(command.strip()[len(COMMAND) :].strip())
     if not isinstance(claim, dict) or set(claim) != {
         "version",
         "category",

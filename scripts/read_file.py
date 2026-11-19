@@ -7,7 +7,7 @@ import os
 import stat
 from pathlib import PurePosixPath
 
-from spec_blocker import _constant, _object
+from tool_arguments import load_arguments
 
 NAME = "read_file"
 MAX_FILE_BYTES = 16 * 1024 * 1024
@@ -96,9 +96,7 @@ def action(call):
     raw = call["function"]["arguments"]
     if not isinstance(raw, str) or len(raw.encode()) > 8192:
         raise ValueError("read_file arguments exceed 8192 bytes")
-    arguments = validate(
-        json.loads(raw, object_pairs_hook=_object, parse_constant=_constant)
-    )
+    arguments = validate(load_arguments(raw))
     return {
         "tool": NAME,
         "arguments": arguments,

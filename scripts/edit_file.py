@@ -3,7 +3,7 @@
 import json
 
 from sandbox_worker import validate_edit_arguments
-from spec_blocker import _constant, _object
+from tool_arguments import load_arguments
 
 NAME = "edit_file"
 _CORE_INSTRUCTION = (
@@ -56,9 +56,7 @@ TOOL = {
 def parse(raw):
     if not isinstance(raw, str) or len(raw.encode("utf-8")) > 262144:
         raise ValueError("Serialized edit arguments exceed262144 UTF-8 bytes")
-    return validate_edit_arguments(
-        json.loads(raw, object_pairs_hook=_object, parse_constant=_constant)
-    )
+    return validate_edit_arguments(load_arguments(raw))
 
 
 def action(call):
