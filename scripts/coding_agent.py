@@ -10,6 +10,7 @@ import urllib.request
 from types import SimpleNamespace
 
 from control import DeadlineExceeded
+from local_http import NoRedirect
 from mini_bootstrap import (
     BASH_TOOL,
     FormatError,
@@ -50,11 +51,6 @@ def bash_tool(limits):
             " output and records command/file evidence."
         )
     return tool
-
-
-class NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        raise ValueError("Redirects disabled for local model requests")
 
 
 class LocalModel:

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from check_fixtures import manifest
 from protocol import (
+    RUNS_ROOT,
     admit_tasks,
     campaign_timeout,
     load_protocol,
@@ -67,7 +68,7 @@ def main():
 
         budget += TIMEOUT_SECONDS + 30
     output = args.output.resolve()
-    if not output.is_relative_to("/bulk/dlk/local-harness/runs") or output.exists():
+    if not output.is_relative_to(RUNS_ROOT) or output.exists():
         parser.error("Use a fresh directory under project bulk runs")
     python = str(PROJECT / ".venv/bin/python")
     command = [

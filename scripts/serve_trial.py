@@ -18,6 +18,7 @@ from control import RunCancelled, cancellation, defer_launch_signals
 from host_memory import sample as host_memory_sample
 from model_registry import record_campaign, verify_weight
 from protocol import (
+    RUNS_ROOT,
     admit_tasks,
     load_protocol,
     profiles,
@@ -179,7 +180,7 @@ def main():
     if not os.environ.get("BIG_MODELS_GPU_LOCK_FD"):
         parser.error("Requires inherited canonical GPU lock from lifecycle owner")
     output = args.output.resolve()
-    if not output.is_relative_to("/bulk/dlk/local-harness/runs"):
+    if not output.is_relative_to(RUNS_ROOT):
         parser.error("Output must be in project bulk")
     output.mkdir(parents=True, exist_ok=False)
     profile = json.loads((PROJECT / "configs/servers.json").read_text())[args.profile]

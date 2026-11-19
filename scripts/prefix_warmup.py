@@ -12,8 +12,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-from coding_agent import NoRedirect
 from control import cancellation, deadline
+from local_http import NoRedirect
 from sandbox import write_json
 
 BYTE_CAP = 4 * 1024 * 1024
@@ -32,10 +32,14 @@ def verify_scored_prefix(request, receipt, rendered):
 def scored_cache_usage(response):
     """Report the actual cache hit; absent telemetry never means warm."""
     usage = response.get("usage", {})
+    if not isinstance(usage, dict):
+        usage = {}
     total = usage.get("prompt_tokens")
-    cached = usage.get("prompt_tokens_details", {}).get("cached_tokens")
+    details = usage.get("prompt_tokens_details")
+    cached = details.get("cached_tokens") if isinstance(details, dict) else None
     if cached is None:
-        cached = response.get("timings", {}).get("cache_n")
+        timings = response.get("timings")
+        cached = timings.get("cache_n") if isinstance(timings, dict) else None
     if type(total) is not int or type(cached) is not int or not 0 <= cached <= total:
         return {"cache_status": "unmeasured", "observed_cached_tokens": None}
     return {

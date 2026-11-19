@@ -91,7 +91,7 @@ class TopLevelSwapTests(unittest.TestCase):
             (root / "bare").mkdir()
             (root / "stray").write_text("not a directory")
             (root / "a" / "memory.swap.current").write_text("104857600\n")
-            (root / "a" / "nested" / "memory.swap.current").write_text("999999999\n")
+            (root / "a" / "nested" / "memory.swap.current").write_text("41943040\n")
             (root / "b" / "memory.swap.current").write_text("52428800\n")
             (root / "zero" / "memory.swap.current").write_text("0\n")
             result = host_memory.top_level_swap(root)
@@ -103,13 +103,18 @@ class TopLevelSwapTests(unittest.TestCase):
 
 class ReportTests(unittest.TestCase):
     def run_report(self, before, after, top_swap):
-        with mock.patch.object(host_memory, "sample", side_effect=[before, after]), \
-                mock.patch("time.sleep") as sleep, \
-                mock.patch("os.sysconf", return_value=PAGE_SIZE), \
-                mock.patch.object(host_memory, "top_level_swap", return_value=top_swap), \
-                mock.patch.object(host_memory, "datetime") as fake_dt:
-            fake_dt.now.return_value.isoformat.return_value = "2025-06-01T12:00:00+00:00"
+        with (
+            mock.patch.object(host_memory, "sample", side_effect=[before, after]),
+            mock.patch("time.sleep") as sleep,
+            mock.patch("os.sysconf", return_value=PAGE_SIZE) as sysconf,
+            mock.patch.object(host_memory, "top_level_swap", return_value=top_swap),
+            mock.patch.object(host_memory, "datetime") as fake_dt,
+        ):
+            fake_dt.now.return_value.isoformat.return_value = (
+                "2025-06-01T12:00:00+00:00"
+            )
             result = host_memory.report(5)
+        sysconf.assert_called_once_with("SC_PAGE_SIZE")
         sleep.assert_called_once_with(5)
         return result
 
@@ -117,7 +122,7 @@ class ReportTests(unittest.TestCase):
         # Swap is heavily occupied (8064 MiB of 8192 MiB used) yet pswpout does
         # not move: a used slot is not a new page-out, so swap_out_mib is 0.0
         # while swap_in_mib reflects 100 pages of 64 KiB each.
-        before = fixed_sample(1000.0, 1200, 3400, 2, 8192000, 1000, 0)
+        before = fixed_sample(1000.0, 1200, 3400, 2, 131008, 1000, 0)
         after = fixed_sample(1005.0, 1300, 3400, 4, 131072, 31000, 5000)
         top_swap = {"a": 104857600, "b": 52428800}
         result = self.run_report(before, after, top_swap)
@@ -134,15 +139,14 @@ class ReportTests(unittest.TestCase):
 
     def test_nonzero_page_out_delta(self):
         # Over a 10 s interval, 500 pages swap in and 1250 pages swap out at a
-        # 64 KiB page size, so in and out MiB differ; pressure falls, giving
-        # negative stall percentages, and no new OOM kills occur.
+        # 64 KiB page size. Cumulative stall times rise by different amounts.
         before = fixed_sample(2000.0, 1300, 3400, 4, 131072, 31000, 5000)
-        after = fixed_sample(2010.0, 1800, 4650, 4, 98304, 20000, 1000)
+        after = fixed_sample(2010.0, 1800, 4650, 4, 98304, 42000, 9000)
         result = self.run_report(before, after, {})
         self.assertEqual(result["elapsed_seconds"], 10.0)
         self.assertEqual(result["swap_in_mib"], 31.25)
         self.assertEqual(result["swap_out_mib"], 78.125)
-        self.assertEqual(result["memory_stall_percent"], {"some": -0.11, "full": -0.04})
+        self.assertEqual(result["memory_stall_percent"], {"some": 0.11, "full": 0.04})
         self.assertEqual(result["oom_kills_during_sample"], 0)
         self.assertEqual(result["memory_kib"], after["memory_kib"])
 

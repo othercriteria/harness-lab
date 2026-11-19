@@ -6,6 +6,7 @@ from pathlib import Path
 from call_budget import MAX_CALLS
 
 PROJECT = Path(__file__).resolve().parents[1]
+RUNS_ROOT = Path("/bulk/dlk/local-harness/runs")
 
 
 REPLAY_COMMIT = "6847e2237b4e77a3ede64e79e889ebb4b7d85968"

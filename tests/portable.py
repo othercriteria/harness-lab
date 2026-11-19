@@ -18,6 +18,10 @@ CASES = (
     "tests.test_read_file",
     "tests.test_read_observations",
     "tests.test_check_records",
+    "tests.test_host_memory",
+    "tests.test_model_registry",
+    "tests.test_prefix_warmup.PrefixWarmupTests",
+    "tests.test_campaign_startup",
     "tests.test_delegate_job",
     "tests.test_memory_scope.MemoryScopeTests",
 )
