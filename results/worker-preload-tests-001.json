@@ -1,0 +1,26 @@
+{
+  "job_id": "fd0965b496f74c74b2f807edbcf7f1a5",
+  "package_id": "2d409418765a98caec9ff2bd45785976a2d5a6a7d2a99c55cfb73adddeb4735a",
+  "snapshot_id": "012c7ccc4c886ba557312b5c1aad7e0560014d19f23856c97ea151b6bb93fd5b",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19563,
+  "authored_files": [
+    "tests/test_initial_repository.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 184.63766193785705,
+  "dispatch_seconds": 209.91360453516245,
+  "review": {
+    "job_id": "fd0965b496f74c74b2f807edbcf7f1a5",
+    "package_id": "2d409418765a98caec9ff2bd45785976a2d5a6a7d2a99c55cfb73adddeb4735a",
+    "reviewer": "Outer Maintainer",
+    "decision": "accepted",
+    "notes": "Reviewed the three synthetic fixture tests, final handoff and its observations. The rendered fixture is 1027 bytes for 506 raw bytes under a 1024-byte limit. The Worker also ran its own three failure controls.",
+    "verification": "Three tests passed on the original in the independent evaluator. Returning partial context on overflow failed both fallback tests. Ignoring rendered size failed the escaped-text fixture.",
+    "artifact": "artifact",
+    "artifact_sha256": "b15aa5c5af8f971d43c9cc6b20ff35ec5ea12ee764c57de2f8299049af022ea0"
+  },
+  "application_sha256": "074ebf1869e2504b481a3518d56a4ff42dd11886f073907ed03e3258eba7db29",
+  "outer_repairs": [],
+  "cleanup_verified": true
+}
