@@ -57,17 +57,18 @@ class CheckReceiptTests(unittest.TestCase):
         return summary, record
 
     def assert_summary_matches_record(self, summary, record):
-        self.assertEqual(summary["id"], record["id"])
-        self.assertEqual(summary["record_path"], record["record_path"])
-        self.assertEqual(summary["cwd"], record["cwd"])
-        self.assertEqual(summary["before"], record["before"])
-        self.assertEqual(summary["after"], record["after"])
-        self.assertEqual(
-            summary["files_unchanged_by_command"],
-            record["files_unchanged_by_command"],
-        )
-        self.assertEqual(summary["returncode"], record["returncode"])
-        self.assertEqual(summary["exception_info"], record["exception_info"])
+        for key in (
+            "id",
+            "record_path",
+            "cwd",
+            "before",
+            "after",
+            "files_unchanged_by_command",
+            "returncode",
+            "exception_info",
+        ):
+            with self.subTest(field=key):
+                self.assertEqual(summary[key], record[key])
 
     def test_unchanged_files_compare_true(self):
         self.write("app/main.txt", "alpha\n")
@@ -105,16 +106,14 @@ class CheckReceiptTests(unittest.TestCase):
         self.assertEqual(after["status"], "captured")
         self.assertNotEqual(before["tree_sha256"], after["tree_sha256"])
 
-        # A failing command that also edits the selected tree: the receipt must
-        # keep the exit status and the file comparison independent.
-        output = make_output("FAILED (failures=1)\n", 1)
-        summary, record = self.save_receipt(8, "app", before, after, output)
-
-        self.assertIs(summary["files_unchanged_by_command"], False)
-        self.assertEqual(summary["returncode"], 1)
-        self.assertEqual(record["files_unchanged_by_command"], False)
-        self.assertEqual(record["returncode"], 1)
-        self.assert_summary_matches_record(summary, record)
+        for rc, text in [(0, "OK"), (1, "FAILED")]:
+            with self.subTest(returncode=rc):
+                summary, record = self.save_receipt(
+                    8 + rc, "app", before, after, make_output(text, rc)
+                )
+                self.assertIs(summary["files_unchanged_by_command"], False)
+                self.assertEqual(summary["returncode"], rc)
+                self.assert_summary_matches_record(summary, record)
 
     def test_unavailable_identity_comparison_is_none(self):
         self.write("app/main.txt", "alpha\n")
