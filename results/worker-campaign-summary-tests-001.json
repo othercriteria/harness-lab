@@ -1,0 +1,27 @@
+{
+  "job_id": "2d11637c70b44b75b6eb80fd16cbb261",
+  "package_id": "b2b57c5c3360f770b907abc570facb933926423571bd650a514a3befcc0a7749",
+  "snapshot_id": "661f8c830aced5c100f0a8c0c7a92f2f61164909124cec2f8ee6b00054be4b4d",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19562,
+  "authored_files": [
+    "tests/test_summarize_runs.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 73.51165619306266,
+  "dispatch_seconds": 97.61909892805852,
+  "review": {
+    "job_id": "2d11637c70b44b75b6eb80fd16cbb261",
+    "package_id": "b2b57c5c3360f770b907abc570facb933926423571bd650a514a3befcc0a7749",
+    "artifact": "artifact",
+    "artifact_sha256": "f291f99959111b58a72b0c05d513f54f6d3beea790b7bfa0f0380b770d8affc1",
+    "decision": "accepted",
+    "reviewer": "Outer Maintainer",
+    "notes": "Read all three tests and the cited handoff. They exercise synthetic campaign directories, including different values for canonical correctness and clean completion. The timing fixture has one parent row, so it does not distinguish path matching from taking the first row.",
+    "verification": "Inspected isolated verifier output. Three tests passed on the original. The missing-receipt assertion rejected assumed restoration, and the digest assertion rejected a constant digest."
+  },
+  "application_sha256": "8e305ff4a8621e38643f6af436b5f3b003f3a79ece19346818443b7b8cf96e8c",
+  "outer_repairs": [],
+  "cleanup_verified": true,
+  "entry_service_states_restored": true
+}
