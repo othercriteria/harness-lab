@@ -5,18 +5,13 @@ Matching a check's directory identity is not proof of correctness or freshness o
 external dependencies, /tmp, process state, or Git metadata outside observed HEAD.
 """
 
-import json
-
+# Keep encoded and text_field importable here for older callers.
+from json_text import encoded, text_field
 from run_checks import identity, snapshot
 
 MAX_BYTES = 4096
 MAX_FILES = 24
 MAX_CHECKS = 3
-
-
-# Re-exported from json_text so existing importers of resumption_digest keep
-# working: encoded and text_field are defined there.
-from json_text import encoded, text_field  # noqa: F401
 
 
 def build(initial_workspace, workspace, history):
@@ -56,7 +51,8 @@ def build(initial_workspace, workspace, history):
         result["current_tree_sha256"] = current["tree_sha256"]
         result["changed_files_total"] = len(changes)
     records = [r for r in history.records.values() if "check_record" in r]
-    states = {}
+    # Root-scoped checks use the same current snapshot as the task-start comparison.
+    states = {".": current}
     for record in records[-MAX_CHECKS:]:
         check = record["check_record"]
         cwd = check["cwd"]

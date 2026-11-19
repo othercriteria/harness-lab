@@ -38,10 +38,10 @@ def write(path, data):
         stream.write(data)
 
 
-def record(check_id, cwd, after):
+def record(observation_id, check_id, cwd, after):
     """Shape of a recorded run_checks entry as consumed by build()."""
     return {
-        "id": check_id,
+        "id": observation_id,
         "command": "python -B -S -m unittest discover -s tests",
         "returncode": 0,
         "originally_truncated": False,
@@ -63,7 +63,7 @@ class BuildTests(unittest.TestCase):
         # A passing check recorded at task start, scoped to the subdirectory:
         # its after-snapshot is the real identity of that subdirectory then.
         self.after = snapshot(self.current, "checked")
-        self.history.records["o0001"] = record("c0001", "checked", self.after)
+        self.history.records["o0001"] = record("o0001", "c0001", "checked", self.after)
 
     def digest(self):
         return build(self.start, self.current, self.history)
@@ -76,10 +76,13 @@ class BuildTests(unittest.TestCase):
     def test_passing_check_scoped_to_subdirectory(self):
         digest = self.digest()
         entry = self.check_entry(digest)
+        self.assertEqual(
+            (entry["observation_id"], entry["check_id"]), ("o0001", "c0001")
+        )
         self.assertEqual(entry["cwd"], "checked")
         self.assertEqual(entry["returncode"], 0)
         self.assertEqual(entry["output_truncated"], False)
-        self.assertTrue(entry["current_files_match_after_check"])
+        self.assertIs(entry["current_files_match_after_check"], True)
         # No .git in the temporary workspaces: the Git comparison is
         # unavailable, not a measured mismatch.
         self.assertIsNone(entry["current_head_matches_observed_after_check"])
@@ -97,7 +100,7 @@ class BuildTests(unittest.TestCase):
         write(os.path.join(self.current, "outer.txt"), OUTER_MODIFIED)
         digest = self.digest()
         entry = self.check_entry(digest)
-        self.assertTrue(entry["current_files_match_after_check"])
+        self.assertIs(entry["current_files_match_after_check"], True)
         self.assertEqual(
             digest["changed_files"],
             [
@@ -133,7 +136,7 @@ class BuildTests(unittest.TestCase):
         self.assertNotEqual(now["tree_sha256"], self.after["tree_sha256"])
         digest = self.digest()
         entry = self.check_entry(digest)
-        self.assertFalse(entry["current_files_match_after_check"])
+        self.assertIs(entry["current_files_match_after_check"], False)
         self.assertIsNone(entry["current_head_matches_observed_after_check"])
 
     def test_unavailable_identity_is_none_not_false(self):
@@ -168,11 +171,24 @@ class BuildTests(unittest.TestCase):
         # The recorded check is still evaluated against the current tree.
         self.assertTrue(self.check_entry(digest)["current_files_match_after_check"])
 
+    def test_digest_byte_limit_counts_evictions_below_the_file_count_limit(self):
+        names = [f"{i:02}-" + "é" * 95 for i in range(MAX_FILES - 1)]
+        for name in names:
+            write(os.path.join(self.current, name), b"x")
+        digest = self.digest()
+        shown = digest["changed_files"]
+        self.assertEqual(digest["changed_files_total"], len(names))
+        self.assertGreater(len(shown), 0)
+        self.assertLess(len(shown), len(names))
+        self.assertEqual(digest["changed_files_omitted"], len(names) - len(shown))
+        self.assertLessEqual(len(encoded(digest).encode()), MAX_BYTES)
+        self.assertTrue(all(entry["path_clipped"] for entry in shown))
+
     def test_omitted_changes_reconcile_with_actual_count(self):
         # More changed files than MAX_FILES forces the bounded digest to omit
         # some; the reported omission reconciles with the actual change count.
         for index in range(MAX_FILES + 1):
-            write(os.path.join(self.current, "extra%02d.txt" % index), b"x")
+            write(os.path.join(self.current, f"extra{index:02d}.txt"), b"x")
         digest = self.digest()
         self.assertEqual(digest["file_comparison"], "captured")
         self.assertEqual(digest["changed_files_total"], MAX_FILES + 1)
@@ -187,9 +203,7 @@ class BuildTests(unittest.TestCase):
         kept_paths = [entry["path"] for entry in digest["changed_files"]]
         self.assertEqual(
             kept_paths,
-            sorted(
-                ["extra%02d.txt" % i for i in range(MAX_FILES + 1)] + ["outer.txt"]
-            )[:MAX_FILES],
+            sorted(f"extra{i:02d}.txt" for i in range(MAX_FILES + 1))[:MAX_FILES],
         )
         self.assertTrue(
             all(
