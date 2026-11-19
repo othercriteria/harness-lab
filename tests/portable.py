@@ -9,6 +9,7 @@ CASES = (
     "tests.test_delegate_runtime",
     "tests.test_delegate_apply",
     "tests.test_checkpoint_policy",
+    "tests.test_check_fixtures",
     "tests.test_observe",
     "tests.test_observe_costs",
     "tests.test_delegate_job.DelegateJobTests.test_dispatch_records_only_explicit_classification",

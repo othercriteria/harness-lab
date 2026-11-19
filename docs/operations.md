@@ -40,8 +40,6 @@ Compare runs with the same test selection and source scope. The report measures
 the test process. Standalone example commands, subprocesses, Node rendering,
 workstation checks and model runs can exercise additional paths. Inspect
 callers and runtime evidence before treating an uncovered path as dead code.
-The broader workstation command `./lab check` includes a formatting check,
-full test discovery and fixture validation.
 
 Run `poe --help` to list the tasks. To opt in for a clone, run
 `poe install-hooks` in the developer environment. The installed hook needs
@@ -53,3 +51,28 @@ unstaged tracked changes, so it checks the indexed versions. Untracked files
 remain visible. Both checks are read-only. Use `pre-commit run --all-files` for
 a manual check and `pre-commit uninstall` to remove the hook. Tests, coverage,
 historical examples, prose checks and Node rendering run separately in CI.
+
+### Workstation checks
+
+On x86-64 Linux with Nix and direnv, review the checkout’s `.envrc` and allow it
+with `direnv allow`. In the project dev shell, run `uv sync --locked` once
+to install the runtime needed by full test discovery. If the workstation’s
+shared uv cache is unavailable, use `uv sync --locked --cache-dir .cache/uv`.
+Then run `./lab check` from the repository root.
+
+The command runs the same maintained lint and type checks as CI, a Ruff pass
+for syntax and likely execution errors across `scripts/`, `tasks/` and
+`tests/`, and full Python test discovery using the checkout’s virtual
+environment. Live cgroup tests require explicit opt-in via
+`MEMORY_SCOPE_LIVE_ROOT` and ordinarily appear as skipped. The fixture stage
+runs the trusted authored starters and references against their public and
+acceptance suites, checks expected test counts and outcomes, and verifies the
+fixture bytes remain intact. It names each task requiring isolated evaluation
+or outer adjudication. Those tasks have no host validation result. A failed
+stage returns a nonzero exit status. To inspect the fixture test counts and
+outcomes, run `python scripts/check_fixtures.py --host-eligible --report fixture-report.json`.
+
+For a repository-wide style inventory, run `ruff check scripts tasks tests` and
+`ruff format --check scripts tasks tests` separately. Both include historical
+source and frozen fixtures with known style differences. Preserve their
+recorded bytes when addressing findings.

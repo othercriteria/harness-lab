@@ -169,7 +169,10 @@ def main():
     sub.add_parser(
         "setup", help="Prepare bulk cache and lock/install Python dependencies"
     )
-    sub.add_parser("check", help="Check lint, formatting, and trusted task fixtures")
+    sub.add_parser(
+        "check",
+        help="Run maintained lint and types, full Python test discovery and host-eligible fixtures",
+    )
     memory = sub.add_parser(
         "memory", help="Sample host RAM, swap traffic and memory stalls"
     )
@@ -284,21 +287,17 @@ def main():
         ]
     else:
         env = os.environ.copy()
+        python = PROJECT / ".venv/bin/python"
+        if not python.is_file():
+            parser.error(
+                "check needs the locked Python runtime; run uv sync --locked in the project dev shell"
+            )
         commands = [
-            ["ruff", "check", "scripts", "tasks", "tests"],
-            ["ruff", "format", "--check", "scripts", "tasks", "tests"],
-            [
-                str(PROJECT / ".venv/bin/python")
-                if (PROJECT / ".venv/bin/python").exists()
-                else sys.executable,
-                "-m",
-                "unittest",
-                "discover",
-                "-s",
-                "tests",
-                "-q",
-            ],
-            [sys.executable, "scripts/check_fixtures.py"],
+            ["poe", "lint"],
+            ["poe", "typecheck"],
+            ["ruff", "check", "--select", "E9,F63,F7,F82", "scripts", "tasks", "tests"],
+            [str(python), "-m", "unittest", "discover", "-s", "tests", "-q"],
+            [sys.executable, "scripts/check_fixtures.py", "--host-eligible"],
         ]
     for argv in commands:
         result = subprocess.run(argv, cwd=PROJECT, env=env, check=False)

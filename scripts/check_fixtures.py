@@ -1,8 +1,7 @@
-"""Validate authored fixtures locally and admitted imports only in sandboxes.
+"""Run public and acceptance suites for trusted authored baselines and references.
 
-The legacy host path accepts trusted authored baselines/references only. Imported
-fixtures dispatch before that path; unsupported imports fail closed. Never pass
-model submissions to this development checker.
+Imported, isolated-only and outer-adjudicated fixtures need separate evaluation.
+Never pass model submissions to this development checker.
 """
 
 import argparse
@@ -96,19 +95,31 @@ def run_suite(workspace, suite):
     return result
 
 
+def separate_evaluation(metadata):
+    """Classify declared evaluation boundaries before opening fixture source."""
+    outer = requires_outer_adjudication(metadata)
+    if metadata.get("origin", "authored") not in {"authored", "imported"}:
+        raise ValueError("Unknown fixture origin; refusing host execution")
+    if metadata.get("fixture_validation") not in (None, "isolated-only"):
+        raise ValueError("Unknown fixture validation mode; refusing host execution")
+    if outer:
+        return "outer adjudication"
+    if metadata.get("fixture_validation") == "isolated-only":
+        return "isolated-only validation"
+    if (
+        metadata.get("origin") == "imported"
+        or "upstream" in metadata
+        or "evaluator" in metadata
+    ):
+        return "separate isolated evaluator"
+    return None
+
+
 def check_task(task):
     metadata = json.loads((task / "task.json").read_text())
-    if requires_outer_adjudication(metadata):
-        raise ValueError(
-            "Outer-adjudicated fixture: use isolated triage admission; host execution refused"
-        )
-    if metadata.get("fixture_validation") == "isolated-only":
-        raise ValueError("This fixture requires isolated validation; host reference execution refused")
-    origin = metadata.get("origin", "authored")
-    if origin not in {"authored", "imported"}:
-        raise ValueError("Unknown fixture origin; refusing host execution")
-    if origin == "imported" or "upstream" in metadata or "evaluator" in metadata:
-        raise ValueError("Imported fixtures require a separate isolated evaluator")
+    reason = separate_evaluation(metadata)
+    if reason:
+        raise ValueError(f"{task.name} requires {reason}; host execution refused")
     before = manifest(task)
     outcomes = {}
     with tempfile.TemporaryDirectory(prefix="local-harness-fixture-") as directory:
@@ -130,7 +141,6 @@ def check_task(task):
                 "public": run_suite(workspace, task / "public/tests"),
                 "acceptance": run_suite(workspace, task / "private"),
             }
-    metadata = json.loads((task / "task.json").read_text())
     expected_counts = metadata["test_counts"]
     baseline_public_passes = metadata.get("baseline_public_passes", True)
     if type(baseline_public_passes) is not bool:
@@ -164,21 +174,36 @@ def check_task(task):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", type=Path, help="New JSON report path")
+    parser.add_argument(
+        "--host-eligible",
+        action="store_true",
+        help="Validate host-eligible authored fixtures and list tasks requiring separate evaluation",
+    )
     args = parser.parse_args()
     if args.report and args.report.exists():
         parser.error("report already exists; use a fresh path")
-    tasks = [check_task(p.parent) for p in sorted((ROOT / "tasks").glob("*/task.json"))]
+    tasks = []
+    deferred = {}
+    for path in sorted((ROOT / "tasks").glob("*/task.json")):
+        task = path.parent
+        if args.host_eligible:
+            reason = separate_evaluation(json.loads(path.read_text()))
+            if reason:
+                deferred[task.name] = reason
+                continue
+        tasks.append(check_task(task))
     report = {
         "schema_version": 1,
         "kind": "trusted-fixture-validation",
         "created_at": datetime.datetime.now(datetime.UTC).isoformat(),
         "python": sys.version,
         "checker_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "passed": all(task["valid"] for task in tasks),
+        "passed": bool(tasks) and all(task["valid"] for task in tasks),
+        "requires_separate_evaluation": deferred,
         "tasks": tasks,
         "limitations": [
             "No model ran",
-            "Authored fixtures use a trusted host path; imported fixtures use sandboxes",
+            "Only host-eligible trusted authored fixtures ran",
             "Does not establish hidden-test completeness",
         ],
     }
@@ -189,6 +214,12 @@ def main():
             stream.write("\n")
     for task in tasks:
         print(f"{task['task']}: {'PASS' if task['valid'] else 'FAIL'}")
+    for name, reason in deferred.items():
+        print(f"{name}: NOT RUN ({reason})")
+    print(
+        f"Validated {sum(task['valid'] for task in tasks)} of {len(tasks)} host fixtures; "
+        f"{len(deferred)} require separate evaluation."
+    )
     return 0 if report["passed"] else 1
 
 
