@@ -1,0 +1,26 @@
+{
+  "job_id": "3bff0e26dd8e4f3d99bc8985510b669e",
+  "package_id": "02a117a4a3f0793e897a777322b55f4b02c2d6fcec272f772573c1fd33e583f1",
+  "snapshot_id": "75e7ba346b903b1478a593da2d6c106ffbeb6cb933c9e4ba0b49195ae702cd8d",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19566,
+  "authored_files": [
+    "tests/test_resumption_digest.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 152.07407024595886,
+  "dispatch_seconds": 176.72725146403536,
+  "review": {
+    "job_id": "3bff0e26dd8e4f3d99bc8985510b669e",
+    "package_id": "02a117a4a3f0793e897a777322b55f4b02c2d6fcec272f772573c1fd33e583f1",
+    "reviewer": "Outer Maintainer",
+    "decision": "accepted",
+    "notes": "Reviewed six temporary-workspace tests and the submitted handoff. The tests compare actual snapshots, historical exit status and omission counts. The Worker disclosed that the byte-driven pruning path was not exercised. The stale assertion uses truthiness, which also accepts an unknown comparison, and the synthetic record conflates the observation ID and check ID. These cases merit outer refinement.",
+    "verification": "Six tests passed on the original in the isolated evaluator. One test failed when historical success implied freshness and another failed when the omission count was erased.",
+    "artifact": "artifact",
+    "artifact_sha256": "d924f83527d33ac8ac86cdfca59ace07b4f1b1123c4c1da792ae52611a167f6b"
+  },
+  "application_sha256": "c7007d7982ac3f250958f33913936d31231e3a1e9c612d8243b6cfbb4f28d144",
+  "outer_repairs": [],
+  "cleanup_verified": true
+}
