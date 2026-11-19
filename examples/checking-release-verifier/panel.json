@@ -1,0 +1,263 @@
+[
+  {
+    "id": "reference",
+    "source": "sealed reference",
+    "judgment": "allowed",
+    "rationale": "Positive control from the original admission.",
+    "edits": [],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 2,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": 2
+    },
+    "candidate_sha256": "d0eb0abdd1310fe520583874bcdc1793ce0bafe1e244fb4ea34119719bdd14f7"
+  },
+  {
+    "id": "starter",
+    "source": "published starter; Worker M3 and M4 describe the same effective rule",
+    "judgment": "wrong",
+    "rationale": "A newer withdrawal must supersede an earlier publication.",
+    "edits": [],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 4,
+          "revision": 1,
+          "state": "published"
+        },
+        {
+          "channel": "stable",
+          "build": 4,
+          "revision": 2,
+          "state": "withdrawn"
+        }
+      ],
+      "channel": "stable",
+      "expected": null
+    },
+    "candidate_sha256": "dda124494453d0d671638681236694fbfefb167861f48e7993c851b0f93405b0"
+  },
+  {
+    "id": "equal-revision-replacement",
+    "source": "Worker and Maintainer independently",
+    "judgment": "allowed",
+    "rationale": "Replacing the saved record on an equal revision is allowed because tied states agree.",
+    "edits": [
+      {
+        "find": "row.revision > previous.revision",
+        "replace": "row.revision >= previous.revision"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 8,
+          "revision": 1,
+          "state": "published"
+        },
+        {
+          "channel": "stable",
+          "build": 8,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": 8
+    },
+    "candidate_sha256": "428edef256f9caa3e2a93df33fd17c14e495b27b965fe8a1b36eaa79cec16468"
+  },
+  {
+    "id": "in-place-ordering",
+    "source": "Worker and Maintainer independently",
+    "judgment": "wrong",
+    "rationale": "Sorting the caller’s array can reorder distinct records even if the selected value is correct.",
+    "edits": [
+      {
+        "find": "const latest = new Map();",
+        "replace": "records.sort((a, b) => b.build - a.build);\n  const latest = new Map();"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 4,
+          "revision": 1,
+          "state": "published"
+        },
+        {
+          "channel": "stable",
+          "build": 8,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": 8
+    },
+    "candidate_sha256": "f4a059c4bd7412b4bc0507bdeb5c5d533520f9b18a37954472e2ef952663e478"
+  },
+  {
+    "id": "record-annotation",
+    "source": "maintainer",
+    "judgment": "wrong",
+    "rationale": "Storing a derived flag on borrowed records leaves the caller’s records changed. An ordinary non-strict CommonJS assignment is silent on immutable records.",
+    "edits": [
+      {
+        "find": "'use strict';\n",
+        "replace": ""
+      },
+      {
+        "find": "row.state === 'published' &&",
+        "replace": "(row.isPublished ?? (row.isPublished = row.state === 'published')) &&"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 4,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": 4
+    },
+    "candidate_sha256": "28e3e9c5688d27d2fa52941f772d0f8820b2a8918daf9ecfaa340b4970092ecc"
+  },
+  {
+    "id": "case-folded-channel",
+    "source": "maintainer",
+    "judgment": "wrong",
+    "rationale": "Distinct channel strings can differ only by case. Normalizing both names conflates the channels.",
+    "edits": [
+      {
+        "find": "row.channel !== channel",
+        "replace": "row.channel.toLowerCase() !== channel.toLowerCase()"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 4,
+          "revision": 1,
+          "state": "published"
+        },
+        {
+          "channel": "Stable",
+          "build": 8,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": 4
+    },
+    "candidate_sha256": "0b0aeccd21402b9953e53437b95bf149f8aa7b93c20ec405430c72d6be89e607"
+  },
+  {
+    "id": "lexical-build-order",
+    "source": "Worker and Maintainer independently",
+    "judgment": "wrong",
+    "rationale": "Comparing decimal build strings can select 9 ahead of 10.",
+    "edits": [
+      {
+        "find": "row.build > current",
+        "replace": "String(row.build) > String(current)"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 9,
+          "revision": 1,
+          "state": "published"
+        },
+        {
+          "channel": "stable",
+          "build": 10,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": 10
+    },
+    "candidate_sha256": "36e61b3fab73a5de75f75ea886a42878343d9e4c50a2395bd6e5576b96cde25c"
+  },
+  {
+    "id": "first-seen",
+    "source": "Worker M1",
+    "judgment": "wrong",
+    "rationale": "First appearance need not have the greatest revision.",
+    "edits": [
+      {
+        "find": "if (previous === undefined || row.revision > previous.revision) {",
+        "replace": "if (previous === undefined) {"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 8,
+          "revision": 1,
+          "state": "published"
+        },
+        {
+          "channel": "stable",
+          "build": 8,
+          "revision": 2,
+          "state": "withdrawn"
+        }
+      ],
+      "channel": "stable",
+      "expected": null
+    },
+    "candidate_sha256": "b6e899f360580eec371b71a36f763c3f72b0e573924238db955706fd9ba31b56"
+  },
+  {
+    "id": "last-seen",
+    "source": "Worker M2",
+    "judgment": "wrong",
+    "rationale": "Last appearance need not have the greatest revision.",
+    "edits": [
+      {
+        "find": "    const previous = latest.get(row.build);\n    if (previous === undefined || row.revision > previous.revision) {\n      latest.set(row.build, row);\n    }",
+        "replace": "    latest.set(row.build, row);"
+      }
+    ],
+    "witness": {
+      "records": [
+        {
+          "channel": "stable",
+          "build": 7,
+          "revision": 2,
+          "state": "withdrawn"
+        },
+        {
+          "channel": "stable",
+          "build": 7,
+          "revision": 1,
+          "state": "published"
+        }
+      ],
+      "channel": "stable",
+      "expected": null
+    },
+    "candidate_sha256": "62c6fe64d1e7482fe2a144082752717378a71ae411c23c62d35502837bebbf06"
+  }
+]

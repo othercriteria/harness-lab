@@ -218,5 +218,43 @@
     ],
     "channel": "stable",
     "expected": null
+  },
+  {
+    "name": "decimal width",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 9,
+        "revision": 1,
+        "state": "published"
+      },
+      {
+        "channel": "stable",
+        "build": 10,
+        "revision": 1,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 10
+  },
+  {
+    "name": "case-sensitive channel",
+    "records": [
+      {
+        "channel": "stable",
+        "build": 4,
+        "revision": 1,
+        "state": "published"
+      },
+      {
+        "channel": "Stable",
+        "build": 8,
+        "revision": 1,
+        "state": "published"
+      }
+    ],
+    "channel": "stable",
+    "expected": 4
   }
 ]

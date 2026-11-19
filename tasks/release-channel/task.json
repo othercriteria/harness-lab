@@ -1,13 +1,13 @@
 {
   "id": "release-channel",
-  "version": 1,
+  "version": 2,
   "kind": "javascript-release-selection",
   "origin": "authored",
   "split": "development",
   "entrypoint": "public/task.md",
   "test_counts": {
     "public": 2,
-    "acceptance": 11
+    "acceptance": 13
   },
   "fixture_validation": "isolated-only",
   "human_duration": {

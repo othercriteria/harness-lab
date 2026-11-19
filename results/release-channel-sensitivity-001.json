@@ -1,0 +1,371 @@
+{
+  "study": "release-channel verifier sensitivity",
+  "freeze": {
+    "utc": "2026-11-19T23:51:10.704020+00:00",
+    "panel_sha256": "4d6550e3cde6c81aff26821354379683f6f9b748cd220a598f338212fe79ed04",
+    "witness_observer_sha256": "c8efaed422f178ad74099faed9d6f0752357f815c5db801cedd532fe50d4805c",
+    "version_1_lab_revision": "6b774adc5dd52fceaf3b1544b700cb15c78dc517",
+    "witness_judgment": "Compare typed return and post-call array/order/record values with an independent expectation using an ordinary mutable input. Reference, >= control should conform; all others should violate. No witness/expectation is supplied to the public or canonical grader.",
+    "selection": "Public-only Worker advice plus Maintainer-selected examples; Maintainer could inspect the existing checks. A purposive panel, not a blind estimate of detection rates.",
+    "worker_corrections": "M3 is order independent despite the summary. M4 as written reduces to ever-published: the earliest state is published or a later publish exists. Treat as one rule, including the starter. M5 depends on decimal string ordering, not digit count alone. A permutation can expose an order bug, but not every permutation distinguishes it."
+  },
+  "worker": {
+    "job_id": "4676e26370b446f7b306bb5e590eca12",
+    "package_id": "af9491eb8cf3efde9c1e9f55704e982e032e0694ac00d0c1875d8a0bfeacfeff",
+    "recipe": "apprentice-qwen-32k-v1",
+    "seed": 19571,
+    "task_seconds": 145.01423969003372,
+    "clean_completion": true,
+    "original_memo_sha256": "88714fee0471225f8f114639fc7bfbb5971230d7786a92c9e707d8a22e94ff5e",
+    "role": "Public-only advisory memo. Maintainer adjudicated the rules, authored the executable panel and verified its witnesses; no Worker patch was applied.",
+    "review": "Accepted for advisory use. M1/M2 are distinct, M3/M4 reduce to ever published, M5/M6 overlap Maintainer candidates. The equal-revision control is valid. The overview mistakenly classifies M3 as order dependent and the permutation claim is broader than its witness. No Worker-authored executable code was applied.",
+    "cleanup_verified": true,
+    "session_restored": true
+  },
+  "methods": "Each public suite, canonical suite and independent witness ran in a separate Lab Node sandbox. Expected judgments and witness answers stayed in the outer process. The witness separately checked the value, original record identities/order and post-call values on a mutable input. The canonical transport in version 1 terminated early on the in-place sort. No per-case outcomes are inferred for that invocation.",
+  "versions": {
+    "v1": {
+      "canonical_cases": 11,
+      "private_case_sha256": "07501928a7735efaf9d542ece286641734c46e3d03f22029dd9220367a22e698",
+      "private_probe_sha256": "5c0b834eeac5da431cd65a1b08cb22ea00a89722f316d834ab14b4a25f9dfd93",
+      "public_brief_sha256": "8c09d314f4db5864472bf1f7ce68200df5100ee128e56d387ccee05854628b64",
+      "public_test_sha256": "5c93595e1d6927f850187e967f7f3ef965855784b87f01bb55500acbf4c25c96",
+      "reference_sha256": "d0eb0abdd1310fe520583874bcdc1793ce0bafe1e244fb4ea34119719bdd14f7"
+    },
+    "v2": {
+      "canonical_cases": 13,
+      "private_case_sha256": "0b71500e2c04a6f815c2d1ea8e42bc56e86a0c6b9d7f0a3691c953c4bfec89cd",
+      "private_probe_sha256": "7679e786e7fc2ae83a91f26d058ffc4740272aa97db3f6b37cb73a9154d1a9a9",
+      "public_brief_sha256": "8c09d314f4db5864472bf1f7ce68200df5100ee128e56d387ccee05854628b64",
+      "public_test_sha256": "5c93595e1d6927f850187e967f7f3ef965855784b87f01bb55500acbf4c25c96",
+      "reference_sha256": "d0eb0abdd1310fe520583874bcdc1793ce0bafe1e244fb4ea34119719bdd14f7"
+    }
+  },
+  "matrix": {
+    "reference": {
+      "judgment": "allowed",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          2
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      },
+      "v2": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      }
+    },
+    "starter": {
+      "judgment": "wrong",
+      "public": false,
+      "witness": {
+        "value": [
+          "number",
+          4
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "fallback",
+          "withdrawn",
+          "absent despite other activity"
+        ]
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "fallback",
+          "withdrawn",
+          "absent despite other activity"
+        ]
+      }
+    },
+    "equal-revision-replacement": {
+      "judgment": "allowed",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          8
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      },
+      "v2": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      }
+    },
+    "in-place-ordering": {
+      "judgment": "wrong",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          8
+        ],
+        "unchanged": false
+      },
+      "v1": {
+        "passed": false,
+        "transport_ok": false,
+        "failed_cases": null,
+        "exception": "In-place sort threw TypeError on a frozen array."
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "fallback",
+          "withdrawn",
+          "reinstated",
+          "per-build revision",
+          "same build across channels",
+          "agreeing duplicate",
+          "wide integer",
+          "absent despite other activity",
+          "decimal width",
+          "case-sensitive channel"
+        ]
+      }
+    },
+    "record-annotation": {
+      "judgment": "wrong",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          4
+        ],
+        "unchanged": false
+      },
+      "v1": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "fallback",
+          "zero",
+          "withdrawn",
+          "reinstated",
+          "per-build revision",
+          "same build across channels",
+          "agreeing duplicate",
+          "wide integer",
+          "absent despite other activity",
+          "decimal width",
+          "case-sensitive channel"
+        ]
+      }
+    },
+    "case-folded-channel": {
+      "judgment": "wrong",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          8
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "case-sensitive channel"
+        ]
+      }
+    },
+    "lexical-build-order": {
+      "judgment": "wrong",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          9
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": true,
+        "transport_ok": true,
+        "failed_cases": []
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "decimal width"
+        ]
+      }
+    },
+    "first-seen": {
+      "judgment": "wrong",
+      "public": true,
+      "witness": {
+        "value": [
+          "number",
+          8
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "withdrawn"
+        ]
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "withdrawn"
+        ]
+      }
+    },
+    "last-seen": {
+      "judgment": "wrong",
+      "public": false,
+      "witness": {
+        "value": [
+          "number",
+          7
+        ],
+        "unchanged": true
+      },
+      "v1": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "fallback",
+          "agreeing duplicate",
+          "wide integer",
+          "absent despite other activity"
+        ]
+      },
+      "v2": {
+        "passed": false,
+        "transport_ok": true,
+        "failed_cases": [
+          "fallback",
+          "agreeing duplicate",
+          "wide integer",
+          "absent despite other activity"
+        ]
+      }
+    }
+  },
+  "archive_replay": {
+    "source": "18 original development and confirmation workspaces identified in release-channel-pilot-001.json",
+    "kind": "CPU replay of unchanged submissions. No new model trials or timings. Historical scores and handoff reviews retain their original meaning.",
+    "workspaces": {
+      "js-release-coder-90-dev-001-19200": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-coder-90-dev-001-19201": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-flint-90-dev-001-19200": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-flint-90-dev-001-19201": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19210": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19211": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19212": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19213": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19214": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19215": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19216": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19217": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19218": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-confirm-001-19219": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-dev-001-19200": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-60-dev-001-19201": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-90-dev-001-19200": {
+        "passed": true,
+        "failures": []
+      },
+      "js-release-qwen-90-dev-001-19201": {
+        "passed": true,
+        "failures": []
+      }
+    }
+  },
+  "interpretation": "Seven distinct incorrect implementations and two allowed controls on one authored contract. Detection counts describe this deliberately selected panel. They do not estimate the frequency of errors or general Verifier sensitivity. Frozen and mutable checks observe these calls; they do not prove arbitrary code correct.",
+  "v2_reference_entry_point": {
+    "mode": "reference",
+    "canonical_correctness": true,
+    "clean_agent_completion": true,
+    "success": true,
+    "summary_sha256": "3802774784713f7f79206eb7da712d2bfc1ae3da7383a8aba9a1453f2c875aa2"
+  }
+}

@@ -1,10 +1,11 @@
 # The 60-second JavaScript rung
 
 Given an unordered export, select the highest currently published build for one
-release channel. A later revision can withdraw or reinstate a build. This
-authored repository repair has two public examples, eleven canonical cases and
-a separate panel of four cases frozen before the first model run. Its ceiling
-is model time on this workstation. A blind reviewer estimated 3–7 minutes for
+release channel. A later revision can withdraw or reinstate a build. The
+original pilot used two public examples, eleven canonical cases and a separate
+panel of four cases frozen before the first model run. Version 2 adds two
+canonical cases and checks mutable inputs. The ceiling is model time on this
+workstation. A blind reviewer estimated 3–7 minutes for
 a JavaScript engineer and sealed a first solution in 27 seconds. We have no
 human timing measurement. [Public brief](../tasks/release-channel/public/task.md)
 · [Admission, seeds and scores](../results/release-channel-pilot-001.json)
@@ -41,6 +42,53 @@ Keep Qwen at 60 seconds for this rung. Two confirmation runs used more than
 30 seconds. The two-seed challenger probes establish feasibility and leave
 relative reliability open. All results here concern the same development task.
 
+## What the Verifier can distinguish
+
+We checked nine implementations against the same public contract. A local Worker
+proposed mistakes from the public files. The Maintainer reviewed the rules,
+removed duplicates and sealed executable examples and independent witnesses before
+scoring. Each witness called the candidate on ordinary mutable records and checked
+the return, record values and array member identities. Canonical and witness
+expectations stayed outside the candidate process. [Frozen panel](../examples/checking-release-verifier/panel.json) · [Results and provenance](../results/release-channel-sensitivity-001.json)
+
+| Behavior | Public tests | Canonical v1 | Canonical v2 |
+| --- | --- | --- | --- |
+| Reference solution | Pass | Pass | Pass |
+| Replace a saved record on an equal revision | Pass | Pass | Pass |
+| Treat any past publication as current (starter) | Fail | Fail | Fail |
+| Keep the first record seen for each build | Pass | Fail | Fail |
+| Keep the last record seen for each build | Fail | Fail | Fail |
+| Sort the caller’s array in place | Pass | Fail | Fail |
+| Cache a derived flag on the caller’s records | Pass | Pass | Fail |
+| Fold channel names to lowercase | Pass | Pass | Fail |
+| Compare builds as decimal strings | Pass | Pass | Fail |
+
+The equal-revision variant is valid because ties agree on state. Two of
+Worker’s descriptions reduced to “ever published” and count as one mistake.
+Version 1 caught in-place sorting because Node threw on a frozen array.
+The non-strict cache assignment silently did nothing on a frozen record. On a
+mutable record it left an extra property, even though the function returned the
+right build.
+
+Version 2 exercises both input forms in one isolated Node invocation and
+checks the caller’s array and records after the mutable call. Two added cases
+distinguish `9` from `10` under numeric ordering and `stable` from `Stable` under
+exact channel matching. All 18 archived submissions passed the revised checks in
+CPU replay. Their original timings, scores and handoff judgments still describe
+the original campaign. The seven selected mistakes measure only these examples.
+
+On the configured workstation, replay the panel in the development shell. Choose
+a new output directory for each invocation.
+
+```sh
+python examples/checking-release-verifier/replay.py /tmp/release-panel-v2
+```
+
+For a v1 comparison, pass `--task` with the `tasks/release-channel` directory
+from revision `6b774adc5dd52fceaf3b1544b700cb15c78dc517`. The replay writes
+individual sandbox receipts and a matrix, and flags changes to either published
+result. No model or GPU is required.
+
 ## Run the task
 
 The standard operating procedure applies on the configured workstation,
@@ -60,7 +108,8 @@ selects ordinary continuation. For a new seed and fresh output directory:
 This command records a fresh-start trial. To reproduce warm timing, add
 `--prefix-warmup-request` pointing to the initial public request from a
 development trial under the same protocol. The run verifies the rendered prefix.
-The agent runs `node tests/public.cjs` in its workspace. The verifier invokes
-the submitted function in a separate read-only Node sandbox with frozen inputs,
-compares typed results outside the sandbox and checks the submitted file set.
+The agent runs `node tests/public.cjs` in its workspace. The current verifier
+invokes the submitted function on mutable and frozen inputs in a separate
+read-only Node sandbox, compares typed results outside the sandbox and checks
+the submitted file set.
 [Operating procedure](operations.md)
