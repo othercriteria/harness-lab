@@ -13,9 +13,9 @@ CASES = (
     "tests.test_observe",
     "tests.test_observe_costs",
     "tests.test_summarize_runs",
-    "tests.test_delegate_job.DelegateJobTests.test_dispatch_records_only_explicit_classification",
+    "tests.test_progress_reports",
+    "tests.test_delegate_job",
     "tests.test_memory_scope.MemoryScopeTests",
-    "tests.test_delegate_job.DelegateJobTests.test_missing_trial_result_needs_scope_closure_and_every_tool_receipt",
 )
 
 

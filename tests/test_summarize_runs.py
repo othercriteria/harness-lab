@@ -78,7 +78,8 @@ class SummarizeRunsTest(unittest.TestCase):
                 "server_stopped": True,
                 "client_stopped": True,
                 "trials": [
-                    {"path": str(trial_dir), "process_wall_seconds": 12.5}
+                    {"path": str(trial_dir.with_name("trial-000")), "process_wall_seconds": 8},
+                    {"path": str(trial_dir), "process_wall_seconds": 12.5},
                 ],
             },
         )
