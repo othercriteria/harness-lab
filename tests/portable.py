@@ -17,6 +17,7 @@ CASES = (
     "tests.test_initial_repository",
     "tests.test_read_file",
     "tests.test_read_observations",
+    "tests.test_check_records",
     "tests.test_delegate_job",
     "tests.test_memory_scope.MemoryScopeTests",
 )

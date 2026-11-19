@@ -1,0 +1,26 @@
+{
+  "job_id": "d1e687c1d3414d40be4d9949b4b35bbf",
+  "package_id": "9582f27e5fe1034e017ec70c03849ecde35ac1994bb88eafbff0e8dcf2372c6c",
+  "snapshot_id": "fe3c1087791e0ea9c506aedd799800b7a57526e00a425f05b3e818401b023b9c",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19564,
+  "authored_files": [
+    "tests/test_check_records.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 126.0150071948301,
+  "dispatch_seconds": 150.71850593597628,
+  "review": {
+    "job_id": "d1e687c1d3414d40be4d9949b4b35bbf",
+    "package_id": "9582f27e5fe1034e017ec70c03849ecde35ac1994bb88eafbff0e8dcf2372c6c",
+    "reviewer": "Outer Maintainer",
+    "decision": "accepted",
+    "notes": "Reviewed all five tests and the handoff. They exercise real directory snapshots, persisted records and both ends of bounded output. Captured examples correlate a zero exit with unchanged files, so the claimed independence needs a crossed case.",
+    "verification": "Five tests passed on the original in the independent evaluator. Comparing byte counts missed the same-size edit, and substituting false for an unavailable comparison also failed an assertion.",
+    "artifact": "artifact",
+    "artifact_sha256": "78b890117e18921f02618af03f30b0015be5324b215fcf505ff96d30e398a7d1"
+  },
+  "application_sha256": "9d8bd6aefcf518b10293bf75534707a3667f62390710dc100f21f8c35ac943e1",
+  "outer_repairs": [],
+  "cleanup_verified": true
+}
