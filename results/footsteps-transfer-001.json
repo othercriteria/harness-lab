@@ -1,0 +1,313 @@
+{
+  "study": "First prospective Footsteps transfer panel for #57",
+  "frozen_at": "2026-11-19T22:47:57.951634+00:00",
+  "lab_revision": "f0007b12d1cb0ee17c3067b0e33a8c419f8fb98d",
+  "source_repository": "https://github.com/othercriteria/footsteps",
+  "source_revision": "889a01fe28af1819bd823590bbe108265ecfb226",
+  "selection": "Independent offline viewer feature with browser-sensitive effects; parser bug with two real CLI consumers, lower verification cost. #27 reserved as fresh maintenance work.",
+  "provenance": "Purpose-built external codebase, shared AI authorship and Lab exposure. No known public fix consulted. Earlier viewer feasibility smoke on previous revision.",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19570,
+  "task_seconds": 300,
+  "verification_reserve_seconds": 45,
+  "attempts_per_case": 1,
+  "cases": [
+    {
+      "issue": "https://github.com/othercriteria/footsteps/issues/17",
+      "issue_updated_at": "2026-11-19T21:07:58Z",
+      "public_brief": "Step through transcript events with the left and right arrow keys\n\nIn the offline viewer from #6, a reader inspecting a vote should be able to step through the transcript while keeping their eyes on the floor plan.\n\n- Left Arrow goes back one event. Right Arrow advances one. Reuse the existing navigation in `footsteps/web/viewer.js` so the floor, ballots, event log, and slider stay in sync.\n- Stop at the first and last events. Preserve native arrow-key behavior in the turn selector, tile selector, and range input. In particular, one press on the focused slider should move exactly once. Preserve keyboard focus as the view updates.\n- Make the shortcuts discoverable alongside the existing playback controls.\n\nVerify with the offline export of `examples/crossing.json`. From event 4, press Right to reveal the tied ballot and move the marker to (1, 0). Press Left to restore the pending proposal and the marker at (0, 0). Also check both endpoints and the focused controls. This task can ship independently of changes to how a transcript is opened.\n\nKeep focus on the same usable control when navigating, including a floor tile button if its tile still exists. When a tile disappears or a focused playback button becomes disabled, choose a usable playback or inspection control. Browser acceptance is checked independently. You can exercise the supplied Python viewer tests; identify any browser checks you cannot run.",
+      "input_files": [
+        "examples/crossing.json",
+        "footsteps/__init__.py",
+        "footsteps/board.py",
+        "footsteps/game.py",
+        "footsteps/record.py",
+        "footsteps/viewer.py",
+        "footsteps/web/viewer.css",
+        "footsteps/web/viewer.html",
+        "footsteps/web/viewer.js",
+        "tests/test_viewer.py",
+        "tests/test_viewer_browser.py"
+      ],
+      "allowed_write_paths": [
+        "footsteps/web/viewer.js",
+        "footsteps/web/viewer.html",
+        "footsteps/web/viewer.css",
+        "tests/test_viewer_browser.py"
+      ],
+      "blind_review": "Blind interpretation of the public assignment\n\nThe index includes setup at 0. An unmodified Left or Right key on the page, a floor button, or a playback button requests one step through the existing go function. At an endpoint the index stays fixed. Each selector and the range input retain their native behavior, including their existing change and input handlers. A visible indication on each playback control identifies its shortcut.\n\nThe floor rebuilds every button on each update. A tile's coordinate identifies the same tile across frames even when its marker or proposal label changes. A surviving focused tile must remain reachable in the fixed-size floor window. Focus may move to a usable inspection or playback control if its former target disappears or becomes disabled.\n\nThe brief leaves fallback control selection open. This submission uses the tile picker for a removed tile and the opposite playback button for a disabled button. I interpret Left and Right as unmodified keys and preserve modified shortcuts for the browser. The approach is feasible within the allowed paths. I found no substantive contract gap.",
+      "sealed_hosted_patch_sha256": "62c6e5a0a4f374a2d5efb306b4f2adcc3a501a6f6b8adb5c7c50876f589ff21a",
+      "hosted_execution": "Independent implementation from the same selected public inputs and brief. Read and edited files only. The Maintainer ran the sealed patch separately in isolation. No hosted solution bytes were supplied to Worker.",
+      "job_id": "6d12be01502c4b5992a0e1a47981b61b",
+      "package_id": "a12f611702ec7b863421964f5a73f7d762f01832ad56e6a33db5337d0cf18b22",
+      "snapshot_id": "a1b6e656b8bfa1a12271bea085109570b6bbc264062fe78cc9bc2d073024616a",
+      "recipe": "apprentice-qwen-32k-v1",
+      "agent_seconds": 253.55122756096534,
+      "task_seconds": 255.63793886289932,
+      "dispatch_seconds": 278.10461993096396,
+      "clean_completion": false,
+      "cleanup_verified": true,
+      "automatic_checks_passed": true,
+      "handoff_disposition": "no_submission",
+      "artifact_sha256": "8154ea6783dec56806eec6fd017a9662a9363e62040efe1cbdb1d6074f5bd6c7",
+      "review_decision": "accepted",
+      "review_notes": "Accept the recovered source artifact after independent review. Worker hit its original deadline and supplied no handoff. The original patch reuses go, restores tile or usable-control focus, preserves native controls for plain arrow keys, and supplies a visible hint and regression test. The synthetic key test cannot establish the browser's native slider default. Maintainer integration also preserves modified browser shortcuts and tightens control assertions.",
+      "outer_verification": "Independent CDP keyboard replay in isolated Chrome passed right and left transitions, rendered floor and ballot, clamping, native selectors and one-step slider, and focus preservation or fallback. Visible hint confirmed. All 46 upstream tests including the added browser method passed on the recovered source. The automated Worker check verified only the fixture and export.",
+      "automatic": "Isolated fixture and export sanity only. Real keyboard semantics require the separate browser replay.",
+      "browser": "Chrome 157, headless, offline exported examples/crossing.json, browser-level rawKeyDown/keyUp over a pipe. Untouched native select/range state is the comparator.",
+      "obligations": [
+        "Right from event four updates slider, event log, ballot, floor marker and event count",
+        "Left from event five restores proposal and marker",
+        "Repeated outward keys at both endpoints stay in bounds",
+        "Native turn and tile selectors and one-step focused slider match starter",
+        "Floor button focus follows a surviving tile or falls back when the tile disappears",
+        "Disabled previous playback button gives focus to a usable control",
+        "Shortcuts discoverable alongside playback controls"
+      ],
+      "harness_incident": "Initial isolated headless Chrome environment lacked fonts and exited before executing keyboard checks. Supplied a read-only font and replayed starter, hosted and Worker with the same corrected environment.",
+      "worker_source_correct": true,
+      "worker_handoff_supported": null,
+      "worker_functional_repairs": [],
+      "outer_polish": [
+        "Preserved modified browser shortcuts and added a regression for Alt+Left. Tightened native-control assertions on the upstream PR."
+      ],
+      "hosted_comparator": "Rendered ballot, marker, endpoints and focus checks passed. Upstream suite with hosted patch passed 45 tests.",
+      "upstream_pull_request": "https://github.com/othercriteria/footsteps/pull/33",
+      "worker_authored_files": [
+        "footsteps/web/viewer.js",
+        "footsteps/web/viewer.css",
+        "footsteps/web/viewer.html",
+        "tests/test_viewer_browser.py"
+      ],
+      "terminal_error": "DeadlineExceeded",
+      "progress": "A checkpoint after tool 13 recorded working navigation and remaining hint/test work. Worker subsequently saved both and ran out of stage time without submitting.",
+      "observed_replays": {
+        "starter": {
+          "right": {
+            "i": 4,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "BODY"
+          },
+          "left": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BODY"
+          },
+          "scrub": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "scrub"
+          },
+          "retained": {
+            "i": 4,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "BUTTON"
+          },
+          "missing": {
+            "i": 2,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "BUTTON"
+          },
+          "disabled": {
+            "i": 1,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "prev"
+          }
+        },
+        "hosted": {
+          "right": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BODY"
+          },
+          "left": {
+            "i": 4,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "BODY"
+          },
+          "scrub": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "scrub"
+          },
+          "retained": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BUTTON"
+          },
+          "missing": {
+            "i": 1,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "tile"
+          },
+          "disabled": {
+            "i": 0,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "next"
+          }
+        },
+        "worker": {
+          "right": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BODY"
+          },
+          "left": {
+            "i": 4,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "BODY"
+          },
+          "scrub": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "scrub"
+          },
+          "retained": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BUTTON"
+          },
+          "missing": {
+            "i": 1,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "prev"
+          },
+          "disabled": {
+            "i": 0,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "next"
+          }
+        },
+        "pr": {
+          "right": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BODY"
+          },
+          "left": {
+            "i": 4,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "BODY"
+          },
+          "scrub": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "scrub"
+          },
+          "retained": {
+            "i": 5,
+            "marker": "(1, 0)",
+            "votes": 4,
+            "focus": "BUTTON"
+          },
+          "missing": {
+            "i": 1,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "prev"
+          },
+          "disabled": {
+            "i": 0,
+            "marker": "(0, 0)",
+            "votes": 0,
+            "focus": "next"
+          }
+        }
+      },
+      "replay_driver_sha256": "a13a5b643115a9b36a675d8cf1cc8cedd209ae5e635d8913356109ef8a2e2943",
+      "in_run_maintainer_interventions": 0,
+      "repair_retries": 0,
+      "upstream_state_at_reporting": "Pull request proposed for upstream review"
+    },
+    {
+      "issue": "https://github.com/othercriteria/footsteps/issues/29",
+      "issue_updated_at": "2026-11-19T22:21:13Z",
+      "public_brief": "Import the final game block when a full Markdown account includes an earlier example\n\nThe full account format defines a labeled JSON block at the end of the Markdown file as the importable record. Adding a quoted example with the same fence label earlier in the editable prose breaks import. Found during #26 at f5625da.\n\n```python\nfrom pathlib import Path\nfrom tempfile import TemporaryDirectory\nfrom footsteps.record import read, render\n\nrecord = read(\"examples/crossing.json\")\nintro = \"An example of the block syntax:\\n```json footsteps-record\\n{}\\n```\\n\\n\"\nwith TemporaryDirectory() as tmp:\n    p = Path(tmp) / \"worked.md\"\n    p.write_text(intro + render(record, full=True))\n    assert read(p) == record\n```\n\nObserved: ValueError: malformed full account. The parser split at the first labeled fence. The final block is the original, valid crossing record.\n\nDone when both replay and view can read this full account, and the reader still rejects a truncated final block or trailing non-whitespace after it. Cover an incorrect final block after an earlier valid one so the importer cannot silently replay an earlier example. No format version change is needed.\n\nAdd standard-library regression tests in tests/test_record_import.py. Keep ordinary JSON and the documented full Markdown format working. The CLI uses read for both commands; the selected workspace includes its reader and viewer functions. The Maintainer also checks the full CLI.",
+      "input_files": [
+        "docs/records.md",
+        "examples/crossing.json",
+        "footsteps/__init__.py",
+        "footsteps/board.py",
+        "footsteps/game.py",
+        "footsteps/record.py",
+        "footsteps/viewer.py",
+        "footsteps/web/viewer.css",
+        "footsteps/web/viewer.html",
+        "footsteps/web/viewer.js",
+        "tests/test_viewer.py"
+      ],
+      "allowed_write_paths": [
+        "footsteps/record.py",
+        "tests/test_record_import.py"
+      ],
+      "blind_review": "The last exact opening label used by the existing renderer selects the JSON to import. An earlier labeled example in editable prose can contain unrelated data. Closing the selected block and consuming only whitespace through EOF are required. A bad final block must fail even after a valid example. Plain JSON decoding and the renderer's record format stay as specified.\n\nThe documentation and reproduction agree. The reader decodes JSON and replay validates game semantics. I interpret “incorrect final block” as covering invalid JSON, a missing close, and a non-whitespace suffix at the reader boundary. Semantically invalid JSON records continue through the existing replay validation. No substantive ambiguity or blocker identified. The selected files permit writing the implementation and exercising the replay renderer and transcript function. Full CLI verification requires the Maintainer's workspace.",
+      "sealed_hosted_patch_sha256": "56dafd9b7d9db4452ed79c5d8fcb1d22a948b9046d0c311a491db4cb3ed1ec15",
+      "hosted_execution": "Independent implementation from the same selected public inputs and brief. Read and edited files only. The Maintainer ran the sealed patch separately in isolation. No hosted solution bytes were supplied to Worker.",
+      "job_id": "526514aaf2074ed2bcd86d0b46ee72cb",
+      "package_id": "1545759a8f4a1ba5a4cfcb1a2cd794074271ab2776c5a5a1f854cf4517b7dc46",
+      "snapshot_id": "c115660504e86d98766ee6784bf5ea68fb91da12b7823610be607ed734ecf183",
+      "recipe": "apprentice-qwen-32k-v1",
+      "agent_seconds": 76.81290002213791,
+      "task_seconds": 78.98560517700389,
+      "dispatch_seconds": 100.91632702504285,
+      "clean_completion": true,
+      "cleanup_verified": true,
+      "automatic_checks_passed": true,
+      "handoff_disposition": "Submitted",
+      "artifact_sha256": "3f24d2cbb45f00940ae83ee1bdcd6beced0ead8efb459aea91e6b888c840e2e3",
+      "review_decision": "accepted",
+      "review_notes": "Source selects the last exact label and preserves both closing-fence and trailing-content validation. All 11 cited tests and the separate reproducer are supported by the observations. Worker explicitly disclosed the absence of CLI checks. The Maintainer formatted one test expression after applying the accepted artifact.",
+      "outer_verification": "Private Worker evaluation passed. Independent isolated replay and view CLI matrix accepted a valid final record after an earlier example and rejected trailing content, truncation and invalid final JSON after a valid block. Full isolated upstream suite passed all 51 tests.",
+      "worker_source_correct": true,
+      "worker_handoff_supported": true,
+      "worker_functional_repairs": [],
+      "outer_polish": [
+        "Ruff reformatted one test expression after applying the original patch."
+      ],
+      "hosted_comparator": "Both CLI commands passed the four input cases on the sealed hosted patch. Full upstream suite with the hosted changes passed 47 tests.",
+      "starter_control": "Both CLI commands rejected the otherwise valid full account containing an earlier example.",
+      "upstream_pull_request": "https://github.com/othercriteria/footsteps/pull/32",
+      "worker_authored_files": [
+        "footsteps/record.py",
+        "tests/test_record_import.py"
+      ],
+      "in_run_maintainer_interventions": 0,
+      "repair_retries": 0,
+      "upstream_state_at_reporting": "Pull request proposed for upstream review"
+    }
+  ],
+  "session_restoration_verified": true,
+  "restoration_receipt_sha256": "5be15ffc9375bf6ce624fb7a44b2a0017d1b3dbc68a071a442cc29b3c9b05658",
+  "limitations": [
+    "Selected cases from one purpose-built project. Outcomes do not estimate transfer probability across projects or task families.",
+    "The hosted submissions were blind first attempts with different tools, no candidate execution before sealing, and no matched end-to-end timing.",
+    "Maintainer work included writing the isolated browser input replay, provisioning its fonts, checking the CLI, reviewing handoffs and preparing upstream pull requests. Attentive time was not metered; dispatch is elapsed time and overlaps other work."
+  ],
+  "decision": "Delegate another bounded parser or record maintenance task with an existing fixture and cheap independent CLI replay. For browser behavior, pair delegation with an available native-key verifier and budget for recovering and reviewing saved code if the handoff is missing. These two outcomes do not justify changing the incumbent recipe or estimating a cross-repository pass rate.",
+  "full_autonomous_results": {
+    "passed": 1,
+    "attempted": 2,
+    "criterion": "Artifact satisfies the original behavioral checks and an independently supported final handoff is present."
+  }
+}
