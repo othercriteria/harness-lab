@@ -1,0 +1,26 @@
+{
+  "job_id": "3f4a7ed8ae7f4367a1a98758f65715ee",
+  "package_id": "007bcdef3a13aeb4d10e92b057b5a62b5862eee3e0e3bbd7202df8010c22f57a",
+  "snapshot_id": "ddcb0ce114ca62844bd2963736c68c584536b4a3423ec41f98f03cff230b40de",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19565,
+  "authored_files": [
+    "tests/test_host_memory.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 136.45274942484684,
+  "dispatch_seconds": 161.8775501230266,
+  "review": {
+    "job_id": "3f4a7ed8ae7f4367a1a98758f65715ee",
+    "package_id": "007bcdef3a13aeb4d10e92b057b5a62b5862eee3e0e3bbd7202df8010c22f57a",
+    "reviewer": "Outer Maintainer",
+    "decision": "accepted",
+    "notes": "Reviewed the four tests, isolated checker output and final handoff. The tests distinguish page-ins from page-outs and select the latest memory snapshot. The second PSI sample decreases a cumulative stall counter and its negative percentage is unrealistic for a normal interval. The nested child also exceeds the parent charge. Correct these fixtures before using the suite as a reference for host behavior.",
+    "verification": "All four tests passed against the original in isolation. Reporting cumulative swap writes instead of the interval delta failed two assertions. Dividing by requested time instead of measured elapsed time failed the ten-second sample.",
+    "artifact": "artifact",
+    "artifact_sha256": "d2f9131d242a87ecce4eb409b60cd59732254ddf779c475e12e7f9a13b09219e"
+  },
+  "application_sha256": "e303a27ee41467e37836e36b643ad612ecf8578e358bcb7f9bcd57a29d7db860",
+  "outer_repairs": [],
+  "cleanup_verified": true
+}
