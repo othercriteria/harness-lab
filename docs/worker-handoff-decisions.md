@@ -41,6 +41,8 @@ This changes how to read the Footsteps recommendation. A two-second browser comm
 
 ## A small experiment worth running
 
+We subsequently ran the paired pilot. The design below records the proposal made before dispatch. [Pilot results](#what-happened-when-worker-saw-the-timing)
+
 Test a single piece of information on the incumbent recipe. At the first ordinary request with roughly 30–45 seconds left, show the measured median and 90th percentile for generating a final handoff. Let Worker choose whether a remaining edit or check would change the result or the claims it can make. The present prompt already asks it to disclose gaps and avoid duplicate checks. The new information is the cost of its next decision. Keep the hard deadline, tool choices, and verifier identical. If a request jumps across the window, record that the cue never appeared.
 
 Use paired seeds on fresh internal packages with two situations represented: work already checked as far as the available tools allow, and a concrete outstanding defect a late operation can still repair or expose. Compare artifact acceptance, accuracy of the handoff, and clean completion separately. Record missed repairs, useful checks displaced, terminal requests without a response, and any Maintainer recovery work. Count every assigned attempt, including missed cues. A gain confined to clean receipts while artifacts or claims get worse is a reason to drop the change. The Footsteps, memo, and diff-hunk cases are diagnostic examples for designing the comparison.
@@ -48,3 +50,33 @@ Use paired seeds on fresh internal packages with two situations represented: wor
 I would attach this probe to the next batch of internal Worker assignments. The exact recipe had four deadlines across 68 archived attempts. Even eliminating every one would recover at most four missing handoffs in that archive, and two of those four artifacts still missed requirements or failed verification. The immediate payoff is learning whether a cheap cue helps without displacing a useful final edit.
 
 The [case index](../results/worker-handoff-decisions-001.json) records the exact job, package, seed, request and packet hashes, sealed choices, observed next tools and independent outcome. Its file comparison matches the bytes of terminal changed paths against the archived workspace before a request. That establishes when those bytes were present. Checks can add valuable evidence afterward, and incorrect bytes may persist all the way to review. Full packets stay in the local trace archive.
+
+## What happened when Worker saw the timing
+
+Eight live Worker jobs tested the cue in four same-seed pairs. Each pair used the same starter, brief, 75-second Worker budget, 20-second verification reserve and model settings. Arm order was balanced. One case asked for a review of an already-correct fence checker. The other had a one-operator defect that suppressed diagnostics after a longer closing fence. Both required a short report citing a real example. Fresh blind readers independently solved both cases, and the isolated checker accepted their sealed solutions.
+
+At the first ordinary request with 30–45 seconds remaining, the treatment added this message once. We checked the actual request bytes for delivery.
+
+> Historical timing on this setup: across 64 completed submissions, the final model request had a median duration of 9.3 seconds and a 90th percentile of 16.2 seconds. These figures describe completed requests only. Your next request may take a different amount of time.
+
+| Outcome | Usual clock | Clock plus historical timing |
+| --- | ---: | ---: |
+| Assigned | 4 | 4 |
+| Had a request inside the window | 2 | 2 |
+| Actually saw the cue | 0 | 2 |
+| Passed isolated fence behavior and report-presence checks | 2 | 3 |
+| Accepted original artifact after review | 0 | 0 |
+| Clean final handoff | 0 | 0 |
+
+One control left four scratch fixtures in the submitted workspace. Export rejected it before the independent check, so the usual-clock arm had two passes, one failure and one unavailable check. All assigned attempts stay in the table. The first model request alone took 24.3–27.4 seconds. At seed 19610 all four jobs crossed from above 45 to below 30 seconds between requests. The extra green check in the treatment arm came from a Worker that **never saw the message**. Its report described a repair to an already-correct starter and cited a diagnostic the probe did not produce.
+
+The two exposures both occurred at seed 19611, with about 45 seconds left.
+
+- **Intact source.** After receiving the cue, Worker continued probing. It resolved a scratch-path problem and obtained an actual line 5 diagnostic. The next request started with 1.6 seconds left. The source remained intact, but Worker left no review file or handoff. Its matched control also left no review file and was the attempt refused at export.
+- **Defective source.** Worker made exactly the required one-line repair. Its primary example reported line 1 before the fix and lines 1 and 5 afterward. It then reported an additional fixture had emitted a diagnostic despite an explicit check finding no match. It saved the report and timed out. The matched control also fixed the defect and timed out, but it made an additional change to indented openers that the task did not call for.
+
+No recorded response contained a finish call. An unanswered terminal request reveals no intended tool. We cannot tell how the cue affected either exposed Worker's choice, or whether an individual finish would have fit. The report files and observable actions supply no evidence that Worker treated the historical percentile as a guarantee.
+
+The brief contributed a second difficulty. Both independent readers interpreted indented openers as outside the assignment. Several Workers treated the words *in scope are flush-left* as a reason to change them. After the first four jobs missed the cue window, we prepared a separate four-job delivery check with a wider window and an explicit scope clarification. Its predeclared trigger was a task state with zero exposures in the original panel. Both states received the original cue, so no follow-up jobs were dispatched.
+
+The cue remains experimental. Every control timed out, and the run showed no clean handoff gain from adding the timing message. A more informative repeat would use an internal job where the incumbent sometimes finishes cleanly and sometimes leaves a useful artifact without a handoff. The implementation was confined to frozen campaign packages. No default changed. The [case-level pilot results](../results/handoff-latency-cue-001.json) include the contract, package identities, per-request clock readings, delivered cues, and independent decisions.

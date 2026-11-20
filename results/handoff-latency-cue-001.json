@@ -1,0 +1,780 @@
+{
+  "study": "handoff-latency-cue-001",
+  "base_commit": "386bd6ccf689ac5c93234ee4b2654602439ffae1",
+  "frozen_at": "2026-11-20T03:59:31.895122+00:00",
+  "design_sha256": "6718e6cea01ac580a7a7472187e50d6e9a52b66dea65b0ed8c0f87b7eefb6943",
+  "historical_source": "worker-handoff-decisions-001.json",
+  "model": "qwen38-27b-ranalayout-q4",
+  "incumbent_recipe": "apprentice-qwen-32k-v1",
+  "plan": "Paired internal Worker pilot. Two fresh cases sharing a brief; one intact source, one single-operator near miss. Same seed within each pair and crossed arm order. No outcome-based replacement or extra jobs. A genuine pre-inference operational failure may be repeated once and retained.",
+  "eligibility": "First free-choice request with 30 to 45 seconds inclusive after context preparation. Both arms record the opportunity. One persistent message only in the treatment. Verify delivery by inspecting the serialized model request.",
+  "notice": "Historical timing on this setup: across 64 completed submissions, the final model request had a median duration of 9.3 seconds and a 90th percentile of 16.2 seconds. These figures describe completed requests only. Your next request may take a different amount of time.",
+  "budget": {
+    "worker_seconds": 75,
+    "verifier_seconds": 20
+  },
+  "task": "Review the fenced-block handling of scripts/check_docs_spacing.py in this selected Harness Lab snapshot. In scope are flush-left backtick and tilde fences of at least three characters. Inside a block, only a line consisting of the same marker at least as long as the opener (apart from surrounding whitespace) closes it. Prose spacing diagnostics should resume on the following line, using its original line number. Preserve the existing spacing rules and CLI. If this contract already holds, leave the script byte-for-byte unchanged. Otherwise make the smallest correction that satisfies it. In REVIEW.md, state your keep or repair decision and cite an executed example with its observed line number(s). You may make scratch fixtures. Only REVIEW.md and a necessary change to the script should be submitted. The command python3 scripts/check_docs_spacing.py checks Markdown at repository root and under docs/.",
+  "cases": {
+    "ash": "Unmodified scripts/check_docs_spacing.py at base_commit",
+    "beech": "Same source with len(stripped) >= len(fence) changed to equality."
+  },
+  "checks": "Test both marker characters, shorter and mismatched markers, trailing text, longer whitespace-surrounded closers, resumed line numbers and REVIEW.md existence. The Maintainer independently checks minimal changes and claims against actual operations. observed_example refers to the primary example in the durable report.",
+  "implementation_sha256": {
+    "build_engine.py": "6aeee1b5cf2c3776f3c1929d9d14968c7879ec43e9db7d84721150c7da2c2aca",
+    "checker.py": "222a7c372ff373a15157ab1c007d7aa4f9920d2cf7cb8863f55b49464144d470",
+    "cue.patch": "50979271666668192f4131decbdefea2a5424de9dfbe0b48602c835bb2f5eff3"
+  },
+  "admission": "Fresh independent blind review and sealed first solution for each starter. Both sealed solutions passed isolated checks. Both readers treated indented openers as outside scope.",
+  "assigned_order": [
+    "ash-control-19610",
+    "ash-cue-19610",
+    "beech-cue-19610",
+    "beech-control-19610",
+    "beech-control-19611",
+    "beech-cue-19611",
+    "ash-cue-19611",
+    "ash-control-19611"
+  ],
+  "observations": [
+    {
+      "case": "ash",
+      "seed": 19610,
+      "arm": "control",
+      "job": "fb1a7f5c9bb54897b270b4912dbfaebf",
+      "package": "5a550cccd2e5d74d868d93b78f05fe025e38c9b5f6b008610a8ba44cf589700a",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "f0427d075e32efacc6141501d75c8ded7e8d7e4e1539c59da5ad484e7af43792",
+      "review_file_sha256": null,
+      "window": null,
+      "cue_first_wire_request": null,
+      "request_headroom_seconds": [
+        73.47,
+        46.97,
+        23.17,
+        10.43,
+        5.01,
+        2.47,
+        0.38
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": false,
+      "clean_completion": false,
+      "first_request_wall_seconds": 25.84,
+      "agent_seconds": 73.47,
+      "task_seconds": 75.67,
+      "dispatch_seconds": 101.71,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": false,
+        "observed_example": false,
+        "artifact_ok": false,
+        "finding": "Probed flush-left and indented fences, then changed opener indentation in the conforming starter. No REVIEW.md or handoff."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 46.97,
+          "tools": [
+            "read_file",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 23.17,
+          "tools": [
+            "write_file"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 10.43,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 5.01,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 2.47,
+          "tools": [
+            "edit_file"
+          ]
+        },
+        {
+          "request": "request-007",
+          "remaining_seconds": 0.38,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "ash",
+      "seed": 19610,
+      "arm": "cue",
+      "job": "4ca81ce7091647e0b6a30b21ba7b9695",
+      "package": "216ce08580543cc1efa90b68b2c8bee97bb04e401a9d3dbabce751e85992408d",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "f0427d075e32efacc6141501d75c8ded7e8d7e4e1539c59da5ad484e7af43792",
+      "review_file_sha256": "4f4a74c28c4414ca3ccd3ac507fc046f13df684ac0074f293f0077f4ea683a02",
+      "window": null,
+      "cue_first_wire_request": null,
+      "request_headroom_seconds": [
+        73.55,
+        46.1,
+        24.78,
+        15.37,
+        12.87,
+        10.92,
+        9.12,
+        2.9
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": true,
+      "clean_completion": false,
+      "first_request_wall_seconds": 26.8,
+      "agent_seconds": 73.56,
+      "task_seconds": 75.71,
+      "dispatch_seconds": 99.53,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": false,
+        "observed_example": false,
+        "artifact_ok": false,
+        "finding": "Changed indented openers in a conforming starter. The fixture used spaced text that the diagnostic does not flag. Neither run printed the line claimed in the report."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 46.1,
+          "tools": [
+            "read_file",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 24.78,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 15.37,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 12.87,
+          "tools": [
+            "edit_file"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 10.92,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-007",
+          "remaining_seconds": 9.12,
+          "tools": [
+            "write_file"
+          ]
+        },
+        {
+          "request": "request-008",
+          "remaining_seconds": 2.9,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "beech",
+      "seed": 19610,
+      "arm": "cue",
+      "job": "d2524cd306a1405bb35586342c9b6be4",
+      "package": "7fef0ba19d846182bfef261b47a481df7b0a96d7d329989eda6de0e7b658775c",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "f0427d075e32efacc6141501d75c8ded7e8d7e4e1539c59da5ad484e7af43792",
+      "review_file_sha256": "056b33cf99fe395b8132faf97f47066f611668c7bba0b1144b62b1279ec7a077",
+      "window": null,
+      "cue_first_wire_request": null,
+      "request_headroom_seconds": [
+        73.5,
+        48.53,
+        24.2,
+        15.16,
+        12.69,
+        2.99
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": true,
+      "clean_completion": false,
+      "first_request_wall_seconds": 24.3,
+      "agent_seconds": 73.51,
+      "task_seconds": 75.7,
+      "dispatch_seconds": 99.69,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": false,
+        "observed_example": true,
+        "artifact_ok": false,
+        "finding": "Repaired the closer length and recorded a real fixture comparison. Also changed indented openers. Its account of an empty Markdown inventory overlooked the supplied root task.md."
+      },
+      "late_actions": [
+        {
+          "request": "request-003",
+          "remaining_seconds": 24.2,
+          "tools": [
+            "edit_file",
+            "edit_file"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 15.16,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 12.69,
+          "tools": [
+            "write_file"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 2.99,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "beech",
+      "seed": 19610,
+      "arm": "control",
+      "job": "4d2cc70fa64f4b058622dfaa2085f887",
+      "package": "ce00b9fa26d73f409b802185b2e64fefafcb596ae1c5a470a33c4e49e58376a2",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "f0427d075e32efacc6141501d75c8ded7e8d7e4e1539c59da5ad484e7af43792",
+      "review_file_sha256": "84efa27310d25daed8c829e1bbc74c10bd92a821b5692554e6b8fac885794f33",
+      "window": null,
+      "cue_first_wire_request": null,
+      "request_headroom_seconds": [
+        73.03,
+        47.86,
+        22.38,
+        13.29,
+        11.4,
+        1.16
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": true,
+      "clean_completion": false,
+      "first_request_wall_seconds": 24.56,
+      "agent_seconds": 73.03,
+      "task_seconds": 75.67,
+      "dispatch_seconds": 99.8,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": false,
+        "observed_example": true,
+        "artifact_ok": false,
+        "finding": "Repaired the closer length and recorded the observed before and after line numbers. Also changed indented openers and described that additional change as required."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 47.86,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 22.38,
+          "tools": [
+            "edit_file",
+            "edit_file"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 13.29,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 11.4,
+          "tools": [
+            "write_file"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 1.16,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "beech",
+      "seed": 19611,
+      "arm": "control",
+      "job": "f1a904a4a6ff4f41b044e8ec668f974d",
+      "package": "ce00b9fa26d73f409b802185b2e64fefafcb596ae1c5a470a33c4e49e58376a2",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "f0427d075e32efacc6141501d75c8ded7e8d7e4e1539c59da5ad484e7af43792",
+      "review_file_sha256": "5150c45f8e638a74f7372857c4b69d032a805c665f249a201afbb23896d6d248",
+      "window": {
+        "request": 3,
+        "seconds_remaining": 44.15,
+        "cue_sent": false
+      },
+      "cue_first_wire_request": null,
+      "request_headroom_seconds": [
+        73.51,
+        46.38,
+        44.19,
+        21.6,
+        15.27,
+        11.88,
+        10.22,
+        0.32
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": true,
+      "clean_completion": false,
+      "first_request_wall_seconds": 25.89,
+      "agent_seconds": 73.52,
+      "task_seconds": 75.7,
+      "dispatch_seconds": 99.69,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": false,
+        "observed_example": true,
+        "artifact_ok": false,
+        "finding": "Repaired the closer length and accurately recorded the primary before and after lines. Also changed indented openers and called that change a required fix."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 46.38,
+          "tools": [
+            "read_file"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 44.19,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 21.6,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 15.27,
+          "tools": [
+            "edit_file"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 11.88,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-007",
+          "remaining_seconds": 10.22,
+          "tools": [
+            "write_file"
+          ]
+        },
+        {
+          "request": "request-008",
+          "remaining_seconds": 0.32,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "beech",
+      "seed": 19611,
+      "arm": "cue",
+      "job": "8df4d7a500c34eea97d876f2ad25c103",
+      "package": "7fef0ba19d846182bfef261b47a481df7b0a96d7d329989eda6de0e7b658775c",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "406b3de888a42c52d7270ce05b2b0d44978c790cf34ac1e1c22d09c7414e3dc0",
+      "review_file_sha256": "12f015831413e22f2ff1fe3bad7645e5faaec4170e6c6d95feeb22659691645d",
+      "window": {
+        "request": 2,
+        "seconds_remaining": 44.96,
+        "cue_sent": true
+      },
+      "cue_first_wire_request": "request-002",
+      "request_headroom_seconds": [
+        73.58,
+        45.0,
+        21.48,
+        15.76,
+        11.95,
+        10.18,
+        0.35
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": true,
+      "clean_completion": false,
+      "first_request_wall_seconds": 27.37,
+      "agent_seconds": 73.59,
+      "task_seconds": 75.69,
+      "dispatch_seconds": 99.5,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": true,
+        "observed_example": true,
+        "artifact_ok": false,
+        "finding": "Made exactly the necessary closer-length repair. The primary example genuinely changed from line 1 to lines 1 and 5. The report also says an additional fixture diagnosed a line that produced no match, even after a dedicated grep. The source is usable; the report needs correction."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 45.0,
+          "tools": [
+            "bash",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 21.48,
+          "tools": [
+            "edit_file"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 15.76,
+          "tools": [
+            "bash",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 11.95,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 10.18,
+          "tools": [
+            "write_file",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-007",
+          "remaining_seconds": 0.35,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "ash",
+      "seed": 19611,
+      "arm": "cue",
+      "job": "244eb46b511348bd826af68329cb6728",
+      "package": "216ce08580543cc1efa90b68b2c8bee97bb04e401a9d3dbabce751e85992408d",
+      "artifact_exported": true,
+      "export_error": null,
+      "source_sha256": "406b3de888a42c52d7270ce05b2b0d44978c790cf34ac1e1c22d09c7414e3dc0",
+      "review_file_sha256": null,
+      "window": {
+        "request": 2,
+        "seconds_remaining": 44.7,
+        "cue_sent": true
+      },
+      "cue_first_wire_request": "request-002",
+      "request_headroom_seconds": [
+        73.54,
+        44.73,
+        37.48,
+        20.36,
+        13.95,
+        11.07,
+        8.85,
+        6.39,
+        4.04,
+        1.61
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": false,
+      "clean_completion": false,
+      "first_request_wall_seconds": 26.4,
+      "agent_seconds": 73.54,
+      "task_seconds": 75.68,
+      "dispatch_seconds": 99.45,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": true,
+        "observed_example": false,
+        "artifact_ok": false,
+        "finding": "Left the conforming source unchanged. Fixed a scratch-path problem and obtained a real diagnostic on line 5 with under two seconds left at the next request. No REVIEW.md or handoff."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 44.73,
+          "tools": [
+            "bash",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 37.48,
+          "tools": [
+            "bash",
+            "bash"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 20.36,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 13.95,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 11.07,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-007",
+          "remaining_seconds": 8.85,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-008",
+          "remaining_seconds": 6.39,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-009",
+          "remaining_seconds": 4.04,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-010",
+          "remaining_seconds": 1.61,
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "ash",
+      "seed": 19611,
+      "arm": "control",
+      "job": "5eb8a70795744adf9572d0a1d92efd0c",
+      "package": "5a550cccd2e5d74d868d93b78f05fe025e38c9b5f6b008610a8ba44cf589700a",
+      "artifact_exported": false,
+      "export_error": "Artifact collection failed: ValueError: Candidate changed unapproved paths: ['_fixt_flush.md', '_fixt_indented.md', '_fixt_mixed.md', '_fixt_plain.md']",
+      "source_sha256": "406b3de888a42c52d7270ce05b2b0d44978c790cf34ac1e1c22d09c7414e3dc0",
+      "review_file_sha256": null,
+      "window": {
+        "request": 2,
+        "seconds_remaining": 44.3,
+        "cue_sent": false
+      },
+      "cue_first_wire_request": null,
+      "request_headroom_seconds": [
+        73.53,
+        44.34,
+        32.85,
+        30.16,
+        21.83,
+        14.77,
+        12.06,
+        9.39,
+        6.72,
+        4.15,
+        1.64
+      ],
+      "observed_finish_calls": [],
+      "last_request_has_recorded_response": false,
+      "isolated_check_passed": null,
+      "clean_completion": false,
+      "first_request_wall_seconds": 26.77,
+      "agent_seconds": 73.54,
+      "task_seconds": 75.01,
+      "dispatch_seconds": 99.43,
+      "stage_error": {
+        "type": "DeadlineExceeded",
+        "message": "Whole-stage wall deadline expired"
+      },
+      "handoff_claim_accuracy": "no handoff",
+      "outer_artifact_review": {
+        "source_ok": true,
+        "observed_example": false,
+        "artifact_ok": false,
+        "finding": "The terminal workspace kept the starter, omitted REVIEW.md and retained four diagnostic fixtures outside the allowed write set. Export correctly rejected it before any independent behavior check ran. No handoff."
+      },
+      "late_actions": [
+        {
+          "request": "request-002",
+          "remaining_seconds": 44.34,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-003",
+          "remaining_seconds": 32.85,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-004",
+          "remaining_seconds": 30.16,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-005",
+          "remaining_seconds": 21.83,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-006",
+          "remaining_seconds": 14.77,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-007",
+          "remaining_seconds": 12.06,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-008",
+          "remaining_seconds": 9.39,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-009",
+          "remaining_seconds": 6.72,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-010",
+          "remaining_seconds": 4.15,
+          "tools": [
+            "bash"
+          ]
+        },
+        {
+          "request": "request-011",
+          "remaining_seconds": 1.64,
+          "tools": null
+        }
+      ]
+    }
+  ],
+  "conditional_followup": "Prepared after the first four jobs missed the original window. Trigger required at least one task state with no exposure. Both received the original cue; zero follow-up jobs dispatched. Revised wording and wider window remain untested.",
+  "cleanup_verified": true
+}
