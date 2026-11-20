@@ -218,6 +218,7 @@ the original claims, commands, reader responses and independent judgments.
 
 ## Related reading
 
+- [When should Worker hand off?](worker-handoff-decisions.md) compares blind decisions about submitting, checking or continuing with what ten Workers actually did.
 - [Progress reports and checkpoint integration](progress-reports.md) — the
   checkpoint-time report reuses the same evidence interface; a valid reference
   there does not establish entailment, correctness, or freshness either.

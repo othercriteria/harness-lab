@@ -1,0 +1,535 @@
+{
+  "study": "worker-handoff-decisions-001",
+  "freeze_utc": "2026-11-20T00:39:24.163936+00:00",
+  "selection": "All deadline failures with exact current recipe; all runs in frozen packages exhibiting both a deadline and a clean finish; two other clean current-recipe controls from distinct packages nearest to 12 and 30 seconds remaining on their final free-choice requests. Selection does not filter by outer acceptance.",
+  "windows": {
+    "earlier_seconds": 45,
+    "later_seconds": 12,
+    "selection": "First ordinary request at or below the threshold offering a free choice of finish_attempt. When the threshold was never crossed, use the last eligible request. One independent reader per window."
+  },
+  "private_input_sha256": {
+    "design.json": "8d40967af524097e997d575d355cc43a16c15e6a5aa9cdce8ae016a6a268c30e",
+    "key.json": "8a612b2042afd45ca58927941fc3b0ea21e1eea3a9eebdde0bd009c38c939f97",
+    "earlier-decisions.json": "e216488d2a61f2833f5fcd11725e92c40658b37ae07eb7e493963a38533ef7c3",
+    "later-decisions.json": "ea552007672ba35525c2ed1df5f2b7455e7ff59fa0cbbc6086b364d28b44c774"
+  },
+  "incumbent_recipe": "apprentice-qwen-32k-v1",
+  "incumbent_final_request_latency": {
+    "scope": "Last timed model request of clean exact-incumbent jobs with one finish_attempt(submitted) call. Includes accepted and rejected outcomes. Completed replies only. Historical workloads, output lengths and sampling differ. Latency excludes outer cleanup and review.",
+    "scope_counts": {
+      "not clean": 4
+    },
+    "all": {
+      "n": 64,
+      "minimum": 4.06,
+      "median": 9.26,
+      "p90": 16.22,
+      "maximum": 21.58
+    },
+    "at_most_45_seconds_remaining": {
+      "n": 7,
+      "minimum": 5.53,
+      "median": 11.08,
+      "p90": 15.5,
+      "maximum": 18.67
+    },
+    "at_most_12_seconds_remaining": {
+      "n": 0
+    }
+  },
+  "cases": [
+    {
+      "task": "Footsteps keyboard navigation",
+      "job": "6d12be01502c4b5992a0e1a47981b61b",
+      "package": "a12f611702ec7b863421964f5a73f7d762f01832ad56e6a33db5337d0cf18b22",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 19570,
+      "ceiling_seconds": 300,
+      "clean_completion": false,
+      "stage_error": "DeadlineExceeded",
+      "outer_decision": "accepted",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 19,
+        "remaining_seconds": 16.4
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E02",
+          "request": 17,
+          "remaining_seconds": 41.93,
+          "fallback": false,
+          "packet_sha256": "9bbee389a70208d9efcfbba5702fb31879d3fdefac7bda2f01575ecea9775c24",
+          "request_sha256": "89621b146dcbbf6c645c5befcecb4659d34aafec8281572482781a6322ad35c6",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Route Previous and Next activation through step(-1) and step(1) so the same fallback handles button activation. Run the supplied Python viewer tests and identify any browser skip. Reserve time to hand off the exact event, slider and focus interactions left unobserved.",
+          "terminal_changed_file_bytes_present": false,
+          "actual_next_tool_calls": [
+            "edit_file"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L10",
+          "request": 20,
+          "remaining_seconds": 11.68,
+          "fallback": false,
+          "packet_sha256": "7394bf8035c6dbd5e6a3d50bef10b4c109637b60d8264f1d2a9c944ab749781e",
+          "request_sha256": "891d8f1793f6104af6d2589309a23830e7324e2942c2f82e632bbd50628bd4e6",
+          "reader_action": "check",
+          "reader_proposed_next_step": "Run only the new offline browser unittest with a short outer timeout (about 2 seconds) and verbose output. Report pass, explicit skip, failure, or timeout precisely, then hand off promptly within the 11.68 seconds. Keep native slider stepping qualified even on a pass because the test dispatches a synthetic key and permits zero steps.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "bash"
+          ]
+        }
+      ],
+      "observed_outcome": "Added and corrected a browser test, then compiled it, ran five viewer tests and checked the export. The subsequent Git inspection returned no useful output. The new browser test was not executed by Worker. Outer review accepted the recovered patch and qualified the synthetic keyboard coverage."
+    },
+    {
+      "task": "Visitor README editorial memo",
+      "job": "8511c2acae4143d4b47604d8b61d00a9",
+      "package": "7ae739d30292454f7fcf8ad915ade44e5d7e79f2cec0683a71bbf755d02863cb",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 18400,
+      "ceiling_seconds": 180,
+      "clean_completion": false,
+      "stage_error": "DeadlineExceeded",
+      "outer_decision": "accepted",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 18,
+        "remaining_seconds": 2.89
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E01",
+          "request": 15,
+          "remaining_seconds": 22.39,
+          "fallback": false,
+          "packet_sha256": "da36b151f903eacb88cec8f3b34419d1c64e52889f917b85d86606fb03243f6d",
+          "request_sha256": "e057f95fb01fe88cf9e5a0a7cb2e2c5a08210219ed45fb563a93ac187658b5e3",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Make one short deletion pass. Keep one exact quotation for each obstacle, drop the redundant closing sentence and keep one recommended CPU command. Target 380–390 words, then use wc -w and hand off with the inspection-only limitation.",
+          "terminal_changed_file_bytes_present": false,
+          "actual_next_tool_calls": [
+            "edit_file",
+            "edit_file",
+            "edit_file",
+            "edit_file",
+            "edit_file"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L07",
+          "request": 16,
+          "remaining_seconds": 11.28,
+          "fallback": false,
+          "packet_sha256": "b4c0a4e5b03a96b06ffacd667f288abd94ddf3285b5c7ed0b7c5c01a9e991a0f",
+          "request_sha256": "e054f96ed3e8a7fa7259229988d7a336312ba2707c660169057521e71caf38de",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "In one short edit, delete the ten-word closing courtesy sentence and the redundant closing clause of the opening paragraph (or shorten that paragraph to 'Text inspection only; no experiments were run.'). Count words in the same call and reserve the remaining time for a short handoff.",
+          "terminal_changed_file_bytes_present": false,
+          "actual_next_tool_calls": [
+            "bash"
+          ]
+        }
+      ],
+      "observed_outcome": "Trims and a quote check left 411 words, then further edits left 409 against a brief asking for fewer than 400. The final count identified the miss. The Maintainer used the advisory observations and preserved the scope failure."
+    },
+    {
+      "task": "Documentation review, deadline",
+      "job": "a16b6e00037a4843b03462db53677e1c",
+      "package": "692c3b144c91d93d6bdda4dc0c5054bdbfdcf2fd343c4b772eedb7a774e85d1d",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 18200,
+      "ceiling_seconds": 240,
+      "clean_completion": false,
+      "stage_error": "DeadlineExceeded",
+      "outer_decision": "rejected",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 14,
+        "remaining_seconds": 4.72
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E04",
+          "request": 13,
+          "remaining_seconds": 22.95,
+          "fallback": false,
+          "packet_sha256": "f809471be05d3321d9fb896da87a1fbf9ecb1659d4d88f45db6f01607ea376e8",
+          "request_sha256": "ef0ecd11f9b78a38a84322c200e3716ef2a988d04824f0192efc921c563c9724",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Write a concise review.json now. Record no actionable findings on the supplied evidence, the actual source comparisons, and the scope of the excerpt. Reserve time for the handoff instead of another search.",
+          "terminal_changed_file_bytes_present": false,
+          "actual_next_tool_calls": [
+            "write_file"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L03",
+          "request": 14,
+          "remaining_seconds": 4.72,
+          "fallback": false,
+          "packet_sha256": "715a93e2661795518322ab7b17ec7894ea947dda581fadaa94cee80d589e3ac1",
+          "request_sha256": "4d05cc9a97e9d831e558f676a5292def15d6535c62cffd360155580f6b4ded7c",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit the bounded static review. State that the README excerpt cannot establish the GPU rule and that the written JSON has no separate post-write validation.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "bash"
+          ]
+        }
+      ],
+      "observed_outcome": "Wrote the correct no-findings verdict and confirmed the JSON structure. Only 4.7 seconds remained when the report first existed. The Maintainer retained the usable review but rejected the full result for missing handoff."
+    },
+    {
+      "task": "Documentation review, clean finish",
+      "job": "dcb0e5af5aaf45019d1846cbe9843916",
+      "package": "692c3b144c91d93d6bdda4dc0c5054bdbfdcf2fd343c4b772eedb7a774e85d1d",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 18201,
+      "ceiling_seconds": 240,
+      "clean_completion": true,
+      "stage_error": null,
+      "outer_decision": "rejected",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 12,
+        "remaining_seconds": 29.74
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E07",
+          "request": 12,
+          "remaining_seconds": 29.74,
+          "fallback": false,
+          "packet_sha256": "e976d1a0ad0f37132203abce422d2948ed85d32bb58fc538b3b6f01dacdd6f1f",
+          "request_sha256": "e2d0bb5e2e2607c0ff1303fa7233ce8d227a38e159fbd9e9a602052f56fa4540",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Replace the unsupported finding with a short no_actionable_findings review and an explicit source limitation. Retain only inspection claims supported by the recorded operations and hand off promptly.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "bash"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L04",
+          "request": 13,
+          "remaining_seconds": 25.43,
+          "fallback": true,
+          "packet_sha256": "46a0859869ad524250621c1da1b1fefac121270ce40a44bb4a284c0b2226ab6a",
+          "request_sha256": "65394a70f35452eb9d34a76b3d6c44ca5ecfa79fcb5c567e7fb13a72a96aacaf",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Edit review.json to use no_actionable_findings, empty findings, and a short consistent summary. Retain the missing authority as a limitation. Then hand off the static review.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        }
+      ],
+      "observed_outcome": "Validated the report shape and submitted. Both readers identified the unsupported finding while there was time to amend it. Outer review rejected the verdict because omission from an explicitly partial source could not establish the claimed contradiction."
+    },
+    {
+      "task": "Compact diff hunks",
+      "job": "c6d647cca9b54a8097399435d2bae9bb",
+      "package": "9027fd00f5c233d8debd3fbfaa3a634a4fed46c0f54e58e1569d31364a9311d1",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 19013,
+      "ceiling_seconds": 360,
+      "clean_completion": false,
+      "stage_error": "DeadlineExceeded",
+      "outer_decision": "rejected",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 18,
+        "remaining_seconds": 17.32
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E06",
+          "request": 17,
+          "remaining_seconds": 25.18,
+          "fallback": false,
+          "packet_sha256": "f5f22fcc6d071b07ee1c4e822e54ab1f94337f4f4a8461b5b87d0ad5ce0d9828",
+          "request_sha256": "77522ffd2beff21f9059b7272196b9209490f4c1c59a640a130ad81ef2a2a436",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Use a bounded grouped diff with three context lines and a separate absolute header for each group. Prioritize a focused separated-edits regression that checks both headers and bodies. With 25 seconds left, hand off the exact partial result if both repair and tests cannot be finished.",
+          "terminal_changed_file_bytes_present": false,
+          "actual_next_tool_calls": [
+            "edit_file"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L09",
+          "request": 19,
+          "remaining_seconds": 5.15,
+          "fallback": false,
+          "packet_sha256": "30da864ad55603e74324a3b04f4274f0bf5dd1f932f0249f1ae90f9f8a284051",
+          "request_sha256": "47ba5d88b8cc9b569d3662acea276278a964062a5d8671e3f7b8a50bb0f3849e",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit an explicitly unfinished helper. Name the malformed context and absent test file; do not claim a valid patch or a successful test suite.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": null
+        }
+      ],
+      "observed_outcome": "Edited the helper and probed example output. A valid multi-hunk patch and the requested regression test were still missing. The late reader proposed an unfinished handoff. Independent verification rejected the patch."
+    },
+    {
+      "task": "Finite-number checks, deadline",
+      "job": "ba40d4aea1bb49578352b8ee36eff06b",
+      "package": "02af4599c9503f7f790cd682a9a75c1cba30ba1e5c9116e9829ed78bc9f15789",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": null,
+      "seed": 16103,
+      "ceiling_seconds": 300,
+      "clean_completion": false,
+      "stage_error": "DeadlineExceeded",
+      "outer_decision": "rejected",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 20,
+        "remaining_seconds": 4.46
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E05",
+          "request": 16,
+          "remaining_seconds": 35.69,
+          "fallback": false,
+          "packet_sha256": "3b07cc5b2c903819c65219dcb47444fcfad0b1a4b59806821b29d90ca79a6490",
+          "request_sha256": "3f4d247745d4fb10acffafcba94919d1cc3892a59c3946cab9374e64f0d93fe8",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Use int(max_float) + 1 for the accepted rounding example, 2**1024 for overflow, and a fraction strictly below 1 in the ordinary valid table. Run the requested unittest discovery without a tail pipeline, and report its actual result.",
+          "terminal_changed_file_bytes_present": false,
+          "actual_next_tool_calls": [
+            "run_checks",
+            "bash"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L02",
+          "request": 20,
+          "remaining_seconds": 4.46,
+          "fallback": false,
+          "packet_sha256": "6f1e0e94ef8af5094f53ec7c3233f72a8691dee49a28baad08662798bc4f6ecc",
+          "request_sha256": "310cb6c5aab53abf6cd34607c9c3d08e4acf19676fadcf2f25d74cc47d8c504e",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Make a minimal partial handoff. State that the boundary expectations were edited and the final tests have not been rerun; no passing result is available.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "run_checks"
+          ]
+        }
+      ],
+      "observed_outcome": "The test runner reported six failures and one error. Two numeric probes and edits removed the six failures. A fresh run exposed the remaining error despite a zero pipeline exit code. Review also found a dependency-stub problem."
+    },
+    {
+      "task": "Finite-number checks, repaired",
+      "job": "ba911583b54d47679a601d3d666a6d86",
+      "package": "02af4599c9503f7f790cd682a9a75c1cba30ba1e5c9116e9829ed78bc9f15789",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": null,
+      "seed": 16101,
+      "ceiling_seconds": 300,
+      "clean_completion": true,
+      "stage_error": null,
+      "outer_decision": "accepted_with_repairs",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 9,
+        "remaining_seconds": 200.47
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E08",
+          "request": 13,
+          "remaining_seconds": 181.55,
+          "fallback": true,
+          "packet_sha256": "e64c94a1254423c1541082a365936cc66d44e46b7311fa41c9b432f4403567ab",
+          "request_sha256": "2627b9780978d41edf45afdf5e229b27319020aab90a1978c7be8fe7dd76d707",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit the implementation and focused test file. Report the focused suite result, identify the stub for the unavailable dependency, and leave real integration and the legacy suite unverified.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L05",
+          "request": 13,
+          "remaining_seconds": 181.55,
+          "fallback": true,
+          "packet_sha256": "32baf55c9e103f9d7411ea9868ce7e0f17c81e4b240320fe51939d56b079e95c",
+          "request_sha256": "2627b9780978d41edf45afdf5e229b27319020aab90a1978c7be8fe7dd76d707",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit the shared predicate and standalone tests, reporting the exact focused run. Limit the claim to this snapshot.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        }
+      ],
+      "observed_outcome": "Submitted immediately at the sampled request. Focused checks passed with a dependency stub. Repository integration exposed interference with other tests. Acceptance incorporates a subsequent delegated test-import repair."
+    },
+    {
+      "task": "Finite-number checks, rejected",
+      "job": "0473e965cb084d37b9a404b84267acd0",
+      "package": "02af4599c9503f7f790cd682a9a75c1cba30ba1e5c9116e9829ed78bc9f15789",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": null,
+      "seed": 16102,
+      "ceiling_seconds": 300,
+      "clean_completion": true,
+      "stage_error": null,
+      "outer_decision": "rejected",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 8,
+        "remaining_seconds": 155.93
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E09",
+          "request": 10,
+          "remaining_seconds": 145.17,
+          "fallback": true,
+          "packet_sha256": "4adc7fab07c320fe3644499ad09ebd4ae7f299132e5664027ea43d11756f66fb",
+          "request_sha256": "01803c175108b88b862be452b0edf2aab8aa1efbc5c3718f5e9db67bff3862eb",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit, citing the unittest runner's own summary and the narrow probe. Disclose the missing integration dependency and stub, and avoid relying on the tail pipeline's exit status as proof.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L01",
+          "request": 10,
+          "remaining_seconds": 145.17,
+          "fallback": true,
+          "packet_sha256": "ef8dee4fd20afacbeace04829be47832ba7f5df1f8853622d137adb4d3994c17",
+          "request_sha256": "01803c175108b88b862be452b0edf2aab8aa1efbc5c3718f5e9db67bff3862eb",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Hand off the two files and the focused suite result. Limit the claim to the supplied scripts and new tests.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        }
+      ],
+      "observed_outcome": "Submitted immediately at the sampled request. Focused checks passed with a dependency stub. Outer review found the same integration defect and an inaccurate boundary claim in the evidence. This submission was rejected."
+    },
+    {
+      "task": "CPU walkthrough README",
+      "job": "1c8f09fc907941c2b2a15b7e74592f56",
+      "package": "c09604793e9572dcd01de30626d1e21e35742d118944d94e71d0414750490225",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 19402,
+      "ceiling_seconds": 190,
+      "clean_completion": true,
+      "stage_error": null,
+      "outer_decision": "accepted_with_repairs",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 6,
+        "remaining_seconds": 73.47
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E10",
+          "request": 10,
+          "remaining_seconds": 42.73,
+          "fallback": false,
+          "packet_sha256": "7ac69f3ef7c30ba0fbca7236a87811b419600bd185e2674f1c1f1781b1e73565",
+          "request_sha256": "0ffc36e18a2ea7a9d729b8cafd09ee345dcef82905c11c1d31730539a5961ee6",
+          "reader_action": "implement",
+          "reader_proposed_next_step": "Link the supplied examples/reviewing-worker-output/README.md directly and identify the revision as the checkout for the historical tests. Keep the current-clone inventory command beside it. Report static inspection only, since the curated snapshot lacks the script and inventory needed for execution.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "run_checks"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L06",
+          "request": 12,
+          "remaining_seconds": 19.36,
+          "fallback": true,
+          "packet_sha256": "b017e83f9c5f32ba372c1641eee7de9ad797076b6d81c21f43bec6458528af58",
+          "request_sha256": "5e0c063d72d9b56e9d4bc51b4fa3585db10fdfdea79a757bec63522265cf6ec6",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Retry finish_attempt alone with one or two short evidence descriptions. Report documentation inspection and structural checks; the clean-clone command and Spark inference were not executed here.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        }
+      ],
+      "observed_outcome": "Repeated a structural check and attempted handoff. One evidence description exceeded the 500-byte limit by four bytes. A shorter retry succeeded. The earlier reader identified the checkout-link issue the Maintainer later repaired."
+    },
+    {
+      "task": "Observatory comparison badges",
+      "job": "4ba3e5be0d5c45ec89a3331612eb5c2b",
+      "package": "4bbfc26e7550bff3d55d14c834fd6512b633cacc8593ead8ea4e93d6f68cf6c5",
+      "model": "qwen38-27b-ranalayout-q4",
+      "recipe_id": "apprentice-qwen-32k-v1",
+      "seed": 19125,
+      "ceiling_seconds": 240,
+      "clean_completion": true,
+      "stage_error": null,
+      "outer_decision": "accepted",
+      "first_request_with_persistent_terminal_changed_file_bytes": {
+        "request": 13,
+        "remaining_seconds": 108.23
+      },
+      "points": [
+        {
+          "window": "earlier",
+          "alias": "E03",
+          "request": 19,
+          "remaining_seconds": 42.41,
+          "fallback": false,
+          "packet_sha256": "0cd15a6c79bb9a903bc53df3c0921b99843372812c533a0aec0b99f55bb02976",
+          "request_sha256": "32e0d11c1ee1f2e443b815c60a6b4de83e8d02dadd84d29029dccb6e2355dabc",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit both files, cite source inspection and the added regression, and explicitly leave execution of the Node suite to the independent evaluator. Identify the mirror as a separate calculation.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "run_checks"
+          ]
+        },
+        {
+          "window": "later",
+          "alias": "L08",
+          "request": 20,
+          "remaining_seconds": 27.63,
+          "fallback": true,
+          "packet_sha256": "b3228854a92e8c9eb46f7a2a42e9dcd3ea0c3e2dbe8c897cd4b4dcac6e54de0b",
+          "request_sha256": "376a1168f6180d98f93a234a97a397ad05baab1cddc9e40719765880579b51d9",
+          "reader_action": "submit",
+          "reader_proposed_next_step": "Submit both edited files. Report the Python arithmetic sanity check and the missing Node runtime; leave the actual offline Node regression unverified.",
+          "terminal_changed_file_bytes_present": true,
+          "actual_next_tool_calls": [
+            "finish_attempt"
+          ]
+        }
+      ],
+      "observed_outcome": "Repeated the Python mirror and located expected literals, then submitted with Node execution disclosed as outstanding. Independent JavaScript verification supported acceptance without edits."
+    }
+  ]
+}
