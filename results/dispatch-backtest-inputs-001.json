@@ -1,0 +1,672 @@
+{
+  "sources": {
+    "frontier-all-attempts-001.json": "b5eddaee83a94efe67de19bfed7fbca1956f6150ce8be33a0abed65224ae84ae",
+    "release-channel-pilot-001.json": "f97c7c9055f0141cfb70518efc0b9376c243849912b41a97e756f282f1ba7176"
+  },
+  "description": "Selected historical campaign components in seconds and review verdicts. Training probes carry the original backend response digests. A null warmup means no separate warmup ran. Codec seconds include separately accounted verification; release seconds are the recorded task wall time.",
+  "campaigns": [
+    {
+      "run": "frontier-current-codec-layout-contract-codec-a-seed14900-001",
+      "family": "codec",
+      "receipt_sha256": "318446fbb9507e4752d780d871ae0c184aacbb6d63521a6c5cffacf7d966c682",
+      "arm": "layout",
+      "profile": "qwen38-27b-ranalayout-24k-temp06-dflash3-fit2304-dio",
+      "protocol": "frontier-codec-layout-120-current-v1",
+      "ceiling": 120,
+      "load": 17.68445050995797,
+      "warmup": 3.046197613934055,
+      "trials": [
+        {
+          "task": "contract-codec-a",
+          "seed": 14900,
+          "stage": "train",
+          "seconds": 36.803247643169016,
+          "accepted": true,
+          "summary_sha256": "a06fca35439a51aac739d97afdd52d8feb3f30143c5b1abcc3ae3f2f6fb8f4bd",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "55f2a9b3d386e2c4bb4545a355ab85bd3c4e79f0ded68ea366009a5a75e90906",
+              "cached_tokens": 4118,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 148.241,
+              "generated_tokens": 2245,
+              "generation_ms": 25128.373
+            },
+            "finish": {
+              "file": "request-002.response.bin",
+              "sha256": "af53cec6f28b686cdec9c0bf13ce2acf3064f742d5f8b0747c558cec7ef7fc82",
+              "cached_tokens": 6367,
+              "prompt_tokens_processed": 96,
+              "prompt_ms": 303.044,
+              "generated_tokens": 803,
+              "generation_ms": 8138.189
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "0c3a8695cb17b515a20114cdcaa800578fc62a51363e6ba6b12718db0d1959a0",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4122,
+              "prompt_ms": 2076.635,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-current-codec-rana-contract-codec-a-seed14900-001",
+      "family": "codec",
+      "receipt_sha256": "b40ab6ada277d597bdaef042f5bc3224091589bbdc52c8cbbae9143a8cedf568",
+      "arm": "rana",
+      "profile": "rana-qwen38-27b-24k-temp06-dflash3-fit2304-dio",
+      "protocol": "frontier-codec-rana-120-current-v1",
+      "ceiling": 120,
+      "load": 15.556645109085366,
+      "warmup": 3.0486359980423003,
+      "trials": [
+        {
+          "task": "contract-codec-a",
+          "seed": 14900,
+          "stage": "train",
+          "seconds": 24.54813137697056,
+          "accepted": true,
+          "summary_sha256": "422ab15cefa2a57876f957b3ab2a077a0e0f5674749165ca65fd533c2c13b24c",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "1104b077e28b709e54263ac741359b073262a81808504604d8e2fe19a37f9269",
+              "cached_tokens": 4118,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 155.669,
+              "generated_tokens": 2179,
+              "generation_ms": 21992.893
+            },
+            "finish": {
+              "file": "request-001.response.bin",
+              "sha256": "1104b077e28b709e54263ac741359b073262a81808504604d8e2fe19a37f9269",
+              "cached_tokens": 4118,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 155.669,
+              "generated_tokens": 2179,
+              "generation_ms": 21992.893
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "934f38a5e8ab57df5948c71675d9a9a2c4e53773fa49ff95e29c9be501543b20",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4122,
+              "prompt_ms": 1984.605,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-current-codec-coder-contract-codec-a-seed14900-001",
+      "family": "codec",
+      "receipt_sha256": "0b2332164b119fe6b39a822a2d600c929a6b9d0accbe47e3dad84f81909f5d9d",
+      "arm": "coder",
+      "profile": "comparison-coder-32k-cpu32-fit2048-temp06",
+      "protocol": "frontier-codec-coder-120-current-v1",
+      "ceiling": 120,
+      "load": 36.03656297107227,
+      "warmup": 14.258593064034358,
+      "trials": [
+        {
+          "task": "contract-codec-a",
+          "seed": 14900,
+          "stage": "train",
+          "seconds": 14.036119649885222,
+          "accepted": true,
+          "summary_sha256": "387c1b527ea2a1cb01f6dd9896259661a1b6e3bb13c81c4f23296ec6cd67fee6",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "7bdf4d553fb057863776e15c6b2507b4d773aa1d2ecf24129dbf3d42e213d81f",
+              "cached_tokens": 4220,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 106.986,
+              "generated_tokens": 611,
+              "generation_ms": 11545.204
+            },
+            "finish": {
+              "file": "request-001.response.bin",
+              "sha256": "7bdf4d553fb057863776e15c6b2507b4d773aa1d2ecf24129dbf3d42e213d81f",
+              "cached_tokens": 4220,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 106.986,
+              "generated_tokens": 611,
+              "generation_ms": 11545.204
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "143cbe8075a66ffd44730e6029caa867b79f29b28151227a5029b4b9c1ac5384",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4224,
+              "prompt_ms": 13345.19,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-current-codec-layout-contract-codec-b-seed14910-001",
+      "family": "codec",
+      "receipt_sha256": "317699b9dcc7d3c48dbccd0b6874fd970690fa069260d13b3cd05a8f7fd9061b",
+      "arm": "layout",
+      "profile": "qwen38-27b-ranalayout-24k-temp06-dflash3-fit2304-dio",
+      "protocol": "frontier-codec-layout-120-current-v1",
+      "ceiling": 120,
+      "load": 17.68029889697209,
+      "warmup": 3.054502533050254,
+      "trials": [
+        {
+          "task": "contract-codec-b",
+          "seed": 14910,
+          "stage": "train",
+          "seconds": 39.478013465879485,
+          "accepted": true,
+          "summary_sha256": "0f770ba85a4b6161a182707d0a86413f74be336dea4163b6bbe4d0b5de44c407",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "a214d47a80f95ebf825d0d41cf9d411cca20d68eb0ef3e1f2052282453108c89",
+              "cached_tokens": 4118,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 173.383,
+              "generated_tokens": 1081,
+              "generation_ms": 11474.164
+            },
+            "finish": {
+              "file": "request-005.response.bin",
+              "sha256": "b2987a78553e30d19c0dab917be40a215cb2561f59f598302a693fda9bbd2ebf",
+              "cached_tokens": 7011,
+              "prompt_tokens_processed": 496,
+              "prompt_ms": 450.135,
+              "generated_tokens": 674,
+              "generation_ms": 6961.249
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "b138a3be2d8f14619f44c8bc87311627f58de0bf09fd22c51447b7f79602f30f",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4122,
+              "prompt_ms": 2105.787,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-current-codec-rana-contract-codec-b-seed14910-001",
+      "family": "codec",
+      "receipt_sha256": "affb31ade8c1f2e76deaa75d7d838791ccbdf45ddedfabf26cf7f7de1572c5d3",
+      "arm": "rana",
+      "profile": "rana-qwen38-27b-24k-temp06-dflash3-fit2304-dio",
+      "protocol": "frontier-codec-rana-120-current-v1",
+      "ceiling": 120,
+      "load": 17.69210844510235,
+      "warmup": 3.0527059079613537,
+      "trials": [
+        {
+          "task": "contract-codec-b",
+          "seed": 14910,
+          "stage": "train",
+          "seconds": 29.616203418001533,
+          "accepted": true,
+          "summary_sha256": "dcc31de932e90f46d574f1d36d0e74908dc05bead3b89943332d41290f855406",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "d8377b8fe79e3b45a79883aecc9187c98f08030a4e08f0108ad06af6aebf7922",
+              "cached_tokens": 4118,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 162.661,
+              "generated_tokens": 1205,
+              "generation_ms": 12843.187
+            },
+            "finish": {
+              "file": "request-003.response.bin",
+              "sha256": "b9db5cd41df74cf5c1f5ec57af0dc8ff820a7e27c2f4752de74497af40109670",
+              "cached_tokens": 5939,
+              "prompt_tokens_processed": 579,
+              "prompt_ms": 505.834,
+              "generated_tokens": 471,
+              "generation_ms": 4631.889
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "f8a3001d8a8cfe3f5e69d0c3ec8a477de1162449bc895f306945271a4dd60327",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4122,
+              "prompt_ms": 2113.049,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-current-codec-flint-contract-codec-b-seed14910-001",
+      "family": "codec",
+      "receipt_sha256": "023e43407762e5972ff7aa5c30b6e51586e7b455b15b8ff15770ffcd85cf2258",
+      "arm": "flint",
+      "profile": "flint-32k",
+      "protocol": "frontier-codec-flint-120-current-v1",
+      "ceiling": 120,
+      "load": 53.88683113292791,
+      "warmup": 10.181482088984922,
+      "trials": [
+        {
+          "task": "contract-codec-b",
+          "seed": 14910,
+          "stage": "train",
+          "seconds": 46.07103096880019,
+          "accepted": false,
+          "summary_sha256": "cffc8976c06532b70938319635011c1cb41c799d96dcc7a707828c33b7531955",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "70180696ddac0282cb33abde9ba95fec28581a7a48831b86f23591c6c79adaa3",
+              "cached_tokens": 3790,
+              "prompt_tokens_processed": 1,
+              "prompt_ms": 46.18,
+              "generated_tokens": 575,
+              "generation_ms": 5373.508
+            },
+            "finish": {
+              "file": "request-008.response.bin",
+              "sha256": "4bede8868bf025169021f9fc3608ca9fd156a2380ff2f75f68d307d270981662",
+              "cached_tokens": 7977,
+              "prompt_tokens_processed": 68,
+              "prompt_ms": 282.775,
+              "generated_tokens": 496,
+              "generation_ms": 4720.843
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "d30afe717f833b2a96c5ab42e8bb2ce87fa4077b5df23cc2c50e1af7d71c7825",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 3791,
+              "prompt_ms": 8841.726,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-joint-coder-contract-codec-b-seed14910-001",
+      "family": "codec",
+      "receipt_sha256": "27236750de8bd91321accfb02651d3e22aa21a35684e39378515bf04b9e5adde",
+      "arm": "coder",
+      "profile": "comparison-coder-32k-cpu32-fit2048-temp06",
+      "protocol": "frontier-codec-coder-120-current-v1",
+      "ceiling": 120,
+      "load": 27.47546803113073,
+      "warmup": 15.27611167007126,
+      "trials": [
+        {
+          "task": "contract-codec-b",
+          "seed": 14910,
+          "stage": "train",
+          "seconds": 45.770364803029224,
+          "accepted": true,
+          "summary_sha256": "203cb9dd34186ff223cedbc4eb5cc4b74a670e9a6903d5c4dd269095b1d6c531",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "f8facfd6bee3d58685c7f284cc9543fde08aa4be235f394b70f22cb5a35ae2c2",
+              "cached_tokens": 4220,
+              "prompt_tokens_processed": 4,
+              "prompt_ms": 103.051,
+              "generated_tokens": 472,
+              "generation_ms": 9035.854
+            },
+            "finish": {
+              "file": "request-005.response.bin",
+              "sha256": "67ed48afe8727e05bc44eae6d63919a2842f94945fa33be74aa70c87af95c595",
+              "cached_tokens": 6165,
+              "prompt_tokens_processed": 347,
+              "prompt_ms": 1561.455,
+              "generated_tokens": 376,
+              "generation_ms": 6914.788
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "4b5e5ec323a1a9efcc77f49a3af0ed47576dfb3f5b70008e9653e506fe2d6627",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4224,
+              "prompt_ms": 13800.718,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-joint-flint-contract-codec-a-seed14900-001",
+      "family": "codec",
+      "receipt_sha256": "c49809841f226904a3221b93477382a74bb58b579900221d64f0ff57e1343a26",
+      "arm": "flint",
+      "profile": "flint-32k",
+      "protocol": "frontier-codec-flint-120-current-v1",
+      "ceiling": 120,
+      "load": 8.283953376114368,
+      "warmup": 10.177370156859979,
+      "trials": [
+        {
+          "task": "contract-codec-a",
+          "seed": 14900,
+          "stage": "train",
+          "seconds": 17.763362408149987,
+          "accepted": true,
+          "summary_sha256": "ce144360b40fb189c3e09e5ac4a78d061107d09813b809d558dec30766aa8f4f",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "78e6c3bdb9f236ce811a81a2fe30d2cd6d1fd84f44e285d98f321f6bb5f174ea",
+              "cached_tokens": 3790,
+              "prompt_tokens_processed": 1,
+              "prompt_ms": 40.216,
+              "generated_tokens": 299,
+              "generation_ms": 2889.48
+            },
+            "finish": {
+              "file": "request-004.response.bin",
+              "sha256": "8d7e1b732b550a23b893e368c1ec27492d8183b9c4b15f22c4949e46c017a2e3",
+              "cached_tokens": 5280,
+              "prompt_tokens_processed": 69,
+              "prompt_ms": 294.912,
+              "generated_tokens": 542,
+              "generation_ms": 5207.928
+            },
+            "cold_prefix": {
+              "file": "03-completion.response.bin",
+              "sha256": "9c300317253a8c376650c17d9876b600bc76decae028b3c30413989c561b8900",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 3791,
+              "prompt_ms": 8864.784,
+              "generated_tokens": 1,
+              "generation_ms": 0.001
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "frontier-confirm-joint-rana-contract-codec-a-seeds14930-14931-001",
+      "family": "codec",
+      "receipt_sha256": "c26fcabdf7c03a5897263bed26a2a33b2c7d8f2bd6fef522ed541e6368926953",
+      "arm": "rana",
+      "profile": "rana-qwen38-27b-24k-temp06-dflash3-fit2304-dio",
+      "protocol": "frontier-codec-rana-120-current-v1",
+      "ceiling": 120,
+      "load": 18.707208925159648,
+      "warmup": 3.0482380411121994,
+      "trials": [
+        {
+          "task": "contract-codec-a",
+          "seed": 14930,
+          "stage": "test",
+          "seconds": 39.038966136053205,
+          "accepted": true,
+          "summary_sha256": "619753dd0e1829b23978bc75510fe52e10f114c89dbeeadba954d3c3bb3282fd"
+        },
+        {
+          "task": "contract-codec-a",
+          "seed": 14931,
+          "stage": "test",
+          "seconds": 35.853121019899845,
+          "accepted": true,
+          "summary_sha256": "d447a944d04390df62ebc9f7f0f7eba8454f4adc5bcc348c56ee391fa7a822df"
+        }
+      ]
+    },
+    {
+      "run": "frontier-confirm-joint-rana-contract-codec-b-seeds14930-14931-001",
+      "family": "codec",
+      "receipt_sha256": "6ea91b355346409c979b4ed4f4cd0e139f2c1f26797aa754645a7bb4b419db62",
+      "arm": "rana",
+      "profile": "rana-qwen38-27b-24k-temp06-dflash3-fit2304-dio",
+      "protocol": "frontier-codec-rana-120-current-v1",
+      "ceiling": 120,
+      "load": 15.561733244918287,
+      "warmup": 3.048255825182423,
+      "trials": [
+        {
+          "task": "contract-codec-b",
+          "seed": 14930,
+          "stage": "test",
+          "seconds": 39.780724928947166,
+          "accepted": true,
+          "summary_sha256": "2022fe2b2d68f75958a02a5319e3055b912c8ae9c23dbb7a24f88afda07135fa"
+        },
+        {
+          "task": "contract-codec-b",
+          "seed": 14931,
+          "stage": "test",
+          "seconds": 26.406493542017415,
+          "accepted": true,
+          "summary_sha256": "cfe57d020390cf84469761e5fffa3507528fadb9a028c3722a9689b3a2408d91"
+        }
+      ]
+    },
+    {
+      "run": "frontier-confirm-joint-coder-contract-codec-a-seeds14930-14931-001",
+      "family": "codec",
+      "receipt_sha256": "7b6e5f93a002f5e5723cb2fdbc11c6a689b840167e9eb3154c252d7aaccdb320",
+      "arm": "coder",
+      "profile": "comparison-coder-32k-cpu32-fit2048-temp06",
+      "protocol": "frontier-codec-coder-120-current-v1",
+      "ceiling": 120,
+      "load": 25.309224881930277,
+      "warmup": 15.267632466973737,
+      "trials": [
+        {
+          "task": "contract-codec-a",
+          "seed": 14930,
+          "stage": "test",
+          "seconds": 24.72257678816095,
+          "accepted": true,
+          "summary_sha256": "ce9a26122f02757bf9fc4b8abd68f0515156102ea4d5187c2676d427e0cc11a4"
+        },
+        {
+          "task": "contract-codec-a",
+          "seed": 14931,
+          "stage": "test",
+          "seconds": 13.446234917035326,
+          "accepted": true,
+          "summary_sha256": "858c054cec6e9c2b1655f53029fe0055ae4e75ba310c8344bdf03d85302cc75e"
+        }
+      ]
+    },
+    {
+      "run": "frontier-confirm-joint-coder-contract-codec-b-seeds14930-14931-001",
+      "family": "codec",
+      "receipt_sha256": "e91f16a7c5ac8c0423312a1862ffd6e6cfb59e5ce1d9919ead99c7efb88ce7ec",
+      "arm": "coder",
+      "profile": "comparison-coder-32k-cpu32-fit2048-temp06",
+      "protocol": "frontier-codec-coder-120-current-v1",
+      "ceiling": 120,
+      "load": 8.775762946112081,
+      "warmup": 15.265405124053359,
+      "trials": [
+        {
+          "task": "contract-codec-b",
+          "seed": 14930,
+          "stage": "test",
+          "seconds": 33.912370692938566,
+          "accepted": true,
+          "summary_sha256": "4afaa8f572b2b528c4989efbde70293532f7f60e093bb908a2849d1db1c08579"
+        },
+        {
+          "task": "contract-codec-b",
+          "seed": 14931,
+          "stage": "test",
+          "seconds": 45.777910869102925,
+          "accepted": true,
+          "summary_sha256": "79d39b41b311707f3ac972809df5b12b9616b43d3cb2d47aa574f6eda7a340ca"
+        }
+      ]
+    },
+    {
+      "run": "js-release-coder-90-dev-001",
+      "family": "release",
+      "arm": "coder",
+      "profile": "routing-coder-32k-cpu31-fit1536-temp06",
+      "protocol": "0e2c557f7884b5d1e2dffe919aefd77944647c7beb076b3ba5d4fba8fbf71022",
+      "ceiling": 90,
+      "load": 48.79,
+      "warmup": null,
+      "trials": [
+        {
+          "task": "release-channel",
+          "seed": 19200,
+          "stage": "train",
+          "seconds": 41.714,
+          "accepted": true,
+          "summary_sha256": "770cf706fb895473256f2404b6fc3bcd87531f45668151f850b794c7683553dd",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "e7bca0c96019aea5fb28a69edd5f41a4f6838ee167b1d7c6a7733c30ac81739c",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4394,
+              "prompt_ms": 15231.093,
+              "generated_tokens": 172,
+              "generation_ms": 3216.298
+            },
+            "finish": {
+              "file": "request-005.response.bin",
+              "sha256": "f14b7291ac9714a4898afa403997f71f668ddd641586f7906c1c3fa7c7cbd2a1",
+              "cached_tokens": 5614,
+              "prompt_tokens_processed": 400,
+              "prompt_ms": 1761.384,
+              "generated_tokens": 147,
+              "generation_ms": 2779.349
+            }
+          }
+        },
+        {
+          "task": "release-channel",
+          "seed": 19201,
+          "stage": "test",
+          "seconds": 26.847,
+          "accepted": true,
+          "summary_sha256": "c23f3b9c29096bce86ebb98fd7c5adfcdf1971c064df8ffcfa1d99b7fe64903a",
+          "initial_prompt_ms": 178.612
+        }
+      ]
+    },
+    {
+      "run": "js-release-flint-90-dev-001",
+      "family": "release",
+      "arm": "flint",
+      "profile": "frontier-flint-48k-fit2048",
+      "protocol": "2ed86e8a078277f0ad1d6d9ef58f08854bcf53040738e834f42062cdf659c7a2",
+      "ceiling": 90,
+      "load": 56.77,
+      "warmup": null,
+      "trials": [
+        {
+          "task": "release-channel",
+          "seed": 19200,
+          "stage": "train",
+          "seconds": 25.131,
+          "accepted": true,
+          "summary_sha256": "9397c2759bb7109a0fdea1a12155a7ec15ea837600e4888d83fd5152b6cc27f8",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "7a142fc152dae2a0e0d668fed99079a36d265dbb9c31f53aa57f6ddf81ba4594",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 3908,
+              "prompt_ms": 6287.684,
+              "generated_tokens": 463,
+              "generation_ms": 4046.554
+            },
+            "finish": {
+              "file": "request-005.response.bin",
+              "sha256": "dea46bef7a0cf1707db9fed6267eab133287fe5de19b6a80c45ab151cbddb472",
+              "cached_tokens": 5827,
+              "prompt_tokens_processed": 103,
+              "prompt_ms": 227.678,
+              "generated_tokens": 175,
+              "generation_ms": 1544.52
+            }
+          }
+        },
+        {
+          "task": "release-channel",
+          "seed": 19201,
+          "stage": "test",
+          "seconds": 16.096,
+          "accepted": true,
+          "summary_sha256": "9d5fd9830c2fb2deba8a232442983f2fd93e7aa94adb0c5b8edb108dc3974756",
+          "initial_prompt_ms": 116.066
+        }
+      ]
+    },
+    {
+      "run": "js-release-qwen-90-dev-001",
+      "family": "release",
+      "arm": "qwen",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "protocol": "99411720092397191a1bff04a19936eecbfca7aab9c7c8500d8f129ee4c469c4",
+      "ceiling": 90,
+      "load": 15.81,
+      "warmup": null,
+      "trials": [
+        {
+          "task": "release-channel",
+          "seed": 19200,
+          "stage": "train",
+          "seconds": 19.606,
+          "accepted": true,
+          "summary_sha256": "cbecdd2b86eea54aa3f0bd03720a3809e279968872efdfdb7bfedcb39e8856d8",
+          "probe": {
+            "initial": {
+              "file": "request-001.response.bin",
+              "sha256": "5cb3bb56c00c600f22ca3f3b4db1aa546a687239c9a1fe709a865c4e58b84f85",
+              "cached_tokens": 0,
+              "prompt_tokens_processed": 4257,
+              "prompt_ms": 2225.226,
+              "generated_tokens": 1096,
+              "generation_ms": 10261.745
+            },
+            "finish": {
+              "file": "request-002.response.bin",
+              "sha256": "479374958e2643f7e246d3491b50d8efc4deb3d349ebacf4ff6e25b81788821c",
+              "cached_tokens": 5352,
+              "prompt_tokens_processed": 215,
+              "prompt_ms": 348.197,
+              "generated_tokens": 231,
+              "generation_ms": 2244.512
+            }
+          }
+        },
+        {
+          "task": "release-channel",
+          "seed": 19201,
+          "stage": "test",
+          "seconds": 21.086,
+          "accepted": true,
+          "summary_sha256": "792fac8c29c7e0107ce5acdc2930d5ee8702b6972377fde457635e0ea54eec42",
+          "initial_prompt_ms": 210.639
+        }
+      ]
+    }
+  ]
+}

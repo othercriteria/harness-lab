@@ -17,3 +17,5 @@ Ceilings are workstation model budgets. They do not measure human effort. Select
 The eight historical recipe rows retain their original task selection, timing and review qualifications. The two codec rows use the same selected recipe since feasibility is unknown at dispatch. [Workstation recipes](../configs/frontier-practical-recipes-v1.json)
 
 The JavaScript rung was measured separately. It covers the 60-second budget with an authored task. Ten confirmation attempts produced correct code within the ceiling, and seven earned full handoff acceptance. The retired HCAST Markdown task had a published human-effort label. Only the model-time rung carries over.
+
+For the cost of choosing a different recipe on a short task, see the [historical dispatch backtest](dispatch-backtest.md).
