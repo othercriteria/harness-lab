@@ -1,0 +1,30 @@
+{
+  "job_id": "000d38c7cf3e4ad88f1ad9cf936d15d9",
+  "package_id": "d36a30b1b7a932b9897d96623111b7d0e0e2b64fcea6ce78a5855506ad2170e6",
+  "snapshot_id": "e91afce917bb11743d630e55e71bf44ee99cb9f77935114f2ade63059ea37d3d",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19621,
+  "authored_files": [
+    "tests/test_worker_residency.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 209.386042047292,
+  "dispatch_seconds": 229.94652153970674,
+  "review": {
+    "job_id": "000d38c7cf3e4ad88f1ad9cf936d15d9",
+    "package_id": "d36a30b1b7a932b9897d96623111b7d0e0e2b64fcea6ce78a5855506ad2170e6",
+    "reviewer": "Outer Maintainer",
+    "decision": "accepted_with_repairs",
+    "notes": "Retained the Worker adjacency and pricing cases. Rebuilt timings so dispatch, wall clock and load agree, consolidated duplicate examples, and added separate batches in one session and inclusive competitor endpoints.",
+    "verification": "The original 17 tests passed and caught eight faulty implementations in isolation. The reviewed 12 tests passed in isolation and caught the same eight plus conflating sessions with batches.",
+    "artifact": "reviewed-artifact",
+    "artifact_sha256": "534e4bfc8f4535e520de17d078842aaaa1cdbe993188f22821413730bfc24307"
+  },
+  "original_test_sha256": "cfaf70adf8a4761cba19929aad5fd25f41583414e30aeab88d7c2d82a2c3d6ae",
+  "landed_test_sha256": "81eb31d4cfd9e40f694293507d7ce3eb0e3c33f35c800d13c7a4875afd1e76ac",
+  "application_sha256": "3166274bdae8b826e7c1d2496a0f0b86f8d71e74a2e9e08eface64db7dc970e1",
+  "review_sha256": "7e45d77ab6535fc73e1d64200f45e0fc89f37d18a21e656923f9272c31765206",
+  "cleanup_verified": true,
+  "restoration_record": "2026-11-19-gpu-quiet-064/restoration-verification.json",
+  "integration": "Maintainer registered the reviewed tests in the portable suite. The timeline describes potential avoided load under reuse."
+}
