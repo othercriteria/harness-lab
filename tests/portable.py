@@ -27,6 +27,7 @@ CASES = (
     "tests.test_prefix_warmup.PrefixWarmupTests",
     "tests.test_campaign_startup",
     "tests.test_delegate_job",
+    "tests.test_delegate_trial_evidence",
     "tests.test_memory_scope.MemoryScopeTests",
 )
 

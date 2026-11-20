@@ -9,6 +9,7 @@ import os
 import re
 import signal
 import subprocess
+import tempfile
 import time
 import uuid
 from pathlib import Path
@@ -19,6 +20,7 @@ import with_speech_released as voice
 from control import defer_launch_signals
 from delegate_artifacts import encoded, export_candidate
 from delegate_package import STORE, TASK, package_path, register, sha, verify_package
+from delegate_trial_evidence import TRIAL_PATH, trial_evidence
 from server_endpoint import EndpointOwnershipError
 from server_endpoint import process_identity as endpoint_process_identity
 
@@ -405,8 +407,25 @@ def closure(run):
     }
 
 
+def result_envelope(job, runs):
+    """Read the persisted result, projecting older receipts without rewriting them."""
+    path = job / "result.json"
+    if not path.exists():
+        return None
+    envelope = read(path)
+    if "trial_evidence" not in envelope:
+        try:
+            evidence = read(job / "closure.json")
+        except (OSError, ValueError, RecursionError):
+            evidence = {}
+        envelope["trial_evidence"] = trial_evidence(
+            runs / ("delegate-" + job.name), evidence
+        )
+    return envelope
+
+
 def collect(job, package, run):
-    trial = run / "experiment" / ("trial-00-" + TASK)
+    trial = run / TRIAL_PATH
     summary_path = trial / "summary.json"
     if not summary_path.exists():
         return {
@@ -423,36 +442,40 @@ def collect(job, package, run):
     ):
         raise ValueError("Candidate workspace does not belong to job")
     brief = (package / "runtime/tasks" / TASK / "public/task.md").read_bytes()
-    artifact = export_candidate(
-        package / "source", workspace, job / "artifact", brief=brief
-    )
-    verification = summary.get("verification", {})
-    if (
-        verification.get("artifact_sha256")
-        != hashlib.sha256(encoded(artifact)).hexdigest()
-    ):
-        raise ValueError("Check evidence is missing or describes a different artifact")
-    return {
-        "disposition": summary.get("agent_outcome", {}).get(
-            "exit_status", "no_submission"
-        ),
-        "trial": str(trial),
-        "summary_sha256": sha(summary_path),
-        "artifact": {
-            "manifest": str(job / "artifact/artifact.json"),
-            "manifest_sha256": sha(job / "artifact/artifact.json"),
-            "changed_files": len(artifact["changes"]),
-            "diff": str(job / "artifact/changes.diff"),
-            "diff_sha256": artifact["diff_sha256"],
-        },
-        "acceptance": "pending",
-        "applied": False,
-        "checks_passed": summary.get("independent_checks_passed"),
-        "clean_agent_completion": summary.get("clean_agent_completion"),
-        "within_task_budget": summary.get("within_budget"),
-        "worker_task_seconds": summary.get("task_wall_seconds"),
-        "qualification": "Model completion and check outcomes require independent outer review",
-    }
+    destination = job / "artifact"
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(destination)
+    with tempfile.TemporaryDirectory(dir=job) as pending:
+        staged = Path(pending) / "artifact"
+        artifact = export_candidate(package / "source", workspace, staged, brief=brief)
+        verification = summary.get("verification")
+        if not isinstance(verification, dict) or verification.get(
+            "artifact_sha256"
+        ) != hashlib.sha256(encoded(artifact)).hexdigest():
+            raise ValueError("Check evidence is missing or describes a different artifact")
+        result = {
+            "disposition": summary.get("agent_outcome", {}).get(
+                "exit_status", "no_submission"
+            ),
+            "trial": str(trial),
+            "summary_sha256": sha(summary_path),
+            "artifact": {
+                "manifest": str(job / "artifact/artifact.json"),
+                "manifest_sha256": sha(staged / "artifact.json"),
+                "changed_files": len(artifact["changes"]),
+                "diff": str(job / "artifact/changes.diff"),
+                "diff_sha256": artifact["diff_sha256"],
+            },
+            "acceptance": "pending",
+            "applied": False,
+            "checks_passed": summary.get("independent_checks_passed"),
+            "clean_agent_completion": summary.get("clean_agent_completion"),
+            "within_task_budget": summary.get("within_budget"),
+            "worker_task_seconds": summary.get("task_wall_seconds"),
+            "qualification": "Model completion and check outcomes require independent outer review",
+        }
+        staged.rename(destination)
+    return result
 
 
 def execute_owned(
@@ -522,6 +545,9 @@ def execute_owned(
                     job / "result.json",
                     {
                         "result": result,
+                        "trial_evidence": trial_evidence(
+                            RUNS / ("delegate-" + job.name), evidence
+                        ),
                         "error": error,
                         "acceptance": "pending",
                         "applied": False,
@@ -625,6 +651,10 @@ def recover(identifier, store=STORE):
             archive = job / "pre-recovery-result.json"
             if not archive.exists():
                 atomic(archive, prior)
+        if "trial_evidence" not in prior:
+            prior["trial_evidence"] = trial_evidence(
+                RUNS / ("delegate-" + identifier), evidence
+            )
         atomic(
             job / "result.json",
             {
@@ -679,11 +709,11 @@ def main():
         result = worker(args.value)
     else:
         record = status(args.value)
-        result_path = job_path(args.value) / "result.json"
+        envelope = result_envelope(job_path(args.value), RUNS)
         result = {
             "status": record,
-            "result": read(result_path) if result_path.exists() else None,
-            "result_provisional": result_path.exists()
+            "result": envelope,
+            "result_provisional": envelope is not None
             and record["state"] not in TERMINAL,
         }
     print(json.dumps(result, ensure_ascii=True))

@@ -2,6 +2,7 @@
 
 import contextlib
 import hashlib
+import io
 import json
 import os
 import signal
@@ -14,6 +15,7 @@ from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import delegate_job as jobs
+import observe_jobs
 import with_ollama_released as lifecycle
 from delegate_artifacts import create_snapshot, encoded, export_candidate
 
@@ -37,14 +39,14 @@ class DelegateJobTests(unittest.TestCase):
             },
         )
 
-    def execute(self, code="pass", timeout=3, close=None):
+    def execute(self, code="pass", timeout=3, close=None, collect=None):
         return jobs.execute_owned(
             self.job,
             [sys.executable, "-I", "-S", "-c", code],
             timeout,
             None,
             close or (lambda: {"verified": True}),
-            lambda: {"acceptance": "pending"},
+            collect or (lambda: {"acceptance": "pending"}),
             shutdown_seconds=1,
         )
 
@@ -125,6 +127,9 @@ class DelegateJobTests(unittest.TestCase):
         self.assertEqual(result["state"], "cancelled")
         self.assertFalse((self.job / "launch-intent.json").exists())
         close.assert_not_called()
+        envelope = self.read_cli_result()["result"]
+        self.assertIsNone(envelope["result"])
+        self.assertIs(envelope["trial_evidence"]["model_request_recorded"], False)
 
     def test_uncertain_cleanup_latches_and_blocks_new_admission(self):
         close = Mock(side_effect=RuntimeError("missing receipt"))
@@ -209,6 +214,28 @@ class DelegateJobTests(unittest.TestCase):
             jobs.read(self.job / "pre-recovery-result.json")["execution_state"],
             "completed",
         )
+
+    def test_recovery_persists_request_evidence_before_trace_is_removed(self):
+        run = self.root / ("delegate-" + self.identifier)
+        trial = run / jobs.TRIAL_PATH
+        trial.mkdir(parents=True)
+        request = trial / "request-001.request.json"
+        jobs.atomic(request, {"messages": []})
+        jobs.atomic(self.job / "launch-intent.json", {})
+        jobs.update(self.job, "running", run=str(run))
+        with (
+            patch.object(jobs, "RUNS", self.root),
+            patch.object(jobs, "closure", return_value={"verified": True}),
+            patch.object(
+                lifecycle, "gpu_experiment_lock", return_value=contextlib.nullcontext()
+            ),
+        ):
+            jobs.recover(self.identifier, self.root)
+        request.unlink()
+        envelope = self.read_cli_result()["result"]
+        self.assertIs(envelope["trial_evidence"]["model_request_recorded"], True)
+        self.assertIsNone(envelope["trial_evidence"]["clean_agent_completion"])
+        self.assertEqual(envelope["execution_state"], "failed")
 
     def test_shared_gate_blocks_experiments_after_os_lock_is_free(self):
         original = lifecycle.require_delegation_closed
@@ -307,7 +334,7 @@ class DelegateJobTests(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             jobs.closure(run)
 
-    def test_check_evidence_must_match_exported_artifact(self):
+    def collection_fixture(self):
         package = self.root / "package"
         package.mkdir()
         source = self.root / "source"
@@ -317,7 +344,7 @@ class DelegateJobTests(unittest.TestCase):
         public = package / "runtime/tasks/delegated-task/public"
         public.mkdir(parents=True)
         (public / "task.md").write_text("Improve guide")
-        run = self.root / "run"
+        run = self.root / ("delegate-" + self.identifier)
         trial = run / "experiment/trial-00-delegated-task"
         workspace = trial / "workspaces/final"
         workspace.mkdir(parents=True)
@@ -327,12 +354,18 @@ class DelegateJobTests(unittest.TestCase):
             package / "source", workspace, self.root / "sealed", brief=b"Improve guide"
         )
         summary = {
+            "clean_agent_completion": True,
             "final_workspace": str(workspace),
             "verification": {
                 "artifact_sha256": hashlib.sha256(encoded(artifact)).hexdigest()
             },
         }
         jobs.atomic(trial / "summary.json", summary)
+        jobs.atomic(trial / "request-001.request.json", {"messages": []})
+        return package, run, workspace
+
+    def test_check_evidence_must_match_exported_artifact(self):
+        package, run, workspace = self.collection_fixture()
         result = jobs.collect(self.job, package, run)
         self.assertEqual(result["artifact"]["changed_files"], 1)
         self.assertNotIn("changes", result["artifact"])
@@ -342,6 +375,97 @@ class DelegateJobTests(unittest.TestCase):
         (workspace / "guide.md").write_text("unverified replacement")
         with self.assertRaisesRegex(ValueError, "different artifact"):
             jobs.collect(otherjob, package, run)
+        self.assertFalse((otherjob / "artifact").exists())
+
+    def read_cli_result(self):
+        output = io.StringIO()
+        with (
+            patch.object(sys, "argv", ["delegate_job.py", "result", self.identifier]),
+            patch.object(jobs, "job_path", return_value=self.job),
+            patch.object(jobs, "RUNS", self.root),
+            contextlib.redirect_stdout(output),
+        ):
+            jobs.main()
+        return json.loads(output.getvalue())
+
+    def collect_terminal(self, refuse):
+        package, run, workspace = self.collection_fixture()
+        summary = run / jobs.TRIAL_PATH / "summary.json"
+        if refuse:
+            (workspace / "scratch.md").write_text("scratch probe")
+        with patch.object(jobs, "RUNS", self.root):
+            self.execute(
+                close=lambda: {
+                    "verified": True,
+                    "receipts": {str(summary): jobs.sha(summary)},
+                },
+                collect=lambda: jobs.collect(self.job, package, run),
+            )
+        envelope = self.read_cli_result()["result"]
+        self.assertEqual(envelope, jobs.read(self.job / "result.json"))
+        self.assertEqual(
+            envelope["trial_evidence"],
+            {
+                "trial": str(summary.parent),
+                "model_request_recorded": True,
+                "summary_sha256": jobs.sha(summary),
+                "clean_agent_completion": True,
+            },
+        )
+        self.assertTrue(envelope["cleanup_verified"])
+        return envelope
+
+    def test_refused_export_retains_execution_only(self):
+        envelope = self.collect_terminal(refuse=True)
+        self.assertEqual(envelope["execution_state"], "failed")
+        self.assertIn("unapproved paths", envelope["error"])
+        self.assertIsNone(envelope["result"])
+        self.assertFalse((self.job / "artifact").exists())
+
+    def test_successful_export_retains_both_bindings(self):
+        envelope = self.collect_terminal(refuse=False)
+        self.assertEqual(envelope["execution_state"], "completed")
+        result = envelope["result"]
+        self.assertEqual(
+            result["summary_sha256"], envelope["trial_evidence"]["summary_sha256"]
+        )
+        self.assertEqual(
+            result["artifact"]["manifest_sha256"],
+            jobs.sha(self.job / "artifact/artifact.json"),
+        )
+
+    def test_legacy_interrupted_request_read_via_cli_and_observatory(self):
+        jobs.update(self.job, "failed", label="interrupted")
+        run = self.root / ("delegate-" + self.identifier)
+        trial = run / jobs.TRIAL_PATH
+        trial.mkdir(parents=True)
+        jobs.atomic(trial / "request-001.request.json", {"messages": []})
+        jobs.atomic(
+            self.job / "closure.json",
+            {"verified": True, "missing_trial_summaries": [str(trial)]},
+        )
+        old = {
+            "execution_state": "failed",
+            "error": "Worker interrupted",
+            "cleanup_verified": True,
+        }
+        jobs.atomic(self.job / "result.json", old)
+        expected = {
+            "trial": str(trial),
+            "model_request_recorded": True,
+            "clean_agent_completion": None,
+            "summary_sha256": None,
+        }
+        self.assertEqual(
+            self.read_cli_result()["result"], {**old, "trial_evidence": expected}
+        )
+        self.assertEqual(
+            observe_jobs.projection(run.name, self.root, self.root)["result"][
+                "trial_evidence"
+            ],
+            expected,
+        )
+        self.assertEqual(jobs.read(self.job / "result.json"), old)
 
     def test_direct_child_cleanup_failure_cannot_be_overruled_by_receipts(self):
         with patch.object(

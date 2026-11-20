@@ -94,6 +94,28 @@ To rehearse the navigation case from this repository with Python 3.13 and Git:
 python3 -S -m unittest tests.test_observe.ObservatoryTests.test_archived_navigation_diff_applies_to_the_same_bytes
 ```
 
+## Reading a terminal job result
+
+Run `python scripts/delegate_job.py result JOB_ID` on the workstation. The
+top-level `result` is the terminal envelope. Its `result` member contains the
+collection outcome when available. Read the sibling `trial_evidence` member
+to count execution even when export refused a submission.
+
+| Field in `trial_evidence` | What it establishes |
+| --- | --- |
+| `model_request_recorded` | `true` identifies a recorded first model request in the outer trace. The backend may never have returned a response. `false` requires verified closure before launch. `null` means unknown. |
+| `trial` | The outer trial directory containing an observed request or a verified terminal summary. |
+| `summary_sha256` | The digest of the terminal summary whose bytes matched the job’s closure receipt. |
+| `clean_agent_completion` | The boolean reported by that matched summary, or `null` if unavailable. |
+
+A Worker can finish cleanly and leave a file outside its allowed write set.
+In that case the job can report a clean handoff, failed collection and verified
+cleanup together. Count the attempt and preserve the collection error. A
+passing check or an applicable artifact needs its own bound evidence.
+For older receipts, the result command and Observatory reconstruct available
+facts from retained outer records when read. New receipts persist the facts at
+closure, so they remain readable even if the raw trace moves later.
+
 ## Three distinct activities
 
 - **Validation/export** (`create_snapshot`, `export_candidate`): structural

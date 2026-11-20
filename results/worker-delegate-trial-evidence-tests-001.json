@@ -1,0 +1,38 @@
+{
+  "job_id": "933d97cef0034461926c6b6175a473f3",
+  "package_id": "e3a30c64b85bcf5c5c7816b5f9ef23c2700e867db63c99d3a97442122447bb0e",
+  "snapshot_id": "35c741c1dd183799f3c478e3081009d010312be491b1e92839c2954f946d3503",
+  "recipe": "apprentice-qwen-32k-v1",
+  "seed": 19620,
+  "authored_files": [
+    "tests/test_delegate_trial_evidence.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 93.67539410386235,
+  "dispatch_seconds": 118.78236994193867,
+  "review": {
+    "job_id": "933d97cef0034461926c6b6175a473f3",
+    "package_id": "e3a30c64b85bcf5c5c7816b5f9ef23c2700e867db63c99d3a97442122447bb0e",
+    "reviewer": "Outer Maintainer",
+    "decision": "accepted",
+    "notes": "Reviewed six standard-library tests and the clean handoff. The cases use real files, independently compute the digest and distinguish missing from known-false evidence. The test fixture name shadows unittest.TestCase.run and its key-set assertion duplicates dict equality; these are outer cleanup items.",
+    "verification": "The isolated evaluator passed all six tests on the frozen helper, then saw an assertion failure on each independent negative control (unchecked digest, missing request reported false).",
+    "artifact": "artifact",
+    "artifact_sha256": "ad07baa25dd0ccb04615fd43bae073c837ab1650e9cadb49542ebb0759f288ee"
+  },
+  "application_sha256": "4069e37080ea2e2ce3aa14f96edf412d768fefcee943dd53e7585d05c8870012",
+  "original_test_sha256": "e0691ee3f1d765a7eb82e0a32e133005538c6732f1ef06c83e527ea5593793e8",
+  "outer_repairs": [
+    "Renamed the fixture directory to avoid shadowing unittest.TestCase.run and removed a duplicate key-set assertion."
+  ],
+  "integration": "Applied and verified on the frozen base, then added the new, digest-matched test file to the checkout. The Maintainer wrote the receipt implementation and end-to-end tests.",
+  "cleanup_verified": true,
+  "historical_readback": {
+    "null_results": 6,
+    "recorded_first_request": 6,
+    "bound_terminal_summary": 4,
+    "clean_handoffs_with_bound_summary": 1,
+    "unknown_handoff_without_summary": 2,
+    "method": "Read the six historical null or absent collection outcomes through the ordinary result CLI. Their original result files remained byte-identical."
+  }
+}

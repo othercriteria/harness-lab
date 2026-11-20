@@ -5,7 +5,7 @@ import json
 import re
 
 from delegate_artifacts import read_file
-from delegate_job import STORE, TERMINAL, job_path, read, status
+from delegate_job import RUNS, STORE, TERMINAL, job_path, read, result_envelope, status
 
 
 def review_label(run_name, store=STORE):
@@ -55,7 +55,7 @@ def review_label(run_name, store=STORE):
         return "outer review needs reconciliation"
 
 
-def projection(run_name, store=STORE):
+def projection(run_name, store=STORE, runs=RUNS):
     match = re.fullmatch(r"delegate-([a-f0-9]{32})", run_name)
     if not match:
         return None
@@ -71,7 +71,7 @@ def projection(run_name, store=STORE):
         return read(path) if path.exists() else None
 
     events = sorted((root / "events").glob("*.json"))
-    result = optional("result.json")
+    result = result_envelope(root, runs)
     record = status(identifier, store)
     review = optional("review.json")
     applied = optional("application.json")

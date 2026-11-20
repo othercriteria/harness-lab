@@ -526,7 +526,7 @@ class Evidence:
         }
         if details:
             result["delegation"] = (
-                job_projection(name, self.root.parent / "delegation")
+                job_projection(name, self.root.parent / "delegation", self.root)
                 if delegated
                 else None
             )
