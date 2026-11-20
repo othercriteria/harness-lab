@@ -4,6 +4,7 @@ import copy
 import hashlib
 import json
 import re
+import stat
 
 from evidence_contract import bounded_text, require_fields
 
@@ -18,6 +19,28 @@ EXCERPT_SUFFIX_CHARS = 384
 EXCERPT_THRESHOLD_CHARS = EXCERPT_PREFIX_CHARS + EXCERPT_SUFFIX_CHARS
 COMMAND_DISPLAY_CHARS = 256
 RENDER_JSON_UTF8_BYTES = 4096
+
+
+def read_archived_message(directory, record, *, max_bytes=128 * 1024):
+    """Recover the exact UTF-8 message whose bytes were hashed at tool return."""
+    identifier = record["id"]
+    if not isinstance(identifier, str) or not re.fullmatch(r"o[0-9]{4}", identifier):
+        raise ValueError("Invalid observation ID")
+    filename = record["message_file"]
+    if filename not in (identifier + ".json", identifier + ".message.txt"):
+        raise ValueError("Invalid observation message filename")
+    path = directory / filename
+    info = path.lstat()
+    if not stat.S_ISREG(info.st_mode) or info.st_size > max_bytes:
+        raise ValueError("Invalid observation message file")
+    with path.open("rb") as stream:
+        raw = stream.read(max_bytes + 1)
+    if (
+        len(raw) > max_bytes
+        or hashlib.sha256(raw).hexdigest() != record["message_sha256"]
+    ):
+        raise ValueError("Historical observation integrity mismatch")
+    return raw.decode("utf-8")
 
 
 def validate_evidence(evidence, history):

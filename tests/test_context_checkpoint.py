@@ -588,7 +588,7 @@ class CheckpointTests(unittest.TestCase):
     def test_read_file_checkpoint_boundary_and_real_context_reset_force_contents(self):
         self.env.workspace = self.root / "workspace"
         self.env.workspace.mkdir()
-        (self.env.workspace / "module.py").write_text("value = 7\n" * 40)
+        (self.env.workspace / "module.py").write_bytes(b"value = 7\r\n# note\r" * 40)
         self.env.read_file = self.env.deduplicate_file_reads = True
         self.limits.update(
             read_file=True, deduplicate_file_reads=True, shared_evidence=True

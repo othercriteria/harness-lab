@@ -80,8 +80,8 @@ class ObservationHistory:
             self.visible_messages[identifier] = content
         message_suffix = "message.txt" if plain_text else "json"
         for suffix, value in ((message_suffix, content), ("txt", text)):
-            with (self.root / f"{identifier}.{suffix}").open("x") as stream:
-                stream.write(value)
+            with (self.root / f"{identifier}.{suffix}").open("xb") as stream:
+                stream.write(value.encode("utf-8"))
         record = {
             "id": identifier,
             "command": command,

@@ -1,11 +1,11 @@
 """Read-only audit of read_file receipts, snapshot identity and duplicate claims."""
 
-import hashlib
 import json
 import re
 
+from evidence import read_archived_message
+from read_file import action, verify_receipt
 from read_file import read as read_file
-from read_file import validate, verify_receipt
 
 
 def load(path):
@@ -49,10 +49,12 @@ def verify_reads(root, limits):
             if c["id"] == request["tool_call_id"]
         ]
         require(
-            len(matches) == 1 and matches[0]["function"]["name"] == "read_file",
+            len(matches) == 1
+            and matches[0].get("type") == "function"
+            and matches[0]["function"]["name"] == "read_file",
             "Read call association mismatch",
         )
-        arguments = validate(json.loads(matches[0]["function"]["arguments"]))
+        arguments = action(matches[0])["arguments"]
         require(arguments == request["arguments"], "Read arguments changed")
         expected = read_file(root / "workspaces" / generation, arguments)
         visible = dict(result["visible"])
@@ -73,21 +75,7 @@ def verify_reads(root, limits):
             records = load(root / "observations/manifest.json")["observations"]
             original = next((r for r in records if r["id"] == identifier), None)
             require(original is not None, "Missing original read observation")
-            require(
-                original["message_file"]
-                in (identifier + ".json", identifier + ".message.txt"),
-                "Invalid observation filename",
-            )
-            message_path = root / "observations" / original["message_file"]
-            require(
-                not message_path.is_symlink() and message_path.stat().st_size <= 131072,
-                "Invalid observation file",
-            )
-            text = message_path.read_text()
-            require(
-                hashlib.sha256(text.encode()).hexdigest() == original["message_sha256"],
-                "Changed original read observation",
-            )
+            text = read_archived_message(root / "observations", original)
             require(
                 any(
                     m.get("role") == "tool" and m.get("content") == text

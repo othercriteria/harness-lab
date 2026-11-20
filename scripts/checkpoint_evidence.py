@@ -23,6 +23,7 @@ from context_checkpoint import (
     request,
     tool,
 )
+from evidence import read_archived_message
 from mini_bootstrap import FormatError
 
 
@@ -249,21 +250,10 @@ def _verify_checkpoint(
             "Observation manifest changed",
         )
         records = read(manifest_path)["observations"]
-        visible = {}
-        for item in records:
-            identifier = item["id"]
-            require(re.fullmatch(r"o[0-9]{4}", identifier), "Invalid observation ID")
-            require(
-                item["message_file"]
-                in (identifier + ".json", identifier + ".message.txt"),
-                "Invalid observation message filename",
-            )
-            path = root / "observations" / item["message_file"]
-            require(
-                path.stat().st_size <= 131072 and not path.is_symlink(),
-                "Invalid observation message file",
-            )
-            visible[identifier] = path.read_text()
+        visible = {
+            item["id"]: read_archived_message(root / "observations", item)
+            for item in records
+        }
         history = SimpleNamespace(
             expose_ids=True,
             records={r["id"]: r for r in records},

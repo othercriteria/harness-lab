@@ -20,6 +20,7 @@ CASES = (
     "tests.test_progress_reports",
     "tests.test_initial_repository",
     "tests.test_read_file",
+    "tests.test_read_file_evidence",
     "tests.test_file_mutations",
     "tests.test_read_observations",
     "tests.test_check_records",

@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 
 from check_fixtures import manifest
+from evidence import read_archived_message
 from mini_bootstrap import DefaultAgent
 from sandbox import write_json
 from scoped_context import ledger
@@ -132,9 +133,9 @@ def seed_attempt(case, model, env, arm):
                 directory / "observations" / name, model.history.root / name
             )
         model.history.records[record["id"]] = copy.deepcopy(record)
-        model.history.visible_messages[record["id"]] = (
-            model.history.root / record["message_file"]
-        ).read_text()
+        model.history.visible_messages[record["id"]] = read_archived_message(
+            model.history.root, record, max_bytes=4 * 1024 * 1024
+        )
     model.history.save_manifest()
     if env.checks is None:
         raise ValueError("Continuation requires check records")
