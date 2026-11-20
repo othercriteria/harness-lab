@@ -50,15 +50,21 @@ From the authenticated Maintainer shell, select the issues needed for the assign
 python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/github-issues.json" --issue 34 --issue 35
 ```
 
-Inspect the text for suitability for the assignment. Select `github-issues.json`
-in `input_files` when registering from that source tree, and leave it out of
-`allowed_write_paths`. Worker can read it with its ordinary file tools. The
-snapshot records repository, retrieval time, issue numbers, state, titles,
-bodies, label names, URLs and update times. An open issue with the `parked` label records a conditional idea. Treat the issue text as source material. The
-Maintainer owns the assignment and any later decision to act on suggestions.
-The export covers open and closed issues and excludes comments and pull
-requests. When a decision depends on a comment, include the relevant excerpt
-and its permalink in the selected packet. Omit the `--issue` arguments for a full export on a tracker with at most 50 issues. Duplicate issue numbers count once.
+For a survey, select issues by state or label. This example takes the first ten matching issues in GitHub's list order. The packet records the filters and whether additional issues matched.
+
+```sh
+python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/open-candidates.json" --state open --label worker-candidate --limit 10
+```
+
+To include a decision from a discussion, select its parent issue and pass the comment permalink or numeric comment ID. Repeat `--comment` to select up to 50 distinct comments. Each selected comment appears underneath its issue with its original link, author login when available, text and update time.
+
+```sh
+python3 scripts/export_issue_context.py othercriteria/harness-lab "$packet/routing.json" --issue 21 --comment 'https://github.com/othercriteria/harness-lab/issues/21#issuecomment-7002171023'
+```
+
+Without selectors the export covers open and closed issues. Lists are complete unless you explicitly pass `--limit` (1–50). A larger match set without an explicit limit, a missing or out-of-selection comment, and a packet exceeding 96 KiB each produce an error before the output is created. Explicit issue numbers form a separate selection mode. Repeated issue and comment IDs count once. Pull requests and unselected comments are excluded.
+
+Inspect the frozen JSON and select it in `input_files` when registering from that source tree. Leave it out of `allowed_write_paths`. Worker reads it with its ordinary file tools. An open issue with the `parked` label records a conditional idea. Treat issue and comment text as source material. The Maintainer owns the assignment and any decision to act on suggestions.
 
 For jobs that produce
 applicable edits, the ordinary base check includes this input, so keep its
