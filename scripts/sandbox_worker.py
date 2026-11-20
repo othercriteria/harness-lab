@@ -33,41 +33,65 @@ class EditError(ValueError):
         self.details = {"code": code, "message": message, **details}
 
 
-def validate_write_arguments(arguments):
-    if not isinstance(arguments, dict) or set(arguments) != {"path", "content"}:
-        raise EditError("ARGUMENTS", "Expected exactly path and content")
+def _text_sizes(arguments, fields):
+    if not isinstance(arguments, dict) or arguments.keys() != set(fields):
+        raise EditError("ARGUMENTS", "Expected exactly " + ", ".join(fields))
     if any(not isinstance(value, str) for value in arguments.values()):
-        raise EditError("ARGUMENTS", "Write fields must be strings")
+        raise EditError("ARGUMENTS", "File tool fields must be strings")
     try:
-        path_size = len(arguments["path"].encode("utf-8"))
-        content_size = len(arguments["content"].encode("utf-8"))
+        sizes = {key: len(value.encode("utf-8")) for key, value in arguments.items()}
     except UnicodeError as error:
-        raise EditError("NOT_UTF8", "Write fields must be valid UTF-8") from error
-    if not 1 <= path_size <= 1024 or "\x00" in arguments["path"]:
+        raise EditError("NOT_UTF8", "File tool fields must be valid UTF-8") from error
+    if not 1 <= sizes["path"] <= 1024 or "\x00" in arguments["path"]:
         raise EditError(
-            "PATH_NOT_ALLOWED", "Path must contain1–1024 UTF-8 bytes and no NUL"
+            "PATH_NOT_ALLOWED", "Path must contain 1–1024 UTF-8 bytes and no NUL"
         )
-    if content_size > WRITE_TEXT_BYTES:
-        raise EditError("WRITE_TOO_LARGE", "Content exceeds32768 UTF-8 bytes")
+    return sizes
+
+
+def validate_write_arguments(arguments):
+    sizes = _text_sizes(arguments, ("path", "content"))
+    if sizes["content"] > WRITE_TEXT_BYTES:
+        raise EditError(
+            "WRITE_TOO_LARGE", f"Content exceeds {WRITE_TEXT_BYTES} UTF-8 bytes"
+        )
     return arguments
 
 
-def write_file(arguments):
-    """Atomic bounded UTF-8 write inside the isolated worker; no shell parsing."""
-    validate_write_arguments(arguments)
-    root = WORKSPACE.resolve()
-    candidate = Path(arguments["path"])
-    path = Path(
-        os.path.abspath(candidate if candidate.is_absolute() else root / candidate)
-    )
-    if not path.is_relative_to(root) or path == root:
+def validate_edit_arguments(arguments):
+    sizes = _text_sizes(arguments, ("path", "old_text", "new_text"))
+    if not sizes["old_text"]:
+        raise EditError("EMPTY_OLD_TEXT", "old_text must be nonempty")
+    combined = sizes["old_text"] + sizes["new_text"]
+    if combined > EDIT_TEXT_BYTES:
+        raise EditError(
+            "EDIT_TOO_LARGE",
+            "Combined edit text exceeds its byte limit",
+            actual_bytes=combined,
+            maximum_bytes=EDIT_TEXT_BYTES,
+        )
+    return arguments
+
+
+def _mutation_path(root, name):
+    # Path() drops a trailing slash or dot, and abspath() also cancels "..".
+    # Check directory intent and walk each named parent before resolving "..".
+    path = root / name
+    if (
+        name.rsplit("/", 1)[-1] in ("", ".", "..")
+        or not path.is_relative_to(root)
+        or path == root
+    ):
         raise EditError(
             "PATH_NOT_ALLOWED", "Path must identify a file inside /workspace"
         )
-    temporary = None
-    try:
-        current = root
-        for part in path.relative_to(root).parts[:-1]:
+    current = root
+    for part in path.relative_to(root).parts[:-1]:
+        if part == "..":
+            if current == root:
+                raise EditError("PATH_NOT_ALLOWED", "Path must stay inside /workspace")
+            current = current.parent
+        else:
             current /= part
             try:
                 mode = current.lstat().st_mode
@@ -75,131 +99,92 @@ def write_file(arguments):
                 raise EditError(
                     "PARENT_NOT_FOUND",
                     "Parent directory does not exist. Create parent directories "
-                    "with bash mkdir, then retry write_file; file contents were not saved.",
+                    "with bash mkdir, then retry; file contents were not saved.",
                 ) from error
-            if stat.S_ISLNK(mode) or not stat.S_ISDIR(mode):
+            if not stat.S_ISDIR(mode):
                 raise EditError(
                     "PATH_NOT_ALLOWED",
                     "Parents must be existing non-symlink directories",
                 )
-        try:
-            info = path.lstat()
-        except FileNotFoundError:
-            info = None
-        data, mode = b"", 0o644
-        if info is not None:
-            if not stat.S_ISREG(info.st_mode):
-                raise EditError(
-                    "NOT_REGULAR_FILE", "Target must be a regular non-symlink file"
-                )
-            with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), "rb") as stream:
-                mode = stat.S_IMODE(os.fstat(stream.fileno()).st_mode) & 0o777
-                data = stream.read(EDIT_FILE_BYTES + 1)
-            if len(data) > EDIT_FILE_BYTES:
-                raise EditError("FILE_TOO_LARGE", "Existing file exceeds262144 bytes")
-            try:
-                data.decode("utf-8")
-            except UnicodeError as error:
-                raise EditError(
-                    "NOT_UTF8", "Existing file is not strict UTF-8"
-                ) from error
+    return current / path.name
+
+
+def _read_mutation_target(path, *, allow_create=False):
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        if allow_create:
+            return None, 0o644
+        raise
+    if stat.S_ISLNK(info.st_mode) and not allow_create:
+        raise EditError("PATH_NOT_ALLOWED", "Symlink components are not editable")
+    if not stat.S_ISREG(info.st_mode):
+        raise EditError("NOT_REGULAR_FILE", "Target must be a regular non-symlink file")
+    with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), "rb") as stream:
+        mode = stat.S_IMODE(os.fstat(stream.fileno()).st_mode) & 0o777
+        data = stream.read(EDIT_FILE_BYTES + 1)
+    if len(data) > EDIT_FILE_BYTES:
+        raise EditError(
+            "FILE_TOO_LARGE",
+            "Existing file exceeds its byte limit",
+            maximum_bytes=EDIT_FILE_BYTES,
+        )
+    try:
+        data.decode("utf-8")  # Validate without translating newline or BOM bytes.
+    except UnicodeError as error:
+        raise EditError("NOT_UTF8", "Existing file is not strict UTF-8") from error
+    return data, mode
+
+
+def _replace_bytes(path, data, mode):
+    fd, temporary = tempfile.mkstemp(prefix=".harness-file-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fchmod(stream.fileno(), mode)
+        os.replace(temporary, path)
+    except BaseException:
+        Path(temporary).unlink(missing_ok=True)
+        raise
+
+
+def write_file(arguments):
+    """Atomic bounded UTF-8 write inside the isolated worker; no shell parsing."""
+    validate_write_arguments(arguments)
+    root = WORKSPACE.resolve()
+    try:
+        path = _mutation_path(root, arguments["path"])
+        original, mode = _read_mutation_target(path, allow_create=True)
         content = arguments["content"].encode("utf-8")
-        changed = info is None or data != content
+        changed = original != content
         if changed:
-            fd, temporary = tempfile.mkstemp(prefix=".harness-write-", dir=path.parent)
-            with os.fdopen(fd, "wb") as stream:
-                stream.write(content)
-                stream.flush()
-                os.fchmod(stream.fileno(), mode)
-            os.replace(temporary, path)
-            temporary = None
+            _replace_bytes(path, content, mode)
         return {
             "ok": True,
             "changed": changed,
-            "created": info is None,
+            "created": original is None,
             "path": str(path.relative_to(root)),
-            "before_bytes": len(data),
+            "before_bytes": len(original) if original is not None else 0,
             "after_bytes": len(content),
         }
     except OSError as error:
         raise EditError("IO_ERROR", str(error)[:300]) from error
-    finally:
-        if temporary is not None:
-            Path(temporary).unlink(missing_ok=True)
-
-
-def validate_edit_arguments(arguments):
-    if not isinstance(arguments, dict) or set(arguments) != {
-        "path",
-        "old_text",
-        "new_text",
-    }:
-        raise EditError("ARGUMENTS", "Expected exactly path, old_text and new_text")
-    if any(not isinstance(value, str) for value in arguments.values()):
-        raise EditError("ARGUMENTS", "Edit fields must be strings")
-    path, old, new = (arguments[k] for k in ("path", "old_text", "new_text"))
-    try:
-        sizes = [len(value.encode("utf-8")) for value in (path, old, new)]
-    except UnicodeError as error:
-        raise EditError("NOT_UTF8", "Edit fields must be valid UTF-8") from error
-    if not path or "\x00" in path or sizes[0] > 1024:
-        raise EditError(
-            "PATH_NOT_ALLOWED", "Path must contain1–1024 UTF-8 bytes and no NUL"
-        )
-    if not old:
-        raise EditError("EMPTY_OLD_TEXT", "old_text must be nonempty")
-    if sum(sizes[1:]) > EDIT_TEXT_BYTES:
-        raise EditError(
-            "EDIT_TOO_LARGE",
-            "Combined edit text exceeds its byte limit",
-            actual_bytes=sum(sizes[1:]),
-            maximum_bytes=EDIT_TEXT_BYTES,
-        )
-    return arguments
 
 
 def edit_file(arguments):
-    """Trusted literal edit; called only inside the existing isolated worker."""
+    """Replace one exact match in an existing workspace file, counting overlaps."""
     validate_edit_arguments(arguments)
     root = WORKSPACE.resolve()
-    candidate = Path(arguments["path"])
-    path = Path(
-        os.path.abspath(candidate if candidate.is_absolute() else root / candidate)
-    )
-    if not path.is_relative_to(root) or path == root:
-        raise EditError(
-            "PATH_NOT_ALLOWED", "Path must identify an existing file inside /workspace"
-        )
-    temporary = None
     try:
-        current = root
-        for part in path.relative_to(root).parts:
-            current /= part
-            if stat.S_ISLNK(current.lstat().st_mode):
-                raise EditError(
-                    "PATH_NOT_ALLOWED", "Symlink components are not editable"
-                )
-        if not stat.S_ISREG(path.lstat().st_mode):
-            raise EditError("NOT_REGULAR_FILE", "Target must be a regular file")
-        with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), "rb") as stream:
-            original_mode = stat.S_IMODE(os.fstat(stream.fileno()).st_mode) & 0o777
-            data = stream.read(EDIT_FILE_BYTES + 1)
-        if len(data) > EDIT_FILE_BYTES:
-            raise EditError(
-                "FILE_TOO_LARGE",
-                "Target exceeds edit file limit",
-                maximum_bytes=EDIT_FILE_BYTES,
-            )
-        try:
-            data.decode("utf-8")  # Validate only: never translate newline/BOM bytes.
-        except UnicodeError as error:
-            raise EditError("NOT_UTF8", "Target is not strict UTF-8") from error
+        path = _mutation_path(root, arguments["path"])
+        data, mode = _read_mutation_target(path)
         old, new = (arguments[k].encode("utf-8") for k in ("old_text", "new_text"))
         count, start, found = 0, 0, -1
         while (offset := data.find(old, start)) != -1:
             count += 1
             found = offset
-            start = offset + 1  # Count overlapping matches too.
+            start = offset + 1
         if count != 1:
             raise EditError(
                 "MATCH_COUNT",
@@ -217,13 +202,7 @@ def edit_file(arguments):
             )
         changed = replacement != data
         if changed:
-            fd, temporary = tempfile.mkstemp(prefix=".harness-edit-", dir=path.parent)
-            with os.fdopen(fd, "wb") as stream:
-                stream.write(replacement)
-                stream.flush()
-                os.fchmod(stream.fileno(), original_mode)
-            os.replace(temporary, path)
-            temporary = None
+            _replace_bytes(path, replacement, mode)
         return {
             "ok": True,
             "changed": changed,
@@ -234,9 +213,6 @@ def edit_file(arguments):
         }
     except OSError as error:
         raise EditError("IO_ERROR", str(error)[:300]) from error
-    finally:
-        if temporary is not None:
-            Path(temporary).unlink(missing_ok=True)
 
 
 class QuiescenceError(RuntimeError):

@@ -38,7 +38,7 @@ TOOL = {
 
 def parse(raw):
     if not isinstance(raw, str) or len(raw.encode("utf-8")) > 262144:
-        raise ValueError("Serialized write arguments exceed262144 UTF-8 bytes")
+        raise ValueError("Serialized write arguments exceed 262144 UTF-8 bytes")
     return validate_write_arguments(load_arguments(raw))
 
 

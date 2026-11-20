@@ -55,7 +55,7 @@ TOOL = {
 
 def parse(raw):
     if not isinstance(raw, str) or len(raw.encode("utf-8")) > 262144:
-        raise ValueError("Serialized edit arguments exceed262144 UTF-8 bytes")
+        raise ValueError("Serialized edit arguments exceed 262144 UTF-8 bytes")
     return validate_edit_arguments(load_arguments(raw))
 
 
