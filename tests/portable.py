@@ -34,6 +34,7 @@ CASES = (
     "tests.test_worker_residency",
     "tests.test_backtest_dispatch",
     "tests.test_memory_scope.MemoryScopeTests",
+    "tests.test_retired_protocol",
 )
 
 

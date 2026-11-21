@@ -9,7 +9,7 @@ PROJECT = Path(__file__).resolve().parents[1]
 RUNS_ROOT = Path("/bulk/dlk/local-harness/runs")
 
 
-REPLAY_COMMIT = "6847e2237b4e77a3ede64e79e889ebb4b7d85968"
+RETIRED_OPTIONS_SOURCE_COMMIT = "7ab9ff805a86d9587393a7c20ee436ace793563b"
 
 
 def retired_options(data):
@@ -25,11 +25,10 @@ def reject_retired_options(data):
     retired = retired_options(data)
     if retired:
         raise ValueError(
-            "Retired harness options: "
-            + ", ".join(retired)
-            + ". Use the exact frozen snapshot or Git "
-            + REPLAY_COMMIT
-            + " for historical replay; see docs/harness-option-survey.md."
+            f"Retired harness options: {', '.join(retired)}. "
+            f"Inspect the public source with `git show {RETIRED_OPTIONS_SOURCE_COMMIT}:scripts/protocol.py`. "
+            "See SNAPSHOT.md for the scope of the public history. "
+            "Exact replay requires the run's archived frozen runtime and inputs."
         )
 
 

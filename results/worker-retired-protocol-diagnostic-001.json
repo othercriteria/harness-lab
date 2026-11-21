@@ -1,0 +1,34 @@
+{
+  "issue": 59,
+  "job_id": "4394fea9681d4d49b0051cbf246a4cb4",
+  "package_id": "95415469d72e89a88fa5057985375b6edc34b2ae56ea11b1d4e510b6f80e525b",
+  "snapshot_id": "4d123d90934526e9dfdcc39208dd41a130f0b938d5c7b108fc21fa864886d5cd",
+  "recipe": "apprentice-qwen-32k-v1",
+  "model": "Qwen3.8-27B with RANA tensor precision layout",
+  "quantization": "Q4_K_M",
+  "target_sha256": "91c34c55de4defcc5891f08997b7d4543a171d7e2aa6ab752bff4eec27279ba6",
+  "clean_completion": true,
+  "worker_seconds": 116.39770910004154,
+  "dispatch_seconds": 142.93569241510704,
+  "original_checks_passed": true,
+  "review": {
+    "job_id": "4394fea9681d4d49b0051cbf246a4cb4",
+    "package_id": "95415469d72e89a88fa5057985375b6edc34b2ae56ea11b1d4e510b6f80e525b",
+    "artifact": "reviewed-artifact",
+    "artifact_sha256": "e0ed2e886d958349f5b8e202f4a7ed838d2ddab2019bb051e8fa4f8487781ad0",
+    "decision": "accepted_with_repairs",
+    "reviewer": "Harness Lab Maintainer",
+    "notes": "Worker identified the public revision, replaced the private survey guidance, added protocol tests and registered them in portable CI. The Maintainer made the git show command explicit, removed the redundant private revision from the message, and consolidated the tests around the loader and the authoritative commit map.",
+    "verification": "Original isolated checker and four original Worker tests passed. In a fresh public clone with the final edits, isolated offline checks loaded explicit false metadata, rejected active options and followed the printed Git command. The historical validator exists and imports handoff_phase, omitted from the projection. The three landed tests passed and detected the original diagnostic. Worker explicitly disclosed its limited checkout."
+  },
+  "original_artifact_sha256": "e8f28a7c6013d8845465638cab752a92a1a658918cf58c9b6ffda51b681e620d",
+  "landed_artifact_sha256": "e0ed2e886d958349f5b8e202f4a7ed838d2ddab2019bb051e8fa4f8487781ad0",
+  "review_sha256": "e20bea8215e83a10f19a938edd3c7bba70720ab565c935f18f36c10bb5f0a114",
+  "applied_paths": [
+    "scripts/protocol.py",
+    "tests/portable.py",
+    "tests/test_retired_protocol.py"
+  ],
+  "cleanup_verified": true,
+  "services_restored": true
+}
