@@ -14,7 +14,7 @@ python3 -S examples/replaying-worker-trace/replay.py
 
 ## Open the job in Observatory
 
-From the repository root, start the read-only server with Python 3.13 and open the loopback URL it prints. This works in a clean clone with the standard library. Use Ctrl-C to stop it.
+From the repository root, start the read-only server with Python 3.13 and open the loopback URL it prints. Example mode picks an available port so it can run alongside the live Observatory on port 8765. This works in a clean clone with the standard library. Use Ctrl-C to stop it.
 
 ```sh
 python3 -S scripts/observe.py --example

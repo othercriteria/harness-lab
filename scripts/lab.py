@@ -202,7 +202,7 @@ def main():
     results.add_argument("--report", type=Path)
     observer = sub.add_parser("observe", help="Serve the read-only loopback dashboard")
     observer.add_argument("--example", action="store_true", help="Open the bundled historical Worker excerpt")
-    observer.add_argument("--port", type=int, default=8765)
+    observer.add_argument("--port", type=int, help="Loopback port (live default: 8765; example: automatic)")
     registry = sub.add_parser(
         "registry", help="Inspect profiles, verify weights, or record timing evidence"
     )
@@ -225,8 +225,7 @@ def main():
             [
                 sys.executable,
                 str(PROJECT / "scripts/observe.py"),
-                "--port",
-                str(args.port),
+                *(["--port", str(args.port)] if args.port is not None else []),
                 *(["--example"] if args.example else []),
             ],
         )

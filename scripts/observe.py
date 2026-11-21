@@ -1,6 +1,7 @@
 """Read-only loopback observatory for outer-harness evidence. No execution APIs."""
 
 import argparse
+import errno
 import hashlib
 import json
 import re
@@ -1026,13 +1027,21 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--port", type=int, help="Loopback port (live default: 8765; example: automatic)")
     parser.add_argument(
         "--example", action="store_true", help="Open the bundled historical Worker excerpt"
     )
     args = parser.parse_args()
     Handler.evidence = Evidence(EXAMPLE_ROOT, archived_example=True) if args.example else Evidence()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    port = args.port if args.port is not None else (0 if args.example else 8765)
+    if not 0 <= port <= 65535:
+        parser.error("--port must be between 0 and 65535")
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    except OSError as error:
+        if error.errno == errno.EADDRINUSE:
+            parser.exit(1, f"Loopback port {port} is already in use. Use --port 0 for an available port.\n")
+        raise
     print(
         f"Local Harness Lab Observatory: http://127.0.0.1:{server.server_port}", flush=True
     )

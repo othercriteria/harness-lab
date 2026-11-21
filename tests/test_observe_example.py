@@ -9,10 +9,11 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 from urllib.parse import urlencode
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from observe import EXAMPLE_ROOT, Evidence, Handler
+from observe import EXAMPLE_ROOT, Evidence, Handler, main
 
 
 class ExampleTests(unittest.TestCase):
@@ -44,6 +45,25 @@ class ExampleTests(unittest.TestCase):
         header, body = output.getvalue().split(b"\r\n\r\n", 1)
         self.assertIn(b"200 OK", header)
         return json.loads(body)
+
+    def test_example_uses_an_available_port_and_honors_explicit_ports(self):
+        for arguments, expected in [
+            ([], 8765),
+            (["--example"], 0),
+            (["--example", "--port", "9123"], 9123),
+            (["--port", "0"], 0),
+        ]:
+            with (
+                self.subTest(arguments=arguments),
+                patch.object(sys, "argv", ["observe.py", *arguments]),
+                patch.object(Handler, "evidence"),
+                patch("observe.ThreadingHTTPServer") as server,
+                patch("sys.stdout", new_callable=io.StringIO) as output,
+            ):
+                server.return_value.server_port = expected or 49152
+                main()
+                server.assert_called_once_with(("127.0.0.1", expected), Handler)
+                self.assertIn(f"http://127.0.0.1:{expected or 49152}", output.getvalue())
 
     def test_public_routes_bind_check_patch_and_outer_review(self):
         index = self.get("/api/runs")
