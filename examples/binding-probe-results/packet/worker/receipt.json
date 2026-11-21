@@ -1,0 +1,15 @@
+{
+  "artifact_sha256": "8154ea6783dec56806eec6fd017a9662a9363e62040efe1cbdb1d6074f5bd6c7",
+  "probe": {
+    "producer": "Harness Lab Maintainer / isolated Footsteps keyboard replay",
+    "finished_at": "2026-11-21T08:37:09.258238+00:00",
+    "checkout_revision": "889a01fe28af1819bd823590bbe108265ecfb226",
+    "verifier_sha256": "fbf67f5b5f5d13d168c0aa3c536301664610882a7ff55bf985249090880d6e30",
+    "launcher_arguments": [
+      "17",
+      "worker"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "d2cd1aa23daf943c7fb5ea602c3f3475ef695b52af5fecec857c66a3d4fc8cbd"
+  }
+}

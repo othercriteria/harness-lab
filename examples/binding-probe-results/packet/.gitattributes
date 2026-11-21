@@ -1,0 +1,4 @@
+# Preserve the captured bytes on checkout, including display patch context lines.
+* -text
+*.patch -whitespace
+browser.cjs -whitespace

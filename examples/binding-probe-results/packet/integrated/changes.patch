@@ -1,0 +1,485 @@
+--- before/footsteps/web/viewer.css
++++ after/footsteps/web/viewer.css
+@@ -453,6 +453,13 @@
+   color: white;
+ }
+ 
++.keys-hint {
++  margin: 0;
++  font-size: .75rem;
++  color: var(--muted);
++  white-space: nowrap;
++}
++
+ .journal {
+   margin: 24px 0 40px;
+ }
+--- before/footsteps/web/viewer.html
++++ after/footsteps/web/viewer.html
+@@ -34,6 +34,7 @@
+     <section class="panel playback" aria-label="Replay controls">
+       <div class="position"><strong id="event-count"></strong><label class="sr" for="scrub">Event position</label><input type="range" id="scrub" min="0" value="0"></div>
+       <div class="controls"><button id="prev" type="button">Previous</button><button id="next" type="button">Next event</button></div>
++      <p class="keys-hint" id="keys-hint">← / → step events</p>
+     </section>
+   </div>
+   <section id="private" class="panel" aria-labelledby="hand-heading" hidden>
+--- before/footsteps/web/viewer.js
++++ after/footsteps/web/viewer.js
+@@ -61,156 +61,201 @@
+   if (proposed) label.push("proposed destination");
+   button.title = label.join(" · ");
+   button.setAttribute("aria-label", button.title);
+-  drawEdges(button, tile.face);
+-  if (isExit) button.append(make("span", "exit-glyph", "◇"));
+-  if (isStart && !marked) button.append(make("span", "origin-glyph", "S"));
+-  if (marked) button.append(make("span", "piece"));
+-  button.onclick = () => {
+-    inspected = coordinate(tile.p);
+-    drawFloor(f);
+-    el("tile").focus();
+-  };
+-  return button;
+-}
+-
+-function drawFloor(f) {
+-  const known = tiles.filter((tile) => tile.at <= index);
+-  const byCoord = new Map(known.map((t) => [coordinate(t.p), t]));
+-  if (!byCoord.has(inspected)) inspected = null;
+-  const selected = byCoord.get(inspected || coordinate(f.marker));
+-  const picker = el("tile");
+-  picker.replaceChildren(new Option("Follow marker", ""));
+-  known.forEach((t) => picker.add(new Option(t.label + " " + coordinate(t.p), coordinate(t.p))));
+-  picker.value = inspected || "";
+-  el("edges").textContent = "In: " + permitted(selected.face & 15) + " · Out: " + permitted(selected.face >> 4);
+-
+-  // Keep a fixed-size window even for a distant exit. Every known tile is reachable via the picker.
+-  const [cx, cy] = selected.p.map(BigInt);
+-  let west = cx, east = cx, south = cy, north = cy;
+-  for (const tile of known) {
+-    const [x, y] = tile.p.map(BigInt);
+-    if (x < west) west = x;
+-    if (x > east) east = x;
+-    if (y < south) south = y;
+-    if (y > north) north = y;
+-  }
+-  const centerX = east - west <= 6n ? west + (east - west) / 2n : cx;
+-  const centerY = north - south <= 3n ? south + (north - south + 1n) / 2n : cy;
+-  const grid = document.createDocumentFragment();
+-  grid.append(make("span", "axis"));
+-  for (let col = 0; col < 7; col++) grid.append(make("span", "axis", String(centerX + BigInt(col - 3))));
+-  for (let row = 0; row < 4; row++) {
+-    const y = centerY + BigInt(1 - row);
+-    grid.append(make("span", "axis", String(y)));
+-    for (let col = 0; col < 7; col++) {
+-      const cell = make("div", "square");
+-      if (col === 0) cell.classList.add("first-col");
+-      if (row === 3) cell.classList.add("last-row");
+-      const tile = byCoord.get(coordinate([centerX + BigInt(col - 3), y]));
+-      if (tile) cell.append(drawTile(tile, f, selected));
+-      grid.append(cell);
+-    }
+-  }
+-  el("floor").replaceChildren(grid);
+-}
+-
+-function decision(f) {
+-  if (f.winner) return (f.winner === "good" ? "Good" : "Bad") + " team wins";
+-  if (f.stage === "move_vote") return "Vote on moving to " + coordinate(f.pending);
+-  if (f.stage === "eliminate_vote") return "Vote on eliminating P" + f.pending;
+-  if (f.stage === "nominate") return "P" + f.nominator + " may nominate";
+-  const actions = {draw: "draws tiles", place: "places a tile", discard: "returns a tile", propose: "proposes movement"};
+-  return "P" + f.actor + " " + actions[f.stage];
+-}
+-
+-function handGroup(seat, hand, alive) {
+-  const group = make("section", "hand-group");
+-  const label = "P" + seat + (alive ? "" : " · Set aside");
+-  group.append(make("h3", "", label));
+-  if (!hand.length) {
+-    group.append(make("p", "", "Empty hand"));
+-    return group;
+-  }
+-  const list = make("ul", "hand-tiles");
+-  for (const face of hand) {
+-    const card = make("li", "hand-card");
+-    const tile = make("span", "hand-face", String(face));
+-    tile.setAttribute("aria-hidden", "true");
+-    drawEdges(tile, face);
+-    const edges = make("span", "hand-edges");
+-    edges.append(make("span", "sr", "Face " + face + ". "),
+-      make("span", "", "In: " + permitted(face & 15)),
+-      make("span", "", "Out: " + permitted(face >> 4)));
+-    card.append(tile, edges);
+-    list.append(card);
+-  }
+-  group.append(list);
+-  return group;
+-}
+-
+-function showState(f) {
+-  el("decision-label").textContent = f.winner ? "Outcome" : "Next decision";
+-  el("decision").textContent = decision(f);
+-  el("turn-tag").textContent = "Turn " + f.turn;
+-  el("marker").textContent = coordinate(f.marker);
+-  el("bag").textContent = f.store_count;
+-  el("roster").replaceChildren();
+-  for (let i = 0; i < data.players; i++) {
+-    const row = make("li");
+-    const tags = [];
+-    if (!f.alive.includes(i)) tags.push("Eliminated");
+-    else if (!f.winner && i === f.actor) tags.push("Builder");
+-    else tags.push("Active");
+-    if (f.roles) tags.push(f.roles[i]);
+-    else if (i === data.seat) tags.push(f.role);
+-    row.append(make("strong", "", "P" + i), make("small", "", tags.join(" · ")));
+-    el("roster").append(row);
+-  }
+-  if (data.omniscient || data.seat !== null) {
+-    el("private").hidden = false;
+-    el("hand-heading").textContent = data.omniscient ? "All hands" : "Your hand";
+-    const hands = data.omniscient
+-      ? f.hands.map((hand, seat) => handGroup(seat, hand, f.alive.includes(seat)))
+-      : [handGroup(data.seat, f.hand, f.alive.includes(data.seat))];
+-    el("hand").replaceChildren(...hands);
+-  }
+-  if (f.teammates) {
+-    el("allies").hidden = false;
+-    el("allies").textContent = "Bad teammates: " + (f.teammates.map((i) => "P" + i).join(", ") || "none");
+-  }
+-}
+-
+-function entry(i, current) {
+-  const f = frames[i];
+-  const item = make(current ? "div" : "li", current ? "entry highlight" : "entry");
+-  const text = make("div");
+-  if (f.ballots) {
+-    text.append(make("p", "", titles[f.kind] + " · " + f.message));
+-    const votes = make("div", "ballots");
+-    f.ballots.forEach(([p, vote]) => votes.append(make("span", "", "P" + p + " · " + (vote === null ? "Timed out (no)" : vote ? "Yes" : "No"))));
+-    text.append(votes);
+-  } else {
+-    text.append(make("p", "", f.message));
+-  }
+-  item.append(make("span", "number", i === 0 ? "Setup" : "T" + f.event_turn + " / " + i), text);
+-  return item;
+-}
+-
+-function go(to) {
+-  index = Math.max(0, Math.min(frames.length - 1, to));
+-  const f = frames[index];
+-  el("scrub").value = index;
+-  el("prev").disabled = index === 0;
+-  el("next").disabled = index === frames.length - 1;
+-  el("event-count").textContent = "Event " + index + " / " + (frames.length - 1);
+-  el("turn").value = String(f.turn);
+-  drawFloor(f);
+-  showState(f);
+-  el("current").replaceChildren(entry(index, true));
+-  const history = document.createDocumentFragment();
+-  for (let i = index - 1; i >= 0; i--) history.append(entry(i, false));
+-  el("log").replaceChildren(history);
+-}
++  button.dataset.coord = coordinate(tile.p);
++  drawEdges(button, tile.face);
++  if (isExit) button.append(make("span", "exit-glyph", "◇"));
++  if (isStart && !marked) button.append(make("span", "origin-glyph", "S"));
++  if (marked) button.append(make("span", "piece"));
++  button.onclick = () => {
++    inspected = coordinate(tile.p);
++    drawFloor(f);
++    el("tile").focus();
++  };
++  return button;
++}
++
++function drawFloor(f) {
++  const known = tiles.filter((tile) => tile.at <= index);
++  const byCoord = new Map(known.map((t) => [coordinate(t.p), t]));
++  if (!byCoord.has(inspected)) inspected = null;
++  const selected = byCoord.get(inspected || coordinate(f.marker));
++  const picker = el("tile");
++  picker.replaceChildren(new Option("Follow marker", ""));
++  known.forEach((t) => picker.add(new Option(t.label + " " + coordinate(t.p), coordinate(t.p))));
++  picker.value = inspected || "";
++  el("edges").textContent = "In: " + permitted(selected.face & 15) + " · Out: " + permitted(selected.face >> 4);
++
++  // Keep a fixed-size window even for a distant exit. Every known tile is reachable via the picker.
++  const [cx, cy] = selected.p.map(BigInt);
++  let west = cx, east = cx, south = cy, north = cy;
++  for (const tile of known) {
++    const [x, y] = tile.p.map(BigInt);
++    if (x < west) west = x;
++    if (x > east) east = x;
++    if (y < south) south = y;
++    if (y > north) north = y;
++  }
++  const centerX = east - west <= 6n ? west + (east - west) / 2n : cx;
++  const centerY = north - south <= 3n ? south + (north - south + 1n) / 2n : cy;
++  const grid = document.createDocumentFragment();
++  grid.append(make("span", "axis"));
++  for (let col = 0; col < 7; col++) grid.append(make("span", "axis", String(centerX + BigInt(col - 3))));
++  for (let row = 0; row < 4; row++) {
++    const y = centerY + BigInt(1 - row);
++    grid.append(make("span", "axis", String(y)));
++    for (let col = 0; col < 7; col++) {
++      const cell = make("div", "square");
++      if (col === 0) cell.classList.add("first-col");
++      if (row === 3) cell.classList.add("last-row");
++      const tile = byCoord.get(coordinate([centerX + BigInt(col - 3), y]));
++      if (tile) cell.append(drawTile(tile, f, selected));
++      grid.append(cell);
++    }
++  }
++  el("floor").replaceChildren(grid);
++}
++
++function decision(f) {
++  if (f.winner) return (f.winner === "good" ? "Good" : "Bad") + " team wins";
++  if (f.stage === "move_vote") return "Vote on moving to " + coordinate(f.pending);
++  if (f.stage === "eliminate_vote") return "Vote on eliminating P" + f.pending;
++  if (f.stage === "nominate") return "P" + f.nominator + " may nominate";
++  const actions = {draw: "draws tiles", place: "places a tile", discard: "returns a tile", propose: "proposes movement"};
++  return "P" + f.actor + " " + actions[f.stage];
++}
++
++function handGroup(seat, hand, alive) {
++  const group = make("section", "hand-group");
++  const label = "P" + seat + (alive ? "" : " · Set aside");
++  group.append(make("h3", "", label));
++  if (!hand.length) {
++    group.append(make("p", "", "Empty hand"));
++    return group;
++  }
++  const list = make("ul", "hand-tiles");
++  for (const face of hand) {
++    const card = make("li", "hand-card");
++    const tile = make("span", "hand-face", String(face));
++    tile.setAttribute("aria-hidden", "true");
++    drawEdges(tile, face);
++    const edges = make("span", "hand-edges");
++    edges.append(make("span", "sr", "Face " + face + ". "),
++      make("span", "", "In: " + permitted(face & 15)),
++      make("span", "", "Out: " + permitted(face >> 4)));
++    card.append(tile, edges);
++    list.append(card);
++  }
++  group.append(list);
++  return group;
++}
++
++function showState(f) {
++  el("decision-label").textContent = f.winner ? "Outcome" : "Next decision";
++  el("decision").textContent = decision(f);
++  el("turn-tag").textContent = "Turn " + f.turn;
++  el("marker").textContent = coordinate(f.marker);
++  el("bag").textContent = f.store_count;
++  el("roster").replaceChildren();
++  for (let i = 0; i < data.players; i++) {
++    const row = make("li");
++    const tags = [];
++    if (!f.alive.includes(i)) tags.push("Eliminated");
++    else if (!f.winner && i === f.actor) tags.push("Builder");
++    else tags.push("Active");
++    if (f.roles) tags.push(f.roles[i]);
++    else if (i === data.seat) tags.push(f.role);
++    row.append(make("strong", "", "P" + i), make("small", "", tags.join(" · ")));
++    el("roster").append(row);
++  }
++  if (data.omniscient || data.seat !== null) {
++    el("private").hidden = false;
++    el("hand-heading").textContent = data.omniscient ? "All hands" : "Your hand";
++    const hands = data.omniscient
++      ? f.hands.map((hand, seat) => handGroup(seat, hand, f.alive.includes(seat)))
++      : [handGroup(data.seat, f.hand, f.alive.includes(data.seat))];
++    el("hand").replaceChildren(...hands);
++  }
++  if (f.teammates) {
++    el("allies").hidden = false;
++    el("allies").textContent = "Bad teammates: " + (f.teammates.map((i) => "P" + i).join(", ") || "none");
++  }
++}
++
++function entry(i, current) {
++  const f = frames[i];
++  const item = make(current ? "div" : "li", current ? "entry highlight" : "entry");
++  const text = make("div");
++  if (f.ballots) {
++    text.append(make("p", "", titles[f.kind] + " · " + f.message));
++    const votes = make("div", "ballots");
++    f.ballots.forEach(([p, vote]) => votes.append(make("span", "", "P" + p + " · " + (vote === null ? "Timed out (no)" : vote ? "Yes" : "No"))));
++    text.append(votes);
++  } else {
++    text.append(make("p", "", f.message));
++  }
++  item.append(make("span", "number", i === 0 ? "Setup" : "T" + f.event_turn + " / " + i), text);
++  return item;
++}
++
++function go(to) {
++  index = Math.max(0, Math.min(frames.length - 1, to));
++  const f = frames[index];
++  el("scrub").value = index;
++  el("prev").disabled = index === 0;
++  el("next").disabled = index === frames.length - 1;
++  el("event-count").textContent = "Event " + index + " / " + (frames.length - 1);
++  el("turn").value = String(f.turn);
++  drawFloor(f);
++  showState(f);
++  el("current").replaceChildren(entry(index, true));
++  const history = document.createDocumentFragment();
++  for (let i = index - 1; i >= 0; i--) history.append(entry(i, false));
++  el("log").replaceChildren(history);
++}
++
++function fallbackFocus() {
++  for (const control of [el("prev"), el("next"), el("scrub"), el("turn"), el("tile")]) {
++    if (control && !control.disabled) {
++      control.focus();
++      return;
++    }
++  }
++}
++
++function restoreFocus(active) {
++  if (!active) return;
++  if (active.classList && active.classList.contains("tile")) {
++    // The floor is redrawn on every step; keep the same tile focused while it exists.
++    const still = document.querySelector('.tile[data-coord="' + active.dataset.coord + '"]');
++    if (still) {
++      still.focus();
++      return;
++    }
++    fallbackFocus();
++    return;
++  }
++  if (!active.isConnected) {
++    fallbackFocus();
++    return;
++  }
++  if ((active.id === "prev" || active.id === "next") && active.disabled) fallbackFocus();
++}
++
++function step(dir) {
++  const active = document.activeElement;
++  go(index + dir);
++  restoreFocus(active);
++}
++
++// Arrow keys step the transcript; form controls keep their native arrow-key behavior.
++document.addEventListener("keydown", (event) => {
++  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
++  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
++  const active = document.activeElement;
++  if (active && /^(INPUT|SELECT|TEXTAREA)$/.test(active.tagName)) return;
++  event.preventDefault();
++  step(event.key === "ArrowLeft" ? -1 : 1);
++});
+ 
+ document.title = data.title + " · Footsteps";
+ el("title").textContent = data.title;
+--- before/tests/test_viewer_browser.py
++++ after/tests/test_viewer_browser.py
+@@ -77,3 +77,102 @@
+         self.assertEqual((obs["marker"], obs["turn"]), ("(1, 0)", "Turn 2"))
+         self.assertEqual(obs["outcome"], "Good team wins")
+         self.assertEqual(obs["rewind"], [1, "(0, 0)", True, 2])
++
++    def test_arrow_keys_step_events_and_keep_focus_usable(self):
++        document = export_html(read(EXAMPLE), "Crossing", seat=0)
++        observe = """
++<script>
++const find = selector => document.querySelector(selector);
++const press = (key, options = {}) => document.activeElement.dispatchEvent(
++  new KeyboardEvent("keydown", {key, bubbles: true, cancelable: true, ...options})
++);
++const focusId = () => {
++  const active = document.activeElement;
++  return active && active.dataset && active.dataset.coord ? "tile:" + active.dataset.coord
++    : active && active.id ? active.id : "none";
++};
++const seen = {};
++// Reach event 4 (the pending proposal) with the existing controls.
++for (let i = 0; i < 4; i++) find("#next").click();
++seen.at4 = [find("#marker").textContent, !!find(".tile.proposed")];
++seen.modified = [press("ArrowLeft", {altKey: true}), find("#scrub").value];
++press("ArrowRight");
++seen.right = [find("#current").textContent, find("#marker").textContent];
++press("ArrowLeft");
++seen.left = [find("#marker").textContent, !!find(".tile.proposed")];
++// Endpoints: stepping past the first or last event is a no-op.
++find("#scrub").value = "0";
++find("#scrub").dispatchEvent(new Event("input"));
++press("ArrowLeft");
++seen.first = [find("#event-count").textContent, find("#prev").disabled];
++find("#scrub").value = find("#scrub").max;
++find("#scrub").dispatchEvent(new Event("input"));
++press("ArrowRight");
++seen.last = [find("#event-count").textContent, find("#next").disabled];
++// A focused floor tile keeps its focus while the tile still exists.
++find("#scrub").value = "4";
++find("#scrub").dispatchEvent(new Event("input"));
++find('.tile[data-coord="(1, 0)"]').focus();
++press("ArrowRight");
++seen.tileForward = focusId();
++press("ArrowLeft");
++seen.tileBack = focusId();
++// Step back three events: the placed tile vanishes at event 1, so focus
++// must land on a usable playback or inspection control.
++press("ArrowLeft");
++seen.tileGone1 = focusId();
++press("ArrowLeft");
++seen.tileGone2 = focusId();
++press("ArrowLeft");
++seen.tileGone3 = focusId();
++// A focused playback button that becomes disabled yields to a usable control.
++find("#prev").focus();
++press("ArrowLeft");
++seen.disabledPrev = [find("#event-count").textContent, focusId()];
++// Synthetic keys have no native default action. Each control must leave the key
++// unconsumed and the event index untouched so the browser can handle it.
++seen.native = ["scrub", "turn", "tile"].map(id => {
++  find("#" + id).focus();
++  return [press("ArrowRight"), find("#scrub").value, document.activeElement.id];
++});
++const result = document.createElement("pre");
++result.id = "observations";
++result.textContent = JSON.stringify(seen);
++document.body.replaceChildren(result);
++</script>"""
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp)
++            page = root / "crossing.html"
++            page.write_text(document.replace("</body>", observe + "</body>"))
++            proc = subprocess.run(
++                [
++                    CHROME,
++                    "--headless",
++                    "--disable-background-networking",
++                    "--no-first-run",
++                    f"--user-data-dir={root / 'profile'}",
++                    "--dump-dom",
++                    page.as_uri(),
++                ],
++                capture_output=True,
++                text=True,
++                timeout=30,
++                check=True,
++            )
++        _, found, text = proc.stdout.partition('<pre id="observations">')
++        self.assertTrue(found, "the browser did not finish the arrow-key sequence")
++        obs = json.loads(unescape(text.split("</pre>", 1)[0]))
++        self.assertEqual(obs["at4"], ["(0, 0)", True])
++        self.assertIn("Timed out (no)", obs["right"][0])
++        self.assertEqual(obs["right"][1], "(1, 0)")
++        self.assertEqual(obs["left"], ["(0, 0)", True])
++        self.assertEqual(obs["first"], ["Event 0 / 13", True])
++        self.assertEqual(obs["last"], ["Event 13 / 13", True])
++        self.assertEqual(obs["tileForward"], "tile:(1, 0)")
++        self.assertEqual(obs["tileBack"], "tile:(1, 0)")
++        self.assertEqual(obs["tileGone1"], "tile:(1, 0)")
++        self.assertEqual(obs["tileGone2"], "tile:(1, 0)")
++        self.assertNotIn(obs["tileGone3"], ("tile:(1, 0)", "none"))
++        self.assertEqual(obs["disabledPrev"], ["Event 0 / 13", "next"])
++        self.assertEqual(obs["modified"], [True, "4"])
++        self.assertEqual(obs["native"], [[True, "0", key] for key in ("scrub", "turn", "tile")])

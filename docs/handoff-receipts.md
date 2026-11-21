@@ -218,6 +218,7 @@ the original claims, commands, reader responses and independent judgments.
 
 ## Related reading
 
+- [Which patch did the browser check?](../examples/binding-probe-results/README.md) replays an independent Maintainer check against two Footsteps patches that produced identical browser output.
 - [When should Worker hand off?](worker-handoff-decisions.md) compares blind decisions about submitting, checking or continuing with what ten Workers actually did.
 - [Progress reports and checkpoint integration](progress-reports.md) — the
   checkpoint-time report reuses the same evidence interface; a valid reference

@@ -1,0 +1,14 @@
+{
+  "launcher_sha256": "17dcc66fea19143c270ff8f9cd5e6acc7b6021d106620677c96f74e57bf25af9",
+  "browser_driver_sha256": "a13a5b643115a9b36a675d8cf1cc8cedd209ae5e635d8913356109ef8a2e2943",
+  "support_sha256": {
+    "fonts.conf": "6810a7233213ae9e782606351f9839f4742b61cc867e949604b221690cd871e6",
+    "chrome": "10c4f58217c9253df604e19641b17a42b69fd58131d4e95aafd79be5b550a135"
+  },
+  "python3": "/nix/store/7jydrdpxlsqjdlrxxxy15i5vw4bad4rs-python3-3.13.15/bin/python3.13",
+  "guest_argv": [
+    "/bin/sh",
+    "-ec",
+    "/bin/python3 -B -S -m footsteps view examples/crossing.json -o /tmp/crossing.html && exec /nix/store/k3nz3s314bipvqbcbw3faq823hxpwbn1-nodejs-slim-24.19.0/bin/node /driver/browser.cjs"
+  ]
+}

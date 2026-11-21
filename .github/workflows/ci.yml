@@ -31,6 +31,8 @@ jobs:
         run: python -S examples/preparing-worker-package/prepare.py "$RUNNER_TEMP/assignment"
       - name: Replay the portable Worker decision
         run: python -S examples/replaying-worker-trace/replay.py
+      - name: Check the Footsteps probe receipts and their substitution controls
+        run: python -S examples/binding-probe-results/replay.py
       - name: Verify walkthrough sources, historical tests and public recipe pins
         run: python -B -S -m unittest -v tests.test_public_pins
       - name: Install pinned developer tools
