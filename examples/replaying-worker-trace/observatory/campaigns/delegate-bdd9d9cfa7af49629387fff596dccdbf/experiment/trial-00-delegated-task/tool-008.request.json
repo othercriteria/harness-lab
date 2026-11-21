@@ -1,0 +1,17 @@
+{
+  "mode": "tool",
+  "name": "execute",
+  "arguments": {
+    "command": "cd /workspace && (\npython3 /tmp/check_label.py\n)"
+  },
+  "timeout": 10,
+  "max_command_bytes": 32768,
+  "public_interface": {
+    "tool": "run_checks",
+    "arguments": {
+      "command": "python3 /tmp/check_label.py",
+      "cwd": "."
+    }
+  },
+  "persistent_scratch": true
+}

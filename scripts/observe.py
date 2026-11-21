@@ -15,6 +15,7 @@ from observe_jobs import review_label as job_review_label
 from observe_review import rejected_trial_label
 
 PROJECT = Path(__file__).resolve().parents[1]
+EXAMPLE_ROOT = PROJECT / "examples/replaying-worker-trace/observatory/campaigns"
 DEFAULT_ROOT = Path("/bulk/dlk/local-harness/runs")
 NAME = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_.-]{0,180}\Z")
 # Parser-control inference calls use case names, not the coding harness sequence.
@@ -66,8 +67,9 @@ STANDARD_WORKER_ARTIFACT = re.compile(
 
 
 class Evidence:
-    def __init__(self, root=DEFAULT_ROOT):
+    def __init__(self, root=DEFAULT_ROOT, *, archived_example=False):
         self.root = root.resolve()
+        self.archived_example = archived_example
         self.costs = CostProjection()
 
     def child(self, parent, name):
@@ -345,10 +347,13 @@ class Evidence:
         exp = self.read(root / "experiment/summary.json") or {}
         if bg:
             state = "complete" if bg.get("ok") else "stopped with error"
-        elif self.live_owner(root):
+        elif not self.archived_example and self.live_owner(root):
             state = "live"
         else:
-            state = "unfinished / owner not observed"
+            state = (
+                "unavailable in excerpt" if self.archived_example
+                else "unfinished / owner not observed"
+            )
         trials = []
         experiment = self.child(root, "experiment")
         for trial in sorted(experiment.glob("trial-*")):
@@ -444,7 +449,9 @@ class Evidence:
             if delegated:
                 passed = None
                 trial_state = delegation_review or (
-                    "awaiting outer review"
+                    "outer review unavailable in excerpt"
+                    if self.archived_example
+                    else "awaiting outer review"
                     if summary.get("clean_agent_completion")
                     else "no clean submission"
                     if summary
@@ -508,7 +515,7 @@ class Evidence:
         result = {
             "name": name,
             "state": state,
-            "modified": (root / "command.json").stat().st_mtime,
+            "modified": None if self.archived_example else (root / "command.json").stat().st_mtime,
             "trials": trials,
             "kind": "delegated"
             if delegated
@@ -525,6 +532,8 @@ class Evidence:
             "restored": bg.get("restored"),
         }
         if details:
+            result["archived_example"] = self.archived_example
+            result["source"] = str(root.relative_to(PROJECT) if root.is_relative_to(PROJECT) else root)
             result["delegation"] = (
                 job_projection(name, self.root.parent / "delegation", self.root)
                 if delegated
@@ -883,6 +892,10 @@ class Evidence:
                     record["transport_stderr"] = self.text(
                         directory / (prefix + ".stderr.bin"), 16000
                     )[0]
+            if self.archived_example:
+                record.pop("at", None)  # Checkout mtimes do not date historical events.
+                if record["kind"] == "tool" and record.get("result") is None:
+                    record["state"] = "result unavailable in excerpt"
             records.append(record)
         diff, clipped = self.text(root / "changes.diff", 65536)
         diff_format = "recorded_truncated" if clipped else "recorded"
@@ -1014,8 +1027,11 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument(
+        "--example", action="store_true", help="Open the bundled historical Worker excerpt"
+    )
     args = parser.parse_args()
-    Handler.evidence = Evidence()
+    Handler.evidence = Evidence(EXAMPLE_ROOT, archived_example=True) if args.example else Evidence()
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(
         f"Local Harness Lab Observatory: http://127.0.0.1:{server.server_port}", flush=True

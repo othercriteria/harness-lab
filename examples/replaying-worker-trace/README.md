@@ -12,6 +12,20 @@ and prints evidence. The historical commands and submitted Python stay inert.
 python3 -S examples/replaying-worker-trace/replay.py
 ```
 
+## Open the job in Observatory
+
+From the repository root, start the read-only server with Python 3.13 and open the loopback URL it prints. This works in a clean clone with the standard library. Use Ctrl-C to stop it.
+
+```sh
+python3 -S scripts/observe.py --example
+```
+
+1. In **Timeline**, expand `tool-008`. Worker ran `python3 /tmp/check_label.py`. The recorded output ends with `TOTAL FAILS: 0`.
+2. Open **Diff & verification**. The patch shows how Worker combined summary and review fields in `rejected_trial_label`. The Maintainer's review explains how a duplicate terminal field could override the summary, and how a malformed exit status raised `TypeError`. The patch was rejected even though both Worker's check and the prepared evaluator passed.
+3. Expand **Delegated job lifecycle, artifacts & outer review** to inspect the decision and its artifact digest. The CLI replay above also prints the later probe's exact inputs and output.
+
+The [Observatory excerpt](observatory/) contains one of the ten tool calls from this job. Its request, result, check and cleanup receipts, original diff, review and artifact manifest come from the recorded run. Job state, profile, protocol and trial summary contain selected fields. Model turns, per-request timings, the rest of the configuration and server logs are omitted. Absolute paths in original receipts describe the historical workstation. The viewer reads the bundled files.
+
 ## What traveled with the trace
 
 | Evidence | Where to look |

@@ -1,0 +1,27 @@
+{
+  "id": "c0008",
+  "record_path": "/checks/c0008.json",
+  "cwd": ".",
+  "before": {
+    "status": "captured",
+    "tree_sha256": "bc2eef13b848d1b5df7f52c63a49e6d34be1d4bc84ae4ee153346b8b48444650",
+    "entries": 3,
+    "bytes": 4588,
+    "git_head": {
+      "status": "unavailable"
+    }
+  },
+  "after": {
+    "status": "captured",
+    "tree_sha256": "bc2eef13b848d1b5df7f52c63a49e6d34be1d4bc84ae4ee153346b8b48444650",
+    "entries": 3,
+    "bytes": 4588,
+    "git_head": {
+      "status": "unavailable"
+    }
+  },
+  "files_unchanged_by_command": true,
+  "scope": "Selected cwd before/after this command, excluding .git; not comparison to task start or a coverage claim.",
+  "returncode": 0,
+  "exception_info": ""
+}

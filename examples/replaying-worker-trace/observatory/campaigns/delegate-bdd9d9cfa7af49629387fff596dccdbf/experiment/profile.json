@@ -1,0 +1,8 @@
+{
+  "artifact": {
+    "id": "qwen38-27b-ranalayout-q4",
+    "name": "Qwen3.8-27B with RANA tensor precision layout",
+    "revision": "bc45e98fe6a40df70a6721141ed72011924a55cc",
+    "quantization": "Q4_K_M"
+  }
+}

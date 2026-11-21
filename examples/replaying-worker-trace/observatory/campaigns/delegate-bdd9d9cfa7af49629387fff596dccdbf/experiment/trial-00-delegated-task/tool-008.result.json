@@ -1,0 +1,27 @@
+{
+  "stdout": "PASS tinfield canonical -> source accepted / handoff missing at timeout \nPASS tinfield, no agent_outcome key (older record) -> source accepted / handoff missing at timeout \nPASS tinfield, agent_outcome null -> source accepted / handoff missing at timeout \nPASS terminal submission -> not timeout -> source accepted / handoff rejected \nPASS terminal blocked -> not timeout -> source accepted / handoff rejected \nPASS terminal evidence in receipt -> source accepted / handoff rejected \nPASS exit_status Failed is not terminal -> source accepted / handoff missing at timeout \nPASS exit_status lowercase not terminal -> source accepted / handoff missing at timeout \nPASS final_handoff missing -> not timeout -> source accepted / handoff rejected \nPASS final_handoff not null -> not timeout -> source accepted / handoff rejected \nPASS clean_agent_completion missing -> not timeout -> source accepted / handoff rejected \nPASS clean_agent_completion true -> not timeout -> source accepted / handoff rejected \nPASS agent_error missing -> not timeout -> source accepted / handoff rejected \nPASS agent_error null -> not timeout -> source accepted / handoff rejected \nPASS agent_error malformed (string) -> not timeout -> source accepted / handoff rejected \nPASS agent_error missing message -> not timeout -> source accepted / handoff rejected \nPASS token budget error -> not timeout -> source accepted / handoff rejected \nPASS tool budget error -> not timeout -> source accepted / handoff rejected \nPASS different message -> not timeout -> source accepted / handoff rejected \nPASS plain accepted/rejected -> source accepted / handoff rejected \nPASS source rejected / handoff accepted -> source rejected / handoff accepted \nPASS both rejected -> source and handoff rejected \nPASS both accepted, overall failed -> trial failed / source and handoff accepted \nPASS prose ignored: receipt dims win -> source accepted / handoff rejected \nPASS summary-only dims (receipt lacks booleans) -> source accepted / handoff missing at timeout \nPASS non-bool truthy ignored -> source and handoff rejected \nPASS receipt not a dict -> source and handoff rejected \nPASS both None -> source and handoff rejected \nTOTAL FAILS: 0\n",
+  "stderr": "",
+  "returncode": 0,
+  "wall_seconds": 0.0275359230581671,
+  "stopped_by": null,
+  "quiescence": {
+    "verified": true,
+    "reaped_descendants": 0,
+    "wall_seconds": 0.0005380029324442148
+  },
+  "ok": true,
+  "final_quiescence": {
+    "verified": true,
+    "reaped_descendants": 0,
+    "wall_seconds": 0.00015160604380071163
+  },
+  "snapshot": {
+    "files": 3,
+    "file_bytes": 4588
+  },
+  "scratch_snapshot": {
+    "files": 2,
+    "file_bytes": 5011
+  },
+  "worker_wall_seconds": 0.029115436132997274
+}

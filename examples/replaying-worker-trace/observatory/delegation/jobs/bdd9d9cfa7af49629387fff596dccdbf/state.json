@@ -1,0 +1,11 @@
+{
+  "job_id": "bdd9d9cfa7af49629387fff596dccdbf",
+  "package_id": "6d06d5c3f3f1fb14a4c03ae840771ee2552755edf8c524a736e7b8a6f16c2367",
+  "label": "Observatory rejected trial label (#14)",
+  "state": "completed",
+  "applied": false,
+  "cleanup_verified": true,
+  "dispatch_seconds": 110.7185206960421,
+  "submitted_at": "2026-11-18T18:01:49.935565+00:00",
+  "completed_at": "2026-11-18T18:03:40.654071+00:00"
+}

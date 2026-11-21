@@ -28,6 +28,7 @@ The Maintainer selects the source files the Worker can see and the paths it can 
 
 ## Explore the lab
 
+- **Inspect a Worker in Observatory.** Open a recorded tool call, its output, the proposed patch and the reason it was rejected. The example runs locally with Python 3.13. [View the recorded job](examples/replaying-worker-trace/README.md#open-the-job-in-observatory)
 - **Compare coding agents.** Worker, Aider and OpenCode attempted the same two Python tasks on the same local model. All 12 valid trials passed code checks. Eleven passed full review. The report also accounts for five attempts affected by integration problems. [Comparison and results](docs/standard-worker-comparison.md)
 - **Run or review a job.** Prepare the inputs for a real Observatory fix from a fresh clone, then follow the job through review. [Prepare a Worker package](examples/preparing-worker-package/README.md) · [Preparing an assignment](docs/delegate-preparation.md) · [Operator guide](docs/operations.md)
 - **Explore the ladder.** The published tasks range from a 60-second JavaScript repair to a 720-second Git backport. [Tasks, ceilings and evidence](docs/ladder.md)

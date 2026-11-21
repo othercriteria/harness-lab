@@ -1,0 +1,27 @@
+{
+  "unit": "big-model-agent-853dccda2ac445a68a1d49d78ebda169.scope",
+  "operations": [
+    {
+      "operation": [
+        "kill",
+        "--kill-whom=all",
+        "--signal=SIGKILL"
+      ],
+      "returncode": 1,
+      "stderr": "Failed to kill unit big-model-agent-853dccda2ac445a68a1d49d78ebda169.scope: Unit big-model-agent-853dccda2ac445a68a1d49d78ebda169.scope not loaded.\n"
+    },
+    {
+      "operation": [
+        "stop"
+      ],
+      "returncode": 5,
+      "stderr": "Failed to stop big-model-agent-853dccda2ac445a68a1d49d78ebda169.scope: Unit big-model-agent-853dccda2ac445a68a1d49d78ebda169.scope not loaded.\n"
+    }
+  ],
+  "active_state": "inactive",
+  "returncode": 4,
+  "verified": true,
+  "owned_process_started": true,
+  "owned_process_reaped": true,
+  "finalization_errors": []
+}

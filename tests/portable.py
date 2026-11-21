@@ -15,6 +15,7 @@ CASES = (
     "tests.test_submission_review_evidence",
     "tests.test_check_fixtures",
     "tests.test_observe",
+    "tests.test_observe_example",
     "tests.test_observe_costs",
     "tests.test_summarize_runs",
     "tests.test_progress_reports",

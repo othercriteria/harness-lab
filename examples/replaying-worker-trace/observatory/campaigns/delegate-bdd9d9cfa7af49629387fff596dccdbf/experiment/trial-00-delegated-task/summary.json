@@ -1,0 +1,14 @@
+{
+  "task": "delegated-task",
+  "seed": 19117,
+  "work_kind": "delegated_repository",
+  "task_wall_seconds": 85.04544767993502,
+  "independent_checks_passed": true,
+  "clean_agent_completion": true,
+  "task_adjudication": {
+    "status": "pending_outer_review",
+    "correct": null,
+    "authority": "Outer source/claim review and separately observed check evidence"
+  },
+  "tool_calls": 10
+}

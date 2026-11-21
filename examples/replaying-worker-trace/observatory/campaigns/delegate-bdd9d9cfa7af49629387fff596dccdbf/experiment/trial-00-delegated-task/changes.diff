@@ -1,0 +1,87 @@
+--- before/scripts/observe_review.py
++++ after/scripts/observe_review.py
+@@ -1,5 +1,81 @@
+ """Display the outcome of a rejected, already bound trial review."""
+ 
+-
+-def rejected_trial_label(summary, receipt):
+-    return "source/handoff rejected"
++_TIMEOUT_TYPE = "DeadlineExceeded"
++_TIMEOUT_MESSAGE = "Whole-stage wall deadline expired"
++_TERMINAL_EXIT_STATUSES = frozenset({"Submitted", "Blocked"})
++
++
++def _is_true(value):
++    return isinstance(value, bool) and value is True
++
++
++def _is_false(value):
++    return isinstance(value, bool) and value is False
++
++
++def _evidence_field(summary, receipt, key):
++    """Return (found, value) for an evidence field.
++
++    The receipt is the bound record and is checked first; the summary may
++    carry the same evidence for records where the receipt omits it.
++    """
++    if isinstance(receipt, dict) and key in receipt:
++        return True, receipt[key]
++    if isinstance(summary, dict) and key in summary:
++        return True, summary[key]
++    return False, None
++
++
++def _is_wall_deadline_error(agent_error):
++    if not isinstance(agent_error, dict):
++        return False
++    return (
++        agent_error.get("type") == _TIMEOUT_TYPE
++        and agent_error.get("message") == _TIMEOUT_MESSAGE
++    )
++
++
++def _has_terminal_disposition(summary, receipt):
++    """A bound agent_outcome with exit_status Submitted or Blocked.
++
++    Older summaries may omit terminal evidence; an absent or malformed
++    agent_outcome is not a terminal disposition.
++    """
++    found, agent_outcome = _evidence_field(summary, receipt, "agent_outcome")
++    if not found:
++        return False
++    if not isinstance(agent_outcome, dict):
++        return False
++    return agent_outcome.get("exit_status") in _TERMINAL_EXIT_STATUSES
++
++
++def _is_missing_at_timeout(summary, receipt):
++    """The Tinfield shape: the wall deadline expired before any handoff."""
++    found, final_handoff = _evidence_field(summary, receipt, "final_handoff")
++    if not found or final_handoff is not None:
++        return False
++    found, clean = _evidence_field(summary, receipt, "clean_agent_completion")
++    if not found or not _is_false(clean):
++        return False
++    found, agent_error = _evidence_field(summary, receipt, "agent_error")
++    if not found or not _is_wall_deadline_error(agent_error):
++        return False
++    return not _has_terminal_disposition(summary, receipt)
++
++
++def rejected_trial_label(summary, receipt):
++    receipt = receipt if isinstance(receipt, dict) else {}
++    summary = summary if isinstance(summary, dict) else {}
++
++    source_accepted = _is_true(receipt.get("source_accepted", summary.get("source_accepted")))
++    handoff_accepted = _is_true(receipt.get("handoff_accepted", summary.get("handoff_accepted")))
++
++    if source_accepted and handoff_accepted:
++        return "trial failed / source and handoff accepted"
++    if source_accepted and not handoff_accepted:
++        if _is_missing_at_timeout(summary, receipt):
++            return "source accepted / handoff missing at timeout"
++        return "source accepted / handoff rejected"
++    if not source_accepted and handoff_accepted:
++        return "source rejected / handoff accepted"
++    return "source and handoff rejected"

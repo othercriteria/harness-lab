@@ -70,6 +70,27 @@ assert.match(text(elements.get('metrics')),/PASS Verified correctness/);
 assert.match(text(elements.get('metrics')),/NO Clean completion/);
 console.log('Observatory control and coding render checks passed.');
 
+// A reader of the archived excerpt can distinguish the passing check from the
+// outer decision without interpreting the raw lifecycle JSON.
+const archived={name:'delegate-example',kind:'delegated',state:'complete',archived_example:true,
+  source:'examples/replaying-worker-trace/observatory/campaigns/delegate-example',
+  trials:[{name:'trial',state:'outer review rejected'}],
+  delegation:{state:{state:'completed',applied:false},outer_review:{decision:'rejected',notes:'A conflicting field changed the label.'}}};
+const previousTrial=vm.runInContext('state.trial',context);
+context.exampleInput={run:archived,trace:{events:[],artifacts:[],summary:{independent_checks_passed:true}}};
+vm.runInContext("state.trial='trial';render(exampleInput.run,exampleInput.trace)",context);
+assert.equal(elements.get('excerpt-note').hidden,false);
+assert.equal(elements.get('review-note').hidden,false);
+assert.match(text(elements.get('review-note')),/conflicting field/);
+assert.match(elements.get('source').textContent,/^examples\//);
+assert.match(elements.get('diff').textContent,/unavailable in this excerpt/);
+archived.trials[0].state='outer review needs reconciliation';
+vm.runInContext("render(exampleInput.run,exampleInput.trace)",context);
+assert.equal(elements.get('review-note').hidden,true);
+context.previousTrial=previousTrial;
+vm.runInContext('state.trial=previousTrial;render(input.run,input.trace)',context);
+console.log('Archived source, bound review and missing patch labels passed.');
+
 // Checkpoint memory is a nonterminal adapter event; model text stays inert.
 context.checkpointEvent={id:'tool-002',kind:'tool',tool_name:'checkpoint_context',
   adapter_control:true,checkpoint_control:'summary_saved',executed:false,
