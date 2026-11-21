@@ -211,7 +211,8 @@ outer judgments until there is evidence that a narrower rule can replace them.
 3. Submit, then let the isolated independent checks run.
 4. Review the artifact and final source; publish the review and apply under the
    shared application lock, or preserve the submission as-is.
-5. Record the outcome, including outer repairs, with the normal attribution.
+5. Record the outcome, including outer repairs, and land it with the
+   [attribution for landed Worker contributions](operations.md#attribution-for-landed-worker-contributions).
 
 Lifecycle, artifact, and receipt details live in
 [delegation-artifacts.md](delegation-artifacts.md) and

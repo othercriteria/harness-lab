@@ -16,6 +16,26 @@ A live operator must schedule one GPU workload at a time, check active requests,
 
 A live rehearsal on the reference RTX 4090 used a clean public clone and a fresh virtual environment installed from its lockfile. The Worker corrected the walkthrough’s landing-commit link. The independent evaluator checked the entire edited file, and the Maintainer verified the public destination before applying the patch. Worker time was 34.5 seconds and dispatch through cleanup was 55.9 seconds. The run used the workstation’s existing model store, inference backend and service controls. [Rehearsal receipt](../results/public-worker-rehearsal-001.json)
 
+### Attribution for landed Worker contributions
+
+Lead the commit message with the change. Say what Worker wrote, what the Maintainer independently verified, and what the Maintainer changed before landing it. Keep the ordinary Git author and committer identities. Use the job and recipe to trace a model contribution without inventing an email address.
+
+Put the following trailers at the end of the message. Use the registered recipe ID and link the review to a versioned receipt a reader can open.
+
+```text
+Delegate-Job: <job ID>
+Delegate-Package: <frozen package ID>
+Delegate-Recipe: <recipe ID>
+Delegate-Review: results/<review-receipt>.json
+Delegate-Completion: clean
+Delegate-Repairs: none
+```
+
+Use `clean` when Worker completed its handoff. If it timed out with useful edits on disk, record `incomplete (timeout)` and say which edits the Maintainer recovered and accepted. Replace `none` with a short description when the Maintainer repairs the submission. Preserve the original artifact and record the independent checks separately from Worker's claims. A withheld reference solution belongs in the review history. If its code ships, credit its author for that code.
+
+- **Accepted as submitted.** Worker supplied the checkpoint eligibility predicate and 14 tests. The Maintainer verified the helper in isolation and checked that implementations that always allowed or always denied finalization failed the controls. Caller integration was separate Maintainer work. [Landing commit](https://github.com/othercriteria/harness-lab/commit/1410543b7ca025d219d6d9400272a64d9ca01d0f) · [Receipt](../results/checkpoint-finalization-worker-landing-001.json)
+- **Accepted with repairs.** Worker supplied the residency estimator's adjacency and pricing tests. The Maintainer corrected inconsistent timings, consolidated duplicate cases, expanded boundary and batch coverage, and registered the reviewed suite in portable CI. The original tests caught eight faulty implementations. The landed suite caught nine. [Landing commit](https://github.com/othercriteria/harness-lab/commit/967265eeaf33f72fa0f7501fd7ba007bfa66e5e5) · [Receipt](../results/worker-residency-accounting-tests-001.json)
+
 ## Watch the outer harness
 
 On the original workstation, `./lab observe` starts the read-only loopback dashboard. It reads the experiment store, displays timelines and tool calls, and distinguishes a submitted patch from its verified review and application. The portable examples include selected records that can be read without running that service. [Replay a trace](../examples/replaying-worker-trace/README.md)

@@ -1,0 +1,38 @@
+{
+  "issue": 54,
+  "job_id": "52b58443204e4907a37b37c3e9345e58",
+  "package_id": "ce83f395e0242772d6cb98f1db7b06dc47a754076d9fffaf6ce153616f053bd9",
+  "snapshot_id": "2883bc23af539354e3239eb1e2896cf3d65e4d8ebdcc7da05956a1738860e3ae",
+  "recipe": "apprentice-qwen-32k-v1",
+  "model": {
+    "name": "Qwen3.8-27B with RANA tensor precision layout",
+    "source_model": "Qwen/Qwen3.8-27B",
+    "source_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "quantization": "Q4_K_M",
+    "target_file": "Qwen3.8-27B-RANA-layout-Q4_K_M.gguf",
+    "target_sha256": "91c34c55de4defcc5891f08997b7d4543a171d7e2aa6ab752bff4eec27279ba6",
+    "verification_method_this_run": "metadata",
+    "server_config": "configs/recipe-inputs/2e562a10a26b9377-servers.json",
+    "server_config_sha256": "2e562a10a26b93775969ed2140b6b353206fc3270d12f0466dff7a4a18339d61",
+    "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio"
+  },
+  "authorship": {
+    "worker": "Initial operator guide section, trailer template, examples and preparation checklist link.",
+    "maintainer": "Edited operator prose, clarified incomplete handoffs, verified the historical evidence and model identity, and wrote this public receipt."
+  },
+  "clean_completion": true,
+  "worker_seconds": 81.97799240611494,
+  "dispatch_seconds": 103.80706280376762,
+  "structural_checks_passed": true,
+  "decision": "accepted_with_repairs",
+  "review": "The isolated structural check passed on the original. Independently compared both public commits and receipts, checked the six trailers and checklist anchor, and reconciled the actual target profile and weight verification receipt. Worker disclosed that it had only the supplied extracts. No sealed reference was supplied.",
+  "original_artifact_sha256": "873c43b3858234aa692a17b4cc1516e7d29382c70977060e5d2f1b4f119de418",
+  "landed_artifact_sha256": "0d8feaea432608f39bfbd8cff6e19110a0468f0a9156a76855deab1b943119e2",
+  "review_sha256": "876a6804f71749500e9ea473332c21f7c965ceec7c4e544df35f96115e80b80e",
+  "applied_paths": [
+    "docs/delegate-preparation.md",
+    "docs/operations.md"
+  ],
+  "cleanup_verified": true,
+  "services_restored": true
+}
