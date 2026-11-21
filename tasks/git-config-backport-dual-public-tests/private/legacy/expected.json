@@ -10,5 +10,15 @@
     "retain",
     6,
     false
-  ]
+  ],
+  "writer_errors": {
+    "ordinary": {
+      "calls": 1,
+      "same_exception": true
+    },
+    "diagnostic": {
+      "calls": 1,
+      "same_exception": true
+    }
+  }
 }

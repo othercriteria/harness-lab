@@ -133,6 +133,8 @@ def verify(runtime, workspace, task, output, remaining):
         }
         # This probe contains inputs/observation code only; comparisons stay outside.
         probe = task / "private" / label / "probe.py"
+        if not probe.is_file():
+            probe = task / "private" / "probe.py"
         probe_mount = root / "probe"
         probe_mount.mkdir()
         shutil.copyfile(probe, probe_mount / "probe.py")

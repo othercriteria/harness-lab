@@ -1,0 +1,12 @@
+{
+  "branches": {
+    "release/stable": {
+      "commit": "4c8bd2accf938f3f77ab45b60ba661e1f3327de9",
+      "verification_command": "python -m unittest discover -s tests"
+    },
+    "release/legacy": {
+      "commit": "4528fa30dee80a730278f13962e9810dcb87c2d8",
+      "verification_command": "python -m unittest discover -s tests"
+    }
+  }
+}

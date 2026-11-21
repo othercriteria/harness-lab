@@ -1,0 +1,949 @@
+{
+  "task": "git-config-backport-dual-public-tests",
+  "fixture_version": 9,
+  "verifier_revision": 6,
+  "prior": {
+    "revision": 5,
+    "git_commit": "c8f352b42ccb393108a4061b262252b07446084d"
+  },
+  "fixture_files_sha256": {
+    "private/legacy/expected.json": "075d702ad051a4cc012e463b60bff977905afc0d4f0fbbce1864c0ae4762728c",
+    "private/legacy/test_acceptance.py": "58d8a403bb78cfaebb3dd498c9aa4bf9f30d0df8cef59aea1127d488d4665bed",
+    "private/legacy/test_public.py": "d2e9b5907ef33c69b18805ff5c3e3a7dac3350d01a48ccdb4df0395068affa8c",
+    "private/probe.py": "92abf57086dda239797e8c095d0cd686728e69f2deaf916764cbf401a67c11da",
+    "private/reference-handoff.json": "c987b4d871129bd8e45b97ae273dbc8b5931cbe18b34e62787ad2d5e98190b28",
+    "private/reference.bundle": "da1f8761915bb41bbe567e0f1fff49b92f3b01bfb5b675947cc17318ae83c63e",
+    "private/stable/expected.json": "98e73fed13694a2aac87f18c9f88f60f32f40a7c39d5142f760bedb9bc2032aa",
+    "private/stable/test_acceptance.py": "5819ee7c5444747218f7c0909acaa4cdc70b1b66e2c0486744181f5e3f2f27f6",
+    "private/stable/test_public.py": "d2e9b5907ef33c69b18805ff5c3e3a7dac3350d01a48ccdb4df0395068affa8c",
+    "public/repository.bundle": "4343f3fd95776e6b7819948b2e6d29172e07a4e7263d44ee777c610b390aff60",
+    "public/task.md": "f2258533c7c0f651332a2f6f69c53288a9027856a1c053dfd24c2b346d841823",
+    "task.json": "3813fd0e7b8651f302b997c24e768e1f1bfb9606c037567db4cc450a12dfc0a4"
+  },
+  "unchanged_public_files": true,
+  "git_verifier_sha256": "332feff2e2b2f4874e961e11ffe7ec52a45e76759d515585b05407c323a9a7c5",
+  "method": "Complete, isolated Git export, delivery check, 19 canonical tests per branch, and external behavioral comparison on both branches. Replay of finished workspaces only. The historical handoff reviews, time budgets and model timings were not re-scored.",
+  "cohorts": {
+    "reliability-progress-confirmation-git-config-backport-dual-public-tests-001": {
+      "trials": {
+        "16810": {
+          "historical_summary_sha256": "aee058426066180fc13f300f9089ccfedc6a3ae4d254eaa802c8284c2571bc26",
+          "v5": {
+            "receipt_sha256": "4a41226cc068a1d6779a5b0157b7f0bd24cc1e6b967d34aa79caecdd985feca1",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "5717e999334213334dd520104c886935c0ac2e407a42d1a74b011bc6eec95562",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "8f1c5169cb7358de68df98691c239ab852a96508",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "351c7b4e812bef7406bf1f21f25c680e114bb9a9",
+              "canonical_both_revisions": false,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            }
+          }
+        },
+        "16811": {
+          "historical_summary_sha256": "8f639a7f384a9e69452fb263ef5233f5744650d859b33e3fb1def6261da196db",
+          "v5": {
+            "receipt_sha256": "01345584bb7860a8e13a0209cc358c0ef41cf0283ae0a484238affb9cc732efe",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "9d8db94de1327c93eb13c52d86f6eb2bb51ec93d6a2e79783c35ff9c192db2ea",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "b2012d9462377ff49b90263de96ec0cdca2efefd",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "332ec6682b1abf6780b1ece8232a6c92ac1c038f",
+              "canonical_both_revisions": false,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            }
+          }
+        },
+        "16812": {
+          "historical_summary_sha256": "a0cfd7ef7c8b2c7edcba091b78c7612a689df139ee81c8b787f7c8f3c3cf0fed",
+          "v5": {
+            "receipt_sha256": "5c26c1171fac7ca4338e310504a6f037e10f478e52eb91deeff97abbc09d6d41",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "b5e41d1d3cb47bca26230b4e06f05a974633a35a54c547b3083b93945305c420",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "4e13af2b1a24ee91688f74aeeec1efc777873c26",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "d7d1725fbefab47481ee325d2b33e983a8767315",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "16813": {
+          "historical_summary_sha256": "25da5fe345d75b69ea401f6b4024f074f1e506bcf7e1411c2808d1dcc961ca5a",
+          "v5": {
+            "receipt_sha256": "b3f05691694e94aeaa4bd7d5e08e8cf34358f4a8e25e08fe5f4451b681e1fea5",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "9f014eb158846b86e8ca626a434b9c66ecea5d47250453138663700baaad1b52",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "a424b5cf4b6666b61db7669b0ea4a73c6d8ef05c",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "e26584af200c782236a89de1f965dd3fae4a7313",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "16814": {
+          "historical_summary_sha256": "5ccf7165bd4bbf048541271b0630ae7955719f8e862d953ae455d52c946a0904",
+          "v5": {
+            "receipt_sha256": "d26cb596871fa2bf3e60cee95c06e3f7e3e6fdf6e67dd741a8024c85a0330a25",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "95cfda44049a4363900f01ce897498360ace4487ad57f26de18fea5206f398c7",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "2be3b22d044f5f574bf7f3c90c6e2b6a4733df76",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "9d417d2aaba7793d93dae206ba6a37841dbcbd69",
+              "canonical_both_revisions": false,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            }
+          }
+        },
+        "16815": {
+          "historical_summary_sha256": "1ec4ea8c5c27c7ae9b957084af976c553afb546e24368f2839dcfa8866499f50",
+          "v5": {
+            "receipt_sha256": "13cb070e4f9cb76d79d1a46f6d719eb66a5f4dac2063f74ec7bd6b614a0dd6e6",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "45e49c3fe57fb0f05e38c6acb2c15c3de7db1c4fef3bb2f549f7c4b11821b5f6",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "8fa772bbb4c51ecfdc7ec8bcec4365769a627bdc",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "a84c1e90f18e6bea7e2d2458456ee5f7fd042cc4",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "16816": {
+          "historical_summary_sha256": "79797a058899a50c11768e67caa13f98fd80fbdbce0535d3cffa5db03e6040bc",
+          "v5": {
+            "receipt_sha256": "f27421dac8dd2a15c3b198e26074f87b3c7d07910375fd23e3629b51d75d2fc5",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "2f094b48c2798022a70739405a7c40eec35c2c094f2f570aef3330945f2da518",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "608be94b5e94d5f7f4bfec9abcedd90b3896bb25",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "500ad7f7164e8d91be8895b7eef036b1f035a6d1",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "16817": {
+          "historical_summary_sha256": "61e76d91baeca53b8eda5f486379203f8d0e3ccd6ed2cafff271eacc04a55ab4",
+          "v5": {
+            "receipt_sha256": "d69ccf470f2b7d486ad7155aab95af9c3a5c3f98086ecb12066d02ea2e207122",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "9b02df25189adfbb8ca063807a0ee9938507a7624807edf68e33820c57160088",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "b122d5319d08225f565f6ec3f33e2af7e85830fc",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "7eabbddd4c51899aa1892fa1789a538d75761016",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "16818": {
+          "historical_summary_sha256": "f62ea466295bec8ff261f25c2e81c2a8a8cd2ac29b3d2c93a27f9cfc71e67b64",
+          "v5": {
+            "receipt_sha256": "f08054802e97a712e06c3f1db80b4ddc50a40768901d3e9a00ae6a88f3b3bda0",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "988e590162a4fb9cb51c3a320399c636957d4ed1ab3de57f6bf58a2b9e0157f4",
+            "canonical": false,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "d99b0b6d9bd00e311da76b8a3a0cad4e5af5dea6",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "d112d2f3106779243c2c57d825d22368b98bd0fd",
+              "canonical_both_revisions": false,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            }
+          }
+        },
+        "16819": {
+          "historical_summary_sha256": "eef56a35d34f8fe7d6c852d49951397fccb9bdf257441b18c65aa8b1f1013b1d",
+          "v5": {
+            "receipt_sha256": "0002422e5a25a8cd9481c4b85d502f0499d39551dfeed56cb565c21be8600144",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "5a8e0b0dc7a13777b823adce7d756801bd0c0fc1824a91d58ce13ec2cc364e38",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "4bd2831ca0cb8bbc6661e96a572d292b67de881f",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "c001f7098cf472bf92c8a0a0587a2dd8d91a5a9d",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        }
+      },
+      "combined_artifact_passes": {
+        "v5": 6,
+        "v6": 0
+      }
+    },
+    "quantconfirm-layout-git-config-backport-dual-public-tests-seeds14660-14664-001": {
+      "trials": {
+        "14660": {
+          "historical_summary_sha256": "86fd737d51e15c77d4d9c9c373db18277500933ab1883304034a3e4f444f9b5e",
+          "v5": {
+            "receipt_sha256": "3d46ea0738f8bc6f984b7d27b9ee1fc6ef4535b9b3174e7798bc90f085598459",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "def3b713daedcbf1992d1aee76e1629406a99053cabce43c3c69961703dc619e",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "1557a99242f98e6201a34508abecdd6b651d2297",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "f2bbc782c90c21433f72ee0453bd7d6839093a9d",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "14661": {
+          "historical_summary_sha256": "e6cbab59e9af96c8bbc72e0a1b86435ac18d1a3b16e0c56ae8a7141ce1f07f0a",
+          "v5": {
+            "receipt_sha256": "5d939a862f4f60f6efae365bf7cd19a8a8d6a74bec91bcbff017f448ea910514",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "ed6eb680f5516f7a05da04ea9fd52cec10b50023bc976b682f030343bf811578",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "5a368104bd2815aca8d3310de604715a95ac5bd9",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "80fd67b087d1f2d38e86b27845101bb494d44275",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "14662": {
+          "historical_summary_sha256": "ae10e800675e4d8ea9a4851ff87bf3ac8acfe9c067516f67e7825fb83dc7d5a8",
+          "v5": {
+            "receipt_sha256": "13472c826f8bab81b844a117e3e175243ddd6a76a4e092aac4b1fda5ef2f9598",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "f5b1b942ba6b6cc1863e304ecdb815704519a994f1c6839596c5ecfb5bf5f917",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "790ee2e10d05968108f9db8701a7d275c0278c8a",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "e00c11cf4b51935b92c1f80735a941fc2176a792",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "14663": {
+          "historical_summary_sha256": "95152cde2f1566adb2bb8f5ea01223bf19c59387dd7242bc639e0d5fcd69812a",
+          "v5": {
+            "receipt_sha256": "ba075d7ef1bb094e5eb10c545e408c4d7b16a3e8ccae37299df60ee0ed50bc38",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "ffc26d8ba4838cf0cd677f2c4d6190d406656ec94bc0b3ccd4f9a05f1a9d4bfc",
+            "canonical": true,
+            "behavior": false,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "6e966506376c9208771365e94eb7d55ae65e1296",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "d72a7c4dbbb7aeb2f781e9d24b3aec39377e43fd",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": false,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "returned": 2
+                }
+              }
+            }
+          }
+        },
+        "14664": {
+          "historical_summary_sha256": "c4e9fdc75aa2c120463d8871e91d01ab39018843ca0314d0ffd7c2433ef18b22",
+          "v5": {
+            "receipt_sha256": "f4e2d8a7c7f837643a8f1ed27d75719e90d9fa797022b5d01985c2646b0bba53",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "v6": {
+            "receipt_sha256": "203d944ed2221eb60843e59737ecad4d5c00ce3cc82753db9582fda99e5f1cbb",
+            "canonical": true,
+            "behavior": true,
+            "delivery": true,
+            "verified_cleanups": 5
+          },
+          "branches": {
+            "release/stable": {
+              "commit": "113b3dbf2a5f7ff5791de804a47b7a80dbb2f5c8",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            },
+            "release/legacy": {
+              "commit": "e04bd337e94b7e9353f1ba9b565e372ee364f3f9",
+              "canonical_both_revisions": true,
+              "behavior_v5": true,
+              "behavior_v6": true,
+              "writer_errors": {
+                "ordinary": {
+                  "calls": 1,
+                  "same_exception": true
+                },
+                "diagnostic": {
+                  "calls": 1,
+                  "same_exception": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "combined_artifact_passes": {
+        "v5": 5,
+        "v6": 1
+      }
+    }
+  },
+  "positive_control": {
+    "review": {
+      "scope": "Blind review of public task.md and public starter repository only. No evaluator feedback.",
+      "interpretation": [
+        "Backport the documented key-only preflight to both release branches, before every stream write or interpolation hook. Inspect normalized stored options including defaults and unnamed sections. Preserve both releases' emitters and public signatures.",
+        "Stable raises InvalidWriteError derived from Error with sorted, spaced output and boolean statuses. Legacy raises the exact built-in ValueError with insertion-ordered, compact output and integer statuses.",
+        "service.export calls write(stream) once, including on subclass overrides and stand-ins. ParsingError and its subclasses are always converted, and only actual validation exceptions qualify for the new conversion. A downstream failure with the same text remains independent.",
+        "Create a regression test per branch, run the requested command on each submitted commit, preserve all existing files except designated code, and report full branch heads and check observations."
+      ],
+      "findings": [
+        {
+          "severity": "minor clarification",
+          "observation": "The approved stable catch also catches a manually constructed InvalidWriteError from a stand-in or interpolation hook. The public requirement to convert precisely this validation failure and preserve unrelated exceptions supports propagating such a synthetic exception. I use the narrower, origin-aware interpretation. An explicit example would settle this edge if it is scored."
+        }
+      ],
+      "admission": "Sufficient information to implement and verify both targets."
+    },
+    "seal_sha256": "50d9fc105f38c6216d9d39f87d85c7cbf0c2f494c29a6190bcc671c39db2de62",
+    "bundle_sha256": "da1f8761915bb41bbe567e0f1fff49b92f3b01bfb5b675947cc17318ae83c63e",
+    "replay": "examples/checking-backport-verifier/replay.py",
+    "public_tests_per_branch": 9,
+    "public_check_receipt_sha256": "24b7826386ecf410a624f57558b7faea6d02b2fe99294cf1a8544e52ffdd93d9",
+    "grade_receipt_sha256": "2904776b64a1e0675f545c16ac413868ff8c9338801fb5df1b711f5c22f83694",
+    "canonical": true,
+    "behavior": true,
+    "delivery": true,
+    "branches": {
+      "release/stable": {
+        "commit": "4c8bd2accf938f3f77ab45b60ba661e1f3327de9",
+        "canonical_tests_run": 19,
+        "canonical_pass": true,
+        "behavior": {
+          "safe": [
+            "[second]\na = 1\nz = 9\n\n[first]\nc = 3\n\n",
+            true,
+            "bool"
+          ],
+          "invalid": [
+            false,
+            "bool",
+            "retain",
+            6,
+            false
+          ],
+          "writer_errors": {
+            "ordinary": {
+              "calls": 1,
+              "same_exception": true
+            },
+            "diagnostic": {
+              "calls": 1,
+              "same_exception": true
+            }
+          }
+        }
+      },
+      "release/legacy": {
+        "commit": "4528fa30dee80a730278f13962e9810dcb87c2d8",
+        "canonical_tests_run": 19,
+        "canonical_pass": true,
+        "behavior": {
+          "safe": [
+            "[second]\nz=9\na=1\n\n[first]\nc=3\n\n",
+            0,
+            "int"
+          ],
+          "invalid": [
+            2,
+            "int",
+            "retain",
+            6,
+            false
+          ],
+          "writer_errors": {
+            "ordinary": {
+              "calls": 1,
+              "same_exception": true
+            },
+            "diagnostic": {
+              "calls": 1,
+              "same_exception": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "stable_negative_control": {
+    "change": "Starting from the positive reference, add an except ValueError handler on stable that returns INVALID for a truthy _write_validation attribute and re-raises otherwise. Commit the change and update the delivery tip. Legacy is byte-identical to the reference.",
+    "grades": {
+      "v5": {
+        "receipt_sha256": "058bdbc424a2b842fe188444cc4af2c19a4c78bc11ffde7f173ddff73e270aa3",
+        "canonical": true,
+        "behavior": true,
+        "delivery": true,
+        "verified_cleanups": 5
+      },
+      "v6": {
+        "receipt_sha256": "393ea525e1f5a92c7b4d836e254b7db51400a6e9bde97dbc5dc522025e1453ab",
+        "canonical": true,
+        "behavior": false,
+        "delivery": true,
+        "verified_cleanups": 5
+      },
+      "branches": {
+        "release/stable": {
+          "commit": "fdba95431ea6c6f6ff25f64d813fb9fba7c75fb0",
+          "canonical_both_revisions": true,
+          "behavior_v5": true,
+          "behavior_v6": false,
+          "writer_errors": {
+            "ordinary": {
+              "calls": 1,
+              "same_exception": true
+            },
+            "diagnostic": {
+              "calls": 1,
+              "returned": false
+            }
+          }
+        },
+        "release/legacy": {
+          "commit": "4528fa30dee80a730278f13962e9810dcb87c2d8",
+          "canonical_both_revisions": true,
+          "behavior_v5": true,
+          "behavior_v6": true,
+          "writer_errors": {
+            "ordinary": {
+              "calls": 1,
+              "same_exception": true
+            },
+            "diagnostic": {
+              "calls": 1,
+              "same_exception": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

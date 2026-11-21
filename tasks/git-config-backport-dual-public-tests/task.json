@@ -1,6 +1,6 @@
 {
   "id": "git-config-backport-dual-public-tests",
-  "version": 8,
+  "version": 9,
   "kind": "git-backport",
   "split": "development",
   "maturity": "development",
@@ -46,11 +46,11 @@
     "Finite tests and behavioral probes require source/handoff review."
   ],
   "evaluator_revision": {
-    "version": 5,
+    "version": 6,
     "public_contract_changed": false,
-    "change": "Promote established subclass write-state and identical-args unrelated-ValueError probes into canonical tests;19methods per branch. No public or bundle changes.",
-    "previous_frozen_version": "results/success-freeze-360.json",
-    "validation": "results/git-backport-evaluator-v5-validation-001.json"
+    "previous_public_revision": "c8f352b42ccb393108a4061b262252b07446084d",
+    "change": "Observe identity and call count when a one-method writer raises an unrelated ValueError on either branch. The outer verifier compares the observations with the expected results.",
+    "validation": "results/git-backport-evaluator-v6-001.json"
   },
   "task_relaxation": {
     "ancestor_task": "git-config-backport-dual",
@@ -68,15 +68,18 @@
     "test_sha256": "c66c1e8f5c79221c19b2f01d1dd03c5cc3952106776ebcbcce822f70270eb634"
   },
   "reference_provenance": {
-    "seal": "/bulk/dlk/local-harness/reviews/git-message-blind-001/solution-seal.json",
-    "sha256": "fb1ad6b6d8175cb8d7b6539b66149860f19e22160bb25a403cd0163d4d25b026",
+    "source": "First sealed public-only independent solution for evaluator revision 6.",
+    "seal_sha256": "50d9fc105f38c6216d9d39f87d85c7cbf0c2f494c29a6190bcc671c39db2de62",
+    "bundle": "private/reference.bundle",
+    "bundle_sha256": "da1f8761915bb41bbe567e0f1fff49b92f3b01bfb5b675947cc17318ae83c63e",
+    "handoff": "private/reference-handoff.json",
     "feedback_driven_repair": false
   },
   "specification_alignment": {
-    "review": "/bulk/dlk/local-harness/reviews/git-message-blind-001/review.json",
-    "sha256": "83812b67908f16bc0b7a96eba52250dd14c5dd4da94e3dc3309c8972c6450ed0",
-    "gaps": [],
     "public_only": true,
-    "change": "Existing public invalid-key check now asserts the already documented repr(key) error diagnostic; written contract, production starters and private tests unchanged."
+    "review_sha256": "053dc0cc2c55832c43d62eac2b616b81acebd06e44cc0e07cfc8a07185540d3f",
+    "finding": "The approved stable patch catches InvalidWriteError by class. The reviewer read the public policy as requiring a separately created exception of that class to propagate.",
+    "disposition": "The new case uses unrelated ValueError instances on both branches. Independently constructed InvalidWriteError on stable is outside this revision’s checks.",
+    "public_contract_changed": false
   }
 }
