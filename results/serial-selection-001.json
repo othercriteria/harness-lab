@@ -1,0 +1,1709 @@
+{
+  "study": "Blinded static selection on disjoint adjacent archived attempts (issue 58).",
+  "sources_sha256": {
+    "progress-dataset.json": "312c273e4d84fc3fd42f964a320c9621c46c57b9f5bcca912cbc0940b6ca1166",
+    "codec-closeout-audit.json": "11baa6264ccf7970270fa320a63e221cc62802fd41349ca05ea42b47976da904",
+    "release-channel-pilot-001.json": "f97c7c9055f0141cfb70518efc0b9376c243849912b41a97e756f282f1ba7176"
+  },
+  "packet_order": "Sort trials by trial number. Pair neighbors, drop any unpaired tail. Shuffle pairs then shuffle the two trials in each pair using Python random.Random(\"58-packets-v1-\"+family).",
+  "reviewer": "One fresh hosted blind reviewer per family (GPT-6.2-Astra). Static public evidence only, each first decision recorded before opening B. Times are elapsed seconds between review records and include tool latency.",
+  "census": {
+    "contract-codec-a": {
+      "trials": 20,
+      "accepted": 20,
+      "both_fail": 0,
+      "mixed": 0,
+      "both_pass": 10,
+      "unpaired": 0
+    },
+    "contract-codec-b": {
+      "trials": 20,
+      "accepted": 19,
+      "both_fail": 0,
+      "mixed": 1,
+      "both_pass": 9,
+      "unpaired": 0
+    },
+    "event-import-guided-v12": {
+      "trials": 15,
+      "accepted": 13,
+      "both_fail": 0,
+      "mixed": 2,
+      "both_pass": 5,
+      "unpaired": 1
+    },
+    "frame-decoder-focused": {
+      "trials": 20,
+      "accepted": 18,
+      "both_fail": 0,
+      "mixed": 2,
+      "both_pass": 8,
+      "unpaired": 0
+    },
+    "git-config-backport-dual-public-tests": {
+      "trials": 10,
+      "accepted": 6,
+      "both_fail": 1,
+      "mixed": 2,
+      "both_pass": 2,
+      "unpaired": 0
+    },
+    "git-config-backport-smoke-basic": {
+      "trials": 20,
+      "accepted": 19,
+      "both_fail": 0,
+      "mixed": 1,
+      "both_pass": 9,
+      "unpaired": 0
+    },
+    "sqlite-migrations-core-guided-v8": {
+      "trials": 10,
+      "accepted": 7,
+      "both_fail": 0,
+      "mixed": 3,
+      "both_pass": 2,
+      "unpaired": 0
+    },
+    "tabreport-diff": {
+      "trials": 15,
+      "accepted": 12,
+      "both_fail": 0,
+      "mixed": 3,
+      "both_pass": 4,
+      "unpaired": 1
+    },
+    "release-channel": {
+      "trials": 10,
+      "accepted": 7,
+      "both_fail": 0,
+      "mixed": 3,
+      "both_pass": 2,
+      "unpaired": 0
+    }
+  },
+  "families": {
+    "release": {
+      "campaign": "js-release-qwen-60-confirm-001",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "profile_sha256": "d05e3a3ce6b14976f853259e0de556b103882cc0c24a03cbc6c08281047a6d79",
+      "protocol_sha256": "c2a12ec260b2a2184393b2e46e0efd3ddf9342590eacfab6ad0b945d6109c766",
+      "batch_process_s": 271.0297533220146,
+      "load_s": 15.814199914922938,
+      "warmup_s": 2.3532865790184587,
+      "cases": [
+        {
+          "case": 1,
+          "A": {
+            "seed": 19214,
+            "trial": "trial-04-release-channel",
+            "packet_sha256": "9225f59fcec76648ad2894274c0c7a9c83c9bf37a7f9db8ab064f7f231d7c12d",
+            "summary_sha256": "6e6de7faccb888654588db9edbd1ba11e6bef1fb0d06723c0c055b4ba2ef134d",
+            "task_s": 22.59,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "B": {
+            "seed": 19215,
+            "trial": "trial-05-release-channel",
+            "packet_sha256": "3cdc3d42b2d013ebe2f40b418d2608f08a643398079db776d6c28919ed5adb3e",
+            "summary_sha256": "6fa33068f1ebe54a85e131c22e243e46d58c305a61114d20305caa3a4e920792",
+            "task_s": 22.1073,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 13.8494,
+            "reason": "Map retains maximal revision per requested build and latest equal-revision states agree. Null and build zero are handled without mutating input. Both cited commands succeeded and the one-off assertions cover the claimed scenarios."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 9.0799,
+            "reason": "Identical correct patches and comparable successful public and ad hoc assertions. Both check serialized input equality. A describes that check more precisely and retains the tie."
+          }
+        },
+        {
+          "case": 2,
+          "A": {
+            "seed": 19217,
+            "trial": "trial-07-release-channel",
+            "packet_sha256": "897d8db73b4e7c0cf7604225b80e8c8bd9f73fac550aec16e9e9e94b6382b321",
+            "summary_sha256": "2d12512a04c07edf7938b38b8718b90deb6f930941deebf6e4c4c84fcb9467ea",
+            "task_s": 24.2857,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "B": {
+            "seed": 19216,
+            "trial": "trial-06-release-channel",
+            "packet_sha256": "7cba97ad588f2f7cc5ba4456f80642909fedb461719703bad53d0b54b367a3d1",
+            "summary_sha256": "0e73cf25fd40d7834a256494f70dd766e90773417dc8bf649f9709fcca96719c",
+            "task_s": 19.4121,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": false,
+            "full": false
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 12.3711,
+            "reason": "Strict-greater revision update is sufficient since ties agree. Public tests and reinstatement, withdrawal, shuffled order, null and nonmutation assertions produced the claimed outputs. The supplied diff independently confirms the file scope and preserved export."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 6.3614,
+            "reason": "Both algorithms satisfy the contract. B reports five shuffles but iterates four times, and checks the untouched base fixture for mutation after invoking the function only on deep copies. A snapshots the actual argument and its described assertions are supported."
+          }
+        },
+        {
+          "case": 3,
+          "A": {
+            "seed": 19210,
+            "trial": "trial-00-release-channel",
+            "packet_sha256": "a7036ad68c9655bc9c5dcc3be48c25281f3203eed98f594a716ae9772c388272",
+            "summary_sha256": "c63d4368fe22b301c0b4e0fdd733259176f9b29b5ecd56f77ed63d432ecfa150",
+            "task_s": 36.0062,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": false,
+            "full": false
+          },
+          "B": {
+            "seed": 19211,
+            "trial": "trial-01-release-channel",
+            "packet_sha256": "64b100f0f61f56e37f904f9dc01cffcf5716e829c295a709c421e981ca999b89",
+            "summary_sha256": "e0bf3fc6f8097420cbe4edf3b1a59b0465f33a098b531aa2cbae9ba3b77c3255",
+            "task_s": 32.0011,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 10.0556,
+            "reason": "Source filters the channel, retains maximal revision per build, and selects the greatest published winner. The failed assertion compared shuffled rows to unshuffled rows. The corrected check snapshots after shuffling, passes on the same tree and covers the other reported cases. The supplied diff confirms scope."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 6.9572,
+            "reason": "Both implementations and explanations of their corrected checks are sound. A exercises revision ties explicitly and checks nonmutation on each of 20 shuffled multi-record inputs. B checks nonmutation on just a singleton."
+          }
+        },
+        {
+          "case": 4,
+          "A": {
+            "seed": 19212,
+            "trial": "trial-02-release-channel",
+            "packet_sha256": "17f4f1efdbe94ef809ffcb01d0b9f97a5cc6fee5368481ed0861c947da706abd",
+            "summary_sha256": "c1ffe9de1f1891b1ffd469fb848fc73280fee31959d34c8959ea4881bf2b9fa0",
+            "task_s": 22.0577,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": false,
+            "full": false
+          },
+          "B": {
+            "seed": 19213,
+            "trial": "trial-03-release-channel",
+            "packet_sha256": "64517cc33a086506c053bc1f512c33fd60494396e464007c8431effbfbdbb86d",
+            "summary_sha256": "e884697726619c307ac62e52e7e2cf7c29624fb496715b990f328f554cea720c",
+            "task_s": 25.2458,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 7.3371,
+            "reason": "The two-map implementation looks correct and the test enumerates 720 permutations. The claimed check of input-array mutation snapshots recs while currentRelease receives p. Shared records expose field changes, but reordering p would pass. Correct the handoff or check each actual argument."
+          },
+          "pair": {
+            "choice": "B",
+            "elapsed_s": 6.7229,
+            "reason": "B stores revision and state together, preserves the export, and supplies passing assertions for reinstatement, ties, all withdrawn and build zero. Its mutation check snapshots an actual argument, albeit a singleton. A overstates what its snapshot checks."
+          }
+        },
+        {
+          "case": 5,
+          "A": {
+            "seed": 19219,
+            "trial": "trial-09-release-channel",
+            "packet_sha256": "ec78ec6c13b6a32ff45ac68ccf4765ce016931bfebe51953990a7a77c9b14a23",
+            "summary_sha256": "bb7ef7406589a530413700aec2fbc22de2d5d00be734beb2a4d1d7a86224839c",
+            "task_s": 20.3063,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "B": {
+            "seed": 19218,
+            "trial": "trial-08-release-channel",
+            "packet_sha256": "f6a4b87728163a19b37d42a86e03028bd7398d9c3e86712b49367d9a2ad07029",
+            "summary_sha256": "21f5363f26ff58109835b89a4863a06d1ad0bac93bb4ac9645262218685d3111",
+            "task_s": 20.1373,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 10.0775,
+            "reason": "The implementation satisfies the per-build revision and selection rules. The submitted diff changes only the requested file, the cited write receipt confirms its byte counts, and actual argument equality, both reinstatement orders and null cases are asserted in the successful check. The write receipt alone does not inventory historical edits."
+          },
+          "pair": {
+            "choice": "B",
+            "elapsed_s": 9.4657,
+            "reason": "Both patches satisfy the contract. B names its map latest and verifies three explicit orders of the same four-record fixture, plus a complete published-withdrawn-published sequence. Its file-scope description matches the submitted diff without making a broader historical claim."
+          }
+        }
+      ],
+      "ceiling_s": 60
+    },
+    "frame": {
+      "campaign": "reliability-progress-confirmation-frame-decoder-focused-001",
+      "profile": "qwen38-27b-ranalayout-24k-temp06-dflash3-fit2304-dio",
+      "profile_sha256": "27ed32ca8d64d60955676137071155eeef5da3120b98b33bffd3ae6c0297199f",
+      "protocol_sha256": "78101c34da12f41f42ed17607f686c9a02fa48b3dce7d07b3cc897fdee8191cc",
+      "batch_process_s": 1200.3823940739967,
+      "load_s": 15.85379089298658,
+      "warmup_s": 2.2960905127692968,
+      "cases": [
+        {
+          "case": 1,
+          "A": {
+            "seed": 16424,
+            "trial": "trial-14-frame-decoder-focused",
+            "packet_sha256": "25dd4dcbc6fffc10b501e05753d2fc1a7dbfbc3eab7109d5988b7bd5cb52324e",
+            "summary_sha256": "36ca515af918bd1537bbc2278a9206df536165f8967f2ec53460ecfe85c52a99",
+            "task_s": 52.6623,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "90b44cffc5247e043c2818f0639eb91074403fe9b769e1d7c235e4c81e24ca1f"
+          },
+          "B": {
+            "seed": 16425,
+            "trial": "trial-15-frame-decoder-focused",
+            "packet_sha256": "4dac6180105a343e9e56b55a91177fd2eec97db3a5a015c73efd03d105cbe953",
+            "summary_sha256": "d4d168a25d152b3db9563e15397bcc95010857338a5fe7a92e249a544a3a6459",
+            "task_s": 47.7077,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "6f79cf1624c78cb3d06acf32ff7d3af369780f331d9d82be011a2555a21f4ca1"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 17.7219,
+            "reason": "Incremental buffer enforces the cap as soon as the header is complete, emits immutable payloads in order and handles both terminal states. Six-test run and sanity command support the handoff."
+          },
+          "pair": {
+            "choice": "B",
+            "elapsed_s": 5.9396,
+            "reason": "Both implement the contract and cite successful checks. B adds durable coverage for exact max and an empty frame sharing a chunk with a partial next header, plus idempotent finish."
+          }
+        },
+        {
+          "case": 2,
+          "A": {
+            "seed": 16411,
+            "trial": "trial-01-frame-decoder-focused",
+            "packet_sha256": "77236c50bbe9b949a86521d0aff5e05bad929ca409e5b46e17dabb68f0f32638",
+            "summary_sha256": "16a5c74d1a302b78762354f47d2f47e580706988c31588182161c5012f63d9c8",
+            "task_s": 75.8343,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "c8d42e14c9079c16093c83552a0103175daa7f1391ae926ea9ef3c7981850ba8"
+          },
+          "B": {
+            "seed": 16410,
+            "trial": "trial-00-frame-decoder-focused",
+            "packet_sha256": "540f8c634fcaad4a5a3431c7f6f2a9b6bdd69e94ed84cb56de1e2d4493143c06",
+            "summary_sha256": "26c7cc52af86c3a1c8c212e79c25dffffdbcce1a83457cf7379f554c1616cb84",
+            "task_s": 52.482,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "d45b39014377ffaf1f23a123d54ad151d3ef909745c2518b2b0c813388c0b656"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 4.4758,
+            "reason": "Buffered bytes and explicit states satisfy partial frames, oversized headers and terminal calls. Seven-test transcript and independent ad hoc upper and lower bound assertions match the claims. Extra third regression is focused."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 8.764,
+            "reason": "Both parsers handle terminal states. A has explicit failure assignment and covers upper and lower size bounds; B calls a complete four-byte header a three-byte partial in a regression comment."
+          }
+        },
+        {
+          "case": 3,
+          "A": {
+            "seed": 16417,
+            "trial": "trial-07-frame-decoder-focused",
+            "packet_sha256": "23e01bb8e8a3dff997702d5c8466a2b535349abc3c0cf530f5284af24aab0b97",
+            "summary_sha256": "668f8ca736c508195063241e6cf9d8f0dcb98b1f887d6eb80aa37d9e15ceb9f3",
+            "task_s": 83.9873,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "6573cc6513b80d5beaae3e0ccd082b32c85826586061d61ecac6581e22f1cf8d"
+          },
+          "B": {
+            "seed": 16416,
+            "trial": "trial-06-frame-decoder-focused",
+            "packet_sha256": "36ad65460feb88842e39142438d08eb94b2eceaaf7a3c003ff16963a1593cac8",
+            "summary_sha256": "34aa541302a15d6597b7a61620d164dc003d048062de2a3025aeaa43a4131bbb",
+            "task_s": 48.2764,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "fc7ce8907b2d5290a4fcd7ce0f22d6fcc1b49d3273e3a97e0481a0f002f3dd17"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 5.064,
+            "reason": "Open/failed/finished state and bounds checks are consistent. The regressions cover a split header followed by multiple frames, oversize after a good frame, and sticky terminal states; cited suite and edge assertions support the report."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 5.4593,
+            "reason": "Both implement the contract. A includes lasting regression checks for oversize after a valid frame, permanently failed calls and finished calls, whereas B repeats basic zero-length coverage already exercised publicly."
+          }
+        },
+        {
+          "case": 4,
+          "A": {
+            "seed": 16426,
+            "trial": "trial-16-frame-decoder-focused",
+            "packet_sha256": "5c0d5f13fde2d89a38c0306b7e91a6103e09c3681461da82a61a7d49cba8dfc4",
+            "summary_sha256": "4259673a17581bdb97ea143d98ec28d02d362bce3b3fa5cf303263ca756c52da",
+            "task_s": 57.8534,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "50e2c1c8124098091e560f8d9df70863971085f12e71289ac73e85371fa45f5d"
+          },
+          "B": {
+            "seed": 16427,
+            "trial": "trial-17-frame-decoder-focused",
+            "packet_sha256": "7fda7043e5f3d3623257c8572f62415a60d0cfca5dc7a4b12173c69cfbe20ab2",
+            "summary_sha256": "1cb6b638ecfeab29af1461731b03dca101052f75e8caab9265b1739cbb0d1c16",
+            "task_s": 46.4537,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "2b72fc5f8f199da1f5f72640c6821815ea2b3ebc48a2102367a1b23b91cf7f3c"
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 6.6274,
+            "reason": "Decoder behavior looks correct, but the diff changes the supplied tests/test_public.py by adding two methods to PublicTests despite the request to leave supplied tests unchanged. Put regressions in a separate test module for handoff."
+          },
+          "pair": {
+            "choice": "B",
+            "elapsed_s": 5.4735,
+            "reason": "B keeps the supplied suite intact, implements framing and sticky states, and covers split multi-frame and zero-max streams in a separate module. The sanity transcript contains no failure markers."
+          }
+        },
+        {
+          "case": 5,
+          "A": {
+            "seed": 16420,
+            "trial": "trial-10-frame-decoder-focused",
+            "packet_sha256": "1846d0d6f040f8bad297a410e6cfa10777d6f19bc52d12f928eaa49e7538d7a0",
+            "summary_sha256": "d1b1952bf06405ef4d6fb14a8db06dac47c138b29e784d81d4109f860272cb89",
+            "task_s": 49.3323,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "6c96ea009782faa9f41b0f1b85f5fcd5b15279cfc4c31048ac3c00805c4a04f4"
+          },
+          "B": {
+            "seed": 16421,
+            "trial": "trial-11-frame-decoder-focused",
+            "packet_sha256": "3e3b4c8d098bf9740000c180842c3f0edc5b929fa94ba6d0ed9bd746f27e4bf1",
+            "summary_sha256": "fb54c7e3e5a4b770ce5394222eb72783d15ee82d96fcf3386baadcb652a3d4f5",
+            "task_s": 44.9064,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "6533043f965650dfda19cbb361734ad29c524414fc52b46c5a68386d46c6a994"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 5.4468,
+            "reason": "Code and transcripts support the contract, including split headers, cap equality, list isolation and terminal calls. One test name overstates partial-payload coverage: slice 10 ends between frames; separate public and scratch tests cover split delivery."
+          },
+          "pair": {
+            "choice": "B",
+            "elapsed_s": 7.918,
+            "reason": "Correct parsers in both. B commits effective byte-at-a-time and result-mutation regressions; A labels a frame-boundary split as a held partial payload."
+          }
+        },
+        {
+          "case": 6,
+          "A": {
+            "seed": 16414,
+            "trial": "trial-04-frame-decoder-focused",
+            "packet_sha256": "d6f8c25ce7c33a3a91698ab6b4394fb0d6c81f678d32eafb47df3d24f5f13baf",
+            "summary_sha256": "55073711f9fe3ee0994cc3afa61adc6ee5a98018209126f066bb394d74517df2",
+            "task_s": 69.5182,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "ec8b7f40744e01f3461e2d419ff7709db929c2c6001f9e869682aedd70dcf4ca"
+          },
+          "B": {
+            "seed": 16415,
+            "trial": "trial-05-frame-decoder-focused",
+            "packet_sha256": "f9645df3f724f357b4737c0d3abcabdb795b3f4eb1647f4400fd6e6da6ae927a",
+            "summary_sha256": "b83fb8dc7e27dccb3f59323a19ae00fc21634adf752380090b4efa8d8d605882",
+            "task_s": 67.8257,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "9cb742263d1386a42b0e7d38e72ee640cf14edb69316afffedf06b7e04402f96"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 4.488,
+            "reason": "Supporting commands exercise header-only oversize, clean and failed finish, prior list independence and length boundaries. Implementation and the six reported unit tests align with the brief."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 4.2726,
+            "reason": "A leaves the public suite untouched and adds focused regressions separately. B edits the supplied test module. Both appear to parse all frames and reject further feeds after failure."
+          }
+        },
+        {
+          "case": 7,
+          "A": {
+            "seed": 16422,
+            "trial": "trial-12-frame-decoder-focused",
+            "packet_sha256": "53eb091a10050d0d7fd6edfd3a435015194f51fdee891f59ecde788694a6abaa",
+            "summary_sha256": "21fb543a32efabe084eae71827e24e0e573ffd4d1758c35753b3a783ce17b691",
+            "task_s": 62.6131,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": false,
+            "full": false,
+            "review_sha256": "8e1eb16989cf05afb5b59d0752b2a148cc549b284c7386a9f9bfdad4ad92e844"
+          },
+          "B": {
+            "seed": 16423,
+            "trial": "trial-13-frame-decoder-focused",
+            "packet_sha256": "9c22701aafa3add6a217af14c27ac5c850bfc808a420c843b1fb26dff78fefef",
+            "summary_sha256": "71640bb657e751d0e222e4aec4e5a6d9c9d96b1198688f5379e3f5528c0f0868",
+            "task_s": 50.2796,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "35dbbb72be188033f7c328fe384b6a8e9e9064f0b4a2e103a4038d9b6a7decbe"
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 4.8502,
+            "reason": "Handoff attributes max=0 acceptance/rejection to o0007, which never constructs FrameDecoder(0). Its exact-max input shares a feed with a required raise and cannot independently verify acceptance. Decoder logic itself looks correct."
+          },
+          "pair": {
+            "choice": "neither",
+            "elapsed_s": 5.6151,
+            "reason": "A claims absent zero-limit checks. B explicitly claims a committed split-header regression; third[:5] includes all four header bytes and a payload byte. Its scratch split sweep is real, but the claimed durable regression is missing. Both parser implementations look sound."
+          }
+        },
+        {
+          "case": 8,
+          "A": {
+            "seed": 16428,
+            "trial": "trial-18-frame-decoder-focused",
+            "packet_sha256": "588fbb3dfd8f06d2f3f783ebde7457409a49bcc08c0fbc253c981b196dccdbaf",
+            "summary_sha256": "c065cc328f72a4879f68661f94d33b6aeddfec6b7220968b58bcc26ce192ef4c",
+            "task_s": 44.1664,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": false,
+            "full": false,
+            "review_sha256": "064241b3973ed3c15ca9fff91a7e39a9b897ac11fa4b0e98652745539497afc6"
+          },
+          "B": {
+            "seed": 16429,
+            "trial": "trial-19-frame-decoder-focused",
+            "packet_sha256": "4e55cc90a0402898f33abf506b475449f165ff5fadffc859e76ddf094d06f414",
+            "summary_sha256": "70f0cd2b0a9ab03c4a6688deb239b258ccd8705d211207b754fa005bf704233d",
+            "task_s": 38.0938,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "b7a8e7b0c9f7414157022ab11db00be15c7652321ad9b15659e5f5eb117558d3"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 8.2119,
+            "reason": "The parser and tests cover incremental framing, cap enforcement and sticky states. Post-failure feed rejection is demonstrated by the committed regression in the six-test run, though the handoff groups it with scratch checks that only retry finish."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 5.5351,
+            "reason": "A permanently covers post-failure calls and distinguishes successful finish from failure in its report. B describes finished finish as both raising and returning None, although the implementation and inline assertion correctly return None."
+          }
+        },
+        {
+          "case": 9,
+          "A": {
+            "seed": 16412,
+            "trial": "trial-02-frame-decoder-focused",
+            "packet_sha256": "9c5142df935f2a257a628b6903d70368aeb81b33d924dab13ed7172243a308dd",
+            "summary_sha256": "38d5d145ecd0ca8ebe58e71256276cecad53b3b77f2b56595760c7952f2fe2ea",
+            "task_s": 58.3657,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "2d2c8e909b02d53652dc0236f4f4160e9c20b798cf3f448deb35713983ddf442"
+          },
+          "B": {
+            "seed": 16413,
+            "trial": "trial-03-frame-decoder-focused",
+            "packet_sha256": "59de753f203abf60efc93f152ea54e502b048a1bb64e25e8377c5a4df87e475a",
+            "summary_sha256": "e5bba9e250ae9ad0ee1410ddfe32f7f67b561f4b79f3f0e6394766e84e7d0f4c",
+            "task_s": 65.3957,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "0bb25f23dc4f20086fd9027fa38025d0974477bf9b925c5f680abf64afdd7296"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 4.8388,
+            "reason": "Incremental slices yield immutable payloads and preserve partial input, and terminal checks precede parsing. Six-test transcript and edge script cover split input, zero max, cap equality, list mutation, immediate oversize and subsequent rejection."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 4.3464,
+            "reason": "A preserves the public test module and exercises later calls after mutating the returned list on the same decoder. B edits the supplied module and its cited mutation example compares results from different decoder instances."
+          }
+        },
+        {
+          "case": 10,
+          "A": {
+            "seed": 16419,
+            "trial": "trial-09-frame-decoder-focused",
+            "packet_sha256": "627a82ef8cea31dd284e33161cee1bbd5e4943b46f0c2e1fb89065da16a543e5",
+            "summary_sha256": "18c2741e358a245498f56592261f3afda5cccafe1f7dbb51c4b25457d0d24505",
+            "task_s": 43.6819,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "266bcd2e6edb14d57e543f6de8b9eaee10759e469033fa6b7080d55e61b28ef8"
+          },
+          "B": {
+            "seed": 16418,
+            "trial": "trial-08-frame-decoder-focused",
+            "packet_sha256": "1aaed7e2dc0680c6a04e465329e2310b2267e91b0f4edb3d995eaf25909d2da5",
+            "summary_sha256": "afd20593aed2aa066ef38783b8eb04d2d538d03bd34b0a9c72c94d89740e643d",
+            "task_s": 105.8366,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "0224db3f1ab98db5b1b3f4c7b13d120bc39c8d4f6cea176a1ff1e706b02da240"
+          },
+          "first": {
+            "choice": "accept",
+            "elapsed_s": 4.0649,
+            "reason": "Explicit states, immediate size enforcement, a separate regression file and six passing tests match the report. The handoff accurately identifies unexecuted size boundaries and confines runtime claims to listed tests."
+          },
+          "pair": {
+            "choice": "A",
+            "elapsed_s": 5.6783,
+            "reason": "A accurately scopes verification and commits split-header, valid multi-frame and terminal-state checks. B claims byte identity from comparison of newline-normalized text with a hand-built string; two of its regressions also overlap substantially."
+          }
+        }
+      ],
+      "ceiling_s": 180
+    },
+    "backport": {
+      "campaign": "reliability-progress-confirmation-git-config-backport-dual-public-tests-001",
+      "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+      "profile_sha256": "d05e3a3ce6b14976f853259e0de556b103882cc0c24a03cbc6c08281047a6d79",
+      "protocol_sha256": "c7ebbfca1f71eed31de0edda7510b77a1899d2f213aa634f93b24013df70c93f",
+      "batch_process_s": 4165.159125321079,
+      "load_s": 17.936391009017825,
+      "warmup_s": 2.5208665789105,
+      "cases": [
+        {
+          "case": 1,
+          "A": {
+            "seed": 16814,
+            "trial": "trial-04-git-config-backport-dual-public-tests",
+            "packet_sha256": "06b423b55c71daf9e0645acf64b762d446bf054ee78c0cdfa1dd95b68d38eb82",
+            "summary_sha256": "5ccf7165bd4bbf048541271b0630ae7955719f8e862d953ae455d52c946a0904",
+            "task_s": 426.7107,
+            "canonical": true,
+            "clean": true,
+            "source": false,
+            "handoff": true,
+            "full": false,
+            "review_sha256": "8035e2b6de61807ca901ec121842935725351bd06a00e09c7ba0fff1856f924a",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 1.9796,
+                "passed": true,
+                "receipt_sha256": "2a69186cc9f1ea1f3e3ad5fbe41396f5fa4373dd1cfbd0f0271562101a9a32b2"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.0945,
+                "passed": false,
+                "receipt_sha256": "4cd2224400f30de7593202c99d5eb43a4b84cfb31f3aa59288c56c850a25c3c9"
+              }
+            ]
+          },
+          "B": {
+            "seed": 16815,
+            "trial": "trial-05-git-config-backport-dual-public-tests",
+            "packet_sha256": "2b7077b213b500322612b00ca8c822a2a3cfeea57f88e3dd9296bea54ac6b83a",
+            "summary_sha256": "1ec4ea8c5c27c7ae9b957084af976c553afb546e24368f2839dcfa8866499f50",
+            "task_s": 322.2697,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "acf2c1f4224263b80ce13336590af2d1fc8400879dbeefd00b8e39858bff2bf8",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.0767,
+                "passed": true,
+                "receipt_sha256": "9f79aec9defbc556136a2e07acf29ad9b8f177a817211d994e744b99fedbcdfa"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.0478,
+                "passed": true,
+                "receipt_sha256": "677822ee868e73ef05b44fa2ae951835834b59238218c5b63add74b8563e147e"
+              }
+            ]
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 19.3325,
+            "reason": "Both submitted tips have successful discovery observations and stable preflights correctly. Legacy export swallows unrelated ValueErrors from a stand-in, sink or interpolation if they have args (\"Unsafe option key\", \"any text\"). Argument shape does not identify the validation failure."
+          },
+          "pair": {
+            "choice": "neither",
+            "elapsed_s": 11.8482,
+            "reason": "A uses a collidable ValueError args pattern. B improves provenance but consumes every unrelated ValueError with a truthy public is_unsafe_key attribute, including one raised by a stand-in. The contract preserves such exceptions unchanged. Both have visible OK discovery runs at both submitted tips."
+          }
+        },
+        {
+          "case": 2,
+          "A": {
+            "seed": 16810,
+            "trial": "trial-00-git-config-backport-dual-public-tests",
+            "packet_sha256": "20456d30df27d4a75cbfc9b7030ec826ca796b2c29e9edde92e9c94a80e79c6e",
+            "summary_sha256": "aee058426066180fc13f300f9089ccfedc6a3ae4d254eaa802c8284c2571bc26",
+            "task_s": 499.5064,
+            "canonical": true,
+            "clean": true,
+            "source": false,
+            "handoff": true,
+            "full": false,
+            "review_sha256": "03b84aeb9949174c0bf8b80e27afcebd0a099ee0d9c54bf6c10781d4abc522f2",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.2243,
+                "passed": false,
+                "receipt_sha256": "ae8ca184012318d55f7d17bbec8f7d3f2b6801c57522bf3a26767ef1a0de166a"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.0267,
+                "passed": true,
+                "receipt_sha256": "4dd95ecd356d7e593c57bec93e0ae2ac7b907789babdb9a119e98aa37142c01d"
+              }
+            ]
+          },
+          "B": {
+            "seed": 16811,
+            "trial": "trial-01-git-config-backport-dual-public-tests",
+            "packet_sha256": "f2f53b7e8c000adabfe8dd423ef1ed29df7f1d548989dd7515bc6aa72d2b1f7d",
+            "summary_sha256": "8f639a7f384a9e69452fb263ef5233f5744650d859b33e3fb1def6261da196db",
+            "task_s": 625.1294,
+            "canonical": true,
+            "clean": true,
+            "source": false,
+            "handoff": true,
+            "full": false,
+            "review_sha256": "86521f013ce4c03f4703a23b954bc823489cd2f26e7f61b47bfc4e3e52b0f74f",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.3428,
+                "passed": false,
+                "receipt_sha256": "51d3a2fbe79679de82610dfc9f597a45bdd89cd1bb765eeef2b7b85cfde17e87"
+              },
+              {
+                "probe": "error-args",
+                "s": 1.9052,
+                "passed": true,
+                "receipt_sha256": "a2311362a722b8a7cc55fc7e3c5fe6353fca4e7f21ea4d04ee66e2407d725cf3"
+              }
+            ]
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 12.1291,
+            "reason": "Both final-tip discovery runs report 11 tests OK and stable matches its release. Legacy export calls a private validator before dispatching write. It can skip a subclass write override that removes an unsafe key before calling super, or leak ValueError if the override introduces an unsafe key before super. It can also call an unrelated private method on a writer."
+          },
+          "pair": {
+            "choice": "neither",
+            "elapsed_s": 8.3794,
+            "reason": "Both legacy services run a second validation outside parser.write, overriding normal subclass dispatch and misclassifying or leaking errors when a subclass prepares keys inside write. B also attempts to call any non-None attribute named _validate_keys_for_write. Both stable patches and both pairs of final-tip suite observations look sound."
+          }
+        },
+        {
+          "case": 3,
+          "A": {
+            "seed": 16813,
+            "trial": "trial-03-git-config-backport-dual-public-tests",
+            "packet_sha256": "0c7656b97a3d15985ec7743759094a2dfab2f98659b3c2d7e337c8ae9411da42",
+            "summary_sha256": "25da5fe345d75b69ea401f6b4024f074f1e506bcf7e1411c2808d1dcc961ca5a",
+            "task_s": 325.1527,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "90d9f197323d5f02d3d6ff8dc8ffcdbddf04f224047df2b8053ad4afcec6de85",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.1734,
+                "passed": true,
+                "receipt_sha256": "dec0b2e41c327648f8b78c4969395fd655129647c0ad8b580eebeb1adb7761d5"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.0007,
+                "passed": true,
+                "receipt_sha256": "27a24129a00b5707734babd0ace432ab3261a1fbb4ae3c2fb14bb5e882e965af"
+              }
+            ]
+          },
+          "B": {
+            "seed": 16812,
+            "trial": "trial-02-git-config-backport-dual-public-tests",
+            "packet_sha256": "0fa611605a121dee665c3c0ed4fbc6bae36f23bf7e2b26d5f4e5c6e694186907",
+            "summary_sha256": "a0cfd7ef7c8b2c7edcba091b78c7612a689df139ee81c8b787f7c8f3c3cf0fed",
+            "task_s": 443.776,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "509426711e94c84754169d0335d0c6a8212d78776ff22416df9c9b46cb372026",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 1.9964,
+                "passed": true,
+                "receipt_sha256": "76cb23304b5924a8a57fd6ff96090edfe1eedc3e6982199538276926b8952642"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.2179,
+                "passed": true,
+                "receipt_sha256": "ee40c2f84849fc5e2e6673d99348ab92fc38a416700b0dc17078cddfa4d9650a"
+              }
+            ]
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 16.8154,
+            "reason": "Both target revisions show 10 tests OK. The stable patch follows the dedicated error type. Legacy tests arbitrary ValueError subclasses for a truthy _configparser_unsafe_key attribute, even though its own validation raises only exact built-in ValueError. A stand-in exception with dynamic attribute lookup can be swallowed or replaced merely by probing it."
+          },
+          "pair": {
+            "choice": "neither",
+            "elapsed_s": 7.1835,
+            "reason": "Both have successful public discovery on both tips and straightforward stable adaptations. A probes arbitrary ValueError subclasses for a truthy attribute; B classifies any ValueError with any non-None unsafe_option_key attribute, including False. Either misclassifies unrelated exceptions from writers, contrary to the explicit propagation contract."
+          }
+        },
+        {
+          "case": 4,
+          "A": {
+            "seed": 16818,
+            "trial": "trial-08-git-config-backport-dual-public-tests",
+            "packet_sha256": "9ec13878e2f088413b35330b49bd02fe425e05dd7938a9f9c856e7da65cdd9ab",
+            "summary_sha256": "f62ea466295bec8ff261f25c2e81c2a8a8cd2ac29b3d2c93a27f9cfc71e67b64",
+            "task_s": 411.8442,
+            "canonical": true,
+            "clean": true,
+            "source": false,
+            "handoff": true,
+            "full": false,
+            "review_sha256": "48708e787de9b94b9a00107f7d5491efceb75e83cd2365033c79b96317aeb3cf",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 3.0999,
+                "passed": false,
+                "receipt_sha256": "0bdd84e4040a3478ccf4cb533075615129fbb7ffdb62df0b8b2278f5feead2b1"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.0231,
+                "passed": true,
+                "receipt_sha256": "a1af2404bc640cf98d9cd82974eb68ee9b5f8f903b3fcf492a185bd87f8868ae"
+              }
+            ]
+          },
+          "B": {
+            "seed": 16819,
+            "trial": "trial-09-git-config-backport-dual-public-tests",
+            "packet_sha256": "7c7388d266162280e302cd7072ab177aeac2005354f0ccdcf646c5518cf7f274",
+            "summary_sha256": "eef56a35d34f8fe7d6c852d49951397fccb9bdf257441b18c65aa8b1f1013b1d",
+            "task_s": 583.2945,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "b9d978eef5074fad33f10c11543572da109e7b4bb7d5858227e6399b2690c5ae",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.0899,
+                "passed": true,
+                "receipt_sha256": "6cc2d25e741975f5570aaed210f11a397f645799f59ca3474e8084e19e94cb22"
+              },
+              {
+                "probe": "error-args",
+                "s": 1.94,
+                "passed": true,
+                "receipt_sha256": "f27e176de9af0fa6a4c742e3ff664c62bc50d2e0b78e57155d171cd1910d2752"
+              }
+            ]
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 7.52,
+            "reason": "Both submitted tips show 10 tests OK and stable preserves its writer. Legacy precomputes unsafe from parser state and swallows any subsequent ValueError while it is true. A subclass override raising an unrelated ValueError on entry loses its exception whenever an unsafe key happens to be stored; one adding an unsafe key before super leaks validation."
+          },
+          "pair": {
+            "choice": "neither",
+            "elapsed_s": 7.0545,
+            "reason": "A wrongly treats parser state as the origin of a later ValueError. B handles ordinary unmarked ValueErrors and both final suites pass, but probing every ValueError including subclasses for any truthy _unsafe_option_key loses unrelated errors with that attribute or dynamic attribute handling. Its handoff also omits the required handoff file identification."
+          }
+        },
+        {
+          "case": 5,
+          "A": {
+            "seed": 16816,
+            "trial": "trial-06-git-config-backport-dual-public-tests",
+            "packet_sha256": "f144c1a7757143b244be398b450f3076f60cdd8025c93a4880b5cfc3f8a9e378",
+            "summary_sha256": "79797a058899a50c11768e67caa13f98fd80fbdbce0535d3cffa5db03e6040bc",
+            "task_s": 290.4548,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "50222b4270c1e1f2b3106a36ac8750ab68bf551ac1692098b6519dd9ed8f7fc1",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.1191,
+                "passed": true,
+                "receipt_sha256": "1595d5a035d915c71a31ea9f2187209e471ab651c57a6a7b1de553ef46766949"
+              },
+              {
+                "probe": "error-args",
+                "s": 1.9917,
+                "passed": true,
+                "receipt_sha256": "87736711fc63ee1c6051dec36540661f3cda82311a6fde9e0de1158ca11fbd30"
+              }
+            ]
+          },
+          "B": {
+            "seed": 16817,
+            "trial": "trial-07-git-config-backport-dual-public-tests",
+            "packet_sha256": "fb94a07b4b337d592d4f71619b14d67e0b8eb347b5ab6d6bd1f859469cf61cff",
+            "summary_sha256": "61e76d91baeca53b8eda5f486379203f8d0e3ccd6ed2cafff271eacc04a55ab4",
+            "task_s": 206.9162,
+            "canonical": true,
+            "clean": true,
+            "source": true,
+            "handoff": true,
+            "full": true,
+            "review_sha256": "09663f7b47457e7f097e668a0b91bd51819f00f66c95761c85e12ecc0129b212",
+            "historical_probes": [
+              {
+                "probe": "subclass",
+                "s": 2.1162,
+                "passed": true,
+                "receipt_sha256": "846519dcd0d08ce0cf775d8e8388c37e42365203c6269ccc1e4c4def303e30dc"
+              },
+              {
+                "probe": "error-args",
+                "s": 2.0224,
+                "passed": true,
+                "receipt_sha256": "bea044e449f45acd7c40a80b76042e3055a5ddaaa947e27337822f6be0aca1d3"
+              }
+            ]
+          },
+          "first": {
+            "choice": "retry",
+            "elapsed_s": 7.4634,
+            "reason": "The mandated runs show 11 stable and 10 legacy tests OK at the named revisions. Stable matches the branch contract. Legacy catches unrelated ValueErrors with any non-None _unsafe_option_key, even False or an empty string, and probes dynamically implemented attributes of unrelated subclasses. This contradicts the claimed propagation guarantee."
+          },
+          "pair": {
+            "choice": "neither",
+            "elapsed_s": 8.3543,
+            "reason": "Both legacy handlers test for a non-None attribute on all ValueErrors. For example, a third-party ValueError subclass whose __getattr__ returns False for missing flags is converted to INVALID on both branches of the comparison. Both pairs of final-tip suites report OK; B additionally cites a comparison of a single checkout to two tags as checking both tips."
+          }
+        }
+      ],
+      "ceiling_s": 720
+    }
+  },
+  "post_review_witness": {
+    "motivation": "Blind Git review. Post-hoc diagnostic. Outer runtime used isolated read-only grade mode. Both control branches are unmodified starter services and control only for propagation. Original scores are preserved.",
+    "argv": [
+      "/bin/python",
+      "-I",
+      "-S",
+      "/evaluation/observe.py"
+    ],
+    "driver": "import io\nimport json\nimport sys\n\nsys.path.insert(0, \"/workspace\")\nimport service\n\n\nclass DiagnosticError(ValueError):\n    def __getattr__(self, name):\n        if name.startswith(\"__\"):\n            raise AttributeError(name)\n        return \"unspecified\"\n\n\nclass Writer:\n    def __init__(self, error):\n        self.error = error\n        self.calls = 0\n\n    def write(self, stream):\n        self.calls += 1\n        raise self.error\n\n\nrows = []\nfor error in [ValueError(\"ordinary failure\"), DiagnosticError(\"ordinary failure\")]:\n    writer = Writer(error)\n    try:\n        status = service.export(writer, io.StringIO())\n    except Exception as observed:\n        rows.append([writer.calls, observed is error, None])\n    else:\n        rows.append([writer.calls, False, status])\nprint(json.dumps(rows))\n",
+    "observation_order": [
+      "ordinary ValueError",
+      "diagnostic ValueError subclass"
+    ],
+    "observation_fields": [
+      "write_calls",
+      "same_exception_object",
+      "return_status"
+    ],
+    "campaigns": {
+      "reliability-progress-confirmation-git-config-backport-dual-public-tests-001": {
+        "wall_s_including_runtime_setup_and_controls": 13.898,
+        "rows": [
+          {
+            "seed": null,
+            "branch": "stable",
+            "s": 0.5708,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "0f36330a1ae4e77268fb37783358a651b3be10dd722a2391cea4fab08ea231f3",
+            "receipt_sha256": "6a11f555fdf368e545af799a4c3af6f7fd8956caf73d5100be91be25c22b4150"
+          },
+          {
+            "seed": null,
+            "branch": "legacy",
+            "s": 0.6147,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "760e21c81b598d665559b4e6d8e4e9d5cac334951a6ea6dd4aa7d0e8927a2fd7",
+            "receipt_sha256": "b8e5bc8b4770a39f9498067acbd76c4a2cfff33007d33b066be8dd9364402368"
+          },
+          {
+            "seed": 16810,
+            "branch": "stable",
+            "s": 0.588,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "ae0a12d033c65471203d64b02fc0e66380e36282005249d9d4947c8c290671e3"
+          },
+          {
+            "seed": 16810,
+            "branch": "legacy",
+            "s": 0.5823,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "98751e74ddce2fc1ef8c4d825a860b171ad28f2e3687d372aa0cd6c0409dff11",
+            "receipt_sha256": "809407363f09e0231e40c0c172395f0f8cd76e6dc9baca9efcec5f547497dadd"
+          },
+          {
+            "seed": 16811,
+            "branch": "stable",
+            "s": 0.5926,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "58692f73426035032aeee3bce32e2acb15a47e795d8b416884ccea545bd33a10"
+          },
+          {
+            "seed": 16811,
+            "branch": "legacy",
+            "s": 0.5877,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "61c9c99b80269ed2bab2af40a80768ec82fcc94fee09caf21612a460f29647d6",
+            "receipt_sha256": "bc0afa8658c06c24e56d468aef63d28f9b777e69772b9616439ff39001b4b5dc"
+          },
+          {
+            "seed": 16812,
+            "branch": "stable",
+            "s": 0.599,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "2d05b0cc0eabb814feb0ed34ea8137b1b7b3328c1b4a36ed4cd328e8dc09e314"
+          },
+          {
+            "seed": 16812,
+            "branch": "legacy",
+            "s": 0.5885,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "c7d06a68dcf6a6928d57ac03a43f1ee9199afd8c529d3d3ce427b2cc39acbe5a",
+            "receipt_sha256": "750d84e7f02830d26418bf205b820083c3dacadcf32377e34cf6e516495f0b46"
+          },
+          {
+            "seed": 16813,
+            "branch": "stable",
+            "s": 0.6607,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "af9001eb9c08832ba18668d3939078704a06fc7f411510d51870e68f723f8124"
+          },
+          {
+            "seed": 16813,
+            "branch": "legacy",
+            "s": 0.5756,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "a1f8dd70d6fc64d8bf1636c8de724a3426ec1756a017bc56767bf1f5e30ae750",
+            "receipt_sha256": "f2fbe111642ee69ef29f3be1e53d5597945482d6c13b062cb288467b214ff5fc"
+          },
+          {
+            "seed": 16814,
+            "branch": "stable",
+            "s": 0.5593,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "30feb6a1df94fa1a1ede83f9f7af08a224f7a968550157ab0b3d0425e648cf9b"
+          },
+          {
+            "seed": 16814,
+            "branch": "legacy",
+            "s": 0.6676,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "656cfac01bf4075cf3f72972399d619952590a21b56cb572665e75480a36c5c2",
+            "receipt_sha256": "aa0c57315198b60a8024b8eca621cd12f709bb0a03152acc9ad89aaa8afdbf38"
+          },
+          {
+            "seed": 16815,
+            "branch": "stable",
+            "s": 0.5867,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "b3d8d5bbd54e1dfeb20cf685ff6081b3fb323edfa59d6a0e8671b8ba4765bcb6"
+          },
+          {
+            "seed": 16815,
+            "branch": "legacy",
+            "s": 0.6217,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "98d5f1269d41aae6e9917dab0be006896860a409b0ef9c153c403607697ac605",
+            "receipt_sha256": "58d42ec259b800f3992c16466449802f9cb3238ed35feef57a0feaf78126cd3d"
+          },
+          {
+            "seed": 16816,
+            "branch": "stable",
+            "s": 0.5842,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "8d49e5879f7dff7f4844f6b1539bce98f6a6270948af87a726c596e018dfca25"
+          },
+          {
+            "seed": 16816,
+            "branch": "legacy",
+            "s": 0.5921,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "78754b0a1cc24ab4719f6984fe8dce64165b501a4870ca407752b89aa382e68f",
+            "receipt_sha256": "49316f5d45b1217453bd6c5c290cbb142da152aff3cc07d2711937af15e49189"
+          },
+          {
+            "seed": 16817,
+            "branch": "stable",
+            "s": 0.6,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "f7beae0930d1ea6f0c54b5dff18c95d88badf4f5b306398828a972eddb583a48"
+          },
+          {
+            "seed": 16817,
+            "branch": "legacy",
+            "s": 0.6163,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "dd49df21f50911bc96308952f2d011b775de9ca1e9ed49a9c525cd680dec89ff",
+            "receipt_sha256": "68a83018b0f1aa0719f688d9b3b8d13438296781983591d45322859473eb83eb"
+          },
+          {
+            "seed": 16818,
+            "branch": "stable",
+            "s": 0.5955,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "19852bebb168789272c88f992a9c04732855fb2ceb367489d9c078723d733000"
+          },
+          {
+            "seed": 16818,
+            "branch": "legacy",
+            "s": 0.5968,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "a6512ce03c394649a365b8bcbb108b279471326f2275dded55115d1d1559152e",
+            "receipt_sha256": "a9b76679ffd6426a9579b8ecaab8774b7166f2a6eeefc4118536553a089cab43"
+          },
+          {
+            "seed": 16819,
+            "branch": "stable",
+            "s": 0.5935,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "2e0624e18a9ccbea493f9a7c859f391b1578ad90e1b9e95a05b6b42808f0d55d"
+          },
+          {
+            "seed": 16819,
+            "branch": "legacy",
+            "s": 0.5894,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "6d20c86dbec836ad9ecc89adb3a4c5b063dddf2a4b4dc3de84fbd1d19f6e6092",
+            "receipt_sha256": "e6f17ab66af9f8e973dc1c9657cd2a255938baa13c003f55a02e7a8d55228711"
+          }
+        ]
+      },
+      "quantconfirm-layout-git-config-backport-dual-public-tests-seeds14660-14664-001": {
+        "wall_s_including_runtime_setup_and_controls": 8.167,
+        "rows": [
+          {
+            "seed": null,
+            "branch": "stable",
+            "s": 0.595,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "0f36330a1ae4e77268fb37783358a651b3be10dd722a2391cea4fab08ea231f3",
+            "receipt_sha256": "81dd93b92d067d738de059135715f8dbdc318cd2d5331b1a899ae2a9efb422ae"
+          },
+          {
+            "seed": null,
+            "branch": "legacy",
+            "s": 0.5948,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "760e21c81b598d665559b4e6d8e4e9d5cac334951a6ea6dd4aa7d0e8927a2fd7",
+            "receipt_sha256": "123a7c2061694eaaa67dc42b1dc4e670bc3a598cf654030d2dcf601cc742b581"
+          },
+          {
+            "seed": 14660,
+            "branch": "stable",
+            "s": 0.6219,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "707cc934eae5abdadc30a355830cc55f6b48e0213fcf3b9ef3254ff0d6f4a7db"
+          },
+          {
+            "seed": 14660,
+            "branch": "legacy",
+            "s": 0.617,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "6d5050d67d41050ae61657ff44e075e8ac0ea7d5b451276f7e8a43683da46e27",
+            "receipt_sha256": "fc1460034a6f6c6073fb2acd728a76fc43ff9c9f6984b7a4a7355e55361c6bb4"
+          },
+          {
+            "seed": 14661,
+            "branch": "stable",
+            "s": 0.6154,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "295fec8b818969d2b4f558db92d5ffe71faddebeb5f88991fa14d1de01a2e8eb"
+          },
+          {
+            "seed": 14661,
+            "branch": "legacy",
+            "s": 0.6471,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "ea8920f087693becd19b0ee896c8f6e6d1d648a9c5c0d08bc724f0d1bc5e2bc7",
+            "receipt_sha256": "759f51e964c052bc43dfd9c87445edf6f47c53a058e364898ddf7308056db180"
+          },
+          {
+            "seed": 14662,
+            "branch": "stable",
+            "s": 0.6491,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "620ec4cdabcbe30d39b879aeb345574e83f4d0f46995c5253e92a1fe9fb67721"
+          },
+          {
+            "seed": 14662,
+            "branch": "legacy",
+            "s": 0.6107,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "36f6c716f391d2cd5bddd0aa49889d5fb98328114b10cde355744cda95904704",
+            "receipt_sha256": "f6b2b72deb9a19c83dfe696819451667f2d45b1c9eb7d727b72a5de7da6d0ee3"
+          },
+          {
+            "seed": 14663,
+            "branch": "stable",
+            "s": 0.622,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "66a0b8f46f5aa01e87d5616db83d92b43b37756674952b2418b586ad81197dff"
+          },
+          {
+            "seed": 14663,
+            "branch": "legacy",
+            "s": 0.6238,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                false,
+                2
+              ]
+            ],
+            "service_sha256": "e0450162472bb2f5faf7a01e8883b614df7c8a80eefe936b6166a59b6dbab12f",
+            "receipt_sha256": "278dd1faeffe149a2cb0456d8949a1f072272df02fe6004bd95d23122a8b752a"
+          },
+          {
+            "seed": 14664,
+            "branch": "stable",
+            "s": 0.6329,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "5eb07e21a09bf9e9fdac72e54ed0e7edd38c574ae93bc24373f755a37097ff9a",
+            "receipt_sha256": "1b24a914d583a1187bf83739b7953e32da96df5ac99c9fa87eaaa58dde949645"
+          },
+          {
+            "seed": 14664,
+            "branch": "legacy",
+            "s": 0.5959,
+            "observed": [
+              [
+                1,
+                true,
+                null
+              ],
+              [
+                1,
+                true,
+                null
+              ]
+            ],
+            "service_sha256": "54dca838480d87f8025324cee00fe908a08f6591b05299368ceb4f4657115718",
+            "receipt_sha256": "8bf7197df3cbc1dffe4ec9104ab46a68e49f09509b6e2b77ad1bbd50a1f172d2"
+          }
+        ]
+      }
+    }
+  }
+}

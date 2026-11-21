@@ -39,7 +39,7 @@ A diagnostic suggested by that miss distinguishes a loaded model from a model ho
 
 ## Rejection and retry
 
-The separate **60-second** Qwen confirmation produced ten correct implementations and seven accepted handoffs. The three rejected attempts occupied 77.48 task seconds. The archive contains no matched challenger at that ceiling. As a sensitivity check, treat successive disjoint seed pairs as five jobs and allow one fresh-seed retry after independent rejection. In chronological order this moves from 2/5 to 5/5 accepted and from 120.20 to 201.74 task seconds. Reversing the order inside each pair gives 5/5 on the first attempts and no retries. These are hypothetical review-triggered retries on a ready model. Maintainer review delay and model switching would add costs. This sample cannot establish a retry policy. [Original acceptance record](release-channel.md)
+The separate **60-second** Qwen confirmation produced ten correct implementations and seven accepted handoffs. The three rejected attempts occupied 77.48 task seconds. The archive contains no matched challenger at that ceiling. As a sensitivity check, treat successive disjoint seed pairs as five jobs and allow one fresh-seed retry after independent rejection. In chronological order this moves from 2/5 to 5/5 accepted and from 120.20 to 201.74 task seconds. Reversing the order inside each pair gives 5/5 on the first attempts and no retries. These are hypothetical review-triggered retries on a ready model. Maintainer review delay and model switching would add costs. The [blind submission-selection study](serial-selection.md) tests a reviewer who must make the retry decision before seeing the second submission. [Original acceptance record](release-channel.md)
 
 ## When to revisit
 
