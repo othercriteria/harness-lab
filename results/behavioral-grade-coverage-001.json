@@ -1,0 +1,37 @@
+{
+  "baseline_revision": "5f7b47545ebbd9414f7e1ef43ca02733d0f93643",
+  "model_authors": [
+    {
+      "model": "OpenAI gpt-6.2-astra",
+      "contribution": "behavioral grader fixes, portable tests and coverage receipt",
+      "identity_source": "Codex authoring turn_context.model"
+    }
+  ],
+  "measurement": "poe coverage, combined statement and branch coverage of scripts/ by the portable Python suite",
+  "before": {
+    "portable_tests": 278,
+    "project_percent": 38.15,
+    "scripts/behavioral_grade.py": 0,
+    "scripts/grade_issue_selection.py": 0
+  },
+  "after": {
+    "portable_tests": 288,
+    "project_percent": 39.44,
+    "scripts/behavioral_grade.py": 70.71,
+    "scripts/grade_issue_selection.py": 100
+  },
+  "isolated_cpu_checks": {
+    "candidate": "scripts/export_issue_context.py from the baseline revision",
+    "initial_observation": "The fake gh returned the literal URL u. The repository exporter rejected that record before completing the selected and missing cases.",
+    "updated_fixture": "The fake gh supplied a matching issue URL and a timestamp. The selected case exited 0. The missing, zero, unicode and too-many cases each exited 2. All five behavioral checks passed.",
+    "sqlite_observer": "An isolated observer read the expected submitted status from a known single-row database."
+  },
+  "historical_audit": {
+    "comparison": "results/harness-comparison-repeats-055.json",
+    "scope": "Issue-selection trials only. Each archived trial summary matched the published SHA-256. Each passing check's recorded transport outcome was compared against the revised exit-status rule.",
+    "trials": 32,
+    "checks": 160,
+    "passes_disqualified_by_exit_status": 0,
+    "historical_candidates_rerun": false
+  }
+}

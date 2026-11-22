@@ -3,6 +3,7 @@
 import unittest
 
 CASES = (
+    "tests.test_behavioral_grade",
     "tests.test_example_evidence",
     "tests.test_export_issue_context",
     "tests.test_delegate_artifacts",

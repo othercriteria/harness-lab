@@ -58,6 +58,7 @@ class Gate:
         self.output.mkdir(exist_ok=False)
         self.rng = random.Random(20261102)
         self.calls = 0
+        self.steps = 0
         self.records = []
         self.started = time.monotonic()
         write_json(
@@ -88,11 +89,14 @@ class Gate:
             raise ValueError("Probe path escaped workspace")
         return result
 
-    def invoke(self, source, command, setup, fresh=False):
-        self.calls += 1
-        if self.calls > 32:
+    def next_directory(self, role):
+        if self.steps >= 32:
             raise RuntimeError("External gate sandbox-call limit exceeded")
-        directory = self.output / f"step-{self.calls:03d}"
+        self.steps += 1
+        return self.output / f"{role}-{self.steps:03d}"
+
+    def invoke(self, source, command, setup, fresh=False):
+        directory = self.next_directory("step")
         workspace = directory / "workspaces/0000"
         for item in source.rglob("*"):
             if not (
@@ -126,6 +130,7 @@ class Gate:
             },
         )
         prefix = directory / "command"
+        self.calls += 1
         try:
             result, updated = perform_tool(
                 self.runtime, workspace, "execute", {"command": command}, 3, prefix
@@ -137,7 +142,7 @@ class Gate:
     def case(self, name, setup, command):
         write_json(
             self.output / f"case-{len(list(self.output.glob('case-*.json'))):03d}.json",
-            {"name": name, "first_step": self.calls + 1},
+            {"name": name, "first_step": self.steps + 1},
         )
         return self.invoke(self.submission, command, setup, fresh=True)
 
@@ -164,10 +169,7 @@ class Gate:
 
     def observe_sqlite(self, probe, relative, queries):
         """Inspect untrusted database bytes in a clean, data-only verifier."""
-        self.calls += 1
-        if self.calls > 32:
-            raise RuntimeError("External gate sandbox-call limit exceeded")
-        directory = self.output / f"observer-{self.calls:03d}"
+        directory = self.next_directory("observer")
         workspace = directory / "data"
         workspace.mkdir(parents=True)
         for suffix in ("", "-wal", "-shm"):
@@ -187,6 +189,7 @@ class Gate:
             "c.close()\n"
         )
         prefix = directory / "observe"
+        self.calls += 1
         try:
             result, _ = self.runtime.sandbox(
                 workspace,
@@ -269,8 +272,14 @@ def verify_behavior(runtime, submission, task, output):
             check_preflight(gate, require_plan=task == "build-flow-persistence-v2")
             check_output_paths(gate)
     except UnsafeCleanup as error:
-        gate.record("unsafe-cleanup", False, {"message": str(error)})
-        gate.finish()
+        try:
+            gate.record("unsafe-cleanup", False, {"message": str(error)})
+            gate.finish()
+        except BaseException as audit_error:
+            error.add_note(
+                f"Could not persist cleanup failure: {type(audit_error).__name__}: "
+                f"{audit_error}"
+            )
         raise
     except Exception as error:
         gate.record(

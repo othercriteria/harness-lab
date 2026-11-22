@@ -11,7 +11,7 @@ if a[:2]!=['issue','view'] or '--repo' not in a or a[a.index('--repo')+1]!='exam
 if set(a[a.index('--json')+1].split(','))!=set('number,state,title,body,url,updatedAt,labels'.split(',')):sys.exit(5)
 n=int(a[2])
 if n==113:sys.exit(3)
-print(json.dumps(dict(number=n,state='CLOSED',title=str(n),body='record',labels=[dict(name='z'),dict(name='a')],url='u',updatedAt='t')))
+print(json.dumps(dict(number=n,state='CLOSED',title=str(n),body='record',labels=[dict(name='z'),dict(name='a')],url=f'https://github.com/example/repo/issues/{n}',updatedAt='2026-11-15T12:00:00Z')))
 """
 
 
@@ -39,6 +39,9 @@ def check(gate):
             if gate.absent(case, "probe/calls")
             else [json.loads(s) for s in gate.read(case, "probe/calls").splitlines()]
         )
+        status = case.result.get("returncode")
+        stopped_by = case.result.get("stopped_by")
+        completed = type(status) is int and status >= 0 and stopped_by is None
         if valid:
             pkt = (
                 json.loads(gate.read(case, "probe/out"))
@@ -46,7 +49,9 @@ def check(gate):
                 else {}
             )
             ok = (
-                case.result.get("ok")
+                completed
+                and status == 0
+                and case.result.get("ok") is True
                 and sorted(c[2] for c in calls) == ["12", "9"]
                 and [r["number"] for r in pkt.get("issues", [])] == [9, 12]
                 and all(
@@ -56,7 +61,9 @@ def check(gate):
             )
         else:
             ok = (
-                not case.result.get("ok")
+                completed
+                and status > 0
+                and case.result.get("ok") is False
                 and gate.absent(case, "probe/out")
                 and (
                     any(c[:3] == ["issue", "view", "113"] for c in calls)
@@ -64,4 +71,6 @@ def check(gate):
                     else not calls
                 )
             )
-        gate.record(name, ok, {"calls": calls, "exit": case.result.get("returncode")})
+        gate.record(
+            name, ok, {"calls": calls, "exit": status, "stopped_by": stopped_by}
+        )
