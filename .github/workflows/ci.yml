@@ -33,6 +33,8 @@ jobs:
         run: python -S examples/replaying-worker-trace/replay.py
       - name: Check the Footsteps probe receipts and their substitution controls
         run: python -S examples/binding-probe-results/replay.py
+      - name: Replay the two source-review objections and artifact substitutions
+        run: python -S examples/replaying-review-objections/replay.py
       - name: Verify walkthrough sources, historical tests and public recipe pins
         run: python -B -S -m unittest -v tests.test_public_pins
       - name: Install pinned developer tools

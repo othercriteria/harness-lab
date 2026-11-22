@@ -1,0 +1,94 @@
+"""Outer-only export of issue text for a frozen Worker input."""
+
+import argparse
+import datetime
+import json
+import re
+import subprocess
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("repository", help="GitHub OWNER/REPO")
+    parser.add_argument("output", type=Path, help="new JSON file in the staging tree")
+    parser.add_argument(
+        "--issue",
+        action="append",
+        metavar="NUMBER",
+        default=[],
+        help="select one issue by number; repeat up to 50 times",
+    )
+    args = parser.parse_args()
+    if not re.fullmatch(r"[\w.-]+/[\w.-]+", args.repository):
+        parser.error("expected OWNER/REPO")
+    fields = "number,state,title,body,url,updatedAt,labels"
+    if args.issue:
+        numbers = []
+        for value in args.issue:
+            if not re.fullmatch(r"[0-9]+", value) or value.lstrip("0") == "":
+                parser.error(f"invalid issue number: {value!r}")
+            number = int(value)
+            if number not in numbers:
+                numbers.append(number)
+        if len(numbers) > 50:
+            parser.error("at most 50 issues may be selected")
+        rows = []
+        for number in numbers:
+            try:
+                raw = subprocess.check_output(
+                    [
+                        "gh",
+                        "issue",
+                        "view",
+                        str(number),
+                        "--repo",
+                        args.repository,
+                        "--json",
+                        fields,
+                    ]
+                )
+            except subprocess.CalledProcessError as exc:
+                parser.error(f"failed to fetch issue {number}: gh exited {exc.returncode}")
+            row = json.loads(raw)
+            row["labels"] = sorted(label["name"] for label in row["labels"])
+            rows.append(row)
+        scope = "Selected issue titles, bodies and label names. Comments and PRs excluded."
+    else:
+        # Request an extra row to distinguish a complete snapshot from a capped page.
+        raw = subprocess.check_output(
+            [
+                "gh",
+                "issue",
+                "list",
+                "--repo",
+                args.repository,
+                "--state",
+                "all",
+                "--limit",
+                "51",
+                "--json",
+                fields,
+            ]
+        )
+        rows = json.loads(raw)
+        if len(rows) > 50:
+            parser.error("more than 50 issues; curate a smaller issue packet")
+        for row in rows:
+            row["labels"] = sorted(label["name"] for label in row["labels"])
+        scope = "Open and closed issue titles, bodies and label names. Comments and PRs excluded."
+    packet = {
+        "repository": args.repository,
+        "retrieved_at": datetime.datetime.now(datetime.UTC).isoformat(),
+        "scope": scope,
+        "issues": sorted(rows, key=lambda row: row["number"]),
+    }
+    data = json.dumps(packet, indent=2, ensure_ascii=False) + "\n"
+    if len(data.encode()) > 96 * 1024:
+        parser.error("issue packet exceeds 96 KiB; curate a smaller packet")
+    with args.output.open("x", encoding="utf-8") as out:
+        out.write(data)
+
+
+if __name__ == "__main__":
+    main()

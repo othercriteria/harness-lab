@@ -170,6 +170,8 @@ summary.
    Credit that check to its reviewer. Keep an accurate narrower claim, such as
    “compiled both modules,” even when integration remains untested.
 
+When source review turns up a possible defect, write down the failure you expect and check it against the submitted artifact and a reference. Keep the original timed grade and record what happened even when the reviewer’s objection was refuted. [Replay two source-review objections](../examples/replaying-review-objections/README.md)
+
 The [worked example](../examples/reviewing-worker-output/README.md) includes
 the original disputed command and the historical decision. The [audit](../results/verification-claims-audit-001.json)
 includes cases where inspection supported the conclusion despite an imprecise

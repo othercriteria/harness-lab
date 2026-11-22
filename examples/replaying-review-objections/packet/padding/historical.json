@@ -1,0 +1,9 @@
+{
+  "artifact_sha256": "c088782dab5bd892ee305db3d4dc131c1aa6a8c97c3693a598c4a28a3ae0fd34",
+  "summary_sha256": "96c027f0607bbc62ac2185883de090c31ef85e78eaad0f088d8341fc72ac7815",
+  "passed": false,
+  "exit": 1,
+  "lookup_count": 0,
+  "output_numbers": [],
+  "stderr": "Traceback (most recent call last):\n  File \"/workspace/scripts/export_issue_context.py\", line 94, in <module>\n    main()\n    ~~~~^^\n  File \"/workspace/scripts/export_issue_context.py\", line 31, in main\n    number = int(value)\nValueError: Exceeds the limit (4300 digits) for integer string conversion: value has 4501 digits; use sys.set_int_max_str_digits() to increase the limit\n"
+}

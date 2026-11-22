@@ -1,0 +1,120 @@
+{
+  "runtime": {
+    "python": "/nix/store/7jydrdpxlsqjdlrxxxy15i5vw4bad4rs-python3-3.13.15/bin/python3.13",
+    "python_sha256": "f99ae892afc2b4b93697dc439b63369badf321b8d43222144d381852492ea9b3",
+    "transport_manifest_sha256": "c4be4a748d336d0ed5c75aebd6273cc20b0643df17abd9efb090e8e825ef0bf4"
+  },
+  "cases": {
+    "padding": {
+      "objection": "Converting the original decimal spelling with int() rejects a valid selection before the lookup.",
+      "expected": {
+        "exit": 0,
+        "lookups": [
+          [
+            "issue",
+            "view",
+            "7"
+          ]
+        ],
+        "numbers": [
+          7
+        ]
+      },
+      "historical_receipt_sha256": "850033b61e68ace8fdd736dc3414914bf2ef41587e926e87a80fcecaa5e69094",
+      "timed_machine_pass": true,
+      "full_reviewed_result": false,
+      "witness_verdict": "confirmed",
+      "candidate": {
+        "run": "comp55-issue-selection-worker-19550-001",
+        "role": "candidate",
+        "tree_sha256": "b1f7fbbbfc5e251a53ed4ff0ee3aa6d10755b8603c9284c3fbd21c3946567de5",
+        "witness_sha256": "4fa912929886db2d4c90eaaa4b7ccc80f9fbac5d31cc24a83609695b7365cbd2",
+        "runtime_sha256": "09b95013be4b10f4e0840e8f8ce98e348db30977d57174d4320eaa5a04cdd38d",
+        "observed": {
+          "exit": 1,
+          "stderr": "Traceback (most recent call last):\n  File \"/workspace/scripts/export_issue_context.py\", line 94, in <module>\n    main()\n    ~~~~^^\n  File \"/workspace/scripts/export_issue_context.py\", line 31, in main\n    number = int(value)\nValueError: Exceeds the limit (4300 digits) for integer string conversion: value has 4501 digits; use sys.set_int_max_str_digits() to increase the limit\n",
+          "lookups": [],
+          "numbers": null
+        }
+      },
+      "reference": {
+        "run": "comp55-issue-selection-worker-19550-001",
+        "role": "reference",
+        "tree_sha256": "1515826ef365921a5a49b16674a639d71d38d85976231922ee10ba095ad587ac",
+        "witness_sha256": "4fa912929886db2d4c90eaaa4b7ccc80f9fbac5d31cc24a83609695b7365cbd2",
+        "runtime_sha256": "09b95013be4b10f4e0840e8f8ce98e348db30977d57174d4320eaa5a04cdd38d",
+        "observed": {
+          "exit": 0,
+          "stderr": "",
+          "lookups": [
+            [
+              "issue",
+              "view",
+              "7"
+            ]
+          ],
+          "numbers": [
+            7
+          ]
+        }
+      }
+    },
+    "csv": {
+      "objection": "The LF-only CSV writer may split the quoted Team\rNorth field across records.",
+      "expected": {
+        "exit": 0,
+        "rows": [
+          [
+            "team",
+            "item",
+            "kind",
+            "before_minutes",
+            "after_minutes",
+            "before_status",
+            "after_status",
+            "delta_minutes"
+          ],
+          [
+            "Team\rNorth",
+            "desk",
+            "added",
+            "",
+            "7",
+            "",
+            "open",
+            "7"
+          ]
+        ],
+        "terminator": "LF"
+      },
+      "historical_receipt_sha256": "90ffff94dcd1c1b4ce9bd6d63796376871ef83164057f65e4191b25980d5c661",
+      "timed_machine_pass": false,
+      "full_reviewed_result": false,
+      "witness_verdict": "refuted",
+      "candidate": {
+        "run": "comp55-tabreport-diff-aider-19551-001",
+        "role": "candidate",
+        "tree_sha256": "1468a460763e5012a92ee045faaf1b84b6090c05e9232cd60b9c0484ac1b6793",
+        "witness_sha256": "0d3d7ceac8a56b4ff569808e6b6dcb3498320277df1d025752d3ce1613c6df0a",
+        "runtime_sha256": "09b95013be4b10f4e0840e8f8ce98e348db30977d57174d4320eaa5a04cdd38d",
+        "observed": {
+          "exit": 0,
+          "stderr": "<frozen runpy>:130: RuntimeWarning: 'tabreport.diff' found in sys.modules after import of package 'tabreport', but prior to execution of 'tabreport.diff'; this may result in unpredictable behaviour\n",
+          "csv_hex": "7465616d2c6974656d2c6b696e642c6265666f72655f6d696e757465732c61667465725f6d696e757465732c6265666f72655f7374617475732c61667465725f7374617475732c64656c74615f6d696e757465730a225465616d0d4e6f727468222c6465736b2c61646465642c2c372c2c6f70656e2c370a"
+        }
+      },
+      "reference": {
+        "run": "comp55-tabreport-diff-aider-19551-001",
+        "role": "reference",
+        "tree_sha256": "217b30e4ef1881da3fbbb94e0a02393f53b2cc4be4dc8d251685068aecb5a239",
+        "witness_sha256": "0d3d7ceac8a56b4ff569808e6b6dcb3498320277df1d025752d3ce1613c6df0a",
+        "runtime_sha256": "09b95013be4b10f4e0840e8f8ce98e348db30977d57174d4320eaa5a04cdd38d",
+        "observed": {
+          "exit": 0,
+          "stderr": "",
+          "csv_hex": "227465616d222c226974656d222c226b696e64222c226265666f72655f6d696e75746573222c2261667465725f6d696e75746573222c226265666f72655f737461747573222c2261667465725f737461747573222c2264656c74615f6d696e75746573220a225465616d0d4e6f727468222c226465736b222c226164646564222c22222c2237222c22222c226f70656e222c2237220a"
+        }
+      }
+    }
+  }
+}

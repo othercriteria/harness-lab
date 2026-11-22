@@ -1,0 +1,10 @@
+#!/bin/python3
+import json,sys
+from pathlib import Path
+a=sys.argv[1:]
+with Path('probe/calls').open('a') as f:f.write(json.dumps(a)+'\n')
+if a[:2]!=['issue','view'] or '--repo' not in a or a[a.index('--repo')+1]!='example/repo':sys.exit(4)
+if set(a[a.index('--json')+1].split(','))!=set('number,state,title,body,url,updatedAt,labels'.split(',')):sys.exit(5)
+n=int(a[2])
+if n==113:sys.exit(3)
+print(json.dumps(dict(number=n,state='CLOSED',title=str(n),body='record',labels=[dict(name='z'),dict(name='a')],url='u',updatedAt='t')))

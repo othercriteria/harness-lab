@@ -108,7 +108,7 @@ CSV with LF record endings could split a label containing a bare carriage
 return. In the pinned runtime, the frozen reference and all seven implemented
 Tabreport artifacts, including mini’s retained workspace, quoted the field
 correctly. The unchanged starter from Aider’s first seed produced no CSV.
-This post-run control is recorded separately from the frozen grades.
+This post-run control is recorded separately from the frozen grades. The CPU walkthrough reproduces the CSV observation and the padded-number failure on two identified artifacts. [Replay both source-review objections](../examples/replaying-review-objections/README.md)
 
 **What to use.** Worker remains the Lab’s default when the maintainer needs
 inspectable verification. Aider is worth trying for bounded edits with known

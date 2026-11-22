@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "exit": 0,
+  "expected": [
+    [
+      "team",
+      "item",
+      "kind",
+      "before_minutes",
+      "after_minutes",
+      "before_status",
+      "after_status",
+      "delta_minutes"
+    ],
+    [
+      "Team\rNorth",
+      "desk",
+      "added",
+      "",
+      "7",
+      "",
+      "open",
+      "7"
+    ]
+  ],
+  "observed_rows": [
+    [
+      "team",
+      "item",
+      "kind",
+      "before_minutes",
+      "after_minutes",
+      "before_status",
+      "after_status",
+      "delta_minutes"
+    ],
+    [
+      "Team\rNorth",
+      "desk",
+      "added",
+      "",
+      "7",
+      "",
+      "open",
+      "7"
+    ]
+  ],
+  "output_bytes": "7465616d2c6974656d2c6b696e642c6265666f72655f6d696e757465732c61667465725f6d696e757465732c6265666f72655f7374617475732c61667465725f7374617475732c64656c74615f6d696e757465730a225465616d0d4e6f727468222c6465736b2c61646465642c2c372c2c6f70656e2c370a",
+  "summary_sha256": "379b8bc1d66a9f61e278bf61395678303d7f7acadeac5194a1753f683ab2f618"
+}

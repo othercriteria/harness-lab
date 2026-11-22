@@ -1,0 +1,165 @@
+"""Compare two work-log snapshots and render the resulting changes."""
+
+import argparse
+import csv
+import io
+import json
+import sys
+from pathlib import Path
+from typing import TextIO
+
+from .csvio import read_records
+
+DIFF_FORMATS = ("json", "csv")
+_DIFF_HEADINGS = (
+    "team",
+    "item",
+    "kind",
+    "before_minutes",
+    "after_minutes",
+    "before_status",
+    "after_status",
+    "delta_minutes",
+)
+
+
+def _snapshot_index(records, side):
+    index = {}
+    for record in records:
+        identity = (record.team, record.item)
+        if identity in index:
+            raise ValueError(f"duplicate {side} identity: {identity[0]!r}, {identity[1]!r}")
+        index[identity] = record
+    return index
+
+
+def compare_records(before, after):
+    """Compare two finite iterables of Record objects by exact team/item identity."""
+    before_index = _snapshot_index(before, "before")
+    after_index = _snapshot_index(after, "after")
+    changes = []
+
+    for team, item in sorted(
+        set(before_index) | set(after_index),
+        key=lambda identity: (
+            identity[0].casefold(),
+            identity[0],
+            identity[1].casefold(),
+            identity[1],
+        ),
+    ):
+        before_record = before_index.get((team, item))
+        after_record = after_index.get((team, item))
+
+        if before_record is not None and after_record is not None:
+            if before_record.minutes == after_record.minutes and before_record.status == after_record.status:
+                continue
+            kind = "modified"
+        elif before_record is not None:
+            kind = "removed"
+        else:
+            kind = "added"
+
+        before_minutes = None if before_record is None else before_record.minutes
+        after_minutes = None if after_record is None else after_record.minutes
+        before_status = None if before_record is None else before_record.status
+        after_status = None if after_record is None else after_record.status
+
+        changes.append(
+            {
+                "team": team,
+                "item": item,
+                "kind": kind,
+                "before_minutes": before_minutes,
+                "after_minutes": after_minutes,
+                "before_status": before_status,
+                "after_status": after_status,
+                "delta_minutes": (after_minutes or 0) - (before_minutes or 0),
+            }
+        )
+
+    return changes
+
+
+def _json_cell(value):
+    return value
+
+
+def _csv_cell(value):
+    if value is None:
+        return ""
+    return str(value)
+
+
+def render_diff(changes, *, format="json"):
+    """Render comparison rows as a JSON array or CSV table."""
+    if format == "json":
+        return json.dumps(list(changes), ensure_ascii=False) + "\n"
+
+    if format == "csv":
+        destination = io.StringIO(newline="")
+        writer = csv.writer(destination, lineterminator="\n")
+        writer.writerow(_DIFF_HEADINGS)
+        for change in changes:
+            writer.writerow([_csv_cell(change[heading]) for heading in _DIFF_HEADINGS])
+        return destination.getvalue()
+
+    raise ValueError("format must be one of: " + ", ".join(DIFF_FORMATS))
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(description="Compare two CSV work-log snapshots.")
+    parser.add_argument("before", help="Earlier UTF-8 CSV file, or - for stdin")
+    parser.add_argument("after", help="Later UTF-8 CSV file, or - for stdin")
+    parser.add_argument("--format", choices=DIFF_FORMATS, default="json")
+    parser.add_argument("--output", help="Write UTF-8 report to this file instead of stdout")
+    return parser
+
+
+def _read_snapshot(path, stdin):
+    if path == "-":
+        return read_records(stdin)
+    with Path(path).open("r", encoding="utf-8", newline="") as source:
+        return read_records(source)
+
+
+def main(argv=None, *, stdin=None, stdout=None, stderr=None):
+    """Run the snapshot-diff CLI. Optional streams follow the package convention."""
+    if stdin is None:
+        stdin = sys.stdin
+    if stdout is None:
+        stdout = sys.stdout
+    if stderr is None:
+        stderr = sys.stderr
+
+    args = build_parser().parse_args(argv)
+
+    if args.before == "-" and args.after == "-":
+        stderr.write("error: both inputs cannot be stdin\n")
+        return 2
+
+    try:
+        before_records = _read_snapshot(args.before, stdin)
+        after_records = _read_snapshot(args.after, stdin)
+        changes = compare_records(before_records, after_records)
+        report = render_diff(changes, format=args.format)
+    except (ValueError, OSError, UnicodeError) as error:
+        stderr.write(f"error: {error}\n")
+        return 2
+
+    if args.output is None:
+        stdout.write(report)
+        return 0
+
+    try:
+        with Path(args.output).open("w", encoding="utf-8", newline="") as destination:
+            destination.write(report)
+    except (OSError, UnicodeError) as error:
+        stderr.write(f"error: {error}\n")
+        return 2
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
