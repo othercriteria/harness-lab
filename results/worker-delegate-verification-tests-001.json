@@ -1,0 +1,62 @@
+{
+  "job_id": "668ff65d503c442091e49b7a2c43a435",
+  "package_id": "eded3c5e757bbb4c98ad1dc0502375dd48a0b1f620bee40816779be4f2e9f32b",
+  "snapshot_id": "ace85cac70821e4ed416d52f697c2b0c1ca34e50086d008ca871288e6560f968",
+  "recipe": "apprentice-qwen-32k-v1",
+  "target_artifact": "qwen38-27b-ranalayout-q4",
+  "target_gguf_sha256": "91c34c55de4defcc5891f08997b7d4543a171d7e2aa6ab752bff4eec27279ba6",
+  "draft_artifact": "qwen38-27b-dflash-q4",
+  "seed": 19580,
+  "authored_files": [
+    "tests/test_delegate_verify.py"
+  ],
+  "clean_completion": true,
+  "worker_seconds": 161.24272137507796,
+  "dispatch_seconds": 187.90609016409144,
+  "review": {
+    "artifact": "reviewed-artifact",
+    "artifact_sha256": "4fc5abf4b6fc6a972f0e66ce3cb9825b755e80f14695541935e170dbf8db3a91",
+    "decision": "accepted_with_repairs",
+    "job_id": "668ff65d503c442091e49b7a2c43a435",
+    "notes": "Worker supplied the real snapshot fixture, recording evaluator, independent identity calculation and outcome tests. The Maintainer consolidated seven tests into five, removed assertions on explanatory prose and added an unchanged input to the sealed-tree comparison.",
+    "package_id": "eded3c5e757bbb4c98ad1dc0502375dd48a0b1f620bee40816779be4f2e9f32b",
+    "reviewer": "Outer Maintainer",
+    "verification": "Read the original and revised tests. Replayed each in isolation against the real verifier and seven faulty variants. Both passed on the original. All seven variants produced assertion failures without test errors in each suite."
+  },
+  "original_test_sha256": "82fa6591fb3861c63f1c864b26bd84e7377554005d1c09d8c2ebf3b27aa869ce",
+  "landed_test_sha256": "3173afb539ef8de14ad5249edfcef707773815f688d843ca5506214dd88674ff",
+  "review_sha256": "aa61ffbd98ee4adaa78ee74fb5d8808f6c4f75fc0b45f84a02c828acaea6130f",
+  "application_sha256": "d55fcb77cee46efe7170150998dd1d0bb52b5de3fda7ea0e79fe9c1c774e1158",
+  "cleanup_verified": true,
+  "restoration_record": "2026-11-22-gpu-quiet-072/restoration-verification.json",
+  "original_tests": 7,
+  "landed_tests": 5,
+  "isolated_controls": [
+    "Evaluate the mutable workspace",
+    "Report an empty check plan as passed",
+    "Identify the base tree as the submission",
+    "Drop executable bits",
+    "Retain a deleted file",
+    "Allow a partial pass",
+    "Accept successful checks automatically"
+  ],
+  "integration": "The Maintainer registered the reviewed tests in the portable suite. The tests use real snapshot export and sealing, and a recording stand-in for the evaluator transport.",
+  "coverage": {
+    "before": {
+      "project_percent": 35.88,
+      "verifier_percent": 10.26,
+      "verifier_statements_covered": 8,
+      "verifier_statements": 58,
+      "verifier_branches_covered": 0,
+      "verifier_branches": 20
+    },
+    "after": {
+      "project_percent": 36.41,
+      "verifier_percent": 97.44,
+      "verifier_statements_covered": 57,
+      "verifier_statements": 58,
+      "verifier_branches_covered": 19,
+      "verifier_branches": 20
+    }
+  }
+}
