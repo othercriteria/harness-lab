@@ -1,0 +1,14 @@
+{
+  "id": "issue-selection",
+  "kind": "repository-feature",
+  "split": "development",
+  "version": 2,
+  "admission_status": "admitted",
+  "public_test_command": "python -m unittest discover -s tests",
+  "test_counts": {
+    "public": 3,
+    "private": 4
+  },
+  "fixture_validation": "isolated-only",
+  "evaluator_revision": "Adds a private test of long zero padding and deduplication. Public inputs are byte-identical to the admitted comparison fixture."
+}

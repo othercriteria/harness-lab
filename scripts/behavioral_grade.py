@@ -232,6 +232,8 @@ def verify_behavior(runtime, submission, task, output):
         "build-flow-persistence-v2",
     }:
         from grade_artifacts import check
+    elif task == "issue-selection":
+        from grade_issue_selection import check
     elif task == "tabreport-maintenance":
         from grade_tabreport import check
     elif task == "tabreport-diff":

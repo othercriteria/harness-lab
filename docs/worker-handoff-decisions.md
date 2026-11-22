@@ -80,3 +80,20 @@ No recorded response contained a finish call. An unanswered terminal request rev
 The brief contributed a second difficulty. Both independent readers interpreted indented openers as outside the assignment. Several Workers treated the words *in scope are flush-left* as a reason to change them. After the first four jobs missed the cue window, we prepared a separate four-job delivery check with a wider window and an explicit scope clarification. Its predeclared trigger was a task state with zero exposures in the original panel. Both states received the original cue, so no follow-up jobs were dispatched.
 
 The cue remains experimental. Every control timed out, and the run showed no clean handoff gain from adding the timing message. A more informative repeat would use an internal job where the incumbent sometimes finishes cleanly and sometimes leaves a useful artifact without a handoff. The implementation was confined to frozen campaign packages. No default changed. The [case-level pilot results](../results/handoff-latency-cue-001.json) include the contract, package identities, per-request clock readings, delivered cues, and independent decisions.
+
+## What happened after the first green suite?
+
+In the four-harness comparison, Worker sometimes spent longer checking a change than writing it. We replayed all 20 Worker attempts on CPU. For each attempt we took the workspace exported by its **first successful run of unittest discovery**, including any tests Worker had already added, and the workspace it submitted. We ran the historical canonical and external checks in separate isolated evaluators on both trees.
+
+| Assignment | Pairs | Both gates green at both points | Identical files at submission | Median later model-request time |
+|---|---:|---:|---:|---:|
+| Issue selection | 8 | 8 | 7 | 58.1 s |
+| Evidence reader | 8 | 8 | 8 | 11.0 s |
+| Frame Decoder | 2 | 2 | 2 | 9.3 s |
+| Tabreport | 2 | 2 | 2 | 19.7 s |
+
+Some of that time bought evidence a maintainer could use. On exporter seed 19556, a logging stand-in showed that invalid input caused zero lookups, 50 distinct selections caused exactly 50, and a failed lookup left no partial packet. It took several tries to make the scratch driver exercise those cases correctly. All eight Worker exporters still failed the long-padding check at both points. On seed 19555 the only later file change was a new test module, although the brief restricted edits to the exporter. On reader seed 19553, Worker spent 116 seconds of model-request time after green, much of it debugging its scratch setup. It ultimately demonstrated mixed and empty reports and delivered the same files.
+
+The two Tabreport attempts show why the timing of a check matters. We also replayed the **earlier failing** workspace suite for each. Both earlier trees already passed the independent code gates. On seed 19550, Worker's subprocess test caught a real warning on stderr. Changing the package exports removed the warning and made all 44 workspace tests pass. On seed 19551, a new test requested the default JSON output while expecting CSV. Correcting the test made all 34 pass. Both corrections preceded the first green suite.
+
+For a future prompt experiment, ask Worker to name one outstanding contract question and the observation that would settle it before starting another check. A failed check with a clear consequence can justify a repair. An unchanged artifact can still gain useful handoff evidence. The clock above includes finalization and excludes tool execution. These replays establish artifact quality at the two snapshots. An early handoff's accuracy and time savings would require a live comparison. [Paired receipts, timings and snapshot identities](../results/worker-first-green-replay-001.json)

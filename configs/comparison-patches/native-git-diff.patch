@@ -1,0 +1,11 @@
+--- a/comparison/run_native_trial.py
++++ b/comparison/run_native_trial.py
+@@ -31,7 +31,7 @@
+  try:
+   with cancellation():
+    initial=output/'initial';shutil.copytree(task/'public',initial)
+-   result,archive=runtime.sandbox(initial,{'mode':'tool','name':'execute','arguments':{'command':'git init -q && git config user.name Fixture && git config user.email fixture@example.invalid && git add . && git commit -qm fixture'},'timeout':10},output/'initial-git')
++   result,archive=runtime.sandbox(initial,{'mode':'tool','name':'execute','arguments':{'command':'git init -q && git config diff.autoRefreshIndex false && git config user.name Fixture && git config user.email fixture@example.invalid && git add . && git commit -qm fixture'},'timeout':10},output/'initial-git')
+    if not result['ok']:raise RuntimeError('Native Git fixture setup failed')
+    workspace=output/'workspace';unpack_snapshot(archive,workspace)
+    source_files=[str(p.relative_to(workspace)) for p in sorted(workspace.rglob('*.py')) if not ('.git' in p.parts or 'tests' in p.relative_to(workspace).parts or p.name=='tests.py')]
