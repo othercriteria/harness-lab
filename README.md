@@ -26,6 +26,8 @@ python3 examples/check_evidence.py examples/reviewing-worker-output/files.json
 
 The Maintainer selects the source files the Worker can see and the paths it can edit. **Delegate** packages that snapshot, dispatches the job and collects the proposed changes. The Worker uses a coding loop built on mini-SWE-agent. A separate **Verifier** runs checks outside the Worker’s workspace. The Maintainer can then inspect the diff and handoff, accept or reject the work, and apply an accepted patch after checking that its inputs are still current. [Delegation mechanics](docs/delegation-artifacts.md) · [Isolation and limits](docs/isolation.md)
 
+For new model-assisted changes, `git log --grep='^Model-Author:'` shows which model wrote which part of a landing and where to find its evidence. [Model credit guide](docs/model-credit.md)
+
 ## Explore the lab
 
 - **Inspect a Worker in Observatory.** Open a recorded tool call, its output, the proposed patch and the reason it was rejected. The example runs locally with Python 3.13. [View the recorded job](examples/replaying-worker-trace/README.md#open-the-job-in-observatory)
