@@ -1,6 +1,7 @@
 """Registration must verify the environment that the detached job will launch."""
 
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -26,6 +27,9 @@ class RuntimeBindingTests(unittest.TestCase):
             (stage / "runtime").mkdir(parents=True)
             (stage / "runtime/.venv").symlink_to(active)
             snapshot = create_snapshot(root, ["backend"], ["backend"], stage / "source")
+            task = stage / "runtime/tasks/delegated-task"
+            shutil.copytree(stage / "source/public", task / "public")
+            shutil.copytree(stage / "source", task / "private/snapshot")
             record = {
                 "files": file_manifest(stage),
                 "snapshot_id": snapshot["snapshot_id"],

@@ -1,0 +1,42 @@
+{
+  "module": "scripts/delegate_package.py",
+  "model_authors": [
+    {
+      "model": "OpenAI gpt-6.2-astra",
+      "contribution": "package registration and verification fixes, portable tests and coverage receipt",
+      "identity_source": "Codex authoring turn_context.model"
+    }
+  ],
+  "baseline_revision": "63166dc6fd3aa6b5e9fb3367280682b80fa8231f",
+  "measurement": "poe coverage, portable Python suite with statement and branch measurement over scripts/",
+  "before": {
+    "project_percent": 36.41,
+    "module_percent": 25.67,
+    "covered_statements": 57,
+    "total_statements": 198,
+    "covered_branches": 20,
+    "total_branches": 102,
+    "portable_tests": 268
+  },
+  "after": {
+    "project_percent": 38.15,
+    "module_percent": 86.75,
+    "covered_statements": 188,
+    "total_statements": 209,
+    "covered_branches": 87,
+    "total_branches": 108,
+    "portable_tests": 278
+  },
+  "regressions": [
+    "Two identical registrations reaching publication together previously gave one caller a directory-not-empty error. Both now return the same verified package ID.",
+    "Changing executable permissions on a selected input in either task copy previously passed verification. The verifier now checks the admitted executable bits on both copies.",
+    "Updating a model profile after its digest check previously allowed the newer profile into the package. Registration now parses the exact bytes checked against each recipe pin."
+  ],
+  "workstation_check": {
+    "original_package_verified": "eded3c5e757bbb4c98ad1dc0502375dd48a0b1f620bee40816779be4f2e9f32b",
+    "assignment_source": "Archived public input snapshot for Worker job 668ff65d503c442091e49b7a2c43a435",
+    "recipe": "apprentice-qwen-32k-v1",
+    "temporary_package_registered_twice_and_verified": "45019090d90639b7a709aab098cd5d9e12319aa03d098e7ae9408ac454b6de63",
+    "dispatch_performed": false
+  }
+}

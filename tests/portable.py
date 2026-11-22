@@ -6,6 +6,7 @@ CASES = (
     "tests.test_example_evidence",
     "tests.test_export_issue_context",
     "tests.test_delegate_artifacts",
+    "tests.test_delegate_package",
     "tests.test_delegate_verify",
     "tests.test_delegate_runtime",
     "tests.test_delegate_apply",

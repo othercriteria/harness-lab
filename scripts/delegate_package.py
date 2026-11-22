@@ -4,6 +4,7 @@ This is not a solver tool. A package includes private evaluator and harness byte
 only runtime/tasks/delegated-task/public may be mounted into the solver.
 """
 
+import errno
 import hashlib
 import json
 import re
@@ -26,6 +27,13 @@ def read(path):
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def read_pinned(path, expected):
+    data = path.read_bytes()
+    if digest(data) != expected:
+        raise ValueError(f"Recipe input changed: {path}")
+    return json.loads(data)
 
 
 def file_manifest(root):
@@ -127,6 +135,13 @@ def verify_contents(root, identifier):
     snapshot, _ = load_snapshot(root / "source")
     if snapshot["snapshot_id"] != record["snapshot_id"]:
         raise ValueError("Registered snapshot mismatch")
+    # File hashes already cover the bytes. Both task copies must also carry the
+    # execute bits admitted for each input in the authoritative source snapshot.
+    task = root / "runtime/tasks" / TASK
+    for public in (task / "public", task / "private/snapshot/public"):
+        for name, expected in snapshot["contract"]["executable_bits"].items():
+            if ((public / name).stat().st_mode & 0o111) != expected:
+                raise ValueError(f"Changed input execute permissions: {public / name}")
     return record
 
 
@@ -211,15 +226,9 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
     if len(choices) != 1:
         raise ValueError("Select one registered recipe")
     recipe = choices[0]
-    for path_key, digest_key in [
-        ("server_config_path", "server_config_sha256"),
-        ("protocol_path", "protocol_sha256"),
-    ]:
-        if sha(project / recipe[path_key]) != recipe[digest_key]:
-            raise ValueError("Recipe source changed")
-    freeze = read(project / recipe["runtime_freeze"])
-    if sha(project / recipe["runtime_freeze"]) != recipe["runtime_freeze_sha256"]:
-        raise ValueError("Recipe freeze changed")
+    profiles = read_pinned(project / recipe["server_config_path"], recipe["server_config_sha256"])
+    limits = read_pinned(project / recipe["protocol_path"], recipe["protocol_sha256"])
+    freeze = read_pinned(project / recipe["runtime_freeze"], recipe["runtime_freeze_sha256"])
     packages = store / "packages"
     packages.mkdir(parents=True, exist_ok=True)
     pending = packages / (".preparing-" + uuid.uuid4().hex)
@@ -255,11 +264,9 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
             shutil.copyfile(project / "configs" / name, runtime / "configs" / name)
         for name in ("uv.lock", "flake.lock", "pyproject.toml"):
             shutil.copyfile(project / name, runtime / name)
-        profile = read(project / recipe["server_config_path"])[recipe["profile"]]
         (runtime / "configs/servers.json").write_bytes(
-            encoded({recipe["profile"]: profile})
+            encoded({recipe["profile"]: profiles[recipe["profile"]]})
         )
-        limits = read(project / recipe["protocol_path"])
         limits.pop("behavioral_gate", None)
         limits.pop("python_test_library", None)
         limits.update(
@@ -325,12 +332,17 @@ def register(specification, *, project=PROJECT, store=STORE, source_project=None
         (pending / "package.json").write_bytes(encoded(record) + b"\n")
         (runtime / ".venv").symlink_to(project / ".venv")
         destination = package_path(identifier, store)
-        if destination.exists():
+        if not destination.exists():
+            verify_contents(pending, identifier)
+            try:
+                pending.rename(destination)
+            except OSError as exc:
+                # Another registration may have published this ID first.
+                if exc.errno not in (errno.EEXIST, errno.ENOTEMPTY):
+                    raise
+        if pending.exists():
             verify_package(identifier, store)
             shutil.rmtree(pending)
-        else:
-            verify_contents(pending, identifier)
-            pending.rename(destination)
         return {
             "package_id": identifier,
             "label": s["label"],
