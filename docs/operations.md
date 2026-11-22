@@ -18,15 +18,16 @@ A live rehearsal on the reference RTX 4090 used a clean public clone and a fresh
 
 ### Attribution for landed Worker contributions
 
-Lead the commit message with the change. Say what Worker wrote, what the Maintainer independently verified, and what the Maintainer changed before landing it. Keep the ordinary Git author and committer identities. Use the job and recipe to trace a model contribution without inventing an email address.
+For new contributions, put the model and the part it wrote in the landing commit and PR. This also applies when a hosted agent writes the change directly. The [model credit guide](model-credit.md) gives examples, receipt fields and the squash-merge check.
 
-Put the following trailers at the end of the message. Use the registered recipe ID and link the review to a versioned receipt a reader can open.
+For Worker, keep the six delegation trailers alongside the model credit. Use the registered recipe ID and a review receipt accessible from the receiving repository. For example, a message can end with this block.
 
 ```text
+Model-Author: <target model and variant> | <landed contribution>
 Delegate-Job: <job ID>
 Delegate-Package: <frozen package ID>
 Delegate-Recipe: <recipe ID>
-Delegate-Review: results/<review-receipt>.json
+Delegate-Review: <versioned receipt path or permalink>
 Delegate-Completion: clean
 Delegate-Repairs: none
 ```

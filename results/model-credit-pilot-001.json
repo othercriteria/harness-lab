@@ -1,0 +1,23 @@
+{
+  "issue": "https://github.com/othercriteria/harness-lab/issues/71",
+  "model_authors": [
+    {
+      "model": "OpenAI gpt-6.2-astra",
+      "contribution": "model credit guide, operator instructions and pilot receipt",
+      "identity_source": "The Codex turn_context for the authoring turn named gpt-6.2-astra.",
+      "reasoning_effort": "high"
+    }
+  ],
+  "human_role": "Selected issue 71 and requested adoption.",
+  "historical_example_check": {
+    "job_id": "dcb3588dbb4540bc8f5454ba80b3cecc",
+    "model": "Qwen3.8-27B (RANA tensor precision layout, Q4_K_M)",
+    "identity_source": "The Footsteps job's experiment/profile.json identifies the target model, tensor layout, quantization and GGUF digest.",
+    "target_sha256": "91c34c55de4defcc5891f08997b7d4543a171d7e2aa6ab752bff4eec27279ba6",
+    "recipe": "apprentice-qwen-32k-v1",
+    "registry": "https://github.com/othercriteria/harness-lab/blob/8b396fed749dad23a874f9a08bf52ac9d6048234/configs/delegate-recipes-v1.json",
+    "topic_commit": "https://github.com/othercriteria/footsteps/commit/f1fe212f08c55a6b77632573fb114250d0f3b4be",
+    "upstream_merge": "https://github.com/othercriteria/footsteps/commit/474de3680d8f6ce8c07c08f5c58bb07e00bcfe12",
+    "observation": "The upstream merge has the credited topic as its second parent. The topic message identifies the job and recipe. The local run profile supplies the model identity for the retrospective example."
+  }
+}
