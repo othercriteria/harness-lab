@@ -1,0 +1,5442 @@
+{
+  "issue": 55,
+  "model": "qwen38-27b-ranalayout-32k-scoped-v1",
+  "host": "Skaia, RTX 4090",
+  "freeze_manifest_sha256": "0588d1eea0287ac0067e8c494f6f9e6e21e374f1cdcdc9229ee7f6b1a914cde8",
+  "freeze_json_sha256": "69652525acb58bb37ce2fe7134a8371238a9da18a39d5253175a89db6bd90023",
+  "launch_plan_sha256": "4a7a8ca211a6161e35393da239a204e5bbcb0374b9bb0d9933be01f0cd8b42c0",
+  "bulk_research_directory": "harness-comparison-055",
+  "restoration_session": "2026-11-22-gpu-quiet-070",
+  "restoration_verified": true,
+  "design": "Fixed matched seed blocks, 19550 onward. Alternate order; one backend at a time. Both tasks and four arms in each block. Start a new block only if projected to finish by 165 minutes after first launch; allow in-flight cleanup. Stop at eight complete blocks or 175 minutes; record partial blocks. Preserve operational invalids, genuine failures and all scored rows. No tuning, substitutions by outcome or corrections to submissions. Primary clock is warm time through independent verification. Recheck padded issue spelling beyond frozen graders for all source artifacts; review allowed edits and terminal claims separately. Historical rows reported separately. Separate additive breadth study: exactly two matched seeds (19550 and 19551) per task and harness on the existing Frame Decoder and Tabreport fixtures. Keep all eight seed blocks in the original predeclared two-task comparison. No rerun of measured agent outcomes. Same backend, scoring boundaries and four harnesses. Frame has a 180-second budget and Tabreport 450 seconds. Report this block separately.",
+  "scope": "Eight-seed replication on two admitted repository tasks and separate two-seed comparisons on Frame Decoder and Tabreport. No harness adaptation or candidate repair during scoring. Aider uses 8,192 tokens of history; the original issue-selection screen used its default allowance. Comparison covers harness workflows including their different prompts, file exposure, completion conventions and local transports.",
+  "review": "Unblinded Maintainer review of changed source and terminal evidence. Source, supported terminal claims and clean completion are distinct. No handoff means no credit for the handoff. A minimal delivery marker carries less information than a structured receipt. Supplemental padded-number probe, source review and claim review are outside the timed clock.",
+  "timing": "task_s includes the attempt and any in-budget verification. Excludes model load, prefix prefill, subsequent claim/source review and supplemental probe. owner_wall_s also includes the resource wrappers and restoring the transient Ollama model state. Paired differences compare the same seed when both arms passed the original frozen machine gates and completed within budget; the supplemental source-review outcome is reported separately.",
+  "completed_seed_blocks": {
+    "primary": [
+      19550,
+      19551,
+      19552,
+      19553,
+      19554,
+      19555,
+      19556,
+      19557
+    ],
+    "breadth": [
+      19550,
+      19551
+    ]
+  },
+  "original_design": "Fixed matched seed blocks, 19550 onward. Alternate order; one backend at a time. Both tasks and four arms in each block. Start a new block only if projected to finish by 165 minutes after first launch; allow in-flight cleanup. Stop at eight complete blocks or 175 minutes; record partial blocks. Preserve operational invalids, genuine failures and all scored rows. No tuning, substitutions by outcome or corrections to submissions. Primary clock is warm time through independent verification. Recheck padded issue spelling beyond frozen graders for all source artifacts; review allowed edits and terminal claims separately. Historical rows reported separately.",
+  "breadth_freeze_json_sha256": "bc63322fa1f321348aeaae4f8e5470bd34d49b5ec297b96a0d27b759fbddd822",
+  "breadth_task_manifests": {
+    "tabreport-diff": "74e6e50dcd6b0d27d546d7d3f7edf6e0f58ccca267f6aec867b4d55ffc3347f5",
+    "frame-decoder-focused": "cd75ef3e42e885324317955d19b88c4bfc0bdbd09c625466afc9448594b1c56c"
+  },
+  "breadth_plan_sha256": "075a3aee2f2d19bcd6a5e00e9e77446fe470f9845cc28bbcb5f4b61a5253c702",
+  "model_artifacts": {
+    "artifact": {
+      "id": "qwen38-27b-ranalayout-q4",
+      "revision": "bc45e98fe6a40df70a6721141ed72011924a55cc"
+    },
+    "draft_artifact": {
+      "id": "qwen38-27b-dflash-q4",
+      "revision": "a316ea527fde32c12487be7574e2db5ac2ad2a7e"
+    }
+  },
+  "elapsed_seconds_to_restoration": 9583.2,
+  "assigned_cells": 80,
+  "historical_results_pooled": false,
+  "summary": {
+    "issue-selection/worker": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 8,
+      "timed_machine_pass": 8,
+      "padded_issue_pass": 0,
+      "source": 0,
+      "handoff": 6,
+      "full": 0,
+      "warm_seconds_all_attempts": {
+        "min": 83.744,
+        "median": 104.569,
+        "max": 118.96
+      },
+      "median_requests": 10.0,
+      "median_observed_completion_tokens": 8346.5
+    },
+    "issue-selection/aider": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 8,
+      "timed_machine_pass": 8,
+      "padded_issue_pass": 1,
+      "source": 1,
+      "handoff": 8,
+      "full": 1,
+      "warm_seconds_all_attempts": {
+        "min": 51.632,
+        "median": 53.2,
+        "max": 86.156
+      },
+      "median_requests": 1.0,
+      "median_observed_completion_tokens": 3212.5
+    },
+    "issue-selection/opencode": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 5,
+      "timed_machine_pass": 5,
+      "padded_issue_pass": 0,
+      "source": 0,
+      "handoff": 4,
+      "full": 0,
+      "warm_seconds_all_attempts": {
+        "min": 63.037,
+        "median": 111.444,
+        "max": 213.543
+      },
+      "median_requests": 10.0,
+      "median_observed_completion_tokens": 6098.5
+    },
+    "issue-selection/mini": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 8,
+      "timed_machine_pass": 8,
+      "padded_issue_pass": 0,
+      "source": 0,
+      "handoff": 6,
+      "full": 0,
+      "warm_seconds_all_attempts": {
+        "min": 100.216,
+        "median": 152.576,
+        "max": 211.303
+      },
+      "median_requests": 14.5,
+      "median_observed_completion_tokens": 11860.5
+    },
+    "evidence-check/worker": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 8,
+      "timed_machine_pass": 8,
+      "padded_issue_pass": null,
+      "source": 8,
+      "handoff": 7,
+      "full": 7,
+      "warm_seconds_all_attempts": {
+        "min": 39.397,
+        "median": 44.487,
+        "max": 153.729
+      },
+      "median_requests": 5.5,
+      "median_observed_completion_tokens": 3550.0
+    },
+    "evidence-check/aider": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 8,
+      "timed_machine_pass": 8,
+      "padded_issue_pass": null,
+      "source": 8,
+      "handoff": 8,
+      "full": 8,
+      "warm_seconds_all_attempts": {
+        "min": 44.415,
+        "median": 47.697,
+        "max": 77.776
+      },
+      "median_requests": 1.0,
+      "median_observed_completion_tokens": 2562.5
+    },
+    "evidence-check/opencode": {
+      "attempts": 8,
+      "canonical": 8,
+      "external": 8,
+      "clean": 8,
+      "timed_machine_pass": 8,
+      "padded_issue_pass": null,
+      "source": 8,
+      "handoff": 7,
+      "full": 7,
+      "warm_seconds_all_attempts": {
+        "min": 38.912,
+        "median": 47.975,
+        "max": 59.49
+      },
+      "median_requests": 7.5,
+      "median_observed_completion_tokens": 2752.0
+    },
+    "evidence-check/mini": {
+      "attempts": 8,
+      "canonical": 7,
+      "external": 7,
+      "clean": 7,
+      "timed_machine_pass": 7,
+      "padded_issue_pass": null,
+      "source": 7,
+      "handoff": 7,
+      "full": 7,
+      "warm_seconds_all_attempts": {
+        "min": 67.766,
+        "median": 86.75,
+        "max": 98.092
+      },
+      "median_requests": 12.0,
+      "median_observed_completion_tokens": 6227.5
+    },
+    "frame-decoder-focused/worker": {
+      "attempts": 2,
+      "canonical": 2,
+      "external": 2,
+      "clean": 2,
+      "timed_machine_pass": 2,
+      "padded_issue_pass": null,
+      "source": 2,
+      "handoff": 2,
+      "full": 2,
+      "warm_seconds_all_attempts": {
+        "min": 48.338,
+        "median": 48.987,
+        "max": 49.637
+      },
+      "median_requests": 4.5,
+      "median_observed_completion_tokens": 4091.5
+    },
+    "frame-decoder-focused/aider": {
+      "attempts": 2,
+      "canonical": 2,
+      "external": 2,
+      "clean": 2,
+      "timed_machine_pass": 2,
+      "padded_issue_pass": null,
+      "source": 2,
+      "handoff": 2,
+      "full": 2,
+      "warm_seconds_all_attempts": {
+        "min": 45.721,
+        "median": 45.935,
+        "max": 46.15
+      },
+      "median_requests": 1.0,
+      "median_observed_completion_tokens": 2727.0
+    },
+    "frame-decoder-focused/opencode": {
+      "attempts": 2,
+      "canonical": 2,
+      "external": 2,
+      "clean": 2,
+      "timed_machine_pass": 2,
+      "padded_issue_pass": null,
+      "source": 2,
+      "handoff": 2,
+      "full": 2,
+      "warm_seconds_all_attempts": {
+        "min": 57.332,
+        "median": 61.841,
+        "max": 66.35
+      },
+      "median_requests": 8.5,
+      "median_observed_completion_tokens": 4471.5
+    },
+    "frame-decoder-focused/mini": {
+      "attempts": 2,
+      "canonical": 2,
+      "external": 2,
+      "clean": 2,
+      "timed_machine_pass": 2,
+      "padded_issue_pass": null,
+      "source": 2,
+      "handoff": 2,
+      "full": 2,
+      "warm_seconds_all_attempts": {
+        "min": 76.982,
+        "median": 81.735,
+        "max": 86.488
+      },
+      "median_requests": 10.0,
+      "median_observed_completion_tokens": 6434.0
+    },
+    "tabreport-diff/worker": {
+      "attempts": 2,
+      "canonical": 2,
+      "external": 2,
+      "clean": 2,
+      "timed_machine_pass": 2,
+      "padded_issue_pass": null,
+      "source": 2,
+      "handoff": 2,
+      "full": 2,
+      "warm_seconds_all_attempts": {
+        "min": 140.999,
+        "median": 166.671,
+        "max": 192.343
+      },
+      "median_requests": 17.5,
+      "median_observed_completion_tokens": 12610.5
+    },
+    "tabreport-diff/aider": {
+      "attempts": 2,
+      "canonical": 0,
+      "external": 1,
+      "clean": 2,
+      "timed_machine_pass": 0,
+      "padded_issue_pass": null,
+      "source": 0,
+      "handoff": 1,
+      "full": 0,
+      "warm_seconds_all_attempts": {
+        "min": 35.168,
+        "median": 47.355,
+        "max": 59.543
+      },
+      "median_requests": 1.0,
+      "median_observed_completion_tokens": 2993.0
+    },
+    "tabreport-diff/opencode": {
+      "attempts": 2,
+      "canonical": 1,
+      "external": 2,
+      "clean": 0,
+      "timed_machine_pass": 0,
+      "padded_issue_pass": null,
+      "source": 1,
+      "handoff": 0,
+      "full": 0,
+      "warm_seconds_all_attempts": {
+        "min": 251.057,
+        "median": 262.505,
+        "max": 273.954
+      },
+      "median_requests": 14.0,
+      "median_observed_completion_tokens": 14676.5
+    },
+    "tabreport-diff/mini": {
+      "attempts": 2,
+      "canonical": 1,
+      "external": 1,
+      "clean": 1,
+      "timed_machine_pass": 1,
+      "padded_issue_pass": null,
+      "source": 1,
+      "handoff": 0,
+      "full": 0,
+      "warm_seconds_all_attempts": {
+        "min": 220.322,
+        "median": 224.305,
+        "max": 228.288
+      },
+      "median_requests": 19.0,
+      "median_observed_completion_tokens": 17918.5
+    }
+  },
+  "paired_timing": {
+    "issue-selection/worker minus aider": {
+      "joint_timed_machine_pass": 8,
+      "first_faster": 0,
+      "median_paired_difference_s": 49.798,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    },
+    "issue-selection/worker minus opencode": {
+      "joint_timed_machine_pass": 5,
+      "first_faster": 2,
+      "median_paired_difference_s": 15.819,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    },
+    "issue-selection/worker minus mini": {
+      "joint_timed_machine_pass": 8,
+      "first_faster": 7,
+      "median_paired_difference_s": -47.102,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    },
+    "issue-selection/aider minus opencode": {
+      "joint_timed_machine_pass": 5,
+      "first_faster": 5,
+      "median_paired_difference_s": -33.374,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    },
+    "issue-selection/aider minus mini": {
+      "joint_timed_machine_pass": 8,
+      "first_faster": 8,
+      "median_paired_difference_s": -93.481,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    },
+    "issue-selection/opencode minus mini": {
+      "joint_timed_machine_pass": 5,
+      "first_faster": 4,
+      "median_paired_difference_s": -37.179,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    },
+    "evidence-check/worker minus aider": {
+      "joint_timed_machine_pass": 8,
+      "first_faster": 5,
+      "median_paired_difference_s": -6.534,
+      "joint_full_result": 7,
+      "first_faster_on_joint_full": 5,
+      "median_paired_difference_joint_full_s": -6.728
+    },
+    "evidence-check/worker minus opencode": {
+      "joint_timed_machine_pass": 8,
+      "first_faster": 3,
+      "median_paired_difference_s": 1.852,
+      "joint_full_result": 6,
+      "first_faster_on_joint_full": 3,
+      "median_paired_difference_joint_full_s": -6.448
+    },
+    "evidence-check/worker minus mini": {
+      "joint_timed_machine_pass": 7,
+      "first_faster": 6,
+      "median_paired_difference_s": -34.152,
+      "joint_full_result": 6,
+      "first_faster_on_joint_full": 5,
+      "median_paired_difference_joint_full_s": -38.277
+    },
+    "evidence-check/aider minus opencode": {
+      "joint_timed_machine_pass": 8,
+      "first_faster": 5,
+      "median_paired_difference_s": -2.48,
+      "joint_full_result": 7,
+      "first_faster_on_joint_full": 5,
+      "median_paired_difference_joint_full_s": -3.018
+    },
+    "evidence-check/aider minus mini": {
+      "joint_timed_machine_pass": 7,
+      "first_faster": 7,
+      "median_paired_difference_s": -37.172,
+      "joint_full_result": 7,
+      "first_faster_on_joint_full": 7,
+      "median_paired_difference_joint_full_s": -37.172
+    },
+    "evidence-check/opencode minus mini": {
+      "joint_timed_machine_pass": 7,
+      "first_faster": 7,
+      "median_paired_difference_s": -41.062,
+      "joint_full_result": 6,
+      "first_faster_on_joint_full": 6,
+      "median_paired_difference_joint_full_s": -37.23
+    },
+    "frame-decoder-focused/worker minus aider": {
+      "joint_timed_machine_pass": 2,
+      "first_faster": 0,
+      "median_paired_difference_s": 3.052,
+      "joint_full_result": 2,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": 3.052
+    },
+    "frame-decoder-focused/worker minus opencode": {
+      "joint_timed_machine_pass": 2,
+      "first_faster": 2,
+      "median_paired_difference_s": -12.853,
+      "joint_full_result": 2,
+      "first_faster_on_joint_full": 2,
+      "median_paired_difference_joint_full_s": -12.853
+    },
+    "frame-decoder-focused/worker minus mini": {
+      "joint_timed_machine_pass": 2,
+      "first_faster": 2,
+      "median_paired_difference_s": -32.748,
+      "joint_full_result": 2,
+      "first_faster_on_joint_full": 2,
+      "median_paired_difference_joint_full_s": -32.748
+    },
+    "frame-decoder-focused/aider minus opencode": {
+      "joint_timed_machine_pass": 2,
+      "first_faster": 2,
+      "median_paired_difference_s": -15.905,
+      "joint_full_result": 2,
+      "first_faster_on_joint_full": 2,
+      "median_paired_difference_joint_full_s": -15.905
+    },
+    "frame-decoder-focused/aider minus mini": {
+      "joint_timed_machine_pass": 2,
+      "first_faster": 2,
+      "median_paired_difference_s": -35.8,
+      "joint_full_result": 2,
+      "first_faster_on_joint_full": 2,
+      "median_paired_difference_joint_full_s": -35.8
+    },
+    "frame-decoder-focused/opencode minus mini": {
+      "joint_timed_machine_pass": 2,
+      "first_faster": 2,
+      "median_paired_difference_s": -19.894,
+      "joint_full_result": 2,
+      "first_faster_on_joint_full": 2,
+      "median_paired_difference_joint_full_s": -19.894
+    },
+    "tabreport-diff/worker minus mini": {
+      "joint_timed_machine_pass": 1,
+      "first_faster": 1,
+      "median_paired_difference_s": -27.979,
+      "joint_full_result": 0,
+      "first_faster_on_joint_full": 0,
+      "median_paired_difference_joint_full_s": null
+    }
+  },
+  "rows": [
+    {
+      "run": "comp55-issue-selection-worker-19550-001",
+      "agent_s": 81.382,
+      "warmup_s": 4.088,
+      "human_interventions": 0,
+      "owner_wall_s": 117.852,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19550,
+      "summary_sha256": "96c027f0607bbc62ac2185883de090c31ef85e78eaad0f088d8341fc72ac7815",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "c088782dab5bd892ee305db3d4dc131c1aa6a8c97c3693a598c4a28a3ae0fd34"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 88.581,
+      "load_s": 16.825,
+      "verification_s": 5.684,
+      "model_requests": 7,
+      "completed_responses": 7,
+      "recorded_completion_tokens": 7422,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "279358d7e1affa8bd8a8b04c3ac1901ca53abe5a33292909cc51a6f9648f80a7",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 7
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "850033b61e68ace8fdd736dc3414914bf2ef41587e926e87a80fcecaa5e69094",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The terminal receipt cites three public tests and eight named scratch tests, and qualifies the size and exclusivity checks. The exporter still converts the raw spelling with int(value).",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19550-001",
+      "agent_s": 94.942,
+      "warmup_s": 1.205,
+      "human_interventions": 0,
+      "owner_wall_s": 123.852,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19550,
+      "summary_sha256": "91b38fde558fb61f3a228fc6aaba6417e0eaed2c3da06f558fde4fd7a318ddff",
+      "artifact_changes": {
+        "examples/check_evidence.py": "601ae7d34280b92f2f1560397699ff0ed879f40b176aa4b8a3a3195ecadfbdfa",
+        "examples/evidence_files.py": "b16198cf4ddc255e9fb4cc5396428aac9af9beca0f496c204b6271e80d1660d9"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 97.412,
+      "load_s": 16.829,
+      "verification_s": 2.469,
+      "model_requests": 14,
+      "completed_responses": 14,
+      "recorded_completion_tokens": 7286,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "95dff35ebae6cb5957ca05f86d15c666456bdd5e9d787192bde5bd16653fb32f",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 14
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Mini streamed binary inputs and grouped sorted results. Its mixed, empty, alternate-directory and final public-suite observations support the terminal submission.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19550-001",
+      "agent_s": 36.378,
+      "warmup_s": 3.572,
+      "human_interventions": 0,
+      "owner_wall_s": 66.804,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19550,
+      "summary_sha256": "034da2ba85ca9676acd67fbdbc8c00c82ae111cfff94b5bcd585eb9267b24000",
+      "artifact_changes": {
+        "examples/check_evidence.py": "b52063aca859357b0235bb94f05890e4f14a93d65d36c154bd25119a2e394a41",
+        "examples/evidence_files.py": "1f75c20f6588b5cb860e4134b884b0d1d9c657a0d8f7d8d3d0751bab61a30dae"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 38.912,
+      "load_s": 16.816,
+      "verification_s": 2.53,
+      "model_requests": 6,
+      "completed_responses": 6,
+      "recorded_completion_tokens": 2345,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "f2a5830c1e8ec8b2d6b184e2ab22fab08b43784947a2746ae72ea5438b1b0561",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 6
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode streamed and sorted exact-byte results. The two public tests and mixed and empty CLI probes produced the reported categories and exits.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19550-001",
+      "agent_s": 80.295,
+      "warmup_s": 2.039,
+      "human_interventions": 0,
+      "owner_wall_s": 112.733,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19550,
+      "summary_sha256": "005fe0f2a5bb8870f855e0ab5fc03f609118eee49caedebf29c6c6550ee87dd2",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "3e258cbcef02cfbe5187f98cf2b3fb0c08463b60b532d121b7fd3ee8b05839f5"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 86.156,
+      "load_s": 16.81,
+      "verification_s": 5.858,
+      "model_requests": 2,
+      "completed_responses": 2,
+      "recorded_completion_tokens": 5264,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "575df9fbe905b2cd20c7d37c9048422d80064b3103ab181a8724d5cc9da62d0c",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 2
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "5faf9d133f7db78ba64939bff1fe4d8fa51f469773031fb85921cbf819d77875",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Aider's final edit and the three passing public tests are recorded. It considered long digit strings, but still converted the raw argument to int before lookup.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-mini-19550-001",
+      "agent_s": 188.347,
+      "warmup_s": 1.233,
+      "human_interventions": 0,
+      "owner_wall_s": 222.201,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19550,
+      "summary_sha256": "61a65bc17db7d5988a66f09b3b6dc51f59e06fd6ee53afc766a93c5a12330ad1",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "d97ddc767642c6f10515d48f3a9d0a709fae05fa1d4bd0a6b7c7149405c3f301"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 194.127,
+      "load_s": 16.817,
+      "verification_s": 5.78,
+      "model_requests": 20,
+      "completed_responses": 20,
+      "recorded_completion_tokens": 15337,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "9e03a373543ded95438504b7513e1eb3be834afe4618280a9e6bf396e980fc18",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 19
+        },
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 1686,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "3f7eeba948006c75a0beb9104df0252fa5758ef610b44a6f178c2a280118391c",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Mini's three public tests, twelve scratch tests with fourteen invalid input spellings, and two lookup-error probes are in the trace. Its integer conversion still rejects the valid padded spelling.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19550-001",
+      "agent_s": 37.43,
+      "warmup_s": 4.1,
+      "human_interventions": 0,
+      "owner_wall_s": 70.914,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19550,
+      "summary_sha256": "bdb6f612c6fac34ce156e6574444ae40a0e728df3026b38069a8db7240ca1392",
+      "artifact_changes": {
+        "examples/check_evidence.py": "0aefc9dc690b0f12a1d1c2708dcf150bce676e48385558f324a65758314af1aa",
+        "examples/evidence_files.py": "c5670876c30154e9575bfaed4e5329f794bde022dc68792fc1efa1d035c11d05"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 41.492,
+      "load_s": 16.866,
+      "verification_s": 2.466,
+      "model_requests": 4,
+      "completed_responses": 4,
+      "recorded_completion_tokens": 3243,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "0a702f1b036e4d435a336eb7174274cdfccf7d4bf08fea77c516f4979ec92949",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 4
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "claim_qualification": "A single write receipt cannot establish the full changed-file set.",
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Two public tests and mixed, empty and alternate-directory commands substantiate the behavior. The claim that only two files changed is true in the trace and start/end diff, although its citation o0005 records only the second write.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-aider-19550-001",
+      "agent_s": 45.246,
+      "warmup_s": 1.961,
+      "human_interventions": 0,
+      "owner_wall_s": 74.116,
+      "first_messages_sha256": "cdbf2242278726d63df79691bd1d37491bac680d195d6c3a2e79d66eb46db9b2",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19550,
+      "summary_sha256": "2e73d971c2876a41d228c82472e9838f66a566dbf0f5bc3b55623e8dac4c7985",
+      "artifact_changes": {
+        "examples/check_evidence.py": "92f32f1f9511679dc7beec3578db689ce24838184d61411593b98be493ca1667",
+        "examples/evidence_files.py": "0d02b4db9b329e43fdd1e876f0cba59a8289c45a79928c7d16395b56aaa64081"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 47.832,
+      "load_s": 16.819,
+      "verification_s": 2.581,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2525,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "d07c84b52ac5b8e351ac396a16208c80fd3bfe5ed2fefe81dad01aa29e8dec2a",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider applied both edits and its automatic suite passed two tests. The library sorts the inventory and streams binary reads; the CLI groups results and sets the exit status.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19550-001",
+      "agent_s": 207.406,
+      "warmup_s": 3.63,
+      "human_interventions": 0,
+      "owner_wall_s": 242.343,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19550,
+      "summary_sha256": "ef814d5eb54531a52290b66aad551ef46aca14a094d0806624a76d2fa4f28f4b",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "ff468d7bd93733566f8d2905eb645a2ee6033d74c5582dff8919cc2ed54938c4"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 213.543,
+      "load_s": 16.848,
+      "verification_s": 6.133,
+      "model_requests": 17,
+      "completed_responses": 17,
+      "recorded_completion_tokens": 9837,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "c826f11132ce5ed288f2d7d4120572bdb8bcaf1e653bdcb6edc57c7129b33a7c",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 17
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": "ValueError: Read-only fixture Git metadata changed",
+      "terminal_error": "transport_failed",
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "ddd691b42a713bee075c355614a4663bdf39567a7c3e59c5f671d8b47e40d3a2",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "Both frozen code gates passed. Raw int conversion misses padded issue 7. A final git status/diff command tripped the adapter's read-only Git metadata guard after the public tests; the transport closed without a terminal delivery.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19551-001",
+      "agent_s": 50.674,
+      "warmup_s": 3.615,
+      "human_interventions": 0,
+      "owner_wall_s": 82.173,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19551,
+      "summary_sha256": "7cc331314039eaad769e1497034fd5c9509ac71bca9ad3ab8342b0440def93fd",
+      "artifact_changes": {
+        "examples/check_evidence.py": "5101095c0c8af6717d30e10378cff23b4844eb74594daf9a05c78e4b705b4ec2",
+        "examples/evidence_files.py": "4fd9c5270ae44d8f5c47525b88fec1eda7f3b2a158303b28b6158636094fd3aa"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 53.417,
+      "load_s": 16.88,
+      "verification_s": 2.737,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 2859,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "d8dd5c7ebb5d84fc42af3b273379ffffdd45ce1243c2e3e65c086aebf85775e8",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode streamed SHA-256, returned sorted groups and changed both permitted files. Two public tests plus mixed and empty probes support its closing text.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19551-001",
+      "agent_s": 45.777,
+      "warmup_s": 2.097,
+      "human_interventions": 0,
+      "owner_wall_s": 79.053,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19551,
+      "summary_sha256": "e9c48fa89ac911a9047e4c93a8ba53132f8102e6d96e0e23bff7b9fadd2f18a1",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "c96e89987cf3f4652cc3e02ec3d17a70070094060e87eecd1fec26fbd18efe64"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 51.833,
+      "load_s": 16.845,
+      "verification_s": 6.052,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3010,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "18eb332ea80ec668fa3cb0d2df51141985514276539af54ad8c69404ecf263d2",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "c78871ac586da06e0fcdc99141904f25c7618021e0951b0bf213a35f3ce7bb55",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The native transcript confirms the edit and three passing public tests. Conversion to int still precedes lookup for valid padded values.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-mini-19551-001",
+      "agent_s": 205.611,
+      "warmup_s": 1.193,
+      "human_interventions": 0,
+      "owner_wall_s": 238.319,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19551,
+      "summary_sha256": "f66b7bb19f5c1aa2bb012a248f910447a39c5f5a51a0d7de3eb9cc2319697159",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "f3d696cc953c60649376d9c17eacd59a15d4e5b35d3d841bae2e89652589a378"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 211.303,
+      "load_s": 16.847,
+      "verification_s": 5.692,
+      "model_requests": 16,
+      "completed_responses": 16,
+      "recorded_completion_tokens": 17009,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "094b61295f9ac9cd65f2e4bdc94e34d4ab951278c764306ad089d9874b96c03b",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 13
+        },
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 1605,
+          "requests": 1
+        },
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 1151,
+          "requests": 1
+        },
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 620,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "272b7abcf9d914dc4c1092abb0f0764d8d784f10df1d5b1fb6f08dd454902863",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The trace shows three public tests and 38 custom checks passing. The parser verifies ASCII syntax but then passes the original spelling to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19551-001",
+      "agent_s": 35.236,
+      "warmup_s": 4.096,
+      "human_interventions": 0,
+      "owner_wall_s": 68.835,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19551,
+      "summary_sha256": "8d9d66a1b372aea650734cbc452bd7637f1f134974b0ddbf6b826103537e909c",
+      "artifact_changes": {
+        "examples/check_evidence.py": "a896ab75a953663d8adacefd06298e42a7a02500fdfc5a2c01fc9c960a070f6d",
+        "examples/evidence_files.py": "7c269be9e92a4ed49836402e1d0bec10f799d944cb9400e5c50ab72cba75d626"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 39.397,
+      "load_s": 16.838,
+      "verification_s": 2.557,
+      "model_requests": 5,
+      "completed_responses": 5,
+      "recorded_completion_tokens": 3039,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "65ad2b1c7894f9812f631d5e7fae5d430f553251e4a10f009e74eb0b842f6700",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 5
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Worker's public-suite, alternate-directory, mixed and empty checks substantiate the reported categories and exit codes. Source implements binary hashing and manifest-relative lookup.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-aider-19551-001",
+      "agent_s": 44.859,
+      "warmup_s": 1.95,
+      "human_interventions": 0,
+      "owner_wall_s": 73.885,
+      "first_messages_sha256": "5996ebf8366a3053d62c6209cee4facea3aa35ee1c9ffaf2bd558d2d80932c56",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19551,
+      "summary_sha256": "e88a008e91df54a5edd5db9d8591ab2b3e701c37a56ec36a99a1dea4536f52f7",
+      "artifact_changes": {
+        "examples/check_evidence.py": "97936c746ce873fc07a9f96d598df43b0ddba8182407da66c39fb7e80ff33a86",
+        "examples/evidence_files.py": "6f93733520fc3f8b29ec93611f11c7dbc9105e04cdeb2ac641effdb2e45f1bb9"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 47.586,
+      "load_s": 16.85,
+      "verification_s": 2.722,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2645,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "52c6d17c1543a2bdf0ba406162ae3bc4bff4b336fc4b05312f1a4ef1690ac96e",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider's one edit response describes the two source changes that landed in its sandbox. The automatic tests passed and both independent gates exercised the emitted report.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19551-001",
+      "agent_s": 79.034,
+      "warmup_s": 3.637,
+      "human_interventions": 0,
+      "owner_wall_s": 113.858,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19551,
+      "summary_sha256": "5d95d412ea1f0138eb99f9cc9249004b6cb1ac535a491365bac6ea20ef43f48e",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "8e6706fe12a4f889ff9b007cb24d9ec19d4fe837311822e05af601d06a667ee2"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 85.207,
+      "load_s": 16.819,
+      "verification_s": 6.17,
+      "model_requests": 9,
+      "completed_responses": 9,
+      "recorded_completion_tokens": 5655,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "5d767731256a2f789d6ff3db4e8572d9f69070dfccf085b437bd02f3140ee784",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 9
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "33a1f67ca127e9702e58a97afcda7b66572511c3e3924bad7c43fbc692d7440f",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "OpenCode's public suite and boundary probes support its test report. The parser returns int(value), which fails on the padded input.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-worker-19551-001",
+      "agent_s": 101.51,
+      "warmup_s": 4.094,
+      "human_interventions": 0,
+      "owner_wall_s": 139.166,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19551,
+      "summary_sha256": "41ecf1ee01c5647d0241883c9494ace35d546ce0e2fd3d22449416a07c604fdf",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "b43fe557b2763ad85454659bb513213a936d553cb68300ecd8f9707f50370881"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 108.939,
+      "load_s": 16.825,
+      "verification_s": 5.832,
+      "model_requests": 14,
+      "completed_responses": 14,
+      "recorded_completion_tokens": 8558,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "0aeebd0fe931a5dcc48a5c2c80af25b6b62d1432713d152fa3f8e1115a3c2f8c",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 14
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "169eab6c8cf4bea17e8ed7391b0d2adc6b0caa95cab5f4d8239e76399d48ba5f",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The recorded fake-gh runs and three public tests support the terminal test claims. The source still applies int to the raw padded value.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19551-001",
+      "agent_s": 84.366,
+      "warmup_s": 1.252,
+      "human_interventions": 0,
+      "owner_wall_s": 114.172,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19551,
+      "summary_sha256": "a9a47a224882b54da0606ad21eba0471a938ea7f1c5ec0eada183b039558757c",
+      "artifact_changes": {
+        "examples/check_evidence.py": "1fc8db556d9573879f7327455d447466c8d3e674b41b9b388910e95e32b6570a",
+        "examples/evidence_files.py": "16ccffc7315b74e6aa9c46d17d0bb64c99ae21cf0f40d226702f3fe14fdf1e8e"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 86.814,
+      "load_s": 16.852,
+      "verification_s": 2.446,
+      "model_requests": 12,
+      "completed_responses": 12,
+      "recorded_completion_tokens": 6312,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "0c83df7d311d4e0d746ae27f42a45ff4a873e79967bc1376237976c2f53df3ca",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 12
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Exact bytes and sorted categories are handled for every inventory entry. Mini checked binary and Unicode cases, three working directories, the public suite and mixed/empty exits.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-mini-19552-001",
+      "agent_s": 94.522,
+      "warmup_s": 1.24,
+      "human_interventions": 0,
+      "owner_wall_s": 127.12,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19552,
+      "summary_sha256": "5a8089282f2fb6438e0ff33f0a360fe27d76862e7038be8420922a450d7ceb00",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "17fc21b31825241f1a1ee31f74a64de7dbf8897a465b85e324f3520cca8f8e41"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 100.216,
+      "load_s": 16.823,
+      "verification_s": 5.693,
+      "model_requests": 10,
+      "completed_responses": 10,
+      "recorded_completion_tokens": 7976,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "df0aa6884cb28b82825b3f74a4489f4dc6afe89a395a69c7263a8a1d0bfcdba8",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 10
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "52ec51f12503e563c003a0a232a9032525cadac2eb3cc3105e71b0a091e6ed70",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Mini submitted its native marker after three passing tests, spot checks and a source read. It supplied no comparable structured verification claim. The implementation still converts the untrimmed spelling to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19552-001",
+      "agent_s": 43.357,
+      "warmup_s": 4.094,
+      "human_interventions": 0,
+      "owner_wall_s": 77.134,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19552,
+      "summary_sha256": "45030f4e8e4c100f8ba3b4bd1f25c7fabd347729a219a612148bb8eb062cbd94",
+      "artifact_changes": {
+        "examples/check_evidence.py": "59dc4c8121c0b8ab0aabea946332add8159ec52303a218b7c88518e5aa942e5e",
+        "examples/evidence_files.py": "f4921abfec232f3fa4fa7ff129bea60c671f86dc3f3d70fa60db4b81322c75ef"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 47.482,
+      "load_s": 16.836,
+      "verification_s": 2.525,
+      "model_requests": 6,
+      "completed_responses": 6,
+      "recorded_completion_tokens": 3857,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "9ba4e818bb2c10dcf88a451d9545dd2a07c9747723cd0ee634369bcd2a97792e",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 6
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Worker reran the all-ok fixture and relative-path invocation after two scratch setup errors. The final passing observations substantiate its claims, along with mixed and empty cases and the public suite.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-aider-19552-001",
+      "agent_s": 41.861,
+      "warmup_s": 1.925,
+      "human_interventions": 0,
+      "owner_wall_s": 70.819,
+      "first_messages_sha256": "5996ebf8366a3053d62c6209cee4facea3aa35ee1c9ffaf2bd558d2d80932c56",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19552,
+      "summary_sha256": "8ce5bdd4138b71d9af293ee10a09900b0ddf51620e9c5ff4008de5d3fa7db8fe",
+      "artifact_changes": {
+        "examples/check_evidence.py": "5d695396513b5c9f8c6b08b61b85b9a7aaf3676cea65b50329bd6cec32815ae1",
+        "examples/evidence_files.py": "a01793d2800a0579de88e2ee0f6d85452369fc9980105c5233762facb5dc82d4"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 44.415,
+      "load_s": 16.853,
+      "verification_s": 2.55,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2499,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "e579aa917574bf1810e6684712f1c3e6a20c459670f9a87358c61977c79581f9",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Both named edits were applied, two public tests passed, and the library and CLI agree on ordering and status. Aider made no additional verification claim.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19552-001",
+      "agent_s": 57.093,
+      "warmup_s": 3.553,
+      "human_interventions": 0,
+      "owner_wall_s": 92.092,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19552,
+      "summary_sha256": "46d7b2a1ee9077e7b2708c72d4eb3f75c3e92a6cd67b04fc3a94630694b1862e",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "2a56a74538734f534811fbaa1be20cd4680441a327c48e2ed32d1ba2356bd20c"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 63.037,
+      "load_s": 16.833,
+      "verification_s": 5.94,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 4021,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "f97aac2bd6b63365a5ca7966d62d71cfc45e0e8fb297be324ced3592faaad4c8",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "5436badef2c284916919fa553c5ad4107be3bdee6de1851d8b3392322225b79f",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Public tests and the invalid, excessive and failed-lookup probes match OpenCode's closing text. Padded positive digits still go through int(value).",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-worker-19552-001",
+      "agent_s": 111.46,
+      "warmup_s": 4.089,
+      "human_interventions": 0,
+      "owner_wall_s": 148.926,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19552,
+      "summary_sha256": "0c1c662eb2cc0a5ada51f414c8ec6ae9c910617bcdf21544e1b665d116ff3f56",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "904cae08665ec150798ea207e2fd80d1740af2edfe4a577df82d18cc78b16f4a"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 118.96,
+      "load_s": 16.843,
+      "verification_s": 5.883,
+      "model_requests": 10,
+      "completed_responses": 10,
+      "recorded_completion_tokens": 10032,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "2b89791e897bc6a711fac16211cf7c2831e4bc9274c63b609ec11485397fda48",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 10
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "308870f41946ae2ab37a9e3a2d5fa5f093f23ebbcca05108205ea630296990c4",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Three public tests and the logging fake-gh probes support the verification claims. The source passes untrimmed positive inputs to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19552-001",
+      "agent_s": null,
+      "warmup_s": 1.223,
+      "human_interventions": 0,
+      "owner_wall_s": 104.053,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19552,
+      "summary_sha256": "df5eb5f197aa8955efa299de495297273cd02eb788c1bb20b193a3f7fff18b66",
+      "artifact_changes": {},
+      "write_scope_pass": false,
+      "canonical_tests_run": null,
+      "external_checks_failed": null,
+      "canonical_ran": false,
+      "external_ran": false,
+      "canonical": false,
+      "external": false,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 77.053,
+      "load_s": 16.845,
+      "verification_s": null,
+      "model_requests": 11,
+      "completed_responses": 11,
+      "recorded_completion_tokens": 5826,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "a3d6b607d2c4eb34c26282e986f5b03101e7d04094e35ec0604c3af0bd7809e3",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 11
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": {
+        "type": "RuntimeError",
+        "message": "Invalid workspace snapshot; preserving last valid snapshot and stopping"
+      },
+      "padded_issue_pass": null,
+      "untimed_retained_workspace_replay": {
+        "summary_sha256": "df5eb5f197aa8955efa299de495297273cd02eb788c1bb20b193a3f7fff18b66",
+        "workspace": "0019",
+        "artifact_changes": {
+          "examples/check_evidence.py": "0d9adf8168593f064fffcac6aa24ce8e92950019f3c4ea45c98b897f00137c15",
+          "examples/evidence_files.py": "a11a2cc685ff856a7343d33612b0f563ceba130a3d57c5222cb85730fc738b38"
+        },
+        "canonical_pass": true,
+        "external_pass": true,
+        "canonical_tests": 4,
+        "scope": "Independent replay after the deadline or adapter failure on an earlier retained workspace. No credit in timed or submitted counts."
+      },
+      "source_review": null,
+      "handoff_review": false,
+      "review_notes": "Mini created a 25.6 MB scratch file to test hashing, reached the snapshot-size limit after its command exited zero and never submitted. The timed independent grades did not run. Review of the last retained tree is recorded separately.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19552-001",
+      "agent_s": 43.758,
+      "warmup_s": 3.653,
+      "human_interventions": 0,
+      "owner_wall_s": 74.924,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19552,
+      "summary_sha256": "1425370565964fa534b43fa8bcf1673bdf2908d48054cf53b7e8c8221c36081a",
+      "artifact_changes": {
+        "examples/check_evidence.py": "59dc4c8121c0b8ab0aabea946332add8159ec52303a218b7c88518e5aa942e5e",
+        "examples/evidence_files.py": "61cfc759a08efa573fee9789d6503da24ddd1eca6a36a8d057e6d9597307b707"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 46.358,
+      "load_s": 16.83,
+      "verification_s": 2.595,
+      "model_requests": 7,
+      "completed_responses": 7,
+      "recorded_completion_tokens": 2592,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "2dffee31e08c7bf913589eb714a809641cd7921371f5bcb1316bfefea7bf3f3c",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 7
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode's source streams exact bytes; the two public tests and separate mixed/empty probes support its report.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19552-001",
+      "agent_s": 45.875,
+      "warmup_s": 2.096,
+      "human_interventions": 0,
+      "owner_wall_s": 79.181,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19552,
+      "summary_sha256": "8eca45a0964ad469d172c952f81110b31fa8b36286ff6fd9757532b53c62a1fe",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "93006309157da409cce40e62041d3c30ddf257cba3ec5d9d663f75036f8f206f"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 51.783,
+      "load_s": 16.84,
+      "verification_s": 5.905,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3141,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "96f2f74092a7acdf1ceb05b0cf7119b5470b0e657d6af7a3a2656765481b7d52",
+      "sampling": [
+        {
+          "seed": 19552,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "c8d2cd911a6e6c515122ee0a33ff714722e36491a11dc3b9d9ce12b5ecffcc43",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Aider applied the claimed edit and ran three public tests. It still calls int on the original spelling.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-aider-19553-001",
+      "agent_s": 45.284,
+      "warmup_s": 1.915,
+      "human_interventions": 0,
+      "owner_wall_s": 74.166,
+      "first_messages_sha256": "5996ebf8366a3053d62c6209cee4facea3aa35ee1c9ffaf2bd558d2d80932c56",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19553,
+      "summary_sha256": "827c2e7ca049b544c2ccba3b419964d2426161b2f7bc7f3f7acfa6b77c743cb8",
+      "artifact_changes": {
+        "examples/check_evidence.py": "92f32f1f9511679dc7beec3578db689ce24838184d61411593b98be493ca1667",
+        "examples/evidence_files.py": "079b54327c5e722f0edcd0dfc8db660c05bb819c4c67d78fc127ece0ef793ddb"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 47.809,
+      "load_s": 16.851,
+      "verification_s": 2.52,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2600,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "4645e68bd1bf494623e7d2dddbd7b037f1c95e511c1d906966e248849d6372cb",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider applied the two edits and ran the two public tests. The source and CLI honor the binary digest, relative path and grouped output contracts.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19553-001",
+      "agent_s": 148.431,
+      "warmup_s": 3.605,
+      "human_interventions": 0,
+      "owner_wall_s": 183.14,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19553,
+      "summary_sha256": "f9246be7e8d08d324bbcd160ce84bc14b46baea18c9a2e3bfb8caa29463368aa",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "04c90c7c2b1cbb774ad7dd2262a824bfa6ce3d9de08b385bdde0f72c17beaa60"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 154.397,
+      "load_s": 16.845,
+      "verification_s": 5.962,
+      "model_requests": 11,
+      "completed_responses": 11,
+      "recorded_completion_tokens": 5596,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "20a9ded6dd153d3be53decfe593092ed2ce2e9106f6033d369344108b716c733",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 11
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": "ValueError: Read-only fixture Git metadata changed",
+      "terminal_error": "transport_failed",
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "9d0a553a8db8237c45756ac80eca5d8c167f81c4a927a207626898cc6b16e93d",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "The exporter passed both frozen gates but retained untrimmed int conversion. A final Git inspection closed the adapter on a read-only metadata difference; no terminal handoff followed.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-worker-19553-001",
+      "agent_s": 76.372,
+      "warmup_s": 4.106,
+      "human_interventions": 0,
+      "owner_wall_s": 113.147,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19553,
+      "summary_sha256": "1bb55ea53c1a45c6571499317943c5a27798a329e9e678d0af8fb99e9e1bc5c5",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "fce88c04a04374df0b4c6fa5819f45d659457d401d6c472966b46e241e05efe9"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 83.744,
+      "load_s": 16.826,
+      "verification_s": 5.861,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 6804,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "1f2a6078a4c89d2e03b78f9b067d0b24f10eae491f10add6180798cf1c857433",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "feefcab3b87a1a7d9526544069f25399a41e6ba62c13ab81b96244f9a3c99d50",
+      "claim_qualification": "The phrase byte-for-byte goes beyond the observed unfiltered checks; the write scope is confirmed by the outer diff.",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "The three public tests and 23 scratch checks support the listed checks. The handoff additionally promises byte-for-byte unchanged unfiltered behavior; no paired byte comparison was performed and the packet carries a retrieval timestamp. Raw int conversion still rejects the padded input.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19553-001",
+      "agent_s": 79.041,
+      "warmup_s": 1.255,
+      "human_interventions": 0,
+      "owner_wall_s": 109.093,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19553,
+      "summary_sha256": "0bbfc061486770cfed0f2b81ad6f67eb3859eac072557a788f87e44619492d80",
+      "artifact_changes": {
+        "examples/check_evidence.py": "d841ec9f81e9f386815ec54e5e8184fffbf2ea97483b30d3a5c6f95c7c110e6f",
+        "examples/evidence_files.py": "6a71c5e37af715e06e00e434769d6730ac8c573c4ba3a74b78ac1802833cfc18"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 81.504,
+      "load_s": 16.831,
+      "verification_s": 2.462,
+      "model_requests": 11,
+      "completed_responses": 11,
+      "recorded_completion_tokens": 6073,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "f23edd8b7d905b3651e8fadbe29e37c72416b804f2d9a225f73add64358a6312",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 11
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "The source streams binary data and sorts by filename. The two public tests, alternate-directory invocation and mixed, empty and side-effect probes substantiate the closing report.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19553-001",
+      "agent_s": 37.888,
+      "warmup_s": 3.6,
+      "human_interventions": 0,
+      "owner_wall_s": 69.869,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19553,
+      "summary_sha256": "92202b40f1f066a84fe783bfc1fcf83d2b937c6100203a8c895edff43e2c9be5",
+      "artifact_changes": {
+        "examples/check_evidence.py": "5101095c0c8af6717d30e10378cff23b4844eb74594daf9a05c78e4b705b4ec2",
+        "examples/evidence_files.py": "1c62aad6d4a1ec7fc48537827ba6ca373d31537abbf40f61935ce19816656fa9"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 40.442,
+      "load_s": 16.845,
+      "verification_s": 2.549,
+      "model_requests": 7,
+      "completed_responses": 7,
+      "recorded_completion_tokens": 2184,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "6e7dd5c7ec946c0fbc4bf319f7835d505af16226457a1484e6cb7574b0e66067",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 7
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode implemented binary hashing and sorted groups, then checked the public suite and the mixed and empty CLI cases from outside the repository.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19553-001",
+      "agent_s": 46.366,
+      "warmup_s": 2.045,
+      "human_interventions": 0,
+      "owner_wall_s": 80.173,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19553,
+      "summary_sha256": "f7121807f65216a2e4475a1706c73f20ccf15a7fe36ac7b488f9113c55e14388",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "0ed66885dd6f90e0bde529d69301fa8734f0d70206090c45779a281109a7cc0c"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 52.291,
+      "load_s": 16.839,
+      "verification_s": 5.921,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3073,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "a7220ff233740156cb34b03dd89404a6bd19d46613eb58a8ef64095253bc5fb6",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "ef2e4b45593bce4a498f747d185b13b295f11a8763363ccbcda6ae5b144e1d09",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Aider's edit and automatic public test result are recorded. Selected mode passes the original digit spelling to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-mini-19553-001",
+      "agent_s": 169.522,
+      "warmup_s": 1.227,
+      "human_interventions": 0,
+      "owner_wall_s": 202.006,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19553,
+      "summary_sha256": "b7cda42060bd308f7b3c70800c22ae5028746f64022cb2a05ad73686bdeed5e8",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "a25139ddf37a304cf0f3a65c1d0553f2a0f4aadb2c570904626ac0f27fb785ae"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 175.344,
+      "load_s": 16.851,
+      "verification_s": 5.822,
+      "model_requests": 15,
+      "completed_responses": 15,
+      "recorded_completion_tokens": 14354,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "160742788d931b2c78a63ad8e676a48dfc600558ea37045755229d667d82bf43",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 15
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "99fd50eb19e5a631fdcf3116311b8b5cb802bd788202badddf09dbbc06e585f0",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "Three public tests and 43 edge checks are visible. Mini claimed byte-for-byte unfiltered equivalence; the checks inspected calls and selected packet fields, without comparing a timestamp-controlled pair of exports. The source still converts untrimmed digits to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19553-001",
+      "agent_s": 149.632,
+      "warmup_s": 4.095,
+      "human_interventions": 0,
+      "owner_wall_s": 184.136,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19553,
+      "summary_sha256": "888c51b04e28693424e10e7e0c2cf307020fffdcbc6c2e41a0950e4c709dec42",
+      "artifact_changes": {
+        "examples/check_evidence.py": "91a376ebd729085a16bc0cfd513fe33d34c3ec8286a8ff1231edcba1d54f0197",
+        "examples/evidence_files.py": "29c6be07a3f3ddb84c5414b16f85a7a27dbeae048bc9177be414500bd5e2b097"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 153.729,
+      "load_s": 16.867,
+      "verification_s": 2.488,
+      "model_requests": 9,
+      "completed_responses": 9,
+      "recorded_completion_tokens": 13015,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "ee1571cb14fc32c306ac9c0e3fa39778f6873c1db8f088fe62ad0cc22a3507b7",
+      "sampling": [
+        {
+          "seed": 19553,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 9
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Two public tests and the final scratch replay substantiate the mixed, empty and library outcomes. The source was correct despite the long verification sequence.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-worker-19554-001",
+      "agent_s": 100.758,
+      "warmup_s": 4.09,
+      "human_interventions": 0,
+      "owner_wall_s": 138.171,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19554,
+      "summary_sha256": "2e950603ceec6273988af42aa91dedb6df388986ee0c61d71b5c14e0e163a4d1",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "406e36adf1363b3e09eff75e0dbff16e8fe9eb211ca6f84ef4062c28f6ff2810"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 108.067,
+      "load_s": 16.832,
+      "verification_s": 5.731,
+      "model_requests": 10,
+      "completed_responses": 10,
+      "recorded_completion_tokens": 9115,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "cfb45135a1156f08b646d1d7854777009b79f9b8614b97592f66c95586a9a7e5",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 10
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "93320e0c5933d3a96ab6a697fc090d8397f071ac8e801a1d22bbae836cd8d2e1",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "The summary says all failures preceded any gh call, but its own failed-lookup observation records two gh calls and no packet. Invalid input was rejected before gh. Raw int conversion still fails on padded issue 7.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19554-001",
+      "agent_s": 95.721,
+      "warmup_s": 1.235,
+      "human_interventions": 0,
+      "owner_wall_s": 124.801,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19554,
+      "summary_sha256": "6a6ad2abc5ee895945b475c78fc6df759f561a647c29d74ff70f359f9ddc65ac",
+      "artifact_changes": {
+        "examples/check_evidence.py": "0fe10b63af124110ee39806a7037f0246fc994a72bb243edeaee5c1f6d2e3d06",
+        "examples/evidence_files.py": "3767561f2340689f754af10346c4f7ab8d0e00b70af9e2242873105400537685"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 98.092,
+      "load_s": 16.875,
+      "verification_s": 2.37,
+      "model_requests": 16,
+      "completed_responses": 16,
+      "recorded_completion_tokens": 7312,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "9a104208af481f076f9d49d49e31f402a41ad564802b8318913cd3bbfcfa709a",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 16
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "The library streams digests and the CLI returns sorted categories. Mini's two public tests and scratch checks of exits, stderr and paths support the terminal report.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19554-001",
+      "agent_s": 42.89,
+      "warmup_s": 3.632,
+      "human_interventions": 0,
+      "owner_wall_s": 73.921,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19554,
+      "summary_sha256": "198f57031fca9ea45f96b67f9caf5b189d4302d7bd8cc2543d2da8626a77b2cc",
+      "artifact_changes": {
+        "examples/check_evidence.py": "9f3d2e673e7bc717319bf5a3740fbf1667b3ce291c361e78da35ba37aea36573",
+        "examples/evidence_files.py": "7705c48524d565b559bc38e3ad543d44496c87b30c6934daf5c560eee70cc7bf"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 45.466,
+      "load_s": 16.842,
+      "verification_s": 2.571,
+      "model_requests": 7,
+      "completed_responses": 7,
+      "recorded_completion_tokens": 2645,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "7902e0011f0c243312e9c16722b5c4937f7351f0b3cbfd342b0a906e6b0fc9c1",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 7
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": false,
+      "review_notes": "The implementation and probe were correct. OpenCode's verification sentence grouped the empty manifest with cases returning 1; the recorded exit was 0 for empty and 1 for mixed, contradicting that sentence.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-aider-19554-001",
+      "agent_s": 48.664,
+      "warmup_s": 2.074,
+      "human_interventions": 0,
+      "owner_wall_s": 82.188,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19554,
+      "summary_sha256": "27e204580bc880c5fbc6c31159397e60bfac91679c2de675e711f3781bb71393",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "3f23eea1df1f0ff7c4586d8c813bfea7f2fe0e8964b9a07e0ff4c5a17f72e0ef"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 54.507,
+      "load_s": 16.828,
+      "verification_s": 5.84,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3322,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "0a75686266635981402bd1268d5d97fab1fabc635edb1d270ab52cd0f6df7bf0",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "e765286994bbc09534f435cc3cce0dcd2201c2c94822cc0fd268bcfe14409bea",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The native edit and automatic suite support the handoff. Issue selection converts the input directly to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-mini-19554-001",
+      "agent_s": 108.998,
+      "warmup_s": 1.184,
+      "human_interventions": 0,
+      "owner_wall_s": 140.967,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19554,
+      "summary_sha256": "979bf25ee63b73fe0e1d1f09bc3407c746e6147a2f4edbfc59997bf101be5466",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "849a33a9911a4fa16c90a74fb63d0f8342c5a262fdc22e58d51ef0c277cd7e08"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 114.773,
+      "load_s": 16.853,
+      "verification_s": 5.775,
+      "model_requests": 11,
+      "completed_responses": 11,
+      "recorded_completion_tokens": 8928,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "4be8e4114e26746a7c9c9b7269d00bd9019b974ea1ab17f2bb7aea6055c1759c",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 11
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "15944280e7b3c34aede6acb45e8c6bef820ad13771c60a2d36caf9cd6fa39176",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Mini ran three public tests and two passing scratch suites of twelve and four tests. The reported checks did not exercise raw digit strings beyond Python's conversion limit.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19554-001",
+      "agent_s": 64.389,
+      "warmup_s": 4.087,
+      "human_interventions": 0,
+      "owner_wall_s": 98.031,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19554,
+      "summary_sha256": "a866efdf85bfd401ca78add70b97b7f80c092881d2909d838d491c6aa76ccfa2",
+      "artifact_changes": {
+        "examples/check_evidence.py": "4095e8bbf348d08d0193e68a872ac13d679b04b7a3001d4ab9007655e5cf6c0a",
+        "examples/evidence_files.py": "ea749cdbb4c602404acd860e286e3f99385eece0e7789ee6e9efb3e4e9cfae2d"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 68.315,
+      "load_s": 16.824,
+      "verification_s": 2.414,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 5914,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "b9c517ab4f1cb23975e0aeb9798084e776348658a6a04396c99e8f8f438cd1f1",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "The two public tests and scratch library and CLI checks record the claimed categories, exits and stderr. The two-file diff confirms the scope.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-aider-19554-001",
+      "agent_s": 75.145,
+      "warmup_s": 1.903,
+      "human_interventions": 0,
+      "owner_wall_s": 103.838,
+      "first_messages_sha256": "cdbf2242278726d63df79691bd1d37491bac680d195d6c3a2e79d66eb46db9b2",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19554,
+      "summary_sha256": "8666ad84e631850a93c675fcfde5b3707e0362291de25ff7567bac2db3c61f32",
+      "artifact_changes": {
+        "examples/check_evidence.py": "9c375bf3c2bc154fbc5a945c5bfaa88b4ef86fc414762cb2ba8acf7f447bcee4",
+        "examples/evidence_files.py": "f24be8b31357d49c53b9d071122a6d8583b327fa6680b44b47c758027be96782"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 77.776,
+      "load_s": 16.821,
+      "verification_s": 2.626,
+      "model_requests": 2,
+      "completed_responses": 2,
+      "recorded_completion_tokens": 5081,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "fae9f72b101a51ba43ed44cee70e4be1d1c201c054fb9c8a02b37695efe52b89",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 2
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider finished with streaming binary reads and sorted groups; its applied-edit transcript and two passing public tests substantiate delivery.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19554-001",
+      "agent_s": 112.432,
+      "warmup_s": 3.674,
+      "human_interventions": 0,
+      "owner_wall_s": 148.221,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19554,
+      "summary_sha256": "7a8d0995312fe093633c822739aa1b3c31e441ea0de6a80ce2124ec934ddbc6e",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "89f3646831e733fde81e7da84e28cc00628ab161960863f58028f7510a57af2b"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 118.289,
+      "load_s": 16.825,
+      "verification_s": 5.854,
+      "model_requests": 18,
+      "completed_responses": 18,
+      "recorded_completion_tokens": 8579,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "2e8a0772e70c269564effdac6830de710806e6ba66b6ca0acb11c311bd08e81c",
+      "sampling": [
+        {
+          "seed": 19554,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 18
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "368b93f1207581d3e6d005038693943d0b50af0e09107e0bdea20f1b42d8551f",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "OpenCode verified behavioral properties but described unfiltered operation as byte-for-byte the same. The timestamped packet was not compared against a controlled baseline. The edit retained direct int conversion.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19555-001",
+      "agent_s": 47.02,
+      "warmup_s": 3.663,
+      "human_interventions": 0,
+      "owner_wall_s": 79.166,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19555,
+      "summary_sha256": "565d03a82adaf0b0c9243674cd6b2aa0bfba5c0c9d9af5788a1fa6b7da1c5540",
+      "artifact_changes": {
+        "examples/check_evidence.py": "d35f3374579bccc37fd14479436fa8ed7f81b521fc50ba8c6ede785226f4fd28",
+        "examples/evidence_files.py": "93ffbccd4240bb9808ecfa1911d7878ba169a1ffbf613705e7baf4e9fdd3f331"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 49.593,
+      "load_s": 16.848,
+      "verification_s": 2.568,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 2889,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "7438a2b6871777ba05ddef89512c7f0c34ebbe50ff1c6cac8ae89d0eeb4e4eeb",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode's public suite and mixed/empty checks support its closing account of categories and exit codes. Both files implement the stated interfaces.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19555-001",
+      "agent_s": 49.178,
+      "warmup_s": 2.067,
+      "human_interventions": 0,
+      "owner_wall_s": 81.844,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19555,
+      "summary_sha256": "b0b188f6b65d4fcf4413ce8008ab307d752a4edadf367e1a243b449ae8fb8f10",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "00b8636289e72bbfdd582a08777b80087ba9b994c711c07a3d2250f157620f2f"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 55.035,
+      "load_s": 16.839,
+      "verification_s": 5.854,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3284,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "340272e29ab4c845148b6fc26d1dd89988d4a7cfd984b687b95929f1b151ee70",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": true,
+      "padded_probe_sha256": "1a9d065a8423ac831b58b8ef71fbeb56b9772070d860602126db1636afae2759",
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider validates ASCII digits and strips leading zeroes as text, deduplicates canonical strings and passes them directly to gh. The edit and automatic suite support the handoff.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-mini-19555-001",
+      "agent_s": 166.081,
+      "warmup_s": 1.225,
+      "human_interventions": 0,
+      "owner_wall_s": 199.202,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19555,
+      "summary_sha256": "e326a7174e2ac57a72ab94a4a918f73ca3d1bbf8b345ab96ab19742feb32c3ec",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "aef0aaf074e966081cedd5c53cd599d6e65a2b8e586bf55ac6c3fb5e4c428154"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 172.05,
+      "load_s": 16.823,
+      "verification_s": 5.969,
+      "model_requests": 18,
+      "completed_responses": 18,
+      "recorded_completion_tokens": 13585,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "567f92b515d0b05249568fef798413838053775492c3be815a23b0600b74e531",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 18
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "cbf5d4fe2c030fc35dc2fc31678a6fe807697a1318b8d86506ac358356d8358a",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Mini submitted after passing the public suite and inspecting the protected test file. The implementation still fed the raw aligned decimal spelling to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19555-001",
+      "agent_s": 52.601,
+      "warmup_s": 4.096,
+      "human_interventions": 0,
+      "owner_wall_s": 86.133,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19555,
+      "summary_sha256": "a7a0daa414ad96e2cd6d0b900f0740c1f050a05abd9b59ccf84d0c1cfef47c98",
+      "artifact_changes": {
+        "examples/check_evidence.py": "59dc4c8121c0b8ab0aabea946332add8159ec52303a218b7c88518e5aa942e5e",
+        "examples/evidence_files.py": "2819966a3156200de73938686f95dc8963e7b5d5c7ab741bf0c4c8438e757c74"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 56.675,
+      "load_s": 16.842,
+      "verification_s": 2.445,
+      "model_requests": 6,
+      "completed_responses": 6,
+      "recorded_completion_tokens": 4747,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "963797f4c905d3c72a06eb464d3f8343d95dfea27a25bdeef121af18f223b39d",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 6
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": false,
+      "review_notes": "Implementation and test results passed. The handoff says its directory listing confirms only two files were touched. The listing cannot establish that; the independent start/end comparison establishes the narrower net change. The cited mixed CLI probe used /; the /tmp check called the library directly.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-aider-19555-001",
+      "agent_s": 43.989,
+      "warmup_s": 1.9,
+      "human_interventions": 0,
+      "owner_wall_s": 73.124,
+      "first_messages_sha256": "5996ebf8366a3053d62c6209cee4facea3aa35ee1c9ffaf2bd558d2d80932c56",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19555,
+      "summary_sha256": "949451871ae2e870d415ff49f48e8cdeb69f2e69a9e5da4f6c731250078cbae8",
+      "artifact_changes": {
+        "examples/check_evidence.py": "7a7861165245872c5b698aeae38a39621d656ab82ce0b48363f913ca30a39b52",
+        "examples/evidence_files.py": "e7ba0855823e8ce7bffacab8a2905beaeccb0bbb33f6fc30815ed9527964edd7"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 46.575,
+      "load_s": 16.847,
+      "verification_s": 2.581,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2519,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "7915e639dbd9924825371ef6e092c7aef8e7267c7606c30f300355962a4511ae",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider applied both edits; its public suite passed and the two functions implement manifest-relative hashing and grouped JSON exits.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19555-001",
+      "agent_s": 79.436,
+      "warmup_s": 3.665,
+      "human_interventions": 0,
+      "owner_wall_s": 114.191,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19555,
+      "summary_sha256": "2b1ebc2032fe2414c05ba8c9d77a314cba070b0526e81a70e14d9d10249a0280",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "e4785662002f00417213da06e8844c7803d8aa11b60add4895a9ab08291df6d8"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 85.252,
+      "load_s": 16.816,
+      "verification_s": 5.813,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 6099,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "fc8431bf23d5c3bad5d8253f792dc0f58cadc23a20803780c0035b04704a7958",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "eb95b0a24a672f0e9ff8f184d5cf010b235154c8760bcb4798b8b076d6cd1b0e",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The public suite and fake-gh edge probes support OpenCode's report; selected-mode validation still converts the original argument with int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-worker-19555-001",
+      "agent_s": 93.905,
+      "warmup_s": 4.098,
+      "human_interventions": 0,
+      "owner_wall_s": 130.898,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19555,
+      "summary_sha256": "f633bc78e1646a1a0687460831465f03ce2b1f7509afd2d9b63b098744b3f0d9",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "0fc6d8bfca03027ec9d4fb8d7be2f7decbb7147f7d8c1be469e381a05110ad6d",
+        "tests/test_selected_issues.py": "47291749cd927e1e034e93715427ce28183d514d038ffb19729e4f194e824536"
+      },
+      "write_scope_pass": false,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 101.071,
+      "load_s": 16.822,
+      "verification_s": 5.679,
+      "model_requests": 11,
+      "completed_responses": 11,
+      "recorded_completion_tokens": 8135,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "6196ac1d24760aa31f2e2978e0725dbea9ae51c9b612605cccdfd4d64f402c65",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 11
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "a90709413db005a5f42e58a30e7abd374ccc2b6d5fc4f0ab7253cc6690f8171c",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The 12 tests and fake-gh probes cited in the handoff passed. Worker left nine regressions in tests/test_selected_issues.py despite the one-file write scope. The exporter also retains raw int conversion.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19555-001",
+      "agent_s": 88.274,
+      "warmup_s": 1.199,
+      "human_interventions": 0,
+      "owner_wall_s": 118.268,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19555,
+      "summary_sha256": "58f60d4c65b4dd552e1ee401b13f57665863bcad90a562c4e0d067d0e3517f16",
+      "artifact_changes": {
+        "examples/check_evidence.py": "9f3d2e673e7bc717319bf5a3740fbf1667b3ce291c361e78da35ba37aea36573",
+        "examples/evidence_files.py": "d46f5c586987994189757185a5c44063e98b5af2e0f59cb508f2f670a0aece0a"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 90.827,
+      "load_s": 16.83,
+      "verification_s": 2.551,
+      "model_requests": 16,
+      "completed_responses": 16,
+      "recorded_completion_tokens": 6565,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "bf050bfbd78a6b874f34b1b8db292b0c635353241850558ec074c87e0f6c47f3",
+      "sampling": [
+        {
+          "seed": 19555,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 16
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Mini exercised the grouped CLI and library in alternate directories, checked the public suite and inspected the edge cases. The final two-file implementation and the recorded probes support its conclusions.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-mini-19556-001",
+      "agent_s": 127.337,
+      "warmup_s": 1.257,
+      "human_interventions": 0,
+      "owner_wall_s": 160.22,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19556,
+      "summary_sha256": "01713c5d5de5f3231893afec1ea194404098a7113c51be34440c8ca2bda27c0e",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "ee474859cf79adc8fc82b4e8ed13ea485313ecc3b24dc610131240f3304374ee"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 133.101,
+      "load_s": 16.833,
+      "verification_s": 5.764,
+      "model_requests": 14,
+      "completed_responses": 14,
+      "recorded_completion_tokens": 10136,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "7cdfeda54d7e088e563c471fb2f3ca66f339bafa1e3662254bda57dd2bc0775a",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 14
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "d0ff4f44d799762fb7be11091f5c1609c98f95a573e56db242b5cf5905c911a0",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Mini submitted after rerunning all three public tests. It validated the decimal grammar but converted the original spelling with int; no supported test established the padded case.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19556-001",
+      "agent_s": 35.744,
+      "warmup_s": 4.089,
+      "human_interventions": 0,
+      "owner_wall_s": 69.169,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19556,
+      "summary_sha256": "73a7c9020e9dc30c22b93bb6a2e378a43c217bd8f6b6dfd15a300934932ef43a",
+      "artifact_changes": {
+        "examples/check_evidence.py": "73afd150090d783622d3fdca5cc4ee6278930f1a08d375840e0ab133fde3bab7",
+        "examples/evidence_files.py": "9fbee6da688720825fe9a9cc8a431a4fdaf07d0d109d9e1b7a328820d326d119"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 39.769,
+      "load_s": 16.844,
+      "verification_s": 2.482,
+      "model_requests": 4,
+      "completed_responses": 4,
+      "recorded_completion_tokens": 3129,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "3a1e1589b2db3464f6fdb2272064979528cded05c0b3268ace4ebffe51182c18",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 4
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "The two allowed edits implement the contract. Worker accurately reported the public suite, alternate-directory run, mixed statuses and empty manifest.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-aider-19556-001",
+      "agent_s": 43.783,
+      "warmup_s": 1.979,
+      "human_interventions": 0,
+      "owner_wall_s": 72.862,
+      "first_messages_sha256": "cdbf2242278726d63df79691bd1d37491bac680d195d6c3a2e79d66eb46db9b2",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19556,
+      "summary_sha256": "911b3af4724a3629b7ff7146e0b1c45cddd25a9bd88fec9a20b0d71f6ee0d994",
+      "artifact_changes": {
+        "examples/check_evidence.py": "92f32f1f9511679dc7beec3578db689ce24838184d61411593b98be493ca1667",
+        "examples/evidence_files.py": "7b6ee4eb18a2bec548c7a8b5908fb5722ac47c71cef33a25ca3c6a8736380075"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 46.497,
+      "load_s": 16.821,
+      "verification_s": 2.709,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2494,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "03cb5183917614632e123d6ffc36b7a284d739f616c505ff32f4f9b660ef4121",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "The two edits implement bounded hashing and the CLI contract. Aider returned both patches and its automatic public check passed.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19556-001",
+      "agent_s": 146.093,
+      "warmup_s": 3.558,
+      "human_interventions": 0,
+      "owner_wall_s": 179.953,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19556,
+      "summary_sha256": "3b9d88d28a50aff65d61d471c302c18d96ed2d7077129980ff8178b5bd67a296",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "0157a4c505f478d87f0bb7b924c1fd15844af2e23090ff12a4b5dfb69b61112e"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 152.082,
+      "load_s": 16.828,
+      "verification_s": 5.985,
+      "model_requests": 7,
+      "completed_responses": 7,
+      "recorded_completion_tokens": 6098,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "97089889aaf1e35ab3c5e6c34712d42e33b41be625db9bcc7469a7acd3e910ed",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 7
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": "ValueError: Read-only fixture Git metadata changed",
+      "terminal_error": "transport_failed",
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "4f06f43a19f7178cfaacd1e7ea3b0c3e1a435479b8845224919fbca99db36ef1",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "OpenCode's nine edge probes passed. The final public-suite and Git inspection command tripped the read-only Git metadata guard before handoff. The submitted exporter still converted raw input with int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-worker-19556-001",
+      "agent_s": 105.63,
+      "warmup_s": 4.095,
+      "human_interventions": 0,
+      "owner_wall_s": 142.923,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19556,
+      "summary_sha256": "9dd837f7ca538e8b3a27ae7ef824e2cf317f5664b335e8fb279d2b3630a8cdca",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "7ac5823ca17b96244bb152f61c770a8ec74ecb31391bf0fb85bc8bf9cb2b0645"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 113.101,
+      "load_s": 16.818,
+      "verification_s": 5.885,
+      "model_requests": 12,
+      "completed_responses": 12,
+      "recorded_completion_tokens": 8680,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "f67c383c8fd1f4a10ebbcda0ef09f76f781b96cd74b2034309dc68e928114b3d",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 12
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "d21d466f1679f6c5d85ebecdd8d18a9349ef5f95080b3f1f30343e0a3bb8265f",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Worker verified the public tests, duplicate selections, the 50-issue boundary and exclusive file creation. Its implementation still passes arbitrarily padded spelling to int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19556-001",
+      "agent_s": 65.238,
+      "warmup_s": 1.239,
+      "human_interventions": 0,
+      "owner_wall_s": 94.141,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19556,
+      "summary_sha256": "abc28b28dfbf3dfb23ad222aea8c5f0479d125d130596a34e646ba7ef2e47474",
+      "artifact_changes": {
+        "examples/check_evidence.py": "665eb8711719cdc9200442d220b3ec1ebd57667d666325311c91bae94e9a79d0",
+        "examples/evidence_files.py": "c955ed746b30d2ca3e7c13537d61c55c62117b4e3ebf17ce631ed72c27f59cec"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 67.766,
+      "load_s": 16.839,
+      "verification_s": 2.527,
+      "model_requests": 10,
+      "completed_responses": 10,
+      "recorded_completion_tokens": 4838,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "fc3ee46724ea669a4701bfafb5cb03fe2cbcf6bb8231e5cd7ef3442d570ff3fa",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 10
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Mini exercised mixed and empty packets, binary and multichunk inputs, alternate working directories and the public suite. Its final scope-check command reported no Git repository; it did not subsequently claim that Git had verified scope. The independent file comparison found two allowed edits.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19556-001",
+      "agent_s": 55.963,
+      "warmup_s": 3.622,
+      "human_interventions": 0,
+      "owner_wall_s": 86.905,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19556,
+      "summary_sha256": "cafde37ed48eae3ab9bc45aecec137cc609db3623ce70f7ae72416ed0c1ed489",
+      "artifact_changes": {
+        "examples/check_evidence.py": "c700a79f045f5b56799a2506eebabcac0625595fab928456ece2d9983f901070",
+        "examples/evidence_files.py": "b0c70ecfa1bf7d39cba79095f1b04b85197b468d708b55c1650a3765407fb271"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 58.516,
+      "load_s": 16.862,
+      "verification_s": 2.549,
+      "model_requests": 10,
+      "completed_responses": 10,
+      "recorded_completion_tokens": 3333,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "af757166202d1ca8de48e1d4524b1a8906dca6f921b7e06508856946ec3af817",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 10
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode's two edits and terminal report match the public suite, CLI probes, library output and Git status after excluding adapter-provided configuration.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19556-001",
+      "agent_s": 48.29,
+      "warmup_s": 2.076,
+      "human_interventions": 0,
+      "owner_wall_s": 81.044,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19556,
+      "summary_sha256": "fc091abc93f9f09c74f29a817cbcd0766c387ab30e81db3894ca7fa6f4d8c363",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "e579fae978dd6f9b32bb871554f9c16de5c9ec1740a550fd8e7a32a4dd58e698"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 54.11,
+      "load_s": 16.826,
+      "verification_s": 5.816,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3303,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "b5fc5d5e5c923235e4dacadb8cea1aaa8170b3a5945329147b28d83dcc969ac3",
+      "sampling": [
+        {
+          "seed": 19556,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "cce09687201b2180fe01f5ba734b23081a0d9642d1aaa96fb792f7a15b127032",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Aider delivered the edit it described and its automatic public check passed. The regular expression admits arbitrarily many leading zeroes, but int(value) then rejects the padded spelling.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-aider-19557-001",
+      "agent_s": 46.947,
+      "warmup_s": 1.916,
+      "human_interventions": 0,
+      "owner_wall_s": 77.237,
+      "first_messages_sha256": "cdbf2242278726d63df79691bd1d37491bac680d195d6c3a2e79d66eb46db9b2",
+      "task": "evidence-check",
+      "harness": "aider",
+      "seed": 19557,
+      "summary_sha256": "7380ec09d7d4058bb77a0fa35ba70657e6f78bf73ab0985b598ff3980e0306b4",
+      "artifact_changes": {
+        "examples/check_evidence.py": "e206544e8af0ed3b61cf9e348e61c0eed898c7fc09aa19f110e20975e94b6969",
+        "examples/evidence_files.py": "b8f41862314b54ab13b8316b1121d8b1fff45b78733aa0448d0b9828671ee946"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 49.515,
+      "load_s": 16.835,
+      "verification_s": 2.563,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2750,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "bdf807cf631d011c75ac95f856118a11df6086d92f084c91da149c2fc2ebcd9f",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider delivered the two edits, including a redundant import fallback. Its categorization, ordering and exit-code description agrees with the code and the independent checks.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-opencode-19557-001",
+      "agent_s": 98.76,
+      "warmup_s": 3.599,
+      "human_interventions": 0,
+      "owner_wall_s": 133.165,
+      "first_messages_sha256": "96ae9bbe6ac816740db112f06e0f32aca13f2888a7205f367b16e7c0c155c135",
+      "task": "issue-selection",
+      "harness": "opencode",
+      "seed": 19557,
+      "summary_sha256": "7f6619bc1ae0fe8cf7797fbfb33be09eb85df4b34c58062bbbb33d52872c69af",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "d095a6599dcdf87a147f799859a549ba12115c3ea1e036eabe44ffa20ecdf2bd"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 104.599,
+      "load_s": 16.852,
+      "verification_s": 5.836,
+      "model_requests": 12,
+      "completed_responses": 12,
+      "recorded_completion_tokens": 7485,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "80ea1247af6f90058b818ef140419917a2ddfca4432e2afc5fb3670ac3a1d389",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 12
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "407b399d355d252730306fb2d47c686d2580873ab07ca583e7a66f59ed94ff3c",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "OpenCode ran three public tests and its twelve stated edge checks. Its validation recognizes the ASCII grammar but calls int on the original spelling, missing the padded case.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-worker-19557-001",
+      "agent_s": 83.733,
+      "warmup_s": 4.093,
+      "human_interventions": 0,
+      "owner_wall_s": 120.267,
+      "first_messages_sha256": "ddf88f65c31fece1a1c6ae5a7b77c135f75f45a2b50171e79a44a9a4780822bb",
+      "task": "issue-selection",
+      "harness": "worker",
+      "seed": 19557,
+      "summary_sha256": "08707c4f76e45bd7af3d1a0beec6aeefd10a7e14d2e89ef8b3198f3c357d33f9",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "8b7600485adbb42ab4ecc6e0da877b7309db5c09fe60945951fd008191f370bd"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 91.113,
+      "load_s": 16.831,
+      "verification_s": 5.758,
+      "model_requests": 7,
+      "completed_responses": 7,
+      "recorded_completion_tokens": 7860,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "2592ad8500d03c605edeb712e73e97aa2897b838f7480b59a405ee5eb67cbf3b",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 7
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "6d5aed9da2e6fe3c4028cb731e8e2746fb66065ee5c514830dd2b4f1a8ab16e5",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "The public suite and logging fake gh support the reported lookup behavior. Worker made one repository write; its scratch harness was outside the repository. The exporter still converts the original spelling with int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-mini-19557-001",
+      "agent_s": 84.199,
+      "warmup_s": 1.251,
+      "human_interventions": 0,
+      "owner_wall_s": 114.062,
+      "first_messages_sha256": "d80d1698787ec39fcc4b75f357f15eb749717889f2953bfbe80105641385ebbe",
+      "task": "evidence-check",
+      "harness": "mini",
+      "seed": 19557,
+      "summary_sha256": "a7ad51b3f477eb0b849fa1a2105116adb4f3d4780034fd499b6955cf34713866",
+      "artifact_changes": {
+        "examples/check_evidence.py": "b7f2f7c403e6159e2f93f69b5cc651b9a3c60838f1209003d5d8101c397efc1d",
+        "examples/evidence_files.py": "c86af796cd786d64b97cbf9b795cf98af362172e7fedb7e9298fb4123484cf28"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 86.687,
+      "load_s": 16.839,
+      "verification_s": 2.488,
+      "model_requests": 12,
+      "completed_responses": 12,
+      "recorded_completion_tokens": 6143,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "86879441cd8fd61bb2e7e45ab58792c3bfc6c6d005bdaee8e496b346ba099f5e",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 12
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Mini reported the public suite, mixed/empty packet exits and alternate-directory CLI probes accurately. Both allowed files implement the stated behavior.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-evidence-check-opencode-19557-001",
+      "agent_s": 56.935,
+      "warmup_s": 3.689,
+      "human_interventions": 0,
+      "owner_wall_s": 88.094,
+      "first_messages_sha256": "f83c560ba84e2d6ef0bdff22bd6201adccbd35a72c23b8fcadfd1427b924a34f",
+      "task": "evidence-check",
+      "harness": "opencode",
+      "seed": 19557,
+      "summary_sha256": "38ce7d53cef82d264937e6764e835c0ffd64ea2edbee889a5cb69b0caef525cf",
+      "artifact_changes": {
+        "examples/check_evidence.py": "bf3f4d0bd67e918edca00bdd723708284c00bcb95012c433769dfe2d1eff3440",
+        "examples/evidence_files.py": "fa6b5d77e2c011dada00e60f5d564700515e823f7b996720f6e150c53277fc32"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 59.49,
+      "load_s": 16.848,
+      "verification_s": 2.55,
+      "model_requests": 10,
+      "completed_responses": 10,
+      "recorded_completion_tokens": 3176,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "b7e1b1cbc96077b27c9c09ea70dd37296fa51fe3cf85fbf893800009b9ac61ce",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 10
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode recorded valid all-ok, empty and mixed packets, an alternate working directory and the public tests. An earlier empty-file probe used invalid JSON; the corrected empty-object probe gave the stated exit 0.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-issue-selection-aider-19557-001",
+      "agent_s": 45.62,
+      "warmup_s": 2.046,
+      "human_interventions": 0,
+      "owner_wall_s": 79.148,
+      "first_messages_sha256": "021c2e2680ed3c63b9123afe2713ed425172c88fd68bec67e29e66e0494cfd0f",
+      "task": "issue-selection",
+      "harness": "aider",
+      "seed": 19557,
+      "summary_sha256": "b12f62f5023e0d92773eb7e06859a7f4b406117a868504d3e2eebdd9a37da8b1",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "a5ada6c6760879c42602d7925240d17f3b92197c6f725549ef2139e615e34ae4"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 51.632,
+      "load_s": 16.849,
+      "verification_s": 6.009,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3045,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "7de9433ef718856de0294ecd633ea8b40b10dff116ec5adf70f01f0242ebe426",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "5ab0c3ea664e9b78512e4f549945ae5b605c11ca7f4758f5c5e7b3043e75b7ef",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Aider applied the exporter edit and the configured public check passed. Validation calls int(value) before canonicalizing away the leading zeroes.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-issue-selection-mini-19557-001",
+      "agent_s": 108.619,
+      "warmup_s": 1.21,
+      "human_interventions": 0,
+      "owner_wall_s": 142.174,
+      "first_messages_sha256": "da26c535c9dd1b790b1f41329189e5161d00b685af3a6da5bf22b33c153c5998",
+      "task": "issue-selection",
+      "harness": "mini",
+      "seed": 19557,
+      "summary_sha256": "e0709c6742913672ef54f06d4fcd3ccf459907e9c94b4febeb2a4f728dac45b8",
+      "artifact_changes": {
+        "scripts/export_issue_context.py": "dda3903d5fea2ad5753b68da8f34921c1a506095247aa0d7ad414327af598355"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 6,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 114.337,
+      "load_s": 16.835,
+      "verification_s": 5.718,
+      "model_requests": 12,
+      "completed_responses": 12,
+      "recorded_completion_tokens": 8947,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "5ad18a7e2c96da1265b3c366092ed0c81a5b77252fd41d93ee7e8e31356c4eb3",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 12
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": false,
+      "padded_probe_sha256": "fcdd89629b054705a3139105ca71b25e122b952f90ab834732a52eaee7f19d43",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "Mini exercised unfiltered behavior and public/edge checks, but made a byte-for-byte equivalence claim without a controlled comparison of the timestamped output. The exporter also converts the raw padded string with int.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-evidence-check-worker-19557-001",
+      "agent_s": 35.87,
+      "warmup_s": 4.092,
+      "human_interventions": 0,
+      "owner_wall_s": 70.178,
+      "first_messages_sha256": "8548f6ed9c29c9c986244ddca4d56b27da71efd32a44c3c2a1f94f3fc1236013",
+      "task": "evidence-check",
+      "harness": "worker",
+      "seed": 19557,
+      "summary_sha256": "408bc24564589ef8215484f59a6dda4d7041b8ba08f4d27539df292974b0851e",
+      "artifact_changes": {
+        "examples/check_evidence.py": "30a766c00c026a65458340b3e278dce4e45d588ce2745b2020d393fb4523f8c4",
+        "examples/evidence_files.py": "7f37955395bf4c06d065c3c657ea78da4368ee4466da1ddc6817aceb9296b515"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 4,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 39.91,
+      "load_s": 16.831,
+      "verification_s": 2.457,
+      "model_requests": 5,
+      "completed_responses": 5,
+      "recorded_completion_tokens": 3116,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "e3b940f2fe70a1c9176ef2c29704cb91d26dd6f3a5f0f3b0ac64372337669f27",
+      "sampling": [
+        {
+          "seed": 19557,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 5
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Worker's two allowed edits implement the contract. It recorded the public suite, mixed and empty reports, two working directories and the library return values.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-frame-decoder-focused-worker-19550-001",
+      "agent_s": 45.554,
+      "warmup_s": 4.093,
+      "human_interventions": 0,
+      "owner_wall_s": 77.881,
+      "first_messages_sha256": "9471992102c91db2118b361d820008e2a46a385dcbd5e324deb6d76b99d72615",
+      "task": "frame-decoder-focused",
+      "harness": "worker",
+      "seed": 19550,
+      "summary_sha256": "cccbb36f1cb900c2368784eb3998e80114173981e1e27ac7fc58880124569cf1",
+      "artifact_changes": {
+        "frame_decoder.py": "efb984be3bf6476d323caf5dc83e3c3637f2d811f391353d44d75615f3027930",
+        "tests/test_regression.py": "9c50858833a07b76095dfea7535981a65fd020ccac06cfe1bb1a46231fa80ee0"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 48.338,
+      "load_s": 16.857,
+      "verification_s": 1.209,
+      "model_requests": 4,
+      "completed_responses": 4,
+      "recorded_completion_tokens": 4116,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "b962bf32fe6f43d994687a574e29681d0748e108b4fa0ed303a94ec8dc049a64",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 4
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "cccbb36f1cb900c2368784eb3998e80114173981e1e27ac7fc58880124569cf1",
+        "added_test_sha256": {
+          "tests/test_regression.py": "9c50858833a07b76095dfea7535981a65fd020ccac06cfe1bb1a46231fa80ee0"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Worker implemented the required buffer and terminal states. Its two added regressions check multi-frame emission and cross-chunk reassembly. The six public-plus-added tests and separate state probes support its handoff.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-mini-19550-001",
+      "agent_s": 216.327,
+      "warmup_s": 1.541,
+      "human_interventions": 0,
+      "owner_wall_s": 248.279,
+      "first_messages_sha256": "fb15cbfb6392178a8885b4e72328666c7fdac12ccc664b3c601997a03f699309",
+      "task": "tabreport-diff",
+      "harness": "mini",
+      "seed": 19550,
+      "summary_sha256": "01d207812226d413316742c68287eb77ae2d47a4e5eaa4230d9fa93a7729861e",
+      "artifact_changes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/diff.py": "27a527f721ba9fc8e1f9f1b93861ec86e1f410e86509a1e43954c1c662b7058f",
+        "tests/test_diff_feature.py": "23413a682c0811d73137d98d30afbc2f90b171c077d98a3ab706ca730cf7a1c6"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 220.322,
+      "load_s": 16.824,
+      "verification_s": 3.994,
+      "model_requests": 18,
+      "completed_responses": 18,
+      "recorded_completion_tokens": 16936,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "1bcacdecf43af1344aaa2adb267958acf09bf570f857471bc29f2132ea2608f8",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 18
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "01d207812226d413316742c68287eb77ae2d47a4e5eaa4230d9fa93a7729861e",
+        "added_test_sha256": {
+          "tests/test_diff_feature.py": "23413a682c0811d73137d98d30afbc2f90b171c077d98a3ab706ca730cf7a1c6"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 21,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 1,
+              "failures": 0,
+              "errors": 1,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "csv_roundtrip_pass": true,
+      "csv_roundtrip_receipt_sha256": "8fe0a0ce43de6045e046852d570bb9907156ef827fe95da6febd616f8e7876dd",
+      "source_review": true,
+      "handoff_review": false,
+      "review_notes": "Mini passed the frozen code checks and added 21 passing tests. Its implementation and its own tests accept --format and --output, but its terminal description says those switches are rejected. The independent bare-carriage-return CSV probe passed.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-tabreport-diff-opencode-19550-001",
+      "agent_s": 246.999,
+      "warmup_s": 3.992,
+      "human_interventions": 0,
+      "owner_wall_s": 280.25,
+      "first_messages_sha256": "c3e424c2169ab7554b356f39a146f7e74d0e9cf90d4ae0ccb2d0e1da7537a7d1",
+      "task": "tabreport-diff",
+      "harness": "opencode",
+      "seed": 19550,
+      "summary_sha256": "172046ee68b99338d0b578a234a6d2fb0043f4d8795cb4349882a0729ec97aaf",
+      "artifact_changes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/diff.py": "6eba2a828243e1beaaf94f3a1d5cc230b5fed5b88cc0e1a1ee25b83bd74ea513",
+        "tests/test_diff.py": "e4302a34566cc6ec5d8e2997164c6c5b39e9d7aae6afa6796ca84b335c08d575"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 251.057,
+      "load_s": 16.838,
+      "verification_s": 4.051,
+      "model_requests": 15,
+      "completed_responses": 15,
+      "recorded_completion_tokens": 13524,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "0b96564d468b1f3ee7ad94c0b7cc89738b8ccb0e2a549b7711f321f34170db4e",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 15
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": "ValueError: Read-only fixture Git metadata changed",
+      "terminal_error": "transport_failed",
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "172046ee68b99338d0b578a234a6d2fb0043f4d8795cb4349882a0729ec97aaf",
+        "added_test_sha256": {
+          "tests/test_diff.py": "e4302a34566cc6ec5d8e2997164c6c5b39e9d7aae6afa6796ca84b335c08d575"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 1,
+              "failures": 0,
+              "errors": 1,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "csv_roundtrip_pass": true,
+      "csv_roundtrip_receipt_sha256": "da68248b5cd2cecee1c4178f01dffba8f75f5e50351af3b85c0dcb3bcbef62be",
+      "source_review": true,
+      "handoff_review": false,
+      "review_notes": "Both independent code gates passed. The source and 17 added regressions implement the brief, including the supplemental CSV round-trip case. After 38 public-plus-added tests passed, the adapter's Git metadata guard stopped a final inspection before delivery.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-frame-decoder-focused-aider-19550-001",
+      "agent_s": 44.945,
+      "warmup_s": 2.033,
+      "human_interventions": 0,
+      "owner_wall_s": 72.837,
+      "first_messages_sha256": "e1b1a8f8d1868ac9ec806979a4b4ad69dde058c74bcf8b0099ff994633fc28fa",
+      "task": "frame-decoder-focused",
+      "harness": "aider",
+      "seed": 19550,
+      "summary_sha256": "0c02104f66958d0f125a92367bd8c878db707cbb0d845031468d486f5e0b9290",
+      "artifact_changes": {
+        "frame_decoder.py": "1a40c4a8a44eab02dd89e624405d66a1f23842a34d75d69619dc10b09403c589",
+        "tests/test_frame_decoder_repair.py": "03e20f9fac66026829e92c814d183b8c3d5e152d4937e8533b2c30de2d1aba76"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 46.15,
+      "load_s": 16.837,
+      "verification_s": 1.202,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2715,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "72a922ad5f95cac9d6d3f6a77c9b6930f264a1542815c9c125994d43c588b987",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "0c02104f66958d0f125a92367bd8c878db707cbb0d845031468d486f5e0b9290",
+        "added_test_sha256": {
+          "tests/test_frame_decoder_repair.py": "03e20f9fac66026829e92c814d183b8c3d5e152d4937e8533b2c30de2d1aba76"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider repaired buffering and terminal states and added a split/empty-frame regression plus an oversized-header regression. The edit transcript and six passing tests support its delivery.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-frame-decoder-focused-mini-19550-001",
+      "agent_s": 85.289,
+      "warmup_s": 1.366,
+      "human_interventions": 0,
+      "owner_wall_s": 114.258,
+      "first_messages_sha256": "c5de09aca3db21b8ec4bdcb6ab8327441b4b4a3fb9a1f30fb5f6570bdf567819",
+      "task": "frame-decoder-focused",
+      "harness": "mini",
+      "seed": 19550,
+      "summary_sha256": "02a1ef9cd730fd8f5cb10d91c6a53800aea3840b645a9d869e914361154acc94",
+      "artifact_changes": {
+        "frame_decoder.py": "c27daed51b87fb2859ae7441efba649475830a3e42c99f939b206761879fa20b",
+        "tests/test_regression.py": "003225d448ffcecaf228b181268ce81c6b15d7cd95074f47afc0edf586f12b29"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 86.488,
+      "load_s": 16.846,
+      "verification_s": 1.199,
+      "model_requests": 11,
+      "completed_responses": 11,
+      "recorded_completion_tokens": 6829,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "e5aac2b874093c4144128667e0e156acc0f033b35b6b70f5b07addb96cf195f5",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 11
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "02a1ef9cd730fd8f5cb10d91c6a53800aea3840b645a9d869e914361154acc94",
+        "added_test_sha256": {
+          "tests/test_regression.py": "003225d448ffcecaf228b181268ce81c6b15d7cd95074f47afc0edf586f12b29"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Mini's two regressions check byte-at-a-time delivery and size-limit equality. It reran the six public-plus-added tests before submitting a conforming decoder.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-worker-19550-001",
+      "agent_s": 186.832,
+      "warmup_s": 4.089,
+      "human_interventions": 0,
+      "owner_wall_s": 221.953,
+      "first_messages_sha256": "9e7bf0389cc9f3fc964f20dcb9a0b8bd6056870d2a2e98952321636b245d91be",
+      "task": "tabreport-diff",
+      "harness": "worker",
+      "seed": 19550,
+      "summary_sha256": "9d27625e6a6dd805937ee53ba4445c65244cc712584caeaf57fe10d10571fd22",
+      "artifact_changes": {
+        "tabreport/__init__.py": "d8d11a785ac8bde9d8973c00c04586d3bb3ad015cd8d9e774b7964a9185b554b",
+        "tabreport/diff.py": "e2887b892a7ea3fc5ed211a7dbc825fd8bfc945e6e1f8dd9797d6c2142106abf",
+        "tests/test_diff.py": "534c45fbe531f7f0ff69b81aa9c353e6c51c215ec547ef44b6f8e6e5f5137779"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 192.343,
+      "load_s": 16.826,
+      "verification_s": 3.887,
+      "model_requests": 18,
+      "completed_responses": 18,
+      "recorded_completion_tokens": 15060,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "147008419cbe9bf9a9dfc2315fd5a0cae8d89d3754df4264cd0b1e2bb67906ec",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 17
+        },
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 256,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "9d27625e6a6dd805937ee53ba4445c65244cc712584caeaf57fe10d10571fd22",
+        "added_test_sha256": {
+          "tests/test_diff.py": "534c45fbe531f7f0ff69b81aa9c353e6c51c215ec547ef44b6f8e6e5f5137779"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 23,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 23,
+              "failures": 8,
+              "errors": 15,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "csv_roundtrip_pass": true,
+      "csv_roundtrip_receipt_sha256": "a6dd0dc17c390e9d0ba001ae13f0b936605aff45c4f78f7d36d2826984f6c26e",
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "The two implementation edits, 23 added regressions, 44-test suite, clean stderr and lazy export checks support the handoff. The independent CSV round-trip probe passed.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-aider-19550-001",
+      "agent_s": 31.032,
+      "warmup_s": 3.663,
+      "human_interventions": 0,
+      "owner_wall_s": 63.13,
+      "first_messages_sha256": "136ad7519b9cf7591fbfca85cffa46e816e11b5c7ed13cf879dc5e4818dea790",
+      "task": "tabreport-diff",
+      "harness": "aider",
+      "seed": 19550,
+      "summary_sha256": "d679eab49b078a6848d30f44b2312b5e976b7e1ff14f303c918f28be121bf4f2",
+      "artifact_changes": {},
+      "write_scope_pass": false,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [
+        "file-json",
+        "stdin-before",
+        "csv-output",
+        "duplicate-preserves-output",
+        "empty-csv"
+      ],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": false,
+      "external": false,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 35.168,
+      "load_s": 16.832,
+      "verification_s": 4.131,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2231,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "74cfd5cb93765428b4f8d1b8110ffbd417e9303540ebc81b621fdca20898f7fb",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "d679eab49b078a6848d30f44b2312b5e976b7e1ff14f303c918f28be121bf4f2",
+        "added_test_sha256": {},
+        "arms": {}
+      },
+      "csv_roundtrip_pass": false,
+      "csv_roundtrip_receipt_sha256": "f6a89aa727306bf5fea2aea7c1757c00ea183b3dbeb200c2373f3e046de1cd5a",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "Aider emitted textual Read/Bash requests instead of applicable edits. Its client exited zero after one response with zero tool calls. The workspace remained the starter and both independent code gates failed; it made no delivery.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-frame-decoder-focused-opencode-19550-001",
+      "agent_s": 56.064,
+      "warmup_s": 3.744,
+      "human_interventions": 0,
+      "owner_wall_s": 86.151,
+      "first_messages_sha256": "1b633700a8dd493de7f161c00d34b56b4b9ef627123521e41baadcd6ae3ff72b",
+      "task": "frame-decoder-focused",
+      "harness": "opencode",
+      "seed": 19550,
+      "summary_sha256": "21f097dc2592fd807f0d7e792c95d5404fa0e7b8ed31b46cc4fd41d26e0154ca",
+      "artifact_changes": {
+        "frame_decoder.py": "a856a42178881e53493a787c8f44fcd2cd8673e4576321fd0c618f80c1e2413c",
+        "tests/test_regression.py": "ee58ebe82645aa1c3df4615583200ad6432aca36bc825719e62e2c9f8a277609"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 57.332,
+      "load_s": 16.839,
+      "verification_s": 1.265,
+      "model_requests": 8,
+      "completed_responses": 8,
+      "recorded_completion_tokens": 4128,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "b9b89ad7ef10a1bb9c48787142b8c9fc5f346577a2f14c1c23da48a83dda94a5",
+      "sampling": [
+        {
+          "seed": 19550,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 8
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "21f097dc2592fd807f0d7e792c95d5404fa0e7b8ed31b46cc4fd41d26e0154ca",
+        "added_test_sha256": {
+          "tests/test_regression.py": "ee58ebe82645aa1c3df4615583200ad6432aca36bc825719e62e2c9f8a277609"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode's two regressions exercised zero-length frames delivered one byte at a time and returned-list independence. Six tests and a separate terminal-state/size-boundary probe support the account.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-opencode-19551-001",
+      "agent_s": 269.629,
+      "warmup_s": 3.926,
+      "human_interventions": 0,
+      "owner_wall_s": 303.344,
+      "first_messages_sha256": "c3e424c2169ab7554b356f39a146f7e74d0e9cf90d4ae0ccb2d0e1da7537a7d1",
+      "task": "tabreport-diff",
+      "harness": "opencode",
+      "seed": 19551,
+      "summary_sha256": "d6a66a77773c45a86c7353c8e49ea71eaf4621cd26b82a6520eae8bc1f23504e",
+      "artifact_changes": {
+        "tabreport/__init__.py": "273e3b12e8e35aad94b8e2a48ca4aa5e628e5166f79ef890038ea838cc6dae93",
+        "tabreport/diff.py": "b7e6e32e13a164cbb7b13bf384d12d871e36b2ebafbe63af3a63e0ebc7e27285",
+        "tests/test_diff_regression.py": "adf37a5ea6a59c1d9d9c9d75fc734c90a4d295affb6817cc303f8558c52a386e"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": false,
+      "external": true,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 273.954,
+      "load_s": 16.831,
+      "verification_s": 4.319,
+      "model_requests": 13,
+      "completed_responses": 13,
+      "recorded_completion_tokens": 15829,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "1c7f1df97ee6c885c8f8ba4b3361d9c02526a9a69cc02a2b12a9756d9f071d5a",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 13
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": "ValueError: Read-only fixture Git metadata changed",
+      "terminal_error": "transport_failed",
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "d6a66a77773c45a86c7353c8e49ea71eaf4621cd26b82a6520eae8bc1f23504e",
+        "added_test_sha256": {
+          "tests/test_diff_regression.py": "adf37a5ea6a59c1d9d9c9d75fc734c90a4d295affb6817cc303f8558c52a386e"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 17,
+              "failures": 1,
+              "errors": 16,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "csv_roundtrip_pass": true,
+      "csv_roundtrip_receipt_sha256": "aeac599829ba3915a4f2568fd4e72d35a132efafb3c402157f6a5689363d61cc",
+      "source_review": false,
+      "handoff_review": false,
+      "review_notes": "The public-plus-added suite and independent CSV round-trip probe passed. The canonical suite caught an uncaught stdout encoding error. A final inspection tripped the Git metadata guard before terminal delivery.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-frame-decoder-focused-aider-19551-001",
+      "agent_s": 44.391,
+      "warmup_s": 2.027,
+      "human_interventions": 0,
+      "owner_wall_s": 71.98,
+      "first_messages_sha256": "e1b1a8f8d1868ac9ec806979a4b4ad69dde058c74bcf8b0099ff994633fc28fa",
+      "task": "frame-decoder-focused",
+      "harness": "aider",
+      "seed": 19551,
+      "summary_sha256": "6570f9059066ada38bf87ea1a052eeecc5f29c177efd7ef194cca1ed9719a389",
+      "artifact_changes": {
+        "frame_decoder.py": "c17713be1f4066d9f0e4c364e319ddf19b0643f3e365e8792f5e8c1d2b863993",
+        "tests/test_frame_decoder_regression.py": "0f2846589cdc5a32cdabb51ea0041b453c1f11ec48027dc754abc66154e631bf"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 45.721,
+      "load_s": 16.827,
+      "verification_s": 1.325,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 2739,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "b87f79f02492f5a3f5df261c1caa3081a18fb8847ab26b2bf3aa68165c0658e8",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "6570f9059066ada38bf87ea1a052eeecc5f29c177efd7ef194cca1ed9719a389",
+        "added_test_sha256": {
+          "tests/test_frame_decoder_regression.py": "0f2846589cdc5a32cdabb51ea0041b453c1f11ec48027dc754abc66154e631bf"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Aider implemented incremental decoding with buffered offsets, added split-header/payload and split-zero-header regressions, and ran the six tests. Its description matches the delivered edits.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-frame-decoder-focused-mini-19551-001",
+      "agent_s": 75.635,
+      "warmup_s": 1.397,
+      "human_interventions": 0,
+      "owner_wall_s": 104.106,
+      "first_messages_sha256": "c5de09aca3db21b8ec4bdcb6ab8327441b4b4a3fb9a1f30fb5f6570bdf567819",
+      "task": "frame-decoder-focused",
+      "harness": "mini",
+      "seed": 19551,
+      "summary_sha256": "a717cfefff7c94863efa095674b1e821db380d432ce1db0fc0dd14aeac603c63",
+      "artifact_changes": {
+        "frame_decoder.py": "4201fcddd22ba03e4ee3709ee63f81e39e46938838a0a43c2c9c8f6b18f5792e",
+        "tests/test_regression.py": "00ffff93515a26a1cb30f17eed039409a0ac89a55de0700a715929b2199b4ea8"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 76.982,
+      "load_s": 16.853,
+      "verification_s": 1.346,
+      "model_requests": 9,
+      "completed_responses": 9,
+      "recorded_completion_tokens": 6039,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "ee53d4079ab3665046730ce469ba8ed18c114cf24b82735f58aa3b1040d68451",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 9
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "a717cfefff7c94863efa095674b1e821db380d432ce1db0fc0dd14aeac603c63",
+        "added_test_sha256": {
+          "tests/test_regression.py": "00ffff93515a26a1cb30f17eed039409a0ac89a55de0700a715929b2199b4ea8"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Mini added the two described valid-input regressions and correctly reported both the final six-test suite and a separate 12-check run after correcting its scratch assertion.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-worker-19551-001",
+      "agent_s": 135.411,
+      "warmup_s": 4.09,
+      "human_interventions": 0,
+      "owner_wall_s": 171.203,
+      "first_messages_sha256": "9e7bf0389cc9f3fc964f20dcb9a0b8bd6056870d2a2e98952321636b245d91be",
+      "task": "tabreport-diff",
+      "harness": "worker",
+      "seed": 19551,
+      "summary_sha256": "602d7664a20ca07340801ecccdca910db9412721825fb48ea0cd70054fe97c32",
+      "artifact_changes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/diff.py": "f32bec0e370c27ce07b23306a7e492cab4467fdc965934058b988433c670c8a0",
+        "tests/test_diff_regression.py": "8a03e75f045e3b8b1a00d9b9c4b3527bdb8f2f59e92c9aa4b98321ecae7615d9"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 140.999,
+      "load_s": 16.824,
+      "verification_s": 4.037,
+      "model_requests": 17,
+      "completed_responses": 17,
+      "recorded_completion_tokens": 10161,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "f374701254cfecc642a0cd125a348c165c01e3060a7ab20b1b7d895f6c62821e",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 16
+        },
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 256,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "602d7664a20ca07340801ecccdca910db9412721825fb48ea0cd70054fe97c32",
+        "added_test_sha256": {
+          "tests/test_diff_regression.py": "8a03e75f045e3b8b1a00d9b9c4b3527bdb8f2f59e92c9aa4b98321ecae7615d9"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 13,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 13,
+              "failures": 2,
+              "errors": 11,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "csv_roundtrip_pass": true,
+      "csv_roundtrip_receipt_sha256": "65b693b46ed9078e155f799366ab76bde0ed67c74634f7eb7b785e5d6386352b",
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Worker implemented the feature, added 13 regressions, and accurately reported its 34-test suite and CLI smoke cases, including the runpy warning. The independent CSV round-trip probe passed.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-aider-19551-001",
+      "agent_s": 55.435,
+      "warmup_s": 3.703,
+      "human_interventions": 0,
+      "owner_wall_s": 88.018,
+      "first_messages_sha256": "5d86433737f2387cadf1727702ebeed754712b9afae25f64e07be3fdc8028479",
+      "task": "tabreport-diff",
+      "harness": "aider",
+      "seed": 19551,
+      "summary_sha256": "379b8bc1d66a9f61e278bf61395678303d7f7acadeac5194a1753f683ab2f618",
+      "artifact_changes": {
+        "tabreport/__init__.py": "a89f376d6abb164575ee9371d69b89f057eaebcc36c5536b527bff81714a1ff2",
+        "tabreport/diff.py": "eaa43fcface4a245141b798042d4b56c92b7c9e332870109024722bc44d22c5e"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 32,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": false,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 59.543,
+      "load_s": 16.843,
+      "verification_s": 4.103,
+      "model_requests": 1,
+      "completed_responses": 1,
+      "recorded_completion_tokens": 3755,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "9414280dd8fcea3ac54ba6f1381f0e2ebba4d0a29adc4ada4c6be96253df04a8",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 1
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "379b8bc1d66a9f61e278bf61395678303d7f7acadeac5194a1753f683ab2f618",
+        "added_test_sha256": {},
+        "arms": {}
+      },
+      "csv_roundtrip_pass": true,
+      "csv_roundtrip_receipt_sha256": "90ffff94dcd1c1b4ce9bd6d63796376871ef83164057f65e4191b25980d5c661",
+      "source_review": false,
+      "handoff_review": true,
+      "review_notes": "Aider accurately delivered two source edits and its 21 public tests passed. It omitted the requested new regressions and allowed stdout write errors to escape. The supplemental CSV round-trip probe passed.",
+      "full_reviewed_result": false
+    },
+    {
+      "run": "comp55-frame-decoder-focused-opencode-19551-001",
+      "agent_s": 65.13,
+      "warmup_s": 3.761,
+      "human_interventions": 0,
+      "owner_wall_s": 95.269,
+      "first_messages_sha256": "1b633700a8dd493de7f161c00d34b56b4b9ef627123521e41baadcd6ae3ff72b",
+      "task": "frame-decoder-focused",
+      "harness": "opencode",
+      "seed": 19551,
+      "summary_sha256": "9ef042e8ff8120ec932e549437849e88d4c813d5ce6d1af078b51805f342623e",
+      "artifact_changes": {
+        "frame_decoder.py": "b5c47caecd734f96794b41d5a506a7a71540a9a51f75081401611121899ac1b9",
+        "tests/test_repair.py": "ac715ac07b5862b9a45033a44edf45e98493a887f386a5c3034082e19ad85b13"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 66.35,
+      "load_s": 16.824,
+      "verification_s": 1.217,
+      "model_requests": 9,
+      "completed_responses": 9,
+      "recorded_completion_tokens": 4815,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "eba2e35bb13d679adffb5f5fae6d2e96a169125f0fcafefa3a9d34600b488ba1",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 9
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "supplemental_added_tests": {
+        "summary_sha256": "9ef042e8ff8120ec932e549437849e88d4c813d5ce6d1af078b51805f342623e",
+        "added_test_sha256": {
+          "tests/test_repair.py": "ac715ac07b5862b9a45033a44edf45e98493a887f386a5c3034082e19ad85b13"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "OpenCode implemented buffering and terminal states, added the two reported valid-input tests, and ran separate edge probes. Its public count and behavior claims agree with the trace.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-frame-decoder-focused-worker-19551-001",
+      "agent_s": 46.858,
+      "warmup_s": 4.099,
+      "human_interventions": 0,
+      "owner_wall_s": 78.957,
+      "first_messages_sha256": "9471992102c91db2118b361d820008e2a46a385dcbd5e324deb6d76b99d72615",
+      "task": "frame-decoder-focused",
+      "harness": "worker",
+      "seed": 19551,
+      "summary_sha256": "37f6c31edde55ceebab23525b069b1a439dff0fc67086692990ad9fae9c63a01",
+      "artifact_changes": {
+        "frame_decoder.py": "32db7c937fc5da6dfce204f6522d02dcbfd1a73d5c7c88a6b2d68eeadcd86432",
+        "tests/test_regressions.py": "fcc10c3414bc3ac68056d47475528d5e958f9f2467ae95693d0bf9a73f335803"
+      },
+      "write_scope_pass": true,
+      "canonical_tests_run": 16,
+      "external_checks_failed": [],
+      "canonical_ran": true,
+      "external_ran": true,
+      "canonical": true,
+      "external": true,
+      "clean": true,
+      "under_ceiling": true,
+      "timed_machine_pass": true,
+      "task_s": 49.637,
+      "load_s": 16.847,
+      "verification_s": 1.161,
+      "model_requests": 5,
+      "completed_responses": 5,
+      "recorded_completion_tokens": 4067,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "27853f7c39549441e10aa02b40fdd40c61244c17f49cb294838efe1b5281c29e",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 5
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": null,
+      "padded_issue_pass": null,
+      "claim_qualification": "The inline probe overlapped its newly added tests on repeated finish and feed after finish. It did exercise the reported cases; the coverage was additional to the supplied tests.",
+      "supplemental_added_tests": {
+        "summary_sha256": "37f6c31edde55ceebab23525b069b1a439dff0fc67086692990ad9fae9c63a01",
+        "added_test_sha256": {
+          "tests/test_regressions.py": "fcc10c3414bc3ac68056d47475528d5e958f9f2467ae95693d0bf9a73f335803"
+        },
+        "arms": {
+          "submission": {
+            "exit": 0,
+            "counts": {
+              "tests": 2,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          },
+          "starter-with-added-tests": {
+            "exit": 1,
+            "counts": {
+              "tests": 2,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      },
+      "source_review": true,
+      "handoff_review": true,
+      "review_notes": "Worker added two valid-input regressions, ran all six tests, and exercised extra oversized-header and terminal-state cases. Source and trace support its handoff.",
+      "full_reviewed_result": true
+    },
+    {
+      "run": "comp55-tabreport-diff-mini-19551-001",
+      "agent_s": null,
+      "warmup_s": 1.571,
+      "human_interventions": 0,
+      "owner_wall_s": 255.391,
+      "first_messages_sha256": "fb15cbfb6392178a8885b4e72328666c7fdac12ccc664b3c601997a03f699309",
+      "task": "tabreport-diff",
+      "harness": "mini",
+      "seed": 19551,
+      "summary_sha256": "489108bac2b256b3684f540d571ad6b86e30d58c1988b892aa40851002474cb1",
+      "artifact_changes": {},
+      "write_scope_pass": false,
+      "canonical_tests_run": null,
+      "external_checks_failed": null,
+      "canonical_ran": false,
+      "external_ran": false,
+      "canonical": false,
+      "external": false,
+      "clean": false,
+      "under_ceiling": true,
+      "timed_machine_pass": false,
+      "task_s": 228.288,
+      "load_s": 16.823,
+      "verification_s": null,
+      "model_requests": 20,
+      "completed_responses": 19,
+      "recorded_completion_tokens": 18901,
+      "initial_uncached_tokens": 4,
+      "first_request_sha256": "d75d5f324376783dfe8645a2eb90e8b9426e37e8ec66fb2b0a167a96363dd711",
+      "sampling": [
+        {
+          "seed": 19551,
+          "temperature": 0.6,
+          "top_p": 0.95,
+          "reasoning_cap": 2048,
+          "requests": 20
+        }
+      ],
+      "gpu_layers": [
+        "65/65",
+        "6/6"
+      ],
+      "lifecycle_verified": true,
+      "transport_detail": null,
+      "terminal_error": {
+        "type": "RuntimeError",
+        "message": "Backend HTTP 400"
+      },
+      "padded_issue_pass": null,
+      "untimed_retained_workspace_replay": {
+        "summary_sha256": "489108bac2b256b3684f540d571ad6b86e30d58c1988b892aa40851002474cb1",
+        "workspace": "0026",
+        "artifact_changes": {
+          "tabreport/__init__.py": "c8a9fb5991d3ad683b693bbf268ec985545f1abef9a4806359cdd671bc63373a",
+          "tabreport/diff.py": "3042e363e8345c6df13ace308f0f4f23bf6e86cc501e419d6d8b3ea68f6cd228",
+          "tests/test_diff_regression.py": "1c0af49023c6b36fb46ec6a79d1ca5a2dd93f0db557c3fab526381f3c707cd9e"
+        },
+        "canonical_pass": true,
+        "external_pass": true,
+        "canonical_tests": 32,
+        "scope": "Independent replay after the deadline or adapter failure on an earlier retained workspace. No credit in timed or submitted counts.",
+        "csv_roundtrip_pass": true
+      },
+      "source_review": null,
+      "handoff_review": false,
+      "review_notes": "Mini reached 48 passing public-plus-added tests, then request 20 contained 34,478 prompt tokens for a 32,768-token context. It never submitted and neither timed independent grade ran. The retained workspace is assessed separately.",
+      "full_reviewed_result": false
+    }
+  ],
+  "backend": {
+    "backend_revision": "ddf48f85c933c1f438212a02eb21e7b001d2d37d",
+    "binary_sha256": "1658ae63f912a851c5333aa402ede5cd7d4d76a0b88ab9e074dfda8ae7076d71",
+    "source_profile_sha256": "1eb7eb2cc246f95bce3473be7a01f1a564a67bee3b6c498d5258397dc57273ac"
+  },
+  "harnesses": {
+    "worker": "Harness Lab Worker",
+    "aider": "Aider 0.86.1",
+    "opencode": "OpenCode 1.18.25",
+    "mini": "mini-SWE-agent 2.4.6 default agent, Lab transport"
+  },
+  "clock_seconds_by_task": {
+    "issue-selection": 240,
+    "evidence-check": 240,
+    "frame-decoder-focused": 180,
+    "tabreport-diff": 450
+  },
+  "padded_issue_probe": "After the timed attempt, feed the submitted exporter --issue followed by 4,500 ASCII zeroes and 7. The fake gh must receive exactly one issue view 7 lookup and the packet must contain exactly issue number 7.",
+  "source_review_csv_finding": "Initial suspicion from source review was refuted in the pinned Python runtime: all seven implementations, including the recovered mini workspace, emitted a quoted field and preserved the embedded carriage return. The untouched Aider starter produced no CSV.",
+  "raw_evidence": "Per-run IDs and hashes identify workstation-local traces, artifacts and evaluator receipts. This public record contains the per-attempt measurements and review decisions.",
+  "csv_roundtrip_control": {
+    "passed": true,
+    "exit": 0,
+    "expected": [
+      [
+        "team",
+        "item",
+        "kind",
+        "before_minutes",
+        "after_minutes",
+        "before_status",
+        "after_status",
+        "delta_minutes"
+      ],
+      [
+        "Team\rNorth",
+        "desk",
+        "added",
+        "",
+        "7",
+        "",
+        "open",
+        "7"
+      ]
+    ],
+    "observed_rows": [
+      [
+        "team",
+        "item",
+        "kind",
+        "before_minutes",
+        "after_minutes",
+        "before_status",
+        "after_status",
+        "delta_minutes"
+      ],
+      [
+        "Team\rNorth",
+        "desk",
+        "added",
+        "",
+        "7",
+        "",
+        "open",
+        "7"
+      ]
+    ],
+    "output_bytes": "227465616d222c226974656d222c226b696e64222c226265666f72655f6d696e75746573222c2261667465725f6d696e75746573222c226265666f72655f737461747573222c2261667465725f737461747573222c2264656c74615f6d696e75746573220a225465616d0d4e6f727468222c226465736b222c226164646564222c22222c2237222c22222c226f70656e222c2237220a",
+    "summary_sha256": null
+  },
+  "csv_review_probe": "Added during source review of the first Tabreport submission. The CLI reads a valid quoted CSV label containing an internal bare carriage return and writes a CSV diff. Independent parsing must recover the original label and row. Applied to the frozen reference and every graded Tabreport artifact. Timed grades stay as measured.",
+  "git_index_control": [
+    {
+      "label": "status",
+      "command": "git status --short",
+      "exit": 0,
+      "stdout": " M scripts/export_issue_context.py\n?? opencode.json\n?? opencode.jsonc\n",
+      "changed_git_files": []
+    },
+    {
+      "label": "diff",
+      "command": "git diff --stat",
+      "exit": 0,
+      "stdout": " scripts/export_issue_context.py | 81 ++++++++++++++++++++++++++++++-----------\n 1 file changed, 59 insertions(+), 22 deletions(-)\n",
+      "changed_git_files": [
+        "index"
+      ]
+    },
+    {
+      "label": "no-refresh",
+      "command": "git -c diff.autoRefreshIndex=false diff --stat",
+      "exit": 0,
+      "stdout": " scripts/export_issue_context.py | 81 ++++++++++++++++++++++++++++++-----------\n 1 file changed, 59 insertions(+), 22 deletions(-)\n",
+      "changed_git_files": []
+    },
+    {
+      "label": "combined-no-refresh",
+      "command": "git status --short && git -c diff.autoRefreshIndex=false diff --stat",
+      "exit": 0,
+      "stdout": " M scripts/export_issue_context.py\n?? opencode.json\n?? opencode.jsonc\n scripts/export_issue_context.py | 81 ++++++++++++++++++++++++++++++-----------\n 1 file changed, 59 insertions(+), 22 deletions(-)\n",
+      "changed_git_files": []
+    }
+  ]
+}
