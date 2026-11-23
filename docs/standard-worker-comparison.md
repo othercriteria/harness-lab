@@ -175,4 +175,4 @@ The same CPU study compared the first green workspace with the final submission 
 
 ## Upstream terminal tasks
 
-The Terminus-2 smoke uses the same local Qwen profile on two Terminal-Bench 2.1 tasks. It establishes the Harbor path for a paired Worker run. The four-harness results above use different assignments and acceptance criteria. [Smoke recipe and results](../examples/harbor-terminus/README.md)
+Worker and Harbor’s Terminus-2 both earned the upstream reward on a polyglot and a Git recovery task using the same local Qwen model. Worker finished the Git task in 40.3 seconds and Terminus in 157.7 seconds. Both submissions preserved the requested Git ancestry. On polyglot, Worker finished in 271.7 seconds and Terminus in 366.4 seconds. A follow-up check found that only Terminus’s C submission gave the correct result for `F(94)` and `F(100)`. Each task has one completed pair, and the record preserves an earlier Worker adapter interruption. [Recipe, timings and independent checks](../examples/harbor-terminus/README.md#what-changed-with-worker)

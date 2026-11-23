@@ -58,13 +58,22 @@ async def main():
     root = Path(os.environ["HARBOR_SMOKE_ROOT"]).resolve()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=("polyglot-c-py", "fix-git"))
-    parser.add_argument("agent", choices=("terminus-2", "nop", "oracle"))
+    parser.add_argument(
+        "agent", choices=("terminus-2", "nop", "oracle", "worker", "worker-control")
+    )
     parser.add_argument("name", help="Fresh trial name")
     parser.add_argument(
-        "origin", nargs="?", help="Owned loopback endpoint for Terminus"
+        "origin", nargs="?", help="Owned loopback endpoint for the model"
+    )
+    parser.add_argument(
+        "--prepared-images",
+        action="store_true",
+        help="Use the image IDs from this machine's prepare.py run for a separate Worker smoke",
     )
     args = parser.parse_args()
     task, agent, name = args.task, args.agent, args.name
+    if args.prepared_images and agent not in ("worker", "worker-control"):
+        parser.error("--prepared-images applies only to Worker and its control")
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
         parser.error("Use a lowercase alphanumeric trial name with optional hyphens")
     directory = root / "trials" / name
@@ -109,17 +118,90 @@ async def main():
                 },
             },
         )
+    worker_agent = agent in ("worker", "worker-control")
+    if worker_agent:
+        origin = args.origin or (
+            "http://127.0.0.1:1" if agent == "worker-control" else None
+        )
+        if origin is None or not re.fullmatch(r"http://127[.]0[.]0[.]1:[0-9]+", origin):
+            parser.error("Worker requires an owned loopback endpoint")
+        example = Path(__file__).resolve().parent
+        if args.prepared_images:
+            pins = json.loads((root / "build" / task / "images.json").read_bytes())
+            options = ["--format", "{{.Id}}"]
+            binding = "local preparation image IDs"
+        else:
+            baseline = example.parents[1] / "results/harbor-terminus-smoke-078.json"
+            manifests = json.loads(baseline.read_bytes())["paired_images"][
+                "linux_amd64_manifests"
+            ]
+            pins = {role: manifests[f"{task}-{role}"] for role in ("agent", "verifier")}
+            options = [
+                "--platform",
+                "linux/amd64",
+                "--format",
+                "{{.Descriptor.Digest}}",
+            ]
+            binding = "baseline Linux/amd64 platform manifests"
+        for role in ("agent", "verifier"):
+            image = f"harness078/{task}-{role}:1"
+            actual = subprocess.check_output(
+                ["docker", "image", "inspect", image, *options], text=True
+            ).strip()
+            if actual != pins[role]:
+                raise ValueError(f"{image} differs from {binding}")
+        agent_config = {
+            "import_path": "harbor_worker:Worker",
+            "model_name": MODEL,
+            "exclude_logs": ["*"],
+            "override_timeout_sec": 600,
+            "kwargs": {
+                "task_key": task,
+                "endpoint": origin,
+                "control": agent == "worker-control",
+            },
+        }
+        if agent == "worker":
+            warm_dir = root / "warm" / name
+            warm_dir.parent.mkdir(exist_ok=True)
+            subprocess.run(
+                [
+                    example.parents[1] / ".venv/bin/python",
+                    example / "worker_loop.py",
+                    "warm",
+                    task,
+                    origin,
+                    "",
+                    warm_dir,
+                ],
+                input=(root / "prepared" / task / "instruction.md").read_bytes(),
+                check=True,
+            )
     config = TrialConfig.model_validate(
         {
             "task": {"path": str(root / "prepared" / task)},
             "environment": {"type": "docker", "kwargs": {"auto_mounting": False}},
             "agent": agent_config,
+            **(
+                {
+                    "verifier": {
+                        "import_path": "harbor_worker:ControlVerifier",
+                        "kwargs": {"skip_tests_upload": True},
+                    }
+                }
+                if agent == "worker-control"
+                else {}
+            ),
             "trial_name": name,
             "trials_dir": str(root / "trials"),
         }
     )
     trial = await Trial.create(config)
 
+    if worker_agent:
+        (directory / "image-binding.json").write_text(
+            json.dumps({"source": binding, "images": pins}, indent=2) + "\n"
+        )
     if agent == "terminus-2":
         (directory / "warmup.json").write_text(json.dumps(warmup, indent=2) + "\n")
 
@@ -170,10 +252,9 @@ async def main():
         )
         if boundary["mounts"] or boundary["privileged"]:
             raise RuntimeError("Unexpected task container boundary")
-        if (
-            agent == "terminus-2"
-            and (await env.exec(command="test ! -e /solution")).return_code
-        ):
+        if (agent == "terminus-2" or worker_agent) and (
+            await env.exec(command="test ! -e /solution")
+        ).return_code:
             raise RuntimeError("Reference content visible to model")
         if check.return_code:
             raise RuntimeError("Agent setup or isolation check failed")
@@ -187,6 +268,35 @@ async def main():
     )
     if result.verifier_result is None:
         raise SystemExit(2)
+    if agent == "worker-control":
+        proof = json.loads((directory / "control-transfer.json").read_text())
+        lines = proof["output"].strip().splitlines()
+        (record_path,) = (directory / "agent/worker/checks").glob("c*.json")
+        record = json.loads(record_path.read_text())
+        if record["returncode"] != 0 or record["exception_info"]:
+            raise RuntimeError(
+                "Control history, process cleanup or marker check failed"
+            )
+        if task == "fix-git":
+            output = record["output"].strip().splitlines()
+            if (
+                len(lines) != 3
+                or lines[0] != "harbor-control"
+                or not re.fullmatch("[0-9a-f]{40}", lines[1])
+                or lines[1] != output[-1]
+            ):
+                raise RuntimeError(
+                    "Verifier did not observe the submitted branch and commit"
+                )
+        if (
+            proof["returncode"]
+            or lines[-1:] != ["after"]
+            or result.exception_info
+            or result.verifier_result.rewards != {"reward": 0}
+        ):
+            raise RuntimeError(
+                "Scripted control transfer or expected negative reward failed"
+            )
     if agent in ("oracle", "nop") and (
         result.exception_info
         or result.verifier_result.rewards != {"reward": int(agent == "oracle")}

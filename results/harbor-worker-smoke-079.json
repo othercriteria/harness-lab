@@ -1,0 +1,480 @@
+{
+  "issue": 79,
+  "baseline_issue": 78,
+  "design": "One warm attempt per task in the same order and on the reference workstation used for #78. A first polyglot attempt stopped at an adapter error and is reported separately. Each task then received one attempt on the repaired adapter.",
+  "baseline_receipt": "results/harbor-terminus-smoke-078.json",
+  "harbor": "0.27.0",
+  "terminal_bench_2_1_commit": "12b7565679ce5006230b820666353673a133db93",
+  "platform_image_manifests": {
+    "polyglot-c-py-agent": "sha256:2743a7e32717f4099e0228bfb1e86086e82ae30ab05bf0e7e11ba5e09bce7ac7",
+    "polyglot-c-py-verifier": "sha256:2ca213bfd5fd32cdc0cc1fb0c50a5da932895dfc3c3b1532deb6d061ddce18af",
+    "fix-git-agent": "sha256:ec58c4c0df9d9314105df111ce69b2a7c5a99acf7854c71ec32cd7f0e9de0b6a",
+    "fix-git-verifier": "sha256:87b2bdffb97d5e9ad05ebd20f454cd72f7cf8bfc65a19b2f39a799f80a0a7adf"
+  },
+  "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "backend_sha256": "1658ae63f912a851c5333aa402ede5cd7d4d76a0b88ab9e074dfda8ae7076d71",
+  "weights": {
+    "artifact": {
+      "revision": "bc45e98fe6a40df70a6721141ed72011924a55cc",
+      "files": [
+        {
+          "path": "Qwen3.8-27B-RANA-layout-Q4_K_M.gguf",
+          "size": 16547400448,
+          "sha256": "91c34c55de4defcc5891f08997b7d4543a171d7e2aa6ab752bff4eec27279ba6"
+        }
+      ],
+      "id": "qwen38-27b-ranalayout-q4"
+    },
+    "draft_artifact": {
+      "id": "qwen38-27b-dflash-q4",
+      "revision": "a316ea527fde32c12487be7574e2db5ac2ad2a7e",
+      "files": [
+        {
+          "path": "dflash-Qwen3.8-27B-Q4_0.gguf",
+          "size": 1094346080,
+          "sha256": "0a994382adf17c720c9e5d4292f57344f3b445f058d3e9d5b0f601ae7d6ca3c4"
+        }
+      ]
+    }
+  },
+  "seed": 19550,
+  "context_tokens": 32768,
+  "maximum_reasoning_tokens": 2048,
+  "temperature": 0.6,
+  "agent_ceiling_seconds": 600,
+  "backend_load_seconds": 16.971,
+  "worker_protocol_source": "configs/recipe-inputs/166f69c7c3ef2da7-protocol.json",
+  "effective_differences": [
+    "Worker uses native function calls in fresh shells. Terminus uses JSON keystroke commands in a persistent terminal. Worker runs model commands as a dedicated unprivileged user and reaps its descendants after each shell call.",
+    "The task image replaces the native Lab snapshot sandbox. /workspace aliases the original upstream working directory and /tmp persists. There is no starter-file preload. Output collection and verification use the identical upstream artifact paths and separate verifier.",
+    "Worker retains its own request, tool, context recovery, evidence and deadline policies. Its 2,048-token reasoning maximum can tighten as the agent deadline approaches. The 600 seconds apply to the agent, outside model loading, warming, and upstream grading.",
+    "Worker warms its native tool schemas, system prompt and public task before scoring. Terminus warmed its own instruction template with an empty pane. Scored cache reuse is recorded per attempt."
+  ],
+  "local_artifact_root": "research/harbor-worker-079 in the workstation project bulk store",
+  "cpu_controls": [
+    {
+      "trial": "h79-fix-git-control-001",
+      "reward": 0.0,
+      "agent": "Submitted",
+      "context_resets": 0,
+      "verifier_probe": {
+        "returncode": 0,
+        "output": "harbor-control\n8a6e96e371aff6c5b7c12a1b1c0505d743be7972\nafter\n"
+      },
+      "control_decision": "outer postcheck failed"
+    },
+    {
+      "trial": "h79-fix-git-control-002",
+      "reward": 0.0,
+      "agent": "Submitted",
+      "context_resets": 0,
+      "verifier_probe": {
+        "returncode": 0,
+        "output": "harbor-control\nb0d1b87fb4ced63653da415705f486dc9696ead4\nafter\n"
+      },
+      "control_decision": "passed"
+    },
+    {
+      "trial": "h79-fix-git-control-003",
+      "reward": 0.0,
+      "agent": "Submitted",
+      "context_resets": 1,
+      "verifier_probe": {
+        "returncode": 0,
+        "output": "harbor-control\n7b89ce9c8dee729bb3d7682af86c45a286461121\nafter\n"
+      },
+      "control_decision": "passed"
+    },
+    {
+      "trial": "h79-polyglot-c-py-control-002",
+      "reward": 0.0,
+      "agent": "Submitted",
+      "context_resets": 0,
+      "verifier_probe": {
+        "returncode": 0,
+        "output": "after\n"
+      },
+      "control_decision": "passed"
+    },
+    {
+      "trial": "h79-polyglot-c-py-control-003",
+      "reward": 0.0,
+      "agent": "Submitted",
+      "context_resets": 1,
+      "verifier_probe": {
+        "returncode": 0,
+        "output": "after\n"
+      },
+      "control_decision": "passed"
+    },
+    {
+      "trial": "h79-polyglot-control-001",
+      "reward": 0.0,
+      "agent": "Submitted",
+      "context_resets": 0,
+      "verifier_probe": {
+        "returncode": 0,
+        "output": "after\n"
+      },
+      "control_decision": "passed"
+    }
+  ],
+  "attempts": [
+    {
+      "artifact_transfer": [
+        {
+          "source": "/logs/artifacts",
+          "status": "ok"
+        },
+        {
+          "source": "/app/polyglot",
+          "status": "ok"
+        }
+      ],
+      "task": "polyglot-c-py",
+      "trial": "h79-polyglot-c-py-worker-002",
+      "task_checksum": "c5d1c5bed3d6672bec8ee55c49e60c5f503e540ee4aeedc5800d2fb71f9e7811",
+      "agent_wall_seconds": 271.733,
+      "environment_setup_seconds": 3.875,
+      "agent_setup_seconds": 0.578,
+      "verifier_seconds": 15.857,
+      "harbor_trial_seconds": 303.676,
+      "upstream_reward": 1.0,
+      "upstream_checks": {
+        "passed": 1,
+        "total": 1
+      },
+      "reward_valid": true,
+      "exception": null,
+      "disposition": "submitted",
+      "terminal_claim": "Fixed the C print_ull off-by-one in /app/polyglot/main.py.c (print loop now increments i before putchar); the single-file python3/gcc polyglot now prints the kth Fibonacci number identically under both interpreters.",
+      "reported_unverified": [
+        "N beyond 92 (>=93) overflows unsigned long long in the C build; Python handles arbitrary size, so the two diverge there \u2014 the brief's examples fit in 64 bits and this is an inherent limit of the C port, not tested as a requirement."
+      ],
+      "worker": {
+        "exit_status": "Submitted",
+        "calls": 19,
+        "tool_calls": 18,
+        "input_tokens": 208201,
+        "output_tokens": 22937,
+        "fresh_context_resets": 1
+      },
+      "tools": {
+        "bash": 10,
+        "checkpoint_context": 1,
+        "edit_file": 1,
+        "finish_attempt": 1,
+        "read_file": 1,
+        "run_checks": 2,
+        "write_file": 2
+      },
+      "warmup_seconds": 2.052,
+      "warmup_prompt_tokens": 3825,
+      "first_scored_prompt_tokens": 3825,
+      "first_scored_cached_tokens": 3821,
+      "total_reported_cached_tokens": 196049,
+      "receipts_sha256": {
+        "agent/worker/trajectory.json": "d2351c9071c68c6f222f944c46bfdbef5d01a95f5799b012fb2b7de105a19adb",
+        "agent/worker/effective-config.json": "297d49286d77e6a453bf5782883080e648d5e0c389312fbbe5bdf3abf236b734",
+        "agent/worker/final-handoff.json": "0d84646cdc41520f3d8e381759caa2e50182aa7acaff46dd9c94058a209856f4",
+        "artifacts/manifest.json": "9a1100de0403d60b2f83cc5d4645b28e915b1323a66c6a13e5407107cd82592c",
+        "verifier/ctrf.json": "149a58d9e466dcab5165c34b11ce4bf0660f0cd2e88e8679f27cb7edc7447c5f",
+        "result.json": "032435f26cc5b34b97baf95ff21389f83d0e1ceb5640454174f70c36f838fe6d",
+        "agent-boundary.json": "f501e9de5c1a778f960b4b65bc18dcc52b3dbdcb0fc292a1b11331c6b4017498"
+      },
+      "baseline_agent_seconds": 366.406,
+      "baseline_upstream_reward": 1.0,
+      "baseline_total_seconds": 397.802,
+      "safety": {
+        "agent_host_mount_count": 0,
+        "privileged": false,
+        "network": "offline",
+        "verifier_environment_mode": "separate"
+      }
+    },
+    {
+      "artifact_transfer": [
+        {
+          "source": "/logs/artifacts",
+          "status": "ok"
+        },
+        {
+          "source": "/app/personal-site",
+          "status": "ok"
+        }
+      ],
+      "task": "fix-git",
+      "trial": "h79-fix-git-worker-002",
+      "task_checksum": "8c3c0a0d0c5f68966d4924f18442cc8d246f7e12602610e0fa85c6b56054dc00",
+      "agent_wall_seconds": 40.324,
+      "environment_setup_seconds": 3.931,
+      "agent_setup_seconds": 1.985,
+      "verifier_seconds": 16.118,
+      "harbor_trial_seconds": 73.931,
+      "upstream_reward": 1.0,
+      "upstream_checks": {
+        "passed": 2,
+        "total": 2
+      },
+      "reward_valid": true,
+      "exception": null,
+      "disposition": "submitted",
+      "terminal_claim": "Found the lost work: commit c499730 \"Move to Stanford\" made in detached HEAD (checked out HEAD~1, committed, then checked out master), which left it dangling. Merged it into master (merge commit 5f134bc), resolving the about.md conflict in favor of the newer Stanford version; master's tree is now identical to the lost commit's tree.",
+      "reported_unverified": [
+        "Merge was not pushed to the remote (offline container; no push was requested).",
+        "Conflict resolution chose the incoming Stanford text over master's 'off the job market' text based on commit dates/intent; if the user wanted both wordings preserved, about.md would need a different resolution."
+      ],
+      "worker": {
+        "exit_status": "Submitted",
+        "calls": 8,
+        "tool_calls": 10,
+        "input_tokens": 64611,
+        "output_tokens": 3331,
+        "fresh_context_resets": 0
+      },
+      "tools": {
+        "bash": 9,
+        "finish_attempt": 1
+      },
+      "warmup_seconds": 3.897,
+      "warmup_prompt_tokens": 3729,
+      "first_scored_prompt_tokens": 3729,
+      "first_scored_cached_tokens": 3725,
+      "total_reported_cached_tokens": 59706,
+      "receipts_sha256": {
+        "agent/worker/trajectory.json": "1b5c942914ad37311ba70f2a6629f965be9731604a80661ab55b2cfd7a8deb51",
+        "agent/worker/effective-config.json": "74faa6da901fc527d808ae0322c428f1e0494b07ab860dec88fd745627e92f83",
+        "agent/worker/final-handoff.json": "52e55c05e2b2cd0fd32445192e1e110493217857363612703c3cf48e4b8cd7a4",
+        "artifacts/manifest.json": "44755479aa7661eb1b27b76caa1b5ecae796b4afe30bc3c65c7c11a4b93aea66",
+        "verifier/ctrf.json": "5aa8daf63b0dff0e1322c7926b67fa733400e7a312168617a70cc3f96522fd0e",
+        "result.json": "ec44f76d1659656d0687506412787f1fc3ea2e9c8d89d2f4172396e3959caf2e",
+        "agent-boundary.json": "c2bc62034f01e421a0410bb8f3febb50f94fbc3197c691008686a682c2930a6b"
+      },
+      "baseline_agent_seconds": 157.741,
+      "baseline_upstream_reward": 1.0,
+      "baseline_total_seconds": 189.574,
+      "safety": {
+        "agent_host_mount_count": 0,
+        "privileged": false,
+        "network": "offline",
+        "verifier_environment_mode": "separate"
+      },
+      "handoff_review": "The transferred repository was on master with both the previous master and initially detached tip as ancestors. The upstream verifier confirmed both target files. The trace records an empty diff to the recovered tree and a clean working tree after the merge."
+    }
+  ],
+  "interrupted_before_repair": {
+    "artifact_transfer": [
+      {
+        "source": "/logs/artifacts",
+        "status": "ok"
+      },
+      {
+        "source": "/app/polyglot",
+        "status": "ok"
+      }
+    ],
+    "task": "polyglot-c-py",
+    "trial": "h79-polyglot-c-py-worker-001",
+    "task_checksum": "c5d1c5bed3d6672bec8ee55c49e60c5f503e540ee4aeedc5800d2fb71f9e7811",
+    "agent_wall_seconds": 196.211,
+    "environment_setup_seconds": 3.944,
+    "agent_setup_seconds": 0.583,
+    "verifier_seconds": 15.896,
+    "harbor_trial_seconds": 228.171,
+    "upstream_reward": 0.0,
+    "upstream_checks": {
+      "passed": 0,
+      "total": 1
+    },
+    "reward_valid": true,
+    "exception": "RuntimeError",
+    "disposition": null,
+    "terminal_claim": null,
+    "reported_unverified": null,
+    "worker": {
+      "exit_status": null,
+      "completed_model_responses": 11
+    },
+    "tools": {
+      "bash": 10,
+      "write_file": 1
+    },
+    "warmup_seconds": 2.111,
+    "warmup_prompt_tokens": 3825,
+    "first_scored_prompt_tokens": 3825,
+    "first_scored_cached_tokens": 3821,
+    "total_reported_cached_tokens": 146936,
+    "receipts_sha256": {
+      "agent/worker/trajectory.json": "5acc145fc44a827ee19a4283a53bc9497d5dc4b76de3ebcc0efd62d60b9228dd",
+      "agent/worker/effective-config.json": "297d49286d77e6a453bf5782883080e648d5e0c389312fbbe5bdf3abf236b734",
+      "artifacts/manifest.json": "9a1100de0403d60b2f83cc5d4645b28e915b1323a66c6a13e5407107cd82592c",
+      "verifier/ctrf.json": "a4daf09998da5f2311e02fa3a1dd23dfe4c655b4713381b261a6c4165b2024f4",
+      "result.json": "1e256168507ca41dedf1005ed45d0613ca6c5eb5959a67a2eec975ed2827ced1",
+      "agent-boundary.json": "79d3fca7a5abc4a50e0b27cd72727c9db411aff5261e6a7bb0e9543b39793a72"
+    }
+  },
+  "adapter_repair": "Before model request 12, the context-pressure check refused to proceed without per-call cleanup receipts. The container supervisor had reaped shell descendants but the adapter had only recorded this in tool results. The repaired transport validates the shell supervisor evidence and writes the cleanup receipt. Synchronous file operations record helper exit. Both -003 CPU rehearsals crossed the real recovery boundary under synthetic pressure, read the archive as the unprivileged user, and reached the separate verifier.",
+  "scored_controller_snapshot": {
+    "parent_lab_commit": "1656b56facd810d6bd2fc258609e75481a7a4a0b",
+    "bulk_manifest": "inputs-002/manifest.json",
+    "manifest_sha256": "ece3bdc72c83000b024de004754209b9a0d77ba2420834ad4f7e4d036d59a592",
+    "changed_adapter_sources_sha256": {
+      "examples/harbor-terminus/container_tool.py": "2659e764cbe33f84ba34c667ac4686c89abfadc29c74eb43ebe23abd9d34c751",
+      "examples/harbor-terminus/harbor_worker.py": "185bf04e35086dbd2661667f90e9290e4a5e16f5ab8d57b3dca77a314efbb039",
+      "examples/harbor-terminus/pair.py": "694abd0e834164db1a371084de272de1a8205cd1135c8930f5a42f6dbf799358",
+      "examples/harbor-terminus/prepare.py": "3a4c1fb3fb287f0280845f1ce47e01cd45b33d0d20a7a96a8ec8d14b23997a54",
+      "examples/harbor-terminus/trial.py": "c0865f33134969d9a3d4a95ccdd0bb107fa48b6f775af728dbefc24169f32d31",
+      "examples/harbor-terminus/worker_loop.py": "0ffd890f541cd6299dacca06211e1ca89246664ccf8689b65cd1e94d74e266b3"
+    }
+  },
+  "cpu_control_interpretation": "The control changes a marker and, on Git, commits it on a fresh branch. A reward of zero is expected. In the first Git control the artifact crossed correctly, but a shell resource-limit warning followed the commit ID in the combined check output. The postcheck rejected it. The revised supervisor applies resource limits before spawning the task shell; both repeated controls also verified cleanup of a deliberately backgrounded sleep. Both -003 controls additionally forced one fresh context and read its archived manifest inside the next shell.",
+  "git_graph_review": {
+    "scope": "post-hoc Git reference and ancestry check, independent of upstream reward",
+    "checked_out_branch": "master",
+    "entry_master_is_ancestor": true,
+    "initially_detached_tip_is_ancestor": true,
+    "sha256": "ce328cc11a0c39ca8dd1e15cf9d03c5f8319af9a1e2aa5db51a608089024e31a"
+  },
+  "lifecycle": {
+    "worker-001": {
+      "backend_exit": 0,
+      "memory_guard_trigger": null,
+      "memory_wrapper_pass": false,
+      "memory_scope_cleanup_verified": true,
+      "ollama_restoration_verified": true
+    },
+    "worker-002": {
+      "backend_exit": 0,
+      "memory_guard_trigger": null,
+      "memory_wrapper_pass": true,
+      "memory_scope_cleanup_verified": true,
+      "ollama_restoration_verified": true
+    },
+    "session_restoration_verified": true,
+    "remaining_harbor_containers": 0
+  },
+  "model_authors": [
+    {
+      "model": "OpenAI Codex (GPT-6, release unknown)",
+      "contribution": "Harbor Worker adapter, rehearsals, and paired smoke analysis"
+    }
+  ],
+  "numeric_range_review": {
+    "purpose": "Post-hoc numeric-range check motivated by the Worker handoff. Each existing artifact was compiled and executed in a fresh constrained offline container. The original upstream reward is unchanged.",
+    "rows": {
+      "Terminus-2": {
+        "trial": "h78-polyglot-c-py-terminus-001",
+        "submitted_source_sha256": "2f3905a651fbfed0296670c810b145583d45bf12d46c363bc5316470d40428da",
+        "matches_independent_integer_result": {
+          "92": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": true,
+              "exit": 0
+            }
+          },
+          "93": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": true,
+              "exit": 0
+            }
+          },
+          "94": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": true,
+              "exit": 0
+            }
+          },
+          "100": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": true,
+              "exit": 0
+            }
+          }
+        }
+      },
+      "Worker": {
+        "trial": "h79-polyglot-c-py-worker-002",
+        "submitted_source_sha256": "8a4bf36912aad110cf1a63ccdf6329ebec0643ed1369180f4e93c393982d8c8b",
+        "matches_independent_integer_result": {
+          "92": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": true,
+              "exit": 0
+            }
+          },
+          "93": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": true,
+              "exit": 0
+            }
+          },
+          "94": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": false,
+              "exit": 0
+            }
+          },
+          "100": {
+            "python": {
+              "matches": true,
+              "exit": 0
+            },
+            "c": {
+              "matches": false,
+              "exit": 0
+            }
+          }
+        }
+      }
+    },
+    "interpretation": "Worker correctly disclosed a finite C range but named the first bad input one too early. F(93) fits in 64 unsigned bits, F(94) does not. The upstream task brief gives no maximum input."
+  },
+  "public_recipe_rehearsal": {
+    "task": "polyglot-c-py",
+    "mode": "worker-control --prepared-images",
+    "purpose": "After the paired runs, rehearse the public CLI path that binds a reader\u2019s locally prepared images without needing the workstation archive.",
+    "image_binding": {
+      "source": "local preparation image IDs",
+      "images": {
+        "agent": "sha256:573670b72fefca3935f80112d48c692c0efb69325fbb0920bf5f74c98d68d982",
+        "verifier": "sha256:9d574282b3df179731747e834b64ee0e6144dcfe289cac4875e857da5b2e6db5"
+      }
+    },
+    "structured_exit": "Submitted",
+    "context_resets": 1,
+    "verifier_transfer": {
+      "returncode": 0,
+      "output": "after\n"
+    },
+    "expected_negative_reward": 0.0,
+    "result_sha256": "c4a78d7bb7cea2d84dc8f68b5c9515c0e57d722092542e3ed8aa0b730b445934"
+  }
+}

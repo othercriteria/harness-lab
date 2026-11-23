@@ -387,7 +387,7 @@ def file_path(value):
     return path
 
 
-def run_command(argv, timeout):
+def run_command(argv, timeout, *, cleanup=None):
     started = time.monotonic()
     process = subprocess.Popen(
         argv,
@@ -424,7 +424,7 @@ def run_command(argv, timeout):
                 break
     finally:
         try:
-            quiescence = quiesce_descendants(process)
+            quiescence = (cleanup or quiesce_descendants)(process)
         finally:
             selector.close()
             for name in streams:

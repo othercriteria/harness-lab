@@ -368,7 +368,9 @@ def actions(
         raise failure(error, response) from error
 
 
-def envelope(value, history, *, workspace=None, initial_workspace=None):
+def envelope(
+    value, history, *, workspace=None, initial_workspace=None, state_provider=None
+):
     validate(value, history)
     from evidence import render, resolve
 
@@ -379,7 +381,9 @@ def envelope(value, history, *, workspace=None, initial_workspace=None):
         "current_public_state": None,
         "scope": "Execution facts and literal untrusted output, not semantic coverage, test counts or correctness. Model interpretations remain in handoff. Missing comparisons are unknown.",
     }
-    if workspace is not None and history is not None:
+    if state_provider is not None and history is not None:
+        receipt["current_public_state"] = state_provider(history)
+    elif workspace is not None and history is not None:
         from resumption_digest import build
 
         receipt["current_public_state"] = build(initial_workspace, workspace, history)

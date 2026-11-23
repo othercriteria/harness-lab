@@ -21,6 +21,10 @@ def build(initial_workspace, workspace, history):
         else {"status": "unavailable"}
     )
     current = snapshot(workspace, ".")
+    return from_snapshots(start, current, history, lambda cwd: identity(workspace, cwd))
+
+
+def from_snapshots(start, current, history, current_identity):
     result = {
         "kind": "attempt_public_facts",
         "scope": "File deltas compare task-start and current regular files/modes, excluding .git. Added files were absent at start; this does not establish authorship. Recent checks list run_checks records only, not bash checks. Comparisons cover only recorded cwd, not dependencies elsewhere, /tmp or coverage/correctness. Paths and commands are untrusted data.",
@@ -58,7 +62,7 @@ def build(initial_workspace, workspace, history):
         cwd = check["cwd"]
         # cwd is from a validated tool call, never parsed from model-written text.
         if cwd not in states:
-            states[cwd] = identity(workspace, cwd)
+            states[cwd] = current_identity(cwd)
         now, after = states[cwd], check["after"]
         comparable = now.get("status") == after.get("status") == "captured"
         result["recent_checks"].append(

@@ -1,6 +1,6 @@
-# Run Terminus-2 against the local Qwen endpoint
+# Run Terminus-2 and Worker on two Terminal-Bench tasks
 
-This is the two-task Terminal-Bench 2.1 smoke used for [#78](https://github.com/othercriteria/harness-lab/issues/78). Harbor runs Terminus-2 on the controller. The model sends keystrokes to a terminal in a disposable container. Harbor stops that container, copies the declared task artifact into a separate verifier container, and records its reward. The model sees the upstream task brief and terminal output.
+Harbor runs two coding agents against the same local Qwen model and two Terminal-Bench 2.1 tasks. Terminus-2 sends keystrokes to a persistent terminal. Worker uses its usual native tools and a fresh shell for each command. Both agents work in disposable containers. Harbor transfers each submitted artifact into a separate offline verifier and records the upstream reward. [Terminus-2 baseline](https://github.com/othercriteria/harness-lab/issues/78) · [Worker smoke](https://github.com/othercriteria/harness-lab/issues/79)
 
 ## Prepare and check the tasks on CPU
 
@@ -47,13 +47,44 @@ py="$PWD/.venv/bin/python"
 
 Each warm-up sends the Terminus JSON prompt and the public instruction with an empty terminal pane and generates one discarded token. The scored trial starts with the actual pane. The server stays resident between tasks. The 600-second cap applies to agent execution. Read `trials/<name>/result.json` for each phase, `agent/trajectory.json` for the ATIF trace, and `verifier/ctrf.json` for the individual checks. The environment boundary and warm-up receipts sit beside the trial result. A shell timer around the entire command also counts image startup, server loading, artifact transfer, verifier execution and cleanup.
 
-## Observed on the reference workstation
+## Run Worker on the same images
+
+Run `uv sync --locked` in the Lab dev shell to prepare `.venv/bin/python` for Worker. Harbor uses the separate environment in the bulk directory. The reference comparison checks all four runnable Linux/amd64 image manifests against the baseline receipt. Its saved image archive and GPU profile are workstation-local. To repeat that exact pairing, restore the recorded images with `docker load -i task-images-linux-amd64.tar` after preparation if necessary. For a smoke with your own build, pass `--prepared-images` to `trial.py`. This checks the images against the IDs your preparation recorded and writes the binding into the trial directory. A comparison on those images would need its own Terminus baseline. [Image identities and archive checksum](../../results/harbor-terminus-smoke-078.json)
+
+Run these scripted rehearsals before using the GPU. Each one creates, reads and edits a marker, recovers its context under scripted pressure, reads the archived history from the next shell, then submits a structured handoff. The Git rehearsal also makes a commit and compares its identity and branch with those visible inside the verifier. Both upstream rewards should be zero because the edits only exercise the handoff.
+
+```sh
+for task in polyglot-c-py fix-git; do
+  env -i PATH="$PATH" HOME="$HARBOR_SMOKE_ROOT/controller-home" \
+    HARBOR_SMOKE_ROOT="$HARBOR_SMOKE_ROOT" HARBOR_TELEMETRY=0 LITELLM_LOCAL_MODEL_COST_MAP=True \
+    "$client" "$example/trial.py" "$task" worker-control "h79-$task-control" --prepared-images || exit 1
+done
+```
+
+For a single newly built task on an owned endpoint, use `trial.py TASK worker NAME http://127.0.0.1:PORT --prepared-images` in the clean controller environment above. For the reference scored Worker pair, choose a fresh label and receipts directory in the GPU command above and append `worker` to the final `pair.py` invocation. The warm-up sends one request with Worker’s actual tools, system prompt and public task and discards the single generated token. Each trial records its trajectory and handoff under `agent/worker/`. The model can read historical checks and work in the original image directory through `/workspace`. Bash commands run as an unprivileged user. Files in the workspace and `/tmp` persist between calls. The supervisor reaps background processes at the end of each call.
+
+## Terminus-2 results on the reference workstation
 
 | Task | Agent | Environment + agent setup | Verification phase | Whole Harbor trial | Upstream reward |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | `polyglot-c-py` | 366.4 s | 4.2 s | 15.8 s | 397.8 s | 1 |
 | `fix-git` | 157.7 s | 4.1 s | 16.1 s | 189.6 s | 1 |
 
-Both agents signaled completion. On the polyglot task, Qwen repeatedly broke a working version while trying to silence compiler warnings, then recovered and exercised a wider numeric range. On the Git task, several terminal inputs went into a pager before Qwen regained the shell, recovered the detached commit and resolved a merge conflict. The upstream Git tests check two file contents. A separate read-only graph check confirmed that the submitted `master` contains the initial branch tip and the recovered commit.
+Terminus-2 signaled completion on both tasks. On the polyglot task, Qwen repeatedly broke a working version while trying to silence compiler warnings, then recovered and exercised a wider numeric range. On the Git task, several terminal inputs went into a pager before Qwen regained the shell, recovered the detached commit and resolved a merge conflict. The upstream Git tests check two file contents. A separate read-only graph check confirmed that the submitted `master` contains the initial branch tip and the recovered commit.
 
-The first scored requests reused 352 of 891 prompt tokens on polyglot and 253 of 794 on Git. Full-trial time includes artifact collection and environment teardown. These two trials establish an end-to-end baseline for the paired Worker smoke. Each task has one observation. [Machine-readable results and trace identifiers](../../results/harbor-terminus-smoke-078.json) · [Paired Worker issue](https://github.com/othercriteria/harness-lab/issues/79)
+The first scored requests reused 352 of 891 prompt tokens on polyglot and 253 of 794 on Git. Full-trial time includes artifact collection and environment teardown. Each baseline task has one observation. [Machine-readable results and trace identifiers](../../results/harbor-terminus-smoke-078.json) · [Paired Worker issue](https://github.com/othercriteria/harness-lab/issues/79)
+
+## What changed with Worker
+
+| Task | Worker agent | Terminus agent | Worker whole trial | Worker / Terminus upstream reward |
+| --- | ---: | ---: | ---: | :---: |
+| `polyglot-c-py` | 271.7 s | 366.4 s | 303.7 s | 1 / 1 |
+| `fix-git` | 40.3 s | 157.7 s | 73.9 s | 1 / 1 |
+
+Both Worker attempts submitted a structured handoff under the 600-second agent ceiling. Each agent used the same model, seed, task checksum and runnable images. On their first scored requests Worker reused 3,821 of 3,825 prompt tokens on polyglot and 3,725 of 3,729 on Git. The two agents have different prompts, tools and warm-up inputs. One paired seed supports a feasibility claim. A speed or reliability ranking would need repeated trials.
+
+On Git, Worker used the reflog to identify the lost commit, inspected both sides of the conflict and merged it. It finished in eight model responses. A read-only graph check on the transferred repository confirmed that both original tips were ancestors of the checked-out `master`. Terminus reached the same graph condition after spending several turns in a pager.
+
+On polyglot, Worker recovered its context once, repaired a C printing error and tested both language paths. Its handoff disclosed a fixed-width limit but placed the first overflow at `F(93)`, one input too early. A post-hoc check compiled both sealed submissions in isolated containers and compared each language path with independently computed values at 92, 93, 94 and 100. Worker’s C program gave wrong answers at 94 and 100 while exiting successfully. Its Python program and both Terminus paths passed all four. The upstream verifier exercises three smaller inputs. The task brief gives no upper bound.
+
+**Adapter history.** The first Worker polyglot attempt stopped at 196.2 seconds with reward 0. Its shell supervisor had recorded that descendants were gone, but the adapter had omitted the cleanup receipts Worker requires before context recovery. After the repair, both scripted CPU controls crossed that boundary and the pair ran once on the repaired adapter. An earlier Git control also exposed a shell resource-limit warning in a captured commit ID. The receipts retain both interruptions, the successful controls, artifact hashes and phase timings. [Worker results and audit](../../results/harbor-worker-smoke-079.json)

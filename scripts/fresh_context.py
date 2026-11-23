@@ -921,9 +921,14 @@ class FreshContext:
         if model.limits.get("shared_evidence", False):
             from resumption_digest import build
 
-            facts = build(
-                getattr(env, "initial_workspace", None), env.workspace, model.history
-            )
+            if hasattr(env, "public_state"):
+                facts = env.public_state(model.history)
+            else:
+                facts = build(
+                    getattr(env, "initial_workspace", None),
+                    env.workspace,
+                    model.history,
+                )
         committed_timing = self.timing(time.monotonic())
         if committed_timing["remaining_agent_seconds"] < self.minimum_remaining:
             # Outer-owned publication is still unmounted and unexposed. Preserve

@@ -769,6 +769,35 @@ class IsolatedEnvironment:
         self.fresh_context = None
         self.scope_runtime = None
 
+    def read_workspace(self, arguments):
+        from read_file import read
+
+        return read(self.workspace, arguments)
+
+    def check_identity(self, cwd):
+        from run_checks import identity
+
+        return identity(self.workspace, cwd)
+
+    def public_state(self, history):
+        from resumption_digest import build
+
+        return build(self.initial_workspace, self.workspace, history)
+
+    def workspace_tool(self, mode, arguments, prefix, **options):
+        result, self.workspace = perform_tool(
+            self.runtime,
+            self.workspace,
+            mode,
+            arguments,
+            self.timeout,
+            prefix,
+            max_command_bytes=self.max_command_bytes,
+            **options,
+        )
+        (self.output / "latest-workspace.txt").write_text(str(self.workspace) + "\n")
+        return result
+
     def execute(self, action):
         self.calls += 1
         if self.calls > self.tool_call_limit:
@@ -866,13 +895,12 @@ class IsolatedEnvironment:
                     ),
                 }
             if action.get("tool") == "read_file" and self.read_file:
-                from read_file import read
                 from read_file import validate as validate_read
 
                 arguments = validate_read(action["arguments"])
                 prefix = self.output / f"tool-{self.calls:03d}"
                 started = time.monotonic()
-                output = read(self.workspace, arguments)
+                output = self.read_workspace(arguments)
                 metadata = output.get("file_read")
                 if (
                     self.deduplicate_file_reads
@@ -903,7 +931,9 @@ class IsolatedEnvironment:
                         "name": "read_file",
                         "executed": False,
                         "arguments": arguments,
-                        "workspace_generation": self.workspace.name,
+                        "workspace_generation": self.workspace.name
+                        if self.workspace is not None
+                        else None,
                         "model_request": action.get("model_request"),
                         "tool_call_id": action.get("tool_call_id"),
                     },
@@ -927,8 +957,7 @@ class IsolatedEnvironment:
                     handoff = envelope(
                         value,
                         self.history,
-                        workspace=self.workspace,
-                        initial_workspace=self.initial_workspace,
+                        state_provider=self.public_state,
                     )
                     projection = compact_handoff(handoff)
                 except (
@@ -1085,11 +1114,11 @@ class IsolatedEnvironment:
         writing = self.whole_file_write and action.get("tool") == "write_file"
         checking = self.checks is not None and action.get("tool") == "run_checks"
         if checking:
-            from run_checks import bounded_output, identity, save, shell_command
+            from run_checks import bounded_output, save, shell_command
             from run_checks import validate as validate_check
 
             check_arguments = validate_check(action["arguments"])
-            before_check = identity(self.workspace, check_arguments["cwd"])
+            before_check = self.check_identity(check_arguments["cwd"])
             options["public_interface"] = {
                 "tool": "run_checks",
                 "arguments": check_arguments,
@@ -1102,9 +1131,7 @@ class IsolatedEnvironment:
             from sandbox_worker import validate_write_arguments
 
             validate_write_arguments(action["arguments"])
-        result, updated = perform_tool(
-            self.runtime,
-            self.workspace,
+        result = self.workspace_tool(
             "edit_file" if editing else "write_file" if writing else "execute",
             action["arguments"]
             if editing or writing
@@ -1113,13 +1140,9 @@ class IsolatedEnvironment:
                 if checking
                 else action["command"]
             },
-            self.timeout,
             self.output / f"tool-{self.calls:03d}",
-            max_command_bytes=self.max_command_bytes,
             **options,
         )
-        self.workspace = updated
-        (self.output / "latest-workspace.txt").write_text(str(updated) + "\n")
         text = result.get("stdout", "") + result.get("stderr", "")
         output = {
             "returncode": result.get("returncode", -1),
@@ -1135,7 +1158,7 @@ class IsolatedEnvironment:
             output["output"], output["output_window"] = bounded_output(
                 text, TOOL_OUTPUT_CHARS
             )
-            after_check = identity(updated, check_arguments["cwd"])
+            after_check = self.check_identity(check_arguments["cwd"])
             output["check_record"] = save(
                 self.checks,
                 self.calls,

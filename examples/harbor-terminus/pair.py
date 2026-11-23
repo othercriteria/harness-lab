@@ -22,7 +22,7 @@ def save(path, value):
     path.write_text(json.dumps(value, indent=2) + "\n")
 
 
-def run(root, label):
+def run(root, label, agent="terminus-2"):
     from control import cancellation, defer_launch_signals
     from serve_trial import (
         local_json,
@@ -33,6 +33,8 @@ def run(root, label):
     from server_endpoint import owned_listener, process_identity
     from with_ollama_released import gpu_experiment_lock
 
+    if agent not in {"terminus-2", "worker"}:
+        raise ValueError("Unknown Harbor agent")
     if "BIG_MODELS_GPU_LOCK_FD" not in os.environ:
         raise RuntimeError("Launch through the restoring GPU transaction")
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", label):
@@ -103,7 +105,7 @@ def run(root, label):
                 },
             )
             for task in TASKS:
-                name = f"h78-{task}-{label}"
+                name = f"h{79 if agent == 'worker' else 78}-{task}-{label}"
                 if not owned_listener(identity, port):
                     raise RuntimeError("Owned backend listener disappeared")
                 with (output / f"{task}.log").open("wb") as client_log:
@@ -112,7 +114,7 @@ def run(root, label):
                             root / ".venv/bin/python",
                             EXAMPLE / "trial.py",
                             task,
-                            "terminus-2",
+                            agent,
                             name,
                             origin,
                         ],
@@ -134,4 +136,4 @@ def run(root, label):
 
 
 if __name__ == "__main__":
-    run(Path(sys.argv[1]).resolve(), sys.argv[2])
+    run(Path(sys.argv[1]).resolve(), *sys.argv[2:])

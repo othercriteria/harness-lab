@@ -226,32 +226,40 @@ def save_diff(before, after, path):
     path.write_text(view.render())
 
 
-def configure_agent(config, limits, protocol, *, node=False):
+def configure_agent(config, limits, protocol, *, node=False, harbor_workspace=None):
     """Render the frozen protocol's model-visible environment contract."""
     reject_retired_options(limits)
     config = dict(config)
     config["step_limit"] = limits["step_limit"]
     config["wall_time_limit_seconds"] = limits["agent_wall_seconds"]
-    config["system_template"] += (
-        "\n\nWork in /workspace with the provided tools and minimal Python/Unix runtime."
-        " There is no network or package installation. Every response must include"
-        " a tool call. Bash commands start fresh shells in /workspace."
-    )
-    if limits.get("persistent_scratch", False):
+    if harbor_workspace is not None:
         config["system_template"] += (
-            " Files under /workspace and /tmp (including HOME) persist between calls"
-            " within this attempt. /tmp is scratch storage, limited to 16 MiB and"
-            " 2048 regular-file/directory entries; it is not submitted to the evaluator."
-            " Shell variables, working-directory changes and background processes do not persist."
-        )
-    elif limits.get("workspace_persistence_feedback", False):
-        config["system_template"] += (
-            " Only file changes under /workspace persist between calls. /tmp (including HOME),"
-            " shell variables, working-directory changes and background processes do not."
-            " Keep reusable scratch files in /workspace."
+            "\n\nThe disposable offline task container starts each bash call in /workspace,"
+            f" an alias for {harbor_workspace}. Workspace tools take paths relative to this directory."
+            " Files and /tmp persist during the attempt. Each command uses a fresh shell;"
+            " its background processes are stopped before the next call. Every response must include a tool call."
         )
     else:
-        config["system_template"] += " Workspace file changes persist."
+        config["system_template"] += (
+            "\n\nWork in /workspace with the provided tools and minimal Python/Unix runtime."
+            " There is no network or package installation. Every response must include"
+            " a tool call. Bash commands start fresh shells in /workspace."
+        )
+        if limits.get("persistent_scratch", False):
+            config["system_template"] += (
+                " Files under /workspace and /tmp (including HOME) persist between calls"
+                " within this attempt. /tmp is scratch storage, limited to 16 MiB and"
+                " 2048 regular-file/directory entries; it is not submitted to the evaluator."
+                " Shell variables, working-directory changes and background processes do not persist."
+            )
+        elif limits.get("workspace_persistence_feedback", False):
+            config["system_template"] += (
+                " Only file changes under /workspace persist between calls. /tmp (including HOME),"
+                " shell variables, working-directory changes and background processes do not."
+                " Keep reusable scratch files in /workspace."
+            )
+        else:
+            config["system_template"] += " Workspace file changes persist."
     if limits.get("python_test_library") is not None:
         from python_test_library import INSTRUCTION, validate
 
@@ -270,10 +278,15 @@ def configure_agent(config, limits, protocol, *, node=False):
             " Passing examples cannot override a contradictory requirement. Investigate"
             " uncertainty; uncertainty alone is not a blocker."
         )
-    config["instance_template"] += (
-        f"\n\nTotal task ceiling: {limits['task_wall_seconds']} seconds, including verification."
-        f" Agent allowance: {limits['agent_wall_seconds']} seconds."
-    )
+    if harbor_workspace is not None:
+        config["instance_template"] += (
+            f"\n\nAgent allowance: {limits['agent_wall_seconds']} seconds. The upstream verifier runs separately after handoff."
+        )
+    else:
+        config["instance_template"] += (
+            f"\n\nTotal task ceiling: {limits['task_wall_seconds']} seconds, including verification."
+            f" Agent allowance: {limits['agent_wall_seconds']} seconds."
+        )
     delegated = protocol == "delegated-v1"
     if node:
         config["instance_template"] += " Run the JavaScript checks specified in the public brief."
