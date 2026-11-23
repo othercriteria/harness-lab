@@ -7,10 +7,10 @@ from pathlib import Path
 
 from harbor.agents.base import BaseAgent
 from harbor.verifier.verifier import Verifier
+from prepare import CONTROL_FILE, WORKDIR
 
 EXAMPLE = Path(__file__).resolve().parent
 LAB = EXAMPLE.parents[1]
-WORKDIR = {"polyglot-c-py": "/app", "fix-git": "/app/personal-site"}
 
 
 class Worker(BaseAgent):
@@ -126,8 +126,8 @@ class ControlVerifier(Verifier):
     async def verify(self):
         task = self.task.short_name
         probe = (
-            "cat /app/polyglot/harbor-control.txt"
-            if task == "polyglot-c-py"
+            f"cat {WORKDIR[task]}/{CONTROL_FILE[task]}"
+            if task != "fix-git"
             else "git -c safe.directory=/app/personal-site branch --show-current && git -c safe.directory=/app/personal-site rev-parse HEAD && git -c safe.directory=/app/personal-site show HEAD:harbor-control.txt"
         )
         result = await self.environment.exec(command=probe)

@@ -10,12 +10,13 @@ import sys
 import time
 from pathlib import Path
 
+from prepare import FOLLOWUP, ORIGINAL
+
 EXAMPLE = Path(__file__).resolve().parent
 LAB = EXAMPLE.parents[1]
 sys.path.insert(0, str(LAB / "scripts"))
 
 PROFILE = "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio"
-TASKS = ("polyglot-c-py", "fix-git")
 
 
 def save(path, value):
@@ -33,7 +34,7 @@ def run(root, label, agent="terminus-2"):
     from server_endpoint import owned_listener, process_identity
     from with_ollama_released import gpu_experiment_lock
 
-    if agent not in {"terminus-2", "worker"}:
+    if agent not in {"terminus-2", "worker", "followup"}:
         raise ValueError("Unknown Harbor agent")
     if "BIG_MODELS_GPU_LOCK_FD" not in os.environ:
         raise RuntimeError("Launch through the restoring GPU transaction")
@@ -104,11 +105,22 @@ def run(root, label, agent="terminus-2"):
                     "owner": owned_listener(identity, port),
                 },
             )
-            for task in TASKS:
+            schedule = [(task, agent) for task in ORIGINAL]
+            followup = agent == "followup"
+            if followup:
+                log_task, async_task = FOLLOWUP
+                schedule = [
+                    (log_task, "worker"),
+                    (log_task, "terminus-2"),
+                    (async_task, "terminus-2"),
+                    (async_task, "worker"),
+                ]
+            for task, agent in schedule:
                 name = f"h{79 if agent == 'worker' else 78}-{task}-{label}"
                 if not owned_listener(identity, port):
                     raise RuntimeError("Owned backend listener disappeared")
-                with (output / f"{task}.log").open("wb") as client_log:
+                log_name = name if followup else task
+                with (output / f"{log_name}.log").open("wb") as client_log:
                     subprocess.run(
                         [
                             root / ".venv/bin/python",

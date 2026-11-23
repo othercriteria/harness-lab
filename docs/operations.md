@@ -62,6 +62,8 @@ Use `clean` when Worker completed its handoff. If it timed out with useful edits
 
 From a clean clone, `python3 -S scripts/observe.py --example` opens a bundled Worker job with the same timeline and review displays. [Inspect the recorded job](../examples/replaying-worker-trace/README.md#open-the-job-in-observatory)
 
+For live or completed Harbor Worker trials, run `python3 -S scripts/observe.py --harbor /path/to/experiment` and open the printed address. Each experiment root must contain a Harbor `trials/` directory. [Inspect Harbor traces](../examples/harbor-terminus/README.md#follow-a-harbor-worker-in-observatory)
+
 On the original workstation, `./lab observe` starts the read-only loopback dashboard. It reads the experiment store, displays timelines and tool calls, and distinguishes a submitted patch from its verified review and application. The portable examples include selected records that can be read without running that service. [Replay a trace](../examples/replaying-worker-trace/README.md)
 
 ## Portable developer checks

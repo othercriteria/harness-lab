@@ -1,6 +1,6 @@
-# Run Terminus-2 and Worker on two Terminal-Bench tasks
+# Run Terminus-2 and Worker on Terminal-Bench tasks
 
-Harbor runs two coding agents against the same local Qwen model and two Terminal-Bench 2.1 tasks. Terminus-2 sends keystrokes to a persistent terminal. Worker uses its usual native tools and a fresh shell for each command. Both agents work in disposable containers. Harbor transfers each submitted artifact into a separate offline verifier and records the upstream reward. [Terminus-2 baseline](https://github.com/othercriteria/harness-lab/issues/78) · [Worker smoke](https://github.com/othercriteria/harness-lab/issues/79)
+Harbor runs two coding agents against the same local Qwen model and small panels of Terminal-Bench 2.1 tasks. Terminus-2 sends keystrokes to a persistent terminal. Worker uses its usual native tools and a fresh shell for each command. Both agents work in disposable containers. Harbor transfers each submitted artifact into a separate offline verifier and records the upstream reward. [Terminus-2 baseline](https://github.com/othercriteria/harness-lab/issues/78) · [Worker smoke](https://github.com/othercriteria/harness-lab/issues/79)
 
 ## Prepare and check the tasks on CPU
 
@@ -88,3 +88,40 @@ On Git, Worker used the reflog to identify the lost commit, inspected both sides
 On polyglot, Worker recovered its context once, repaired a C printing error and tested both language paths. Its handoff disclosed a fixed-width limit but placed the first overflow at `F(93)`, one input too early. A post-hoc check compiled both sealed submissions in isolated containers and compared each language path with independently computed values at 92, 93, 94 and 100. Worker’s C program gave wrong answers at 94 and 100 while exiting successfully. Its Python program and both Terminus paths passed all four. The upstream verifier exercises three smaller inputs. The task brief gives no upper bound.
 
 **Adapter history.** The first Worker polyglot attempt stopped at 196.2 seconds with reward 0. Its shell supervisor had recorded that descendants were gone, but the adapter had omitted the cleanup receipts Worker requires before context recovery. After the repair, both scripted CPU controls crossed that boundary and the pair ran once on the repaired adapter. An earlier Git control also exposed a shell resource-limit warning in a captured commit ID. The receipts retain both interruptions, the successful controls, artifact hashes and phase timings. [Worker results and audit](../../results/harbor-worker-smoke-079.json)
+
+## Follow a Harbor Worker in Observatory
+
+From the Lab checkout, point Observatory at the experiment directory containing Harbor’s `trials/`. You can repeat the option to include earlier experiments.
+
+```sh
+python3 -S scripts/observe.py --harbor "$HARBOR_SMOKE_ROOT"
+```
+
+Open the loopback address it prints. **Follow newest** selects the latest scored Worker trial. Expand a timeline row to inspect a prompt, model response, tool arguments, output or checkpoint. **Diff & verification** shows the structured handoff and Harbor’s separate upstream reward. Agent and verifier times come from Harbor’s phase records. A failed or interrupted attempt stays visible even when it earned a numeric reward. Scripted controls and Terminus runs remain in Harbor’s trial directories. Terminus writes its own trace at `agent/trajectory.json`.
+
+## Reproduce the two-task follow-up
+
+The second panel uses `log-summary-date-ranges`, which submits a CSV, and `cancel-async-tasks`, which submits an importable Python module. Use a fresh experiment directory, the same upstream revision and the same controller environment as above. Select these tasks during sparse checkout and preparation.
+
+```sh
+git -C "$HARBOR_SMOKE_ROOT/upstream" sparse-checkout set tasks/log-summary-date-ranges tasks/cancel-async-tasks
+python "$example/prepare.py" "$HARBOR_SMOKE_ROOT" log-summary-date-ranges cancel-async-tasks
+```
+
+Run `trial.py TASK AGENT NAME` in the clean controller environment for each task and each of `oracle`, `nop` and `worker-control`. Expect rewards of 1, 0 and 0, respectively. The Worker control also checks that its edited file reached the verifier. Preparation retains the upstream async verifier’s driver-copy step and uses the log oracle’s preinstalled command-line utilities.
+
+For scoring, append `followup` to the GPU command’s final `pair.py` invocation. Allow 3,300 seconds for the memory wrapper and successively longer outer timeouts (3,500, 3,700 and 3,900 seconds for Ollama, speech and background). Each agent still gets 600 seconds. Worker goes first on the log task and Terminus goes first on cancellation. All four trials check their locally prepared image IDs before starting.
+
+### Follow-up results
+
+| Task | Worker agent time | Terminus-2 agent time | Upstream checks passed (Worker / Terminus) | Reward (Worker / Terminus) |
+| --- | ---: | ---: | ---: | ---: |
+| `log-summary-date-ranges` | 91.7 s | 107.6 s | 2 of 2 / 2 of 2 | 1 / 1 |
+| `cancel-async-tasks` | 383.0 s | 600.0 s (timeout) | 5 of 6 / 5 of 6 | 0 / 0 |
+
+Both agents submitted byte-identical CSVs with the required header, row order and 15 counts. The cancellation results look alike in the scoreboard. The submissions fail for different reasons when a queue is still present.
+
+- **Worker** started only the two active jobs. Cancelling the gather had already cancelled its children. The exception handler called `cancel()` on them again while their cleanup was awaiting. Neither cleanup finished. Worker’s own real-SIGINT test wrote markers synchronously in its cleanup, so its 21 passing checks missed the failure.
+- **Terminus-2** treated jobs waiting in the queue as also needing cleanup and started them during shutdown. Its last recorded turn requested completion. Harbor requested confirmation, performed proactive summarization and hit the agent ceiling. Harbor still transferred and graded the file. The whole trial took 646.4 seconds, including 30.6 seconds in verification.
+
+A separate probe cancelled the caller while two of four jobs were running and kept the event loop alive to observe the result. The upstream reference started and cleaned up two jobs. Terminus started and cleaned up four. Both Worker jobs recorded a cancellation count of two when their cleanup was interrupted. All three implementations also supported factories returning already-resolved futures. The probe ran on sealed submissions and leaves the original rewards intact. [Probe source](probe_cancellation.py) · [Timings, hashes and observations](../../results/harbor-followup-smoke-001.json) · [Timing follow-up](https://github.com/othercriteria/harness-lab/issues/83)

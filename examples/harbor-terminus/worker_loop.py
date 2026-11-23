@@ -19,12 +19,12 @@ from control import deadline
 from fresh_context import FreshContext
 from mini_bootstrap import DefaultAgent
 from observations import ObservationHistory
+from prepare import CONTROL_FILE, WORKDIR
 from resumption_digest import from_snapshots
 from run_trial import configure_agent
 from sandbox import write_json
 
 MODEL = "qwen38-27b-ranalayout-q4"
-WORKDIR = {"polyglot-c-py": "/app", "fix-git": "/app/personal-site"}
 
 
 class ContainerEnvironment(IsolatedEnvironment):
@@ -171,20 +171,16 @@ class WarmModel(LocalModel):
 
 
 def control_actions(task):
-    target = (
-        "polyglot/harbor-control.txt"
-        if task == "polyglot-c-py"
-        else "harbor-control.txt"
-    )
+    target = CONTROL_FILE[task]
+    setup = {
+        "polyglot-c-py": "mkdir -p polyglot",
+        "fix-git": "git switch -c harbor-control",
+    }.get(task, "true")
     actions = [
         (
             "bash",
             {
-                "command": (
-                    "mkdir -p polyglot"
-                    if task == "polyglot-c-py"
-                    else "git switch -c harbor-control"
-                )
+                "command": setup
                 + " && { sleep 60 </dev/null >/dev/null 2>&1 & echo $! > /tmp/control-pid; }"
             },
         ),

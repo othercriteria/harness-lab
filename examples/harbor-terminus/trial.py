@@ -16,6 +16,7 @@ from urllib.parse import urlparse
 from harbor.models.trial.config import TrialConfig
 from harbor.trial.hooks import TrialEvent
 from harbor.trial.trial import Trial
+from prepare import FOLLOWUP, TASKS
 
 MODEL = "qwen38-27b-ranalayout-q4"
 
@@ -57,7 +58,7 @@ def warm(origin, instruction):
 async def main():
     root = Path(os.environ["HARBOR_SMOKE_ROOT"]).resolve()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("task", choices=("polyglot-c-py", "fix-git"))
+    parser.add_argument("task", choices=TASKS)
     parser.add_argument(
         "agent", choices=("terminus-2", "nop", "oracle", "worker", "worker-control")
     )
@@ -68,12 +69,11 @@ async def main():
     parser.add_argument(
         "--prepared-images",
         action="store_true",
-        help="Use the image IDs from this machine's prepare.py run for a separate Worker smoke",
+        help="Use the image IDs from this machine's prepare.py run for a separate smoke",
     )
     args = parser.parse_args()
     task, agent, name = args.task, args.agent, args.name
-    if args.prepared_images and agent not in ("worker", "worker-control"):
-        parser.error("--prepared-images applies only to Worker and its control")
+    prepared_images = args.prepared_images or task in FOLLOWUP
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
         parser.error("Use a lowercase alphanumeric trial name with optional hyphens")
     directory = root / "trials" / name
@@ -125,8 +125,9 @@ async def main():
         )
         if origin is None or not re.fullmatch(r"http://127[.]0[.]0[.]1:[0-9]+", origin):
             parser.error("Worker requires an owned loopback endpoint")
-        example = Path(__file__).resolve().parent
-        if args.prepared_images:
+    example = Path(__file__).resolve().parent
+    if worker_agent or prepared_images:
+        if prepared_images:
             pins = json.loads((root / "build" / task / "images.json").read_bytes())
             options = ["--format", "{{.Id}}"]
             binding = "local preparation image IDs"
@@ -150,6 +151,7 @@ async def main():
             ).strip()
             if actual != pins[role]:
                 raise ValueError(f"{image} differs from {binding}")
+    if worker_agent:
         agent_config = {
             "import_path": "harbor_worker:Worker",
             "model_name": MODEL,
@@ -198,7 +200,7 @@ async def main():
     )
     trial = await Trial.create(config)
 
-    if worker_agent:
+    if worker_agent or prepared_images:
         (directory / "image-binding.json").write_text(
             json.dumps({"source": binding, "images": pins}, indent=2) + "\n"
         )

@@ -176,3 +176,5 @@ The same CPU study compared the first green workspace with the final submission 
 ## Upstream terminal tasks
 
 Worker and Harbor’s Terminus-2 both earned the upstream reward on a polyglot and a Git recovery task using the same local Qwen model. Worker finished the Git task in 40.3 seconds and Terminus in 157.7 seconds. Both submissions preserved the requested Git ancestry. On polyglot, Worker finished in 271.7 seconds and Terminus in 366.4 seconds. A follow-up check found that only Terminus’s C submission gave the correct result for `F(94)` and `F(100)`. Each task has one completed pair, and the record preserves an earlier Worker adapter interruption. [Recipe, timings and independent checks](../examples/harbor-terminus/README.md#what-changed-with-worker)
+
+On two additional tasks, both agents produced the same log summary and both failed the same upstream async cancellation test. The two failures came from different behavior with queued work and interrupted cleanup. [Paired follow-up and independent probes](../examples/harbor-terminus/README.md#follow-up-results)

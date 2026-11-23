@@ -67,7 +67,48 @@ STANDARD_WORKER_ARTIFACT = re.compile(
 )
 
 
-class Evidence:
+class RunCatalog:
+    def runs(self, page=1, page_size=20, query=""):
+        """Index names/mtimes globally, then read evidence only for the visible page.
+
+        No persistent cache: new campaigns, terminal receipts and outer verdicts
+        remain visible on the next refresh. Search covers all campaign names.
+        """
+        if type(page) is not int or page < 1:
+            raise ValueError("page must be a positive integer")
+        if type(page_size) is not int or not 1 <= page_size <= 50:
+            raise ValueError("page_size must be between 1 and 50")
+        if not isinstance(query, str) or len(query) > 200:
+            raise ValueError("query must be at most 200 characters")
+        index = self.run_index()
+        index.sort(key=lambda item: (-item[1], item[0]))
+        matching = [item for item in index if query.casefold() in item[0].casefold()]
+        pages = max(1, (len(matching) + page_size - 1) // page_size)
+        page = min(page, pages)
+        start = (page - 1) * page_size
+        output = []
+        unavailable = []
+        for name, _ in matching[start : start + page_size]:
+            try:
+                output.append(self.run(name, False))
+            except (OSError, ValueError):
+                # Preserve index totals during concurrent publication/removal,
+                # and explicitly distinguish an unreadable row from no match.
+                unavailable.append(name)
+        return {
+            "runs": output,
+            "total": len(index),
+            "matching": len(matching),
+            "page": page,
+            "page_size": page_size,
+            "pages": pages,
+            "query": query,
+            "newest": index[0][0] if index else None,
+            "unavailable": unavailable,
+        }
+
+
+class Evidence(RunCatalog):
     def __init__(self, root=DEFAULT_ROOT, *, archived_example=False):
         self.root = root.resolve()
         self.archived_example = archived_example
@@ -558,18 +599,7 @@ class Evidence:
             }
         return result
 
-    def runs(self, page=1, page_size=20, query=""):
-        """Index names/mtimes globally, then read evidence only for the visible page.
-
-        No persistent cache: new campaigns, terminal receipts and outer verdicts
-        remain visible on the next refresh. Search covers all campaign names.
-        """
-        if type(page) is not int or page < 1:
-            raise ValueError("page must be a positive integer")
-        if type(page_size) is not int or not 1 <= page_size <= 50:
-            raise ValueError("page_size must be between 1 and 50")
-        if not isinstance(query, str) or len(query) > 200:
-            raise ValueError("query must be at most 200 characters")
+    def run_index(self):
         index = []
         for path in self.root.iterdir():
             try:
@@ -584,31 +614,7 @@ class Evidence:
                 index.append((path.name, (path / "command.json").stat().st_mtime))
             except (OSError, ValueError):
                 continue
-        index.sort(key=lambda item: (-item[1], item[0]))
-        matching = [item for item in index if query.casefold() in item[0].casefold()]
-        pages = max(1, (len(matching) + page_size - 1) // page_size)
-        page = min(page, pages)
-        start = (page - 1) * page_size
-        output = []
-        unavailable = []
-        for name, _ in matching[start : start + page_size]:
-            try:
-                output.append(self.run(name, False))
-            except (OSError, ValueError):
-                # Preserve index totals during concurrent publication/removal,
-                # and explicitly distinguish an unreadable row from no match.
-                unavailable.append(name)
-        return {
-            "runs": output,
-            "total": len(index),
-            "matching": len(matching),
-            "page": page,
-            "page_size": page_size,
-            "pages": pages,
-            "query": query,
-            "newest": index[0][0] if index else None,
-            "unavailable": unavailable,
-        }
+        return index
 
     def trial(self, run, trial):
         return self.child(self.child(self.child(self.root, run), "experiment"), trial)
@@ -624,6 +630,9 @@ class Evidence:
         content, truncated = self.text(path, 131072)
         return {"name": name, "text": content, "truncated": truncated}
 
+    def trace_summary(self, root):
+        return self.read(root / "summary.json") or {}
+
     def trace(self, run, trial, start=None):
         """Read at most 80 events; an absolute start stays fixed as events append."""
         if start is not None and (type(start) is not int or not 0 <= start <= 10**9):
@@ -633,7 +642,7 @@ class Evidence:
             raise ValueError("Trial unavailable")
         records = []
         files = self.request_files(root)
-        summary = self.read(root / "summary.json") or {}
+        summary = self.trace_summary(root)
         cases = {
             case["name"]: case
             for case in summary.get("cases", [])
@@ -826,13 +835,11 @@ class Evidence:
                         result["visible"]["output"] = (
                             output[:24000] + "\n[Display truncated; see raw artifact.]"
                         )
+                interface = req.get("public_interface") or req.get("interface") or {}
+                fallback_tool = req.get("mode") if req.get("mode") in ("edit_file", "write_file") else "bash"
                 record.update(
-                    tool_name=req.get("public_interface", {}).get(
-                        "tool", req.get("name", "bash")
-                    ),
-                    arguments=req.get("public_interface", {}).get(
-                        "arguments", req.get("arguments")
-                    ),
+                    tool_name=interface.get("tool") or req.get("name") or fallback_tool,
+                    arguments=interface.get("arguments", req.get("arguments")),
                     adapter_control=typed,
                     read_only=read_only,
                     executed=req.get("executed") if typed or read_only else None,
@@ -1028,12 +1035,22 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, help="Loopback port (live default: 8765; example: automatic)")
-    parser.add_argument(
+    sources = parser.add_mutually_exclusive_group()
+    sources.add_argument("--harbor", action="append", type=Path, metavar="EXPERIMENT",
+                         help="Watch scored Harbor Worker trials in this experiment (repeatable)")
+    sources.add_argument(
         "--example", action="store_true", help="Open the bundled historical Worker excerpt"
     )
     args = parser.parse_args()
-    Handler.evidence = Evidence(EXAMPLE_ROOT, archived_example=True) if args.example else Evidence()
-    port = args.port if args.port is not None else (0 if args.example else 8765)
+    if args.harbor:
+        from observe_harbor import HarborCatalog
+        try:
+            Handler.evidence = HarborCatalog(args.harbor)
+        except ValueError as error:
+            parser.error(str(error))
+    else:
+        Handler.evidence = Evidence(EXAMPLE_ROOT, archived_example=True) if args.example else Evidence()
+    port = args.port if args.port is not None else (0 if args.example or args.harbor else 8765)
     if not 0 <= port <= 65535:
         parser.error("--port must be between 0 and 65535")
     try:

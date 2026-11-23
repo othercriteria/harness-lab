@@ -1,4 +1,4 @@
-"""Prepare two offline task overlays from a clean Terminal-Bench 2.1 checkout."""
+"""Prepare offline task overlays from a clean Terminal-Bench 2.1 checkout."""
 
 import json
 import shutil
@@ -19,10 +19,32 @@ TASKS = {
         "389b9c8247610c2c5be080b1ac00429007c2c69bf57f7f26c79f0f75ba2d5c74",
         "/app/personal-site",
     ),
+    "log-summary-date-ranges": (
+        "20251031",
+        "cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51",
+        "/app/summary.csv",
+    ),
+    "cancel-async-tasks": (
+        "20251031",
+        "84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d",
+        "/app/run.py",
+    ),
 }
 
 
-def prepare(root):
+ORIGINAL = ("polyglot-c-py", "fix-git")
+FOLLOWUP = ("log-summary-date-ranges", "cancel-async-tasks")
+WORKDIR = {
+    task: "/app/personal-site" if task == "fix-git" else "/app" for task in TASKS
+}
+CONTROL_FILE = {
+    "polyglot-c-py": "polyglot/harbor-control.txt",
+    "fix-git": "harbor-control.txt",
+    **{task: Path(TASKS[task][2]).name for task in FOLLOWUP},
+}
+
+
+def prepare(root, tasks=ORIGINAL):
     checkout = root / "upstream"
 
     def git(*args):
@@ -32,7 +54,8 @@ def prepare(root):
 
     if git("rev-parse", "HEAD") != REVISION or git("status", "--porcelain"):
         raise ValueError("Use a clean checkout of the pinned task revision")
-    for task, (tag, digest, artifact) in TASKS.items():
+    for task in tasks:
+        tag, digest, artifact = TASKS[task]
         source = checkout / "tasks" / task
         dest = root / "prepared" / task
         shutil.copytree(source, dest)
@@ -49,8 +72,21 @@ def prepare(root):
         )
         # Keep test_outputs.py byte-identical. Move installation out of timed,
         # offline verification and retain the upstream pytest arguments and reward.
+        setup = (
+            "cp /tests/test.py /app/test.py\n" if task == "cancel-async-tasks" else ""
+        )
+        if task == "log-summary-date-ranges":
+            # The oracle needs grep and coreutils, already available offline.
+            oracle = dest / "solution/solve.sh"
+            install = "apt-get update && apt-get install -y grep coreutils"
+            assert oracle.read_text().count(install) == 1
+            oracle.write_text(
+                oracle.read_text().replace(
+                    install, "command -v grep date find >/dev/null"
+                )
+            )
         (build / "tests/test.sh").write_text(
-            "#!/bin/bash\nif /usr/local/bin/python3.13 -m pytest --ctrf /logs/verifier/ctrf.json /tests/test_outputs.py -rA; then echo 1 > /logs/verifier/reward.txt; else echo 0 > /logs/verifier/reward.txt; fi\n"
+            f"#!/bin/bash\n{setup}if /usr/local/bin/python3.13 -m pytest --ctrf /logs/verifier/ctrf.json /tests/test_outputs.py -rA; then echo 1 > /logs/verifier/reward.txt; else echo 0 > /logs/verifier/reward.txt; fi\n"
         )
         images = {}
         for role in ("agent", "verifier"):
@@ -71,4 +107,4 @@ def prepare(root):
 
 
 if __name__ == "__main__":
-    prepare(Path(sys.argv[1]).resolve())
+    prepare(Path(sys.argv[1]).resolve(), sys.argv[2:] or ORIGINAL)

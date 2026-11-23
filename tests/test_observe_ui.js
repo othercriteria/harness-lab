@@ -415,6 +415,15 @@ assert.equal(elements.get('events').children[0].open,false);
 document.querySelectorAll=originalQuery;
 console.log('Timeline expansions survive history navigation and reset across attempts.');
 
+context.harborRun={name:'smoke',kind:'harbor',source:'/evidence/trials',trials:[{name:'trial-a',task:'example',state:'stopped with error',reward:0,outcome:'Submitted'}]};
+context.harborTrace={events:[],artifacts:[],summary:{upstream_reward:0,agent_outcome:{exit_status:'Submitted'}}};
+vm.runInContext("state.trial='trial-a';render(harborRun,harborTrace)",context);
+assert.match(text(elements.get('metrics')),/0 Upstream reward/);
+assert.match(text(elements.get('metrics')),/Submitted Worker exit/);
+assert.doesNotMatch(text(elements.get('metrics')),/Verified correctness|Full-result review/);
+assert.equal(elements.get('source').textContent,'/evidence/trials/trial-a/agent/worker');
+assert.equal(elements.get('outcome-title').textContent,'Harbor verifier and Worker handoff');
+
 context.delegatedRun={name:'delegate-example',kind:'delegated',state:'complete',trials:[{name:'trial-00-delegated-task',kind:'delegated',state:'no clean submission',clean:false}],delegation:{label:'Docs <script> remains text',state:{state:'completed',cleanup_verified:true},result:{dispatch_seconds:190,result:{checks_passed:null}},outer_review:{decision:'accepted_with_repairs'},application:{applied:true}}};
 context.delegatedTrace={summary:{work_kind:'delegated_repository',clean_agent_completion:false,task_wall_seconds:165},events:[],artifacts:[]};
 vm.runInContext("state.trial='trial-00-delegated-task';render(delegatedRun,delegatedTrace)",context);

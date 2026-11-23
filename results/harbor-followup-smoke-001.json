@@ -1,0 +1,355 @@
+{
+  "design": "One warm scored attempt each, one resident backend and seed 19550. In order: log-summary-date-ranges Worker then Terminus-2; cancel-async-tasks Terminus-2 then Worker. Freeze all task, verifier, protocol and image inputs before scoring. 600 seconds of agent execution per attempt, outside warm-up and grading. Preserve operational failures separately. No retry for a model miss.",
+  "harbor": "0.27.0",
+  "terminal_bench_revision": "12b7565679ce5006230b820666353673a133db93",
+  "workstation_bulk_root": "research/harbor-followup-001",
+  "protocol_parent": "results/harbor-worker-smoke-079.json",
+  "model_profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "cold_model_load_seconds": 17.006,
+  "task_inputs": {
+    "log-summary-date-ranges": {
+      "instruction_sha256": "c1d4516ad4ec2238209740eaf01291df9ab48b0028a3fc5df383c6f831453484",
+      "tests_sha256": {
+        "test_outputs.py": "2fc06a6ce1944ad82f84fb437395fa75ed8c0eadd385b92e375c27e5bc9cb2b4"
+      },
+      "image_ids": {
+        "agent": "sha256:4adde1679490bbe952c4d30ae520e8f4f60d2e70032d07c88da51f4309bd1109",
+        "verifier": "sha256:0e0b7b415a3f5950f3279db75636c71957c750af9fc63327f5bd46dca9666df1"
+      },
+      "prepared_task_sha256": "aca2795c115aa28e31e96fc1b4345d8519d887dd60c30528ec812d8316a998f3"
+    },
+    "cancel-async-tasks": {
+      "instruction_sha256": "23d22f7039b50682941652c716f96dac314b8585c32c133614cac77dc067f47e",
+      "tests_sha256": {
+        "test.py": "f533c0a64db068f582b4733c5b81f2e66b8fa52fcd3efa65752e6bd6d24780aa",
+        "test_outputs.py": "d6f510b51fafc81b4e9b5cc95535aa13491c8753e0e4171db42c45f4de460ee7"
+      },
+      "image_ids": {
+        "agent": "sha256:04bb520b24c76c70598c7466e39c678d0cfbef13d4879aba9a9ece9668fd86db",
+        "verifier": "sha256:fec522aea4b1674495b1e5d03db7e4bd56f7b77500d8051764aa8ee8b5c17b4e"
+      },
+      "prepared_task_sha256": "230e91546abd5690595b003ff1a22087816219a1076603f763e5e55978d6529e"
+    }
+  },
+  "controls": [
+    {
+      "trial": "hx-log-summary-date-ranges-oracle-001",
+      "agent": "oracle",
+      "task": "log-summary-date-ranges",
+      "upstream_reward": 1.0,
+      "result_sha256": "fa7bdcfcd2ab5751ff54cfee295f651bb860d6718e6ff9275ef2b70bb3431f86"
+    },
+    {
+      "trial": "hx-log-summary-date-ranges-nop-001",
+      "agent": "nop",
+      "task": "log-summary-date-ranges",
+      "upstream_reward": 0.0,
+      "result_sha256": "022fe9e165fa411ecfcdd8e454e40ca85161e71770d3bc7be65aa9aba9f2d36a"
+    },
+    {
+      "trial": "hx-log-summary-date-ranges-worker-control-001",
+      "agent": "worker-control",
+      "task": "log-summary-date-ranges",
+      "upstream_reward": 0.0,
+      "result_sha256": "57f371e1007adb73831e3cdeb149f2218c81861a5cc8e894125f61587fbc0434",
+      "transferred_edit_verified": true,
+      "context_resets": 1
+    },
+    {
+      "trial": "hx-cancel-async-tasks-oracle-001",
+      "agent": "oracle",
+      "task": "cancel-async-tasks",
+      "upstream_reward": 1.0,
+      "result_sha256": "e8939ce7bcf1412aa182281bd8944bb342863c82b389096d052e62b63c6c770d"
+    },
+    {
+      "trial": "hx-cancel-async-tasks-nop-001",
+      "agent": "nop",
+      "task": "cancel-async-tasks",
+      "upstream_reward": 0.0,
+      "result_sha256": "78e415b636c67bbf0915d77be88f80528b88765fdf62859d3b2aff25bb30a6d7"
+    },
+    {
+      "trial": "hx-cancel-async-tasks-worker-control-001",
+      "agent": "worker-control",
+      "task": "cancel-async-tasks",
+      "upstream_reward": 0.0,
+      "result_sha256": "4854ec1ef0a3dcda89aa9827fceae8993c1e03b31f72ee39d7938bcc59460cd7",
+      "transferred_edit_verified": true,
+      "context_resets": 1
+    }
+  ],
+  "attempts": [
+    {
+      "task": "log-summary-date-ranges",
+      "agent": "Worker",
+      "trial": "h79-log-summary-date-ranges-quartet-001",
+      "task_checksum": "e7d3bf751e14953823c92ca7fac9b77a38cf31a2a32e1cde3965a45a741940ba",
+      "upstream_reward": 1.0,
+      "reward_valid": true,
+      "checks_passed": 2,
+      "checks_total": 2,
+      "exception": null,
+      "phase_seconds": {
+        "environment_setup": 3.936,
+        "agent_setup": 2.487,
+        "agent_execution": 91.664,
+        "verifier": 15.727
+      },
+      "whole_trial_seconds": 125.354,
+      "artifact": {
+        "source": "/app/summary.csv",
+        "status": "ok",
+        "sha256": "b09e50519a822840791f599bfcefb9bbf94f4930a7d0d1a4d08b4b3803e4cd2d"
+      },
+      "receipts_sha256": {
+        "trace": "f8b4595216754eed3a63ea97853be3d6ce3f1703b5faacd575670352a7fec8ec",
+        "result": "8db3a3d1198e1ebad89f2a98ee63523dcbd8cb2c6a3bda12fc5015d3f0df1d1a",
+        "verifier": "d52aeab3a9ea20180fcd62b04ea69eb6be10ba42a43969b68e79a09a359e0acc",
+        "boundary": "5c7babaccf269517b03fa0896eb2882d80a1bc78afdffce12584c58fe85d5657"
+      },
+      "terminal": "Submitted",
+      "model_requests": 9,
+      "tool_calls": 9,
+      "context_resets": 0,
+      "first_scored_cached_tokens": 4068,
+      "first_scored_prompt_tokens": 4072,
+      "warm_seconds": 2.143,
+      "handoff_sha256": "98f9826f3360c210c9f20c97397498292f2eb99587d525ee583d6b06854c4980"
+    },
+    {
+      "task": "log-summary-date-ranges",
+      "agent": "Terminus-2",
+      "trial": "h78-log-summary-date-ranges-quartet-001",
+      "task_checksum": "e7d3bf751e14953823c92ca7fac9b77a38cf31a2a32e1cde3965a45a741940ba",
+      "upstream_reward": 1.0,
+      "reward_valid": true,
+      "checks_passed": 2,
+      "checks_total": 2,
+      "exception": null,
+      "phase_seconds": {
+        "environment_setup": 3.919,
+        "agent_setup": 0.32,
+        "agent_execution": 107.622,
+        "verifier": 15.74
+      },
+      "whole_trial_seconds": 139.111,
+      "artifact": {
+        "source": "/app/summary.csv",
+        "status": "ok",
+        "sha256": "b09e50519a822840791f599bfcefb9bbf94f4930a7d0d1a4d08b4b3803e4cd2d"
+      },
+      "receipts_sha256": {
+        "trace": "a81cd42314ff744701dbf338256004d4d601b4b2cbb2ca9065e6a9f287b3894a",
+        "result": "17d117aec09f5ef7ee1e947f8eeaa582f0db3f98cbc49536d449fb6c06c49d59",
+        "verifier": "679cc86ce538cf8452074f7c493e46779688aa88d6eca811e98a3484235f661e",
+        "boundary": "5839df49d6bb66f2b1f7a8ac7f36813e2cb3028cf840602eec7f242568065308"
+      },
+      "terminal_tools": [
+        "mark_task_complete"
+      ],
+      "model_turns": 5,
+      "recorded_agent_steps": 5,
+      "summarizations": 0,
+      "archived_summary_traces": 0,
+      "first_scored_cached_tokens": 599,
+      "first_scored_prompt_tokens": 1136,
+      "warm_seconds": 3.778
+    },
+    {
+      "task": "cancel-async-tasks",
+      "agent": "Terminus-2",
+      "trial": "h78-cancel-async-tasks-quartet-001",
+      "task_checksum": "15630e61e7cf39b75cde44b22a30343f9a396d772503c675f836fccb863667bf",
+      "upstream_reward": 0.0,
+      "reward_valid": true,
+      "checks_passed": 5,
+      "checks_total": 6,
+      "exception": "AgentTimeoutError",
+      "phase_seconds": {
+        "environment_setup": 3.964,
+        "agent_setup": 0.334,
+        "agent_execution": 600.004,
+        "verifier": 30.615
+      },
+      "whole_trial_seconds": 646.412,
+      "artifact": {
+        "source": "/app/run.py",
+        "status": "ok",
+        "sha256": "c6400f90cceef5f781bc468ded1e0187ba8709105cea8e2a8674d0d73d38d642"
+      },
+      "receipts_sha256": {
+        "trace": "0557f4bc56fe407e8e8cfb9e8da82f7c4c87d50720d750c19235398446b3c220",
+        "result": "bbb5c50068db1637c3710dd763da2ccbbafe090323c0ec8f01012813d44f013c",
+        "verifier": "76e68708e0ab56382d82d11d65ebf73a5c789ba93816d09f2cb1960e60f3fb43",
+        "boundary": "f0ef73390e10c2932c5bd8b3e0097c43936dcff133c1bb3635662bbeabc1ceb2"
+      },
+      "terminal_tools": [
+        "bash_command",
+        "bash_command",
+        "bash_command",
+        "bash_command",
+        "mark_task_complete"
+      ],
+      "model_turns": 14,
+      "recorded_agent_steps": 13,
+      "summarizations": 1,
+      "archived_summary_traces": 1,
+      "first_scored_cached_tokens": 620,
+      "first_scored_prompt_tokens": 879,
+      "warm_seconds": 2.479
+    },
+    {
+      "task": "cancel-async-tasks",
+      "agent": "Worker",
+      "trial": "h79-cancel-async-tasks-quartet-001",
+      "task_checksum": "15630e61e7cf39b75cde44b22a30343f9a396d772503c675f836fccb863667bf",
+      "upstream_reward": 0.0,
+      "reward_valid": true,
+      "checks_passed": 5,
+      "checks_total": 6,
+      "exception": null,
+      "phase_seconds": {
+        "environment_setup": 3.951,
+        "agent_setup": 0.579,
+        "agent_execution": 383.045,
+        "verifier": 28.59
+      },
+      "whole_trial_seconds": 427.843,
+      "artifact": {
+        "source": "/app/run.py",
+        "status": "ok",
+        "sha256": "76982237e1232100aac3e1f5f34094de6f98baf8f1d97f3827b915637ac6f7e2"
+      },
+      "receipts_sha256": {
+        "trace": "e0498ce83db31c737cdbf1c83254253a6894817940d5dbfadaad856b7b8afcef",
+        "result": "12560012289e34c65a8fa4aaa61661d3925ee1c92e1a5ae3f9655c50e0a53f97",
+        "verifier": "07bc39563aa9d83ff91708d8ea73811282fbc46da2124a6e4fa0b7c1fc0dbfd0",
+        "boundary": "9af5cc80a0026c17adbff60e131c2d2d79957510250cf5b6a3e912489c80d4e2"
+      },
+      "terminal": "Submitted",
+      "model_requests": 32,
+      "tool_calls": 33,
+      "context_resets": 1,
+      "first_scored_cached_tokens": 3811,
+      "first_scored_prompt_tokens": 3815,
+      "warm_seconds": 5.995,
+      "handoff_sha256": "de0332c1691d478db01f09ba07a7d207fb67effbb19a21d056f115910209d628"
+    }
+  ],
+  "transport": "One declared file per task. No host mounts or privileged task containers. The task started offline, and Harbor graded in a separate container. Oracle and scripted transfer controls establish the offline path. The log oracle used already installed utilities; the async verifier retained its upstream test driver copy step.",
+  "lifecycle": {
+    "server_exit": 0,
+    "memory_scope_passed": true,
+    "memory_scope_cleanup_verified": true,
+    "ollama_restoration_verified": true,
+    "session_restoration_verified": true,
+    "remaining_quartet_containers": 0
+  },
+  "scored_inputs": {
+    "lab_parent_commit": "066f711c29e71f0783b0a992123adb0fbc02a906",
+    "controller_sha256": {
+      "container_tool.py": "2659e764cbe33f84ba34c667ac4686c89abfadc29c74eb43ebe23abd9d34c751",
+      "harbor_worker.py": "adfb0a23e429d5ab33a68d375ef2a4d3bc9a1c4297fd9ba45a2d4da5f360b6e6",
+      "pair.py": "98862315380c609226ebc391998d60ff09ce8bed439a7d951962902bedaad118",
+      "prepare.py": "b244d60e1ffb2d568423a2605eefdd45839a53ee3dfedc2b22e1d709bb03d520",
+      "trial.py": "b14d7bb16c917430fefc0e21d2d8cd1407650960eb2ad62eb53a53b6b3538bd1",
+      "worker_loop.py": "55a6986060ab8d26699fe6123af68d1dc8c4a09db251b9d9b62b3520412a30bf"
+    },
+    "protocol_sha256": "166f69c7c3ef2da7516f96f47a5e745fdf06b7caa2f886049aad3f175c732c63",
+    "seed": 19550,
+    "temperature": 0.6,
+    "context_tokens": 32768,
+    "reasoning_cap_tokens": 2048,
+    "agent_ceiling_seconds": 600,
+    "one_token_warmup": true
+  },
+  "diagnostic": {
+    "source": "examples/harbor-terminus/probe_cancellation.py",
+    "method": "Post-hoc checks in fresh offline read-only task containers against each sealed file. With four jobs and a concurrency limit of two, wait until two jobs start, cancel their caller and inspect starts, cleanup completion and pending tasks before event-loop teardown. Each cleanup awaits briefly. A second check passes three factories that return resolved futures. These probes do not affect the original score.",
+    "probe_sha256": "281b4a38317f38f81e46963dd5ccaec44cd03c9187030a87094cfc77aa5a9836",
+    "observations": [
+      {
+        "trial": "hx-cancel-async-tasks-oracle-001",
+        "submitted_sha256": "15c4b2e1b161e7ad99ba0ae4c3b5cd2244aa54fe2112d8ce4cdc8ab156452261",
+        "cancel": {
+          "caller_observed": "cancelled",
+          "started": [
+            0,
+            1
+          ],
+          "cleaned_by_caller_resumption": [
+            0,
+            1
+          ],
+          "interrupted_cleanup_and_cancel_counts": [],
+          "other_pending_tasks": 0
+        },
+        "future": {
+          "factories_invoked": 3
+        }
+      },
+      {
+        "trial": "h78-cancel-async-tasks-quartet-001",
+        "submitted_sha256": "c6400f90cceef5f781bc468ded1e0187ba8709105cea8e2a8674d0d73d38d642",
+        "cancel": {
+          "caller_observed": "cancelled",
+          "started": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cleaned_by_caller_resumption": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "interrupted_cleanup_and_cancel_counts": [],
+          "other_pending_tasks": 0
+        },
+        "future": {
+          "factories_invoked": 3
+        }
+      },
+      {
+        "trial": "h79-cancel-async-tasks-quartet-001",
+        "submitted_sha256": "76982237e1232100aac3e1f5f34094de6f98baf8f1d97f3827b915637ac6f7e2",
+        "cancel": {
+          "caller_observed": "cancelled",
+          "started": [
+            0,
+            1
+          ],
+          "cleaned_by_caller_resumption": [],
+          "interrupted_cleanup_and_cancel_counts": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "other_pending_tasks": 0
+        },
+        "future": {
+          "factories_invoked": 3
+        }
+      }
+    ]
+  },
+  "interpretation": {
+    "log-summary-date-ranges": "Both artifacts were byte-identical. The upstream verifier checked the header, row order, and all 15 counts.",
+    "cancel-async-tasks": "Both failed the upstream queued-cancellation test. Terminus started queued work during shutdown. Worker correctly kept the queue stopped, but its second cancel interrupted both active jobs during awaited cleanup. Its own real-SIGINT test wrote cleanup markers synchronously. Both submissions invoked all factories returning futures in the separate probe.",
+    "timing": "Terminus requested completion in its last recorded turn, received the confirmation prompt, and ran proactive summarization. Harbor recorded AgentTimeoutError and graded the transferred file. This was an upstream reward of zero with five tests passing, independently of the timeout."
+  },
+  "model_authors": [
+    {
+      "model": "OpenAI Codex (GPT-6, release unknown)",
+      "contribution": "Harbor follow-up, submitted-artifact diagnostics and Observatory integration"
+    }
+  ]
+}
