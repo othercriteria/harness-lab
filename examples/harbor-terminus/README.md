@@ -2,6 +2,8 @@
 
 Harbor runs two coding agents against the same local Qwen model and small panels of Terminal-Bench 2.1 tasks. Terminus-2 sends keystrokes to a persistent terminal. Worker uses its usual native tools and a fresh shell for each command. Both agents work in disposable containers. Harbor transfers each submitted artifact into a separate offline verifier and records the upstream reward. [Terminus-2 baseline](https://github.com/othercriteria/harness-lab/issues/78) · [Worker smoke](https://github.com/othercriteria/harness-lab/issues/79)
 
+Read the [timing comparison](timing.md) for task-declared limits, warm execution, whole-trial elapsed time and the CPU timeout controls.
+
 ## Prepare and check the tasks on CPU
 
 Use Linux, Docker with Compose, Python 3.13, uv, Git and a fresh bulk directory. The commands below start at the Lab repository root. Docker needs network access to build the images. The task and verifier run offline. The two controls for each task should produce rewards of 1 for the reference and 0 for the unchanged workspace.

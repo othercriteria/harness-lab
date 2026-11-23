@@ -4,10 +4,12 @@ import argparse
 import asyncio
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
 import time
+import tomllib
 import urllib.request
 from importlib.resources import files
 from pathlib import Path
@@ -19,6 +21,7 @@ from harbor.trial.trial import Trial
 from prepare import FOLLOWUP, TASKS
 
 MODEL = "qwen38-27b-ranalayout-q4"
+SMOKE_SECONDS = 600
 
 
 def warm(origin, instruction):
@@ -71,6 +74,11 @@ async def main():
         action="store_true",
         help="Use the image IDs from this machine's prepare.py run for a separate smoke",
     )
+    parser.add_argument(
+        "--task-timeout",
+        action="store_true",
+        help="Use the task's declared Harbor agent timeout (smoke default: 600 seconds).",
+    )
     args = parser.parse_args()
     task, agent, name = args.task, args.agent, args.name
     prepared_images = args.prepared_images or task in FOLLOWUP
@@ -79,7 +87,7 @@ async def main():
     directory = root / "trials" / name
     if directory.exists():
         raise FileExistsError(directory)
-    agent_config = {"name": agent, "override_timeout_sec": 600}
+    agent_config = {"name": agent}
     if agent == "terminus-2":
         if args.origin is None:
             parser.error("Terminus-2 requires a local endpoint")
@@ -126,7 +134,7 @@ async def main():
         if origin is None or not re.fullmatch(r"http://127[.]0[.]0[.]1:[0-9]+", origin):
             parser.error("Worker requires an owned loopback endpoint")
     example = Path(__file__).resolve().parent
-    if worker_agent or prepared_images:
+    if worker_agent or prepared_images or args.task_timeout:
         if prepared_images:
             pins = json.loads((root / "build" / task / "images.json").read_bytes())
             options = ["--format", "{{.Id}}"]
@@ -152,33 +160,25 @@ async def main():
             if actual != pins[role]:
                 raise ValueError(f"{image} differs from {binding}")
     if worker_agent:
+        budget = SMOKE_SECONDS
+        if args.task_timeout:
+            with (root / "prepared" / task / "task.toml").open("rb") as file:
+                budget = tomllib.load(file).get("agent", {}).get("timeout_sec")
+            if budget is None or not math.isfinite(budget) or budget <= 0:
+                parser.error("Worker requires a finite positive task ceiling")
         agent_config = {
             "import_path": "harbor_worker:Worker",
             "model_name": MODEL,
             "exclude_logs": ["*"],
-            "override_timeout_sec": 600,
             "kwargs": {
                 "task_key": task,
+                "budget_seconds": budget,
                 "endpoint": origin,
                 "control": agent == "worker-control",
             },
         }
-        if agent == "worker":
-            warm_dir = root / "warm" / name
-            warm_dir.parent.mkdir(exist_ok=True)
-            subprocess.run(
-                [
-                    example.parents[1] / ".venv/bin/python",
-                    example / "worker_loop.py",
-                    "warm",
-                    task,
-                    origin,
-                    "",
-                    warm_dir,
-                ],
-                input=(root / "prepared" / task / "instruction.md").read_bytes(),
-                check=True,
-            )
+    if not args.task_timeout:
+        agent_config["override_timeout_sec"] = SMOKE_SECONDS
     config = TrialConfig.model_validate(
         {
             "task": {"path": str(root / "prepared" / task)},
@@ -200,7 +200,28 @@ async def main():
     )
     trial = await Trial.create(config)
 
-    if worker_agent or prepared_images:
+    if worker_agent:
+        budget = trial.agent_timeout_sec
+        if trial.agent.budget_seconds != budget:
+            raise ValueError("Worker and Harbor agent ceilings differ")
+        if agent == "worker":
+            warm_dir = root / "warm" / name
+            warm_dir.parent.mkdir(exist_ok=True)
+            subprocess.run(
+                [
+                    example.parents[1] / ".venv/bin/python",
+                    example / "worker_loop.py",
+                    "warm",
+                    task,
+                    origin,
+                    "",
+                    warm_dir,
+                    str(budget),
+                ],
+                input=(root / "prepared" / task / "instruction.md").read_bytes(),
+                check=True,
+            )
+    if worker_agent or prepared_images or args.task_timeout:
         (directory / "image-binding.json").write_text(
             json.dumps({"source": binding, "images": pins}, indent=2) + "\n"
         )
@@ -231,6 +252,16 @@ async def main():
             "mounts": info["Mounts"],
             "privileged": info["HostConfig"]["Privileged"],
             "memory": info["HostConfig"]["Memory"],
+            "docker_limits": {
+                key: info["HostConfig"].get(key)
+                for key in (
+                    "NanoCpus",
+                    "CpuQuota",
+                    "CpuPeriod",
+                    "MemorySwap",
+                    "StorageOpt",
+                )
+            },
             "image": info["Image"],
         }
         if boundary["network_mode"].startswith("container:"):
@@ -262,7 +293,16 @@ async def main():
             raise RuntimeError("Agent setup or isolation check failed")
 
     trial.add_hook(TrialEvent.AGENT_START, prepare_agent)
+    started = time.monotonic()
     result = await trial.run()
+    timing = {
+        "run_monotonic_seconds": time.monotonic() - started,
+        "agent_limit_seconds": trial.agent_timeout_sec,
+        "verifier_limit_seconds": trial.verifier_timeout_sec,
+        "agent_setup_limit_seconds": trial.agent_setup_timeout_sec,
+        "environment_build_limit_seconds": trial.environment_build_timeout_sec,
+    }
+    (directory / "timing.json").write_text(json.dumps(timing, indent=2) + "\n")
     print(
         result.verifier_result,
         result.exception_info and result.exception_info.exception_type,

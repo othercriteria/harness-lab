@@ -770,7 +770,9 @@ class Evidence(RunCatalog):
                     # DeadlineExceeded also denotes exhausted context/token budgets.
                     # Attribute timeout only to the final model request in this scope.
                     if path == last_model_request.get(directory):
-                        if (
+                        if error.get("type") == "AgentTimeoutError":
+                            state = "attempt deadline reached"
+                        elif (
                             error.get("type") == "TimeoutError"
                             or "timed out" in str(reason).lower()
                         ):

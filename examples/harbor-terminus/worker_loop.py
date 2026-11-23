@@ -257,7 +257,10 @@ class ControlModel(LocalModel):
 
 
 def main():
-    mode, task, origin, cid, out = sys.argv[1:]
+    mode, task, origin, cid, out, allowance = sys.argv[1:]
+    budget = float(allowance)
+    if budget.is_integer():
+        budget = int(budget)
     output = Path(out)
     output.mkdir(exist_ok=False)
     limits = json.loads(
@@ -265,10 +268,10 @@ def main():
     )
     limits.update(
         seed=19550,
-        agent_wall_seconds=600,
-        task_wall_seconds=600,
+        agent_wall_seconds=budget,
+        task_wall_seconds=budget,
         verification_reserve_seconds=0,
-        request_timeout_seconds=600,
+        request_timeout_seconds=budget,
     )
     # Upstream task instructions are the public input. Workspace files live in
     # the task image; there is no Lab starter-file preload.
@@ -300,10 +303,10 @@ def main():
     if mode == "control":
         model.actions = control_actions(task)
     agent = DefaultAgent(model, env, **config, output_path=output / "trajectory.json")
-    env.agent_deadline = model.agent_deadline = time.monotonic() + 600
-    model.fresh_context.start(env.agent_deadline, 600)
+    env.agent_deadline = model.agent_deadline = time.monotonic() + budget
+    model.fresh_context.start(env.agent_deadline, budget)
     try:
-        with deadline(600):
+        with deadline(budget):
             outcome = agent.run(task_text)
     except Warmed:
         if mode == "warm":

@@ -415,11 +415,12 @@ assert.equal(elements.get('events').children[0].open,false);
 document.querySelectorAll=originalQuery;
 console.log('Timeline expansions survive history navigation and reset across attempts.');
 
-context.harborRun={name:'smoke',kind:'harbor',source:'/evidence/trials',trials:[{name:'trial-a',task:'example',state:'stopped with error',reward:0,outcome:'Submitted'}]};
+context.harborRun={name:'smoke',kind:'harbor',source:'/evidence/trials',trials:[{name:'trial-a',task:'example',state:'stopped with error',reward:0,outcome:'Submitted',whole_trial_seconds:65}]};
 context.harborTrace={events:[],artifacts:[],summary:{upstream_reward:0,agent_outcome:{exit_status:'Submitted'}}};
 vm.runInContext("state.trial='trial-a';render(harborRun,harborTrace)",context);
 assert.match(text(elements.get('metrics')),/0 Upstream reward/);
 assert.match(text(elements.get('metrics')),/Submitted Worker exit/);
+assert.match(text(elements.get('metrics')),/65\.0s Whole Harbor trial/);
 assert.doesNotMatch(text(elements.get('metrics')),/Verified correctness|Full-result review/);
 assert.equal(elements.get('source').textContent,'/evidence/trials/trial-a/agent/worker');
 assert.equal(elements.get('outcome-title').textContent,'Harbor verifier and Worker handoff');

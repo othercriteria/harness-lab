@@ -68,7 +68,25 @@ class HarborObservatoryTests(unittest.TestCase):
             self.assertEqual(trace["cost_breakdown"]["status"], "recorded Harbor trial")
             self.assertEqual(
                 next(e for e in trace["events"] if e["kind"] == "model")["state"],
-                "request timed out",
+                "attempt deadline reached",
+            )
+            saved = json.loads((trial / "result.json").read_text())
+            saved.update(verifier_result=None, reward_valid=False)
+            saved["exception_info"]["exception_type"] = "VerifierTimeoutError"
+            (trial / "result.json").write_text(json.dumps(saved))
+            row = data.run("smoke")["trials"][0]
+            self.assertEqual(
+                (row["state"], row["reward"], row["whole_trial_seconds"]),
+                ("stopped with error", None, 60),
+            )
+            trace = data.trace("smoke", "run-a")
+            self.assertIsNone(trace["summary"]["agent_error"])
+            self.assertEqual(
+                trace["summary"]["trial_error"]["type"], "VerifierTimeoutError"
+            )
+            self.assertEqual(
+                next(e for e in trace["events"] if e["kind"] == "model")["state"],
+                "attempt ended / response unavailable",
             )
             with self.assertRaises(ValueError):
                 data.artifact("smoke", "run-a", "../../result.json")

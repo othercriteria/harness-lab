@@ -23,6 +23,21 @@ def save(path, value):
     path.write_text(json.dumps(value, indent=2) + "\n")
 
 
+def run_client(argv, env, log_path, timing_path):
+    with log_path.open("wb") as log:
+        started = time.monotonic()
+        result = subprocess.run(argv, env=env, stdout=log, stderr=subprocess.STDOUT)
+        elapsed = time.monotonic() - started
+    save(
+        timing_path,
+        {
+            "dispatch_through_client_exit_seconds": elapsed,
+            "returncode": result.returncode,
+        },
+    )
+    result.check_returncode()
+
+
 def run(root, label, agent="terminus-2"):
     from control import cancellation, defer_launch_signals
     from serve_trial import (
@@ -34,7 +49,7 @@ def run(root, label, agent="terminus-2"):
     from server_endpoint import owned_listener, process_identity
     from with_ollama_released import gpu_experiment_lock
 
-    if agent not in {"terminus-2", "worker", "followup"}:
+    if agent not in {"terminus-2", "worker", "followup", "timing"}:
         raise ValueError("Unknown Harbor agent")
     if "BIG_MODELS_GPU_LOCK_FD" not in os.environ:
         raise RuntimeError("Launch through the restoring GPU transaction")
@@ -106,35 +121,37 @@ def run(root, label, agent="terminus-2"):
                 },
             )
             schedule = [(task, agent) for task in ORIGINAL]
-            followup = agent == "followup"
+            timing = agent == "timing"
+            followup = agent == "followup" or timing
             if followup:
-                log_task, async_task = FOLLOWUP
+                first, second = (
+                    ("fix-git", "log-summary-date-ranges") if timing else FOLLOWUP
+                )
                 schedule = [
-                    (log_task, "worker"),
-                    (log_task, "terminus-2"),
-                    (async_task, "terminus-2"),
-                    (async_task, "worker"),
+                    (first, "worker"),
+                    (first, "terminus-2"),
+                    (second, "terminus-2"),
+                    (second, "worker"),
                 ]
             for task, agent in schedule:
                 name = f"h{79 if agent == 'worker' else 78}-{task}-{label}"
                 if not owned_listener(identity, port):
                     raise RuntimeError("Owned backend listener disappeared")
                 log_name = name if followup else task
-                with (output / f"{log_name}.log").open("wb") as client_log:
-                    subprocess.run(
-                        [
-                            root / ".venv/bin/python",
-                            EXAMPLE / "trial.py",
-                            task,
-                            agent,
-                            name,
-                            origin,
-                        ],
-                        env=client_env,
-                        stdout=client_log,
-                        stderr=subprocess.STDOUT,
-                        check=True,
-                    )
+                run_client(
+                    [
+                        root / ".venv/bin/python",
+                        EXAMPLE / "trial.py",
+                        task,
+                        agent,
+                        name,
+                        origin,
+                        *(["--task-timeout"] if timing else []),
+                    ],
+                    client_env,
+                    output / f"{log_name}.log",
+                    output / f"{name}.client-time.json",
+                )
                 result = json.loads(
                     (root / "trials" / name / "result.json").read_text()
                 )

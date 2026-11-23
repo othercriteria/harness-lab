@@ -48,6 +48,11 @@ class HarborSource(Evidence):
         error = result.get("exception_info") or {}
         if not (result or outcome or handoff):
             return {}
+        trial_error = (
+            {"type": error["exception_type"], "message": error.get("exception_message")}
+            if error.get("exception_type")
+            else None
+        )
         return {
             "upstream_reward": (result.get("verifier_result") or {})
             .get("rewards", {})
@@ -59,11 +64,9 @@ class HarborSource(Evidence):
             "agent_seconds": seconds(result.get("agent_execution")),
             "verifier_seconds": seconds(result.get("verifier")),
             "whole_trial_seconds": seconds(result),
-            "agent_error": {
-                "type": error.get("exception_type"),
-                "message": error.get("exception_message"),
-            }
-            if error
+            "trial_error": trial_error,
+            "agent_error": trial_error
+            if error.get("exception_type") == "AgentTimeoutError"
             else None,
         }
 
@@ -92,7 +95,7 @@ class HarborSource(Evidence):
             w = self.trial(name, path.name)
             summary = self.trace_summary(w)
             reward = summary.get("upstream_reward")
-            error = summary.get("agent_error")
+            error = summary.get("trial_error")
             state = (
                 "stopped with error"
                 if error
@@ -128,6 +131,7 @@ class HarborSource(Evidence):
                         )
                     },
                     "boundary": self.read(path / "agent-boundary.json"),
+                    "whole_trial_seconds": summary.get("whole_trial_seconds"),
                     "seconds": summary.get("agent_seconds"),
                     "verifier_seconds": summary.get("verifier_seconds"),
                 }

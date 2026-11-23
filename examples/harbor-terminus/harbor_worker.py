@@ -14,9 +14,12 @@ LAB = EXAMPLE.parents[1]
 
 
 class Worker(BaseAgent):
-    def __init__(self, *args, task_key, endpoint, control=False, **kwargs):
+    def __init__(
+        self, *args, task_key, endpoint, budget_seconds=600, control=False, **kwargs
+    ):
         self.task_key = task_key
         self.endpoint = endpoint
+        self.budget_seconds = budget_seconds
         self.control = control
         super().__init__(*args, **kwargs)
 
@@ -98,6 +101,7 @@ chown -R 10001:10001 "{cwd}" /tmp/worker-home
                 self.endpoint,
                 cid,
                 str(output),
+                str(self.budget_seconds),
                 stdin=asyncio.subprocess.PIPE,
                 stdout=log,
                 stderr=asyncio.subprocess.STDOUT,

@@ -1,0 +1,505 @@
+{
+  "issue": 83,
+  "harbor": "0.27.0",
+  "harbor_source_revision": "96c86af3bc6d7e92f21fc771d21273be4714c8e9",
+  "terminal_bench_2_1_revision": "12b7565679ce5006230b820666353673a133db93",
+  "design": "Matched development replay of the quickest two previous tasks on the same backend, seed, images and prepared inputs. Task-declared agent and verifier allowances (900 seconds); same one-token warm-up and separate offline grading. fix-git Worker then Terminus; log-summary-date-ranges Terminus then Worker. One attempt per cell. Use earlier 600-second results as historical comparators. No causal speed or reliability inference. Do not retry a model miss.",
+  "design_sha256": "4a2fc1731a1f1267e5b0d045b827cbd25875d2306c0e6c901683656380311794",
+  "local_evidence": "research/harbor-timing-083",
+  "controller_inputs_sha256": {
+    "container_tool.py": "2659e764cbe33f84ba34c667ac4686c89abfadc29c74eb43ebe23abd9d34c751",
+    "harbor_worker.py": "4ef843442190ce52f62bed90d3011e4fbb250ca042c277722feb235ddde95753",
+    "pair.py": "f528af91a8d9ff53fcf7886c0d56d0110a97fdec327c0f95a6a9f1e9c49b5812",
+    "prepare.py": "b244d60e1ffb2d568423a2605eefdd45839a53ee3dfedc2b22e1d709bb03d520",
+    "probe_cancellation.py": "281b4a38317f38f81e46963dd5ccaec44cd03c9187030a87094cfc77aa5a9836",
+    "trial.py": "059c4de50f2cd2bef0eaf2f1c0d8fa7d3de155d090db68d5bf08399268e44af8",
+    "worker_loop.py": "9ca70ae29c1457689ba754bf26e72ec905a976ffab60e96f166d0b95b67eb261"
+  },
+  "hardware": "single RTX 4090",
+  "model_profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "model_ready_seconds": 16.91,
+  "seed": 19550,
+  "temperature": 0.6,
+  "reasoning_cap_tokens": 2048,
+  "context_tokens": 32768,
+  "conditions": "Offline prepared task and separate offline verifier, warm resident inference, one discarded token per trial; one trial per cell. CPU clock controls ran after GPU service restoration. Normal desktop workload, no dedicated CPU reservation.",
+  "attempts": [
+    {
+      "phase_seconds": {
+        "environment_setup": 3.923,
+        "agent_setup": 2.022,
+        "agent_execution": 172.475,
+        "verifier": 16.131
+      },
+      "whole_trial_seconds": 206.304,
+      "outside_named_phases_seconds": 11.753,
+      "reward": 1.0,
+      "reward_valid": true,
+      "first_error": null,
+      "task": "fix-git",
+      "agent": "Worker",
+      "trial": "h79-fix-git-timing-001",
+      "task_checksum": "8c3c0a0d0c5f68966d4924f18442cc8d246f7e12602610e0fa85c6b56054dc00",
+      "monotonic_around_run_seconds": 206.305,
+      "limits": {
+        "agent_limit_seconds": 900.0,
+        "verifier_limit_seconds": 900.0,
+        "agent_setup_limit_seconds": 360.0,
+        "environment_build_limit_seconds": 600.0
+      },
+      "binding": {
+        "source": "baseline Linux/amd64 platform manifests",
+        "images": {
+          "agent": "sha256:ec58c4c0df9d9314105df111ce69b2a7c5a99acf7854c71ec32cd7f0e9de0b6a",
+          "verifier": "sha256:87b2bdffb97d5e9ad05ebd20f454cd72f7cf8bfc65a19b2f39a799f80a0a7adf"
+        }
+      },
+      "agent_image_id": "sha256:e98e73d17d358c6beb020feb9aa3e3d899d1737c4f2d63076684bf3524230200",
+      "checks": {
+        "passed": 2,
+        "total": 2
+      },
+      "receipts_sha256": {
+        "agent/worker/trajectory.json": "74623e534a20d7920552a5affef079e727fae3225e69d0d2e67f7b009ee89e07",
+        "result.json": "c956dfacca80a4ff18f88e3a47b29f127d2d6fe0b1b546e9eaffca8f994d8464",
+        "verifier/ctrf.json": "006fcfc7025ac2c0c734b6037e4de017efbf23177458fc31e1e33b2cd87895b9",
+        "timing.json": "a3d5aac3a23b475525806a11aaba4bd1800beb1fafeced585f842bca00ab6d10",
+        "agent-boundary.json": "44fb15faf1db70d20dbc2cd6cafd7ef4f369f02cc0972f75582e421f6dcbea6c",
+        "image-binding.json": "471869ce039b40dad901bc0d6d9e09c736ad9329bfe9d6087f83665ceb86061d"
+      },
+      "first_scored_prompt_tokens": 3729,
+      "first_scored_cached_tokens": 3725,
+      "worker_outcome": {
+        "exit_status": "Submitted",
+        "calls": 16,
+        "tool_calls": 24,
+        "input_tokens": 228477,
+        "output_tokens": 14088,
+        "fresh_context_resets": 0
+      },
+      "warm_seconds": 2.077,
+      "git_ancestry": [
+        "master",
+        "5d82975f66ae99133cbf4ad0a6f00e33fb1d55c5",
+        "previous_master_reachable=true",
+        "recovered_tip_reachable=true"
+      ],
+      "historical_600_second_comparator": {
+        "source": "results/harbor-worker-smoke-079.json",
+        "trial": "h79-fix-git-worker-002",
+        "agent_seconds": 40.324,
+        "whole_trial_seconds": 73.931,
+        "reward": 1.0
+      }
+    },
+    {
+      "phase_seconds": {
+        "environment_setup": 3.928,
+        "agent_setup": 0.33,
+        "agent_execution": 101.552,
+        "verifier": 17.482
+      },
+      "whole_trial_seconds": 134.905,
+      "outside_named_phases_seconds": 11.613,
+      "reward": 1.0,
+      "reward_valid": true,
+      "first_error": null,
+      "task": "fix-git",
+      "agent": "Terminus-2",
+      "trial": "h78-fix-git-timing-001",
+      "task_checksum": "8c3c0a0d0c5f68966d4924f18442cc8d246f7e12602610e0fa85c6b56054dc00",
+      "monotonic_around_run_seconds": 134.911,
+      "limits": {
+        "agent_limit_seconds": 900.0,
+        "verifier_limit_seconds": 900.0,
+        "agent_setup_limit_seconds": 360.0,
+        "environment_build_limit_seconds": 600.0
+      },
+      "binding": {
+        "source": "baseline Linux/amd64 platform manifests",
+        "images": {
+          "agent": "sha256:ec58c4c0df9d9314105df111ce69b2a7c5a99acf7854c71ec32cd7f0e9de0b6a",
+          "verifier": "sha256:87b2bdffb97d5e9ad05ebd20f454cd72f7cf8bfc65a19b2f39a799f80a0a7adf"
+        }
+      },
+      "agent_image_id": "sha256:e98e73d17d358c6beb020feb9aa3e3d899d1737c4f2d63076684bf3524230200",
+      "checks": {
+        "passed": 2,
+        "total": 2
+      },
+      "receipts_sha256": {
+        "agent/trajectory.json": "7d2df6ae41a6052d3c1cf2fa3b025d4b25bb7ee7c50d2629099e0babea2ffc29",
+        "result.json": "02189f0dd2c26e9dd0a87c7a5241a1d922fc62e2dce22bb64ab2baebe1ac3f3b",
+        "verifier/ctrf.json": "0b0f2d73a1f9c6777b7b94bf5638008a052095fd4c4f46f334c7760633e5fb00",
+        "timing.json": "53efb39f3f6f997dc06fb136f7d4f60fef1024bf0d86f9e2a8559155d1135134",
+        "agent-boundary.json": "0ea564397515944327b7b47d776e27723e40fb03b17578bd4c74eb3043cb73ba",
+        "image-binding.json": "471869ce039b40dad901bc0d6d9e09c736ad9329bfe9d6087f83665ceb86061d"
+      },
+      "first_scored_prompt_tokens": 795,
+      "first_scored_cached_tokens": 253,
+      "agent_steps": 8,
+      "last_step_tools": [
+        "mark_task_complete"
+      ],
+      "warm_seconds": 1.554,
+      "git_ancestry": [
+        "master",
+        "3e061826164e71ad1683cdce517c4fb2e2a84b90",
+        "previous_master_reachable=true",
+        "recovered_tip_reachable=true"
+      ],
+      "historical_600_second_comparator": {
+        "source": "results/harbor-terminus-smoke-078.json",
+        "trial": "h78-fix-git-terminus-001",
+        "agent_seconds": 157.741,
+        "whole_trial_seconds": 189.574,
+        "reward": 1.0
+      }
+    },
+    {
+      "phase_seconds": {
+        "environment_setup": 4.024,
+        "agent_setup": 0.338,
+        "agent_execution": 100.221,
+        "verifier": 17.019
+      },
+      "whole_trial_seconds": 133.138,
+      "outside_named_phases_seconds": 11.536,
+      "reward": 1.0,
+      "reward_valid": true,
+      "first_error": null,
+      "task": "log-summary-date-ranges",
+      "agent": "Terminus-2",
+      "trial": "h78-log-summary-date-ranges-timing-001",
+      "task_checksum": "e7d3bf751e14953823c92ca7fac9b77a38cf31a2a32e1cde3965a45a741940ba",
+      "monotonic_around_run_seconds": 133.139,
+      "limits": {
+        "agent_limit_seconds": 900.0,
+        "verifier_limit_seconds": 900.0,
+        "agent_setup_limit_seconds": 360.0,
+        "environment_build_limit_seconds": 600.0
+      },
+      "binding": {
+        "source": "local preparation image IDs",
+        "images": {
+          "agent": "sha256:4adde1679490bbe952c4d30ae520e8f4f60d2e70032d07c88da51f4309bd1109",
+          "verifier": "sha256:0e0b7b415a3f5950f3279db75636c71957c750af9fc63327f5bd46dca9666df1"
+        }
+      },
+      "agent_image_id": "sha256:4adde1679490bbe952c4d30ae520e8f4f60d2e70032d07c88da51f4309bd1109",
+      "checks": {
+        "passed": 2,
+        "total": 2
+      },
+      "receipts_sha256": {
+        "agent/trajectory.json": "51b9d3fd99bb8caa42f4520f15cec891b6479512aefd7c6db76a58bb115bafd4",
+        "result.json": "9ab5e5f5289c48a0df38b2d023bee00e47b61bca7f46dbda33982e8d6508d32d",
+        "verifier/ctrf.json": "93f4cb92abb09f2ec3ca0cc8c1d05ddcaf61db036dd80c9b47457e7395656759",
+        "timing.json": "d042537dfe028cc6d86138b7824a6ce9f475221e0f994e462f44730e9320ad20",
+        "agent-boundary.json": "707c6f95e7ada4fbde65235983acc3b215d4cb9311edace212fae942f87b1466",
+        "image-binding.json": "f777f0011b75d3e4bd247f9b10cb10426a24cb9ae2b691d2addf12999302ae85"
+      },
+      "first_scored_prompt_tokens": 1135,
+      "first_scored_cached_tokens": 599,
+      "agent_steps": 8,
+      "last_step_tools": [
+        "mark_task_complete"
+      ],
+      "warm_seconds": 4.312,
+      "csv_sha256": "b09e50519a822840791f599bfcefb9bbf94f4930a7d0d1a4d08b4b3803e4cd2d",
+      "matches_previous_csv": true,
+      "historical_600_second_comparator": {
+        "source": "results/harbor-followup-smoke-001.json",
+        "trial": "h78-log-summary-date-ranges-quartet-001",
+        "agent_seconds": 107.622,
+        "whole_trial_seconds": 139.111,
+        "reward": 1.0
+      }
+    },
+    {
+      "phase_seconds": {
+        "environment_setup": 3.994,
+        "agent_setup": 3.407,
+        "agent_execution": 59.696,
+        "verifier": 16.844
+      },
+      "whole_trial_seconds": 95.684,
+      "outside_named_phases_seconds": 11.743,
+      "reward": 1.0,
+      "reward_valid": true,
+      "first_error": null,
+      "task": "log-summary-date-ranges",
+      "agent": "Worker",
+      "trial": "h79-log-summary-date-ranges-timing-001",
+      "task_checksum": "e7d3bf751e14953823c92ca7fac9b77a38cf31a2a32e1cde3965a45a741940ba",
+      "monotonic_around_run_seconds": 95.69,
+      "limits": {
+        "agent_limit_seconds": 900.0,
+        "verifier_limit_seconds": 900.0,
+        "agent_setup_limit_seconds": 360.0,
+        "environment_build_limit_seconds": 600.0
+      },
+      "binding": {
+        "source": "local preparation image IDs",
+        "images": {
+          "agent": "sha256:4adde1679490bbe952c4d30ae520e8f4f60d2e70032d07c88da51f4309bd1109",
+          "verifier": "sha256:0e0b7b415a3f5950f3279db75636c71957c750af9fc63327f5bd46dca9666df1"
+        }
+      },
+      "agent_image_id": "sha256:4adde1679490bbe952c4d30ae520e8f4f60d2e70032d07c88da51f4309bd1109",
+      "checks": {
+        "passed": 2,
+        "total": 2
+      },
+      "receipts_sha256": {
+        "agent/worker/trajectory.json": "0d566babfacd77f2c8a35124534bad3bc936053a63ec56301aed64388d76e107",
+        "result.json": "0dbf08eb33533464fe74b62e07b59c059e8369f0c2d703bd71a8633aec2af476",
+        "verifier/ctrf.json": "9c8ff36115d91ed79c4d9ff94f8e31ac939c7bec7c1a669e4f8d6095d42f3ba8",
+        "timing.json": "75d7a88a7d443370ecf1fd0625b4565f51d0633bdef1dbc4f8311f249da8c5c4",
+        "agent-boundary.json": "645ea3feddcb625cb69085bf7daf657459d4b529fdf2f023ce7b02448de68bce",
+        "image-binding.json": "f777f0011b75d3e4bd247f9b10cb10426a24cb9ae2b691d2addf12999302ae85"
+      },
+      "first_scored_prompt_tokens": 4072,
+      "first_scored_cached_tokens": 4068,
+      "worker_outcome": {
+        "exit_status": "Submitted",
+        "calls": 10,
+        "tool_calls": 11,
+        "input_tokens": 101612,
+        "output_tokens": 4346,
+        "fresh_context_resets": 0
+      },
+      "warm_seconds": 5.207,
+      "csv_sha256": "b09e50519a822840791f599bfcefb9bbf94f4930a7d0d1a4d08b4b3803e4cd2d",
+      "matches_previous_csv": true,
+      "historical_600_second_comparator": {
+        "source": "results/harbor-followup-smoke-001.json",
+        "trial": "h79-log-summary-date-ranges-quartet-001",
+        "agent_seconds": 91.664,
+        "whole_trial_seconds": 125.354,
+        "reward": 1.0
+      }
+    }
+  ],
+  "cpu_controls": [
+    {
+      "case": "complete",
+      "trial": "h83-complete-46449d693aaf",
+      "agent_delay": 1,
+      "agent_limit": 5.0,
+      "verifier_delay": 2,
+      "verifier_limit": 5.0,
+      "hook_monotonic_offsets": {
+        "start": 0.0159,
+        "environment-start": 0.016,
+        "agent-start": 4.0226,
+        "agent-end": 5.1257,
+        "verification-start": 16.3202,
+        "end": 33.5519
+      },
+      "run_monotonic_seconds": 33.552,
+      "whole_trial_seconds": 33.551,
+      "marker": "timing-marker",
+      "error": null,
+      "reward": 1,
+      "reward_valid": true,
+      "phase_seconds": {
+        "environment_setup": 4.006,
+        "agent_setup": 0.0,
+        "agent_execution": 1.103,
+        "verifier": 17.231
+      },
+      "outside_named_phases_seconds": 11.211,
+      "first_error": null,
+      "result_sha256": "72f00efb0aafb60c19e5c33696b9dda768995cdc1b4b9d8f762f937266c26978"
+    },
+    {
+      "case": "agent-timeout",
+      "trial": "h83-agent-timeout-46449d693aaf",
+      "agent_delay": 20,
+      "agent_limit": 4.0,
+      "verifier_delay": 2,
+      "verifier_limit": 5.0,
+      "hook_monotonic_offsets": {
+        "start": 0.0026,
+        "environment-start": 0.0026,
+        "agent-start": 4.0484,
+        "agent-end": 8.0492,
+        "verification-start": 19.2021,
+        "end": 36.3922
+      },
+      "run_monotonic_seconds": 36.392,
+      "whole_trial_seconds": 36.387,
+      "marker": "timing-marker",
+      "error": "AgentTimeoutError",
+      "reward": 1,
+      "reward_valid": true,
+      "phase_seconds": {
+        "environment_setup": 4.046,
+        "agent_setup": 0.0,
+        "agent_execution": 4.001,
+        "verifier": 17.185
+      },
+      "outside_named_phases_seconds": 11.155,
+      "first_error": "AgentTimeoutError",
+      "result_sha256": "1d74c407be5d687f14e0437c94dc0c30312634fb052b6d7bf844d5c74d4afd14"
+    },
+    {
+      "case": "verifier-timeout",
+      "trial": "h83-verifier-timeout-46449d693aaf",
+      "agent_delay": 1,
+      "agent_limit": 5.0,
+      "verifier_delay": 20,
+      "verifier_limit": 4.0,
+      "hook_monotonic_offsets": {
+        "start": 0.0031,
+        "environment-start": 0.0032,
+        "agent-start": 3.9369,
+        "agent-end": 5.0374,
+        "verification-start": 16.1866,
+        "end": 35.3751
+      },
+      "run_monotonic_seconds": 35.375,
+      "whole_trial_seconds": 35.374,
+      "marker": "timing-marker",
+      "error": "VerifierTimeoutError",
+      "reward": null,
+      "reward_valid": false,
+      "phase_seconds": {
+        "environment_setup": 3.934,
+        "agent_setup": 0.0,
+        "agent_execution": 1.1,
+        "verifier": 19.185
+      },
+      "outside_named_phases_seconds": 11.155,
+      "first_error": "VerifierTimeoutError",
+      "result_sha256": "6e959d2bebcfaf6a0a5011325d3679296818e7e1a87fc40aafe7541cfac32253"
+    },
+    {
+      "case": "both-timeout",
+      "trial": "h83-both-timeout-46449d693aaf",
+      "agent_delay": 20,
+      "agent_limit": 4.0,
+      "verifier_delay": 20,
+      "verifier_limit": 4.0,
+      "hook_monotonic_offsets": {
+        "start": 0.0025,
+        "environment-start": 0.0025,
+        "agent-start": 3.9657,
+        "agent-end": 7.9674,
+        "verification-start": 19.1662,
+        "end": 38.2162
+      },
+      "run_monotonic_seconds": 38.216,
+      "whole_trial_seconds": 38.216,
+      "marker": "timing-marker",
+      "error": "AgentTimeoutError",
+      "reward": null,
+      "reward_valid": false,
+      "phase_seconds": {
+        "environment_setup": 3.963,
+        "agent_setup": 0.0,
+        "agent_execution": 4.002,
+        "verifier": 19.048
+      },
+      "outside_named_phases_seconds": 11.203,
+      "first_error": "AgentTimeoutError",
+      "result_sha256": "b52923bed4153a8162ea77064a4a5d4a257286a8b70cd540a5353413bfa5decf",
+      "trial_log_records_verifier_timeout": true
+    }
+  ],
+  "observed_docker_limits": {
+    "trial": "h79-log-summary-date-ranges-timing-001",
+    "NanoCpus": 1000000000,
+    "CpuQuota": 0,
+    "CpuPeriod": 0,
+    "Memory": 2147483648,
+    "MemorySwap": 4294967296,
+    "StorageOpt": null,
+    "Privileged": false
+  },
+  "worker_first_request_comparison": {
+    "fix-git": {
+      "only_difference_is_stated_agent_allowance": true
+    },
+    "log-summary-date-ranges": {
+      "only_difference_is_stated_agent_allowance": true
+    }
+  },
+  "post_panel_client_clock_control": {
+    "task": "log-summary-date-ranges",
+    "agent": "nop",
+    "trial": "h83-client-clock-nop-001",
+    "dispatch_through_client_exit_seconds": 32.124437952879816,
+    "returncode": 0,
+    "run_monotonic_seconds": 30.90893964515999,
+    "agent_limit_seconds": 900.0,
+    "verifier_limit_seconds": 900.0,
+    "agent_setup_limit_seconds": 360.0,
+    "environment_build_limit_seconds": 600.0,
+    "phase_seconds": {
+      "environment_setup": 3.948,
+      "agent_setup": 0.0,
+      "agent_execution": 0.001,
+      "verifier": 15.596
+    },
+    "whole_trial_seconds": 30.903,
+    "outside_named_phases_seconds": 11.358,
+    "reward": 0.0,
+    "reward_valid": true,
+    "first_error": null,
+    "result_sha256": "25cc8a8ebcda72ada2d1c079d56dfe614e3c36278beed4fbc5c586cf603099c3",
+    "docker_limits": {
+      "NanoCpus": 1000000000,
+      "CpuQuota": 0,
+      "CpuPeriod": 0,
+      "MemorySwap": 4294967296,
+      "StorageOpt": null
+    },
+    "pair_sha256": "c35df299a198c244ba2d59b5a6f20d4cb7bafffd1d32ef9e41d0dd5ed80ead42",
+    "conditions": "CPU only. This trial overlapped a CPU timing control after the scored model panel. The caller-side clock and additional Docker boundary fields were added after scoring."
+  },
+  "post_panel_worker_clock_control": {
+    "task": "log-summary-date-ranges",
+    "trial": "h83-worker-ceiling-control-001",
+    "dispatch_through_client_exit_seconds": 39.78234779415652,
+    "returncode": 0,
+    "run_monotonic_seconds": 35.55124505376443,
+    "agent_limit_seconds": 900.0,
+    "verifier_limit_seconds": 900.0,
+    "agent_setup_limit_seconds": 360.0,
+    "environment_build_limit_seconds": 600.0,
+    "phase_seconds": {
+      "environment_setup": 3.959,
+      "agent_setup": 2.477,
+      "agent_execution": 1.764,
+      "verifier": 15.889
+    },
+    "whole_trial_seconds": 35.551,
+    "outside_named_phases_seconds": 11.462,
+    "reward": 0.0,
+    "reward_valid": true,
+    "first_error": null,
+    "transferred_marker": "after",
+    "context_resets": 1,
+    "result_sha256": "d96be3062c3e16a23b089c40adff6a7291d4065b7ec1d871f9bfacb52e2573ad",
+    "source_sha256": {
+      "pair.py": "c35df299a198c244ba2d59b5a6f20d4cb7bafffd1d32ef9e41d0dd5ed80ead42",
+      "trial.py": "9ac97630295b5023aa3021b796b9ae913a543165cac11fd5be4bed2b916e6c55"
+    }
+  },
+  "cpu_control_source_sha256": "4874535167f93cfb8c3e4f57825fd5b6107f119de3055c160aa049fa46e9930f",
+  "lifecycle": {
+    "server_exit": 0,
+    "memory_scope_passed": true,
+    "cleanup_verified": true,
+    "ollama_restored": true,
+    "services_restored": true
+  },
+  "model_authors": [
+    {
+      "model": "OpenAI Codex (GPT-6, release unknown)",
+      "contribution": "Harbor timing controls, paired replay, Observatory and interpretation"
+    }
+  ]
+}
