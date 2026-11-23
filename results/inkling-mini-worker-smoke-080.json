@@ -1,0 +1,157 @@
+{
+  "issue": 80,
+  "model": "Inkling 2 Mini, fixed-loop, text-only",
+  "model_repo": "ggml-org/Inkling-2-Mini-GGUF",
+  "weight_revision": "e8a2cecf0e78914f07cc27b9be711a9b2c7561d9",
+  "gguf": "Inkling-2-Mini-IQ4_NL.gguf",
+  "bytes": 17627940768,
+  "weight_sha256": "cbdf3fa9dc50a4124977980f37da4f1fa764b0cfe800d275cd43d26ce2a81af4",
+  "backend": {
+    "release": "b12651",
+    "commit": "f5e6915c28f10330885fcb9243a93ae98d3115ab",
+    "flake_output": "packages.x86_64-linux.inkling-llama-server",
+    "cuda": "12.8",
+    "published_profile": "inkling2-mini-32k-q8kv-fit1536"
+  },
+  "workstation": "Single RTX 4090. Concurrent CPU and memory workloads. Elapsed times describe these individual attempts.",
+  "design": "Same seed, evidence-reader public inputs, warm prompt, 32k context and 240-second ceiling across two placements. Both use medium template effort (0.7), with no native Qwen-style reasoning budget. The backend reported total completion tokens without a separate reasoning-token count.",
+  "historical_comparison": "Evidence-reader code, task and client protocol derived from the comp16-evidence-v1 freeze used by #55. The smoke uses current sandbox, sandbox worker, memory wrapper and behavioral gate with the original evidence-reader checks. The third run exercises the current public launcher and Git fixture.",
+  "guard_stop": {
+    "run": "inkling2-mini-evidence-check-19550-001",
+    "stage": "Before model loading, during weight verification",
+    "observation": "Global swap-out grew by 266 MiB against a 256 MiB limit. An outer Nix-store search shell reached approximately 109 GiB RSS. The shell was terminated and the memory scope confirmed cleanup. Other host workloads were active.",
+    "model_trial": false
+  },
+  "placement_notes": [
+    "First placement used default cache precision and batch sizes, mmap and a 2304 MiB fit target. The server reported CPU tensor overrides. An outer sample observed 18056 MiB VRAM for the loaded server.",
+    "Second placement used q8_0 K and V, batch size 512, microbatch size 128, direct I/O and a 1536 MiB fit target. llama.cpp reported 49 of 49 layers on GPU and 16330.65 MiB for the CUDA model buffer. Multiple settings and host load varied."
+  ],
+  "attempts": [
+    {
+      "run": "inkling2-mini-evidence-check-19550-002",
+      "task": "evidence-check",
+      "seed": 19550,
+      "profile": "inkling2-mini-iq4nl",
+      "protocol": "inkling-evidence-240",
+      "fixture_sha256": "0ede2c66b474b4b5e39151ba4c10c0366a7a4912cd8391aec09d6d5ce69e0cfa",
+      "trial_summary_sha256": "7f36f15c7a7e6dcf0de89df942e06a37244746fae716d04b5bf3bf70acb5ea96",
+      "patch_sha256": "9c6c4edbdd9db9fc4f39199ddbf8f72ca38b09feff51503b300323a1fc16a2a6",
+      "handoff_sha256": "0a7fd47e29cc2346fba96e544fc6c856e763be7d88df1f55385ce8e50f19dcb9",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "within_budget": true,
+      "task_seconds": 182.46,
+      "verification_seconds": 2.65,
+      "model_load_seconds": 51.16,
+      "first_request_to_first_tool_record_seconds": 36.09,
+      "model_requests": 6,
+      "tool_calls": 7,
+      "completion_tokens": 2130,
+      "first_response_cache": {
+        "cache_status": "reused",
+        "observed_cached_tokens": 6178,
+        "observed_prompt_tokens": 6182,
+        "uncached_prompt_tokens": 4,
+        "cached_fraction": 0.9993529602070528
+      },
+      "decode_tokens_per_second_by_response": [
+        2.1,
+        10.9,
+        36.8,
+        38.4,
+        24.3,
+        43.3
+      ],
+      "maintainer_review": "Accepted. The submitted CLI and library implement the contract. Exactly the two allowed files changed. Public, mixed and empty cases cited in the handoff match observations o0004 through o0006.",
+      "min_device_free_mib_one_second_samples": 2255
+    },
+    {
+      "run": "inkling2-mini-evidence-check-19550-003",
+      "task": "evidence-check",
+      "seed": 19550,
+      "profile": "inkling2-mini-32k-q8kv-fit1536",
+      "protocol": "inkling-evidence-240",
+      "fixture_sha256": "0ede2c66b474b4b5e39151ba4c10c0366a7a4912cd8391aec09d6d5ce69e0cfa",
+      "trial_summary_sha256": "c824498bfebd67ccb7b97b7a448c4db137ceef22defc4013024d750d5a906d38",
+      "patch_sha256": "d2ac33867f8bdd9562bf32c59c0f19a09ba4b1d0b9172bfc6ec655e715541c96",
+      "handoff_sha256": "fb5053204951dd0b4d0367fd8f885ec9ace95076af72fea724f6f72ed584b69b",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "within_budget": true,
+      "task_seconds": 42.96,
+      "verification_seconds": 2.76,
+      "model_load_seconds": 5.32,
+      "first_request_to_first_tool_record_seconds": 1.23,
+      "model_requests": 6,
+      "tool_calls": 7,
+      "completion_tokens": 2040,
+      "first_response_cache": {
+        "cache_status": "reused",
+        "observed_cached_tokens": 6178,
+        "observed_prompt_tokens": 6182,
+        "uncached_prompt_tokens": 4,
+        "cached_fraction": 0.9993529602070528
+      },
+      "decode_tokens_per_second_by_response": [
+        62.9,
+        65.2,
+        67.2,
+        63.9,
+        66.4,
+        64.7
+      ],
+      "maintainer_review": "Accepted. The submitted implementation streams hashes in 64 KiB blocks and reports exact outcomes. Only the two allowed files changed. The public, missing, changed and empty examples cited in the handoff match observations o0004 through o0006.",
+      "min_device_free_mib_one_second_samples": 1861,
+      "reported_offloaded_layers": "49 of 49"
+    },
+    {
+      "run": "inkling2-mini-public-git-smoke-19550-001",
+      "task": "git-config-backport-smoke-basic",
+      "seed": 19550,
+      "profile": "inkling2-mini-32k-q8kv-fit1536",
+      "protocol": "inkling-worker-240-v1",
+      "fixture_sha256": "c626295f2d0bfc217b5af04e5aa25e2905df4d03641f5176e4e6b0ce3bdfb52c",
+      "trial_summary_sha256": "41c245cfdb239e2a500083fea7f4b1d6f433e7988cebab0e0985490e0587a42f",
+      "patch_sha256": "86bfce959a5391fbf921b08959fe3364d595278979f594d4220a5e6ccd4dfa16",
+      "handoff_sha256": "a14a461c16a143c8a749d400828fad5fed1cf78687a5bd885a1416dbf64e1ac5",
+      "canonical": true,
+      "external": true,
+      "clean_completion": true,
+      "within_budget": true,
+      "task_seconds": 54.82,
+      "verification_seconds": 2.38,
+      "model_load_seconds": 7.6,
+      "first_request_to_first_tool_record_seconds": 4.9,
+      "model_requests": 12,
+      "tool_calls": 12,
+      "completion_tokens": 1846,
+      "first_response_cache": "No explicit warm-up",
+      "decode_tokens_per_second_by_response": [
+        61.7,
+        64.3,
+        65.3,
+        62.5,
+        63.4,
+        62.8,
+        62.6,
+        64.3,
+        64.1,
+        65.4,
+        64.7,
+        64.0
+      ],
+      "maintainer_review": "Accepted. The Git verifier validated the clean branch delivery and behavior. The handoff names the resulting commit, four passing supplied tests, unchanged protected refs and the limits of its testing. Observations o0007 and o0009 support the cherry-pick and test claims.",
+      "reported_offloaded_layers": "49 of 49"
+    }
+  ],
+  "session_services_restored": true,
+  "model_authors": [
+    {
+      "model": "OpenAI gpt-6.2-astra",
+      "contribution": "flake package, Worker configuration, operator instructions and smoke receipt",
+      "identity_source": "Codex authoring turn_context.model"
+    }
+  ]
+}

@@ -4,9 +4,30 @@
 
 For the CPU walkthrough, start in the repository root with Linux, Git and Python 3.13. No model download, private storage or GPU is needed. [Reader walkthrough](../examples/reviewing-worker-output/README.md)
 
-For developer tooling on x86-64 Linux, enter the pinned shell with `nix develop`. The flake supplies Git, Python, Node and the pinned quality tools. Live inference also needs local model weights and a compatible inference backend. The workstation recipes expect the private model and experiment stores below `/bulk/dlk`, a Linux user service manager, Bubblewrap and GPU service controls. The flake does not build the inference backend. A port should supply its own storage, backend, weight and service bindings and verify isolation on the target host before launching model code. This release has no live DGX Spark measurement.
+For developer tooling on x86-64 Linux, enter the pinned shell with `nix develop`. The flake supplies Git, Python, Node and the pinned quality tools. Live inference also needs local model weights and a compatible inference backend. The workstation recipes expect the private model and experiment stores below `/bulk/dlk`, a Linux user service manager, Bubblewrap and GPU service controls. A port should supply its own storage, backend, weight and service bindings and verify isolation on the target host before launching model code. This release has no live DGX Spark measurement.
 
 `./lab doctor` inspects the workstation setup. `./lab setup` is specific to the original storage layout. Check the paths and guard conditions before using it on a new machine. [Host checks](../scripts/lab.py) · [Sandbox boundary](isolation.md)
+
+## Inkling 2 Mini on the reference workstation
+
+The optional `inkling-llama-server` flake package installs upstream llama.cpp b12651 and its CUDA 12.8 backend on x86-64 Linux. We used the text-only fixed-loop IQ4_NL model. Build the server and fetch the pinned file into the directory that the workstation profile verifies. Run the download in the outer operator shell. The weights are public.
+
+```sh
+nix build .#inkling-llama-server --out-link /bulk/dlk/local-harness/inkling-llama-server
+revision=e8a2cecf0e78914f07cc27b9be711a9b2c7561d9
+HF_HOME=/bulk/dlk/local-harness/cache/huggingface hf download \
+  ggml-org/Inkling-2-Mini-GGUF Inkling-2-Mini-IQ4_NL.gguf \
+  --revision "$revision" --local-dir "/bulk/dlk/local-harness/models/inkling2-mini-iq4nl/$revision"
+```
+
+After the usual GPU session preflight, run one development attempt with a fresh output directory. The launcher checks the weights and backend digest. This invocation measures a ready model with a cold task prefix. The historical evidence-reader trials used a verified warm prefix. [Smoke results](../results/inkling-mini-worker-smoke-080.json)
+
+```sh
+.venv/bin/python scripts/launch_pilot.py \
+  --profile inkling2-mini-32k-q8kv-fit1536 --protocol inkling-worker-240-v1 \
+  --tasks git-config-backport-smoke-basic --seeds 19550 \
+  --output /bulk/dlk/local-harness/runs/inkling-public-git-example-001
+```
 
 ## Delegated work (MVP)
 

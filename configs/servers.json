@@ -10563,5 +10563,66 @@
       "role": "DFlash draft for pinned Qwen3.8-27B target; target verifies proposals",
       "status": "sha256-verified-runtime-unvalidated"
     }
+  },
+  "inkling2-mini-32k-q8kv-fit1536": {
+    "artifact": {
+      "id": "inkling2-mini-iq4nl",
+      "revision": "e8a2cecf0e78914f07cc27b9be711a9b2c7561d9",
+      "storage_root": "/bulk/dlk/local-harness",
+      "repo": "ggml-org/Inkling-2-Mini-GGUF",
+      "files": [
+        {
+          "path": "Inkling-2-Mini-IQ4_NL.gguf",
+          "size": 17627940768,
+          "sha256": "cbdf3fa9dc50a4124977980f37da4f1fa764b0cfe800d275cd43d26ce2a81af4"
+        }
+      ]
+    },
+    "backend_revision": "f5e6915c28f10330885fcb9243a93ae98d3115ab",
+    "binary": "/nix/store/md63hq1sx28vxwxq3fpzhn4vpc1d61r5-inkling-llama-server-b12651/libexec/llama/llama-server",
+    "binary_sha256": "9fe4acebd6a63047e30526beaf854d9e91afcafe835b1a7bd0eba3de175bbf86",
+    "sampling": {
+      "min_p": 0.0,
+      "presence_penalty": 0.0,
+      "repeat_penalty": 1.0,
+      "temperature": 0.6,
+      "top_k": 20,
+      "top_p": 0.95
+    },
+    "server_args": [
+      "--ctx-size",
+      "32768",
+      "--parallel",
+      "1",
+      "--threads",
+      "24",
+      "--threads-batch",
+      "24",
+      "--flash-attn",
+      "on",
+      "--fit",
+      "on",
+      "--fit-target",
+      "1536",
+      "--gpu-layers",
+      "auto",
+      "--jinja",
+      "--metrics",
+      "--no-context-shift",
+      "--chat-template-kwargs",
+      "{\"reasoning_effort\":\"medium\"}",
+      "--cache-type-k",
+      "q8_0",
+      "--cache-type-v",
+      "q8_0",
+      "--batch-size",
+      "512",
+      "--ubatch-size",
+      "128",
+      "--load-mode",
+      "dio",
+      "--log-verbosity",
+      "4"
+    ]
   }
 }

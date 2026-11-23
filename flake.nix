@@ -16,6 +16,9 @@
         };
         pipPins = pkgs.lib.mapAttrsToList (name: tool: "${name}==${tool.version}") devTools;
       in {
+        packages.inkling-llama-server = let
+          cudaPkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+        in cudaPkgs.callPackage ./nix/inkling-llama-server.nix { };
         devShells.default =
           assert pkgs.lib.assertMsg
             (builtins.readFile ./requirements-dev.txt == pkgs.lib.concatLines pipPins)
