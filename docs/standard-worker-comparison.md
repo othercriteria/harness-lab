@@ -172,3 +172,7 @@ The revised native comparison adapter sets `diff.autoRefreshIndex=false` during 
 Issue-selection evaluator v2 now checks that issue 7 spelled with 4,500 leading zeroes and a second ordinary `7` produces a one-issue packet and exactly one canonical lookup. The brief, starter and supplied tests match v1 byte for byte. In an isolated CPU replay, 1 of the 32 archived artifacts passed all seven canonical tests, and all 32 passed the five external checks. The historical blind solution and the integrated exporter passed both gates. The starter failed both. Future workstation comparisons can use the combined `comp74-issue-selection-v2` freeze. To reproduce the revisions on a copy of the comparison source, apply the adapter patch and use the published issue-selection fixture and external grader. [Revised fixture](../tasks/issue-selection/task.json) · [External grader](../scripts/grade_issue_selection.py) · [Replay results and freeze identities](../results/native-git-and-exporter-replays-001.json)
 
 The same CPU study compared the first green workspace with the final submission for all 20 Worker attempts. [What changed after the public tests passed](worker-handoff-decisions.md#what-happened-after-the-first-green-suite)
+
+## Upstream terminal tasks
+
+The Terminus-2 smoke uses the same local Qwen profile on two Terminal-Bench 2.1 tasks. It establishes the Harbor path for a paired Worker run. The four-harness results above use different assignments and acceptance criteria. [Smoke recipe and results](../examples/harbor-terminus/README.md)

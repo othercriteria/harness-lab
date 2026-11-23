@@ -1,0 +1,205 @@
+{
+  "issue": 78,
+  "design": "One warm, serial Terminus-2 attempt per task. No model retries. Seed 19550. RTX 4090, one resident backend. Task order as listed.",
+  "harbor": "0.27.0",
+  "terminal_bench_2_1_commit": "12b7565679ce5006230b820666353673a133db93",
+  "inputs_lab_commit": "9e68912ee0da882ae31f4ad436007a0802b61670",
+  "controller_lock": "examples/harbor-terminus/requirements.txt",
+  "profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "model_artifacts": {
+    "artifact": {
+      "revision": "bc45e98fe6a40df70a6721141ed72011924a55cc",
+      "files": [
+        {
+          "path": "Qwen3.8-27B-RANA-layout-Q4_K_M.gguf",
+          "size": 16547400448,
+          "sha256": "91c34c55de4defcc5891f08997b7d4543a171d7e2aa6ab752bff4eec27279ba6"
+        }
+      ],
+      "id": "qwen38-27b-ranalayout-q4"
+    },
+    "draft_artifact": {
+      "id": "qwen38-27b-dflash-q4",
+      "revision": "a316ea527fde32c12487be7574e2db5ac2ad2a7e",
+      "files": [
+        {
+          "path": "dflash-Qwen3.8-27B-Q4_0.gguf",
+          "size": 1094346080,
+          "sha256": "0a994382adf17c720c9e5d4292f57344f3b445f058d3e9d5b0f601ae7d6ca3c4"
+        }
+      ]
+    }
+  },
+  "backend_sha256": "1658ae63f912a851c5333aa402ede5cd7d4d76a0b88ab9e074dfda8ae7076d71",
+  "backend_revision": "ddf48f85c933c1f438212a02eb21e7b001d2d37d",
+  "context_tokens": 32768,
+  "reasoning_budget_tokens_per_request": 2048,
+  "model_info_advertised_max_output_tokens": 8192,
+  "temperature": 0.6,
+  "top_k": 20,
+  "top_p": 0.95,
+  "agent_limit_seconds": 600,
+  "upstream_agent_limit_seconds": 900,
+  "upstream_verifier_limit_seconds": 900,
+  "warmup": "Resident backend; one discarded generation token on the public Terminus JSON template with task instruction and empty terminal state before each agent. First scored request used the real terminal pane.",
+  "backend_startup_seconds": 17.179,
+  "boundary": "Docker Compose 5.7.0 on Docker 29.9.2. Harbor no-network policy, no host mounts on the inspected main agent services, no evaluator files or credentials in the model workspace. Separate offline verifier, same upstream assertions and pytest options, explicit artifact transfer.",
+  "controls": [
+    {
+      "trial": "h78-polyglot-c-py-oracle-001",
+      "reward": 0.0,
+      "exception": "NonZeroAgentExitCodeError"
+    },
+    {
+      "trial": "h78-polyglot-c-py-oracle-002",
+      "reward": 1.0,
+      "exception": null
+    },
+    {
+      "trial": "h78-polyglot-c-py-nop-002",
+      "reward": 0.0,
+      "exception": null
+    },
+    {
+      "trial": "h78-fix-git-oracle-002",
+      "reward": 1.0,
+      "exception": null
+    },
+    {
+      "trial": "h78-fix-git-nop-002",
+      "reward": 0.0,
+      "exception": null
+    }
+  ],
+  "attempts": [
+    {
+      "task": "polyglot-c-py",
+      "trial": "h78-polyglot-c-py-terminus-001",
+      "task_checksum": "c5d1c5bed3d6672bec8ee55c49e60c5f503e540ee4aeedc5800d2fb71f9e7811",
+      "assertions_sha256": "66b48a6784182d23bcf685bed2e85c15cd4af6c62c80f04e48ddb7be8d03be7e",
+      "overlay_task_toml_sha256": "04a15ed6295513810dfa4c1ec62ed4266a94895e52d3dcdb544683c35af0b90e",
+      "agent_image": "sha256:6d48122f2d01d5f6fbf7175c163ff53976aec6b388baf1782dc6d255ed12832a",
+      "verifier_image": "sha256:ab9271f6a2dab593ac40788fa4d41e33dfb3e68e62b5f13e76a46feb92f4d3fe",
+      "reward": 1.0,
+      "reward_valid": true,
+      "tests_passed": 1,
+      "tests_total": 1,
+      "final_step_tools": [
+        "mark_task_complete"
+      ],
+      "exception": null,
+      "wall_seconds": 397.802,
+      "phase_seconds": {
+        "environment_setup": 3.835,
+        "agent_setup": 0.326,
+        "agent_execution": 366.406,
+        "verifier": 15.789
+      },
+      "warmup_seconds": 1.064,
+      "warmup_prompt_tokens": 868,
+      "first_scored_prompt_tokens": 891,
+      "first_scored_cached_tokens": 352,
+      "usage": {
+        "total_prompt_tokens": 96782,
+        "total_completion_tokens": 27008,
+        "total_cached_tokens": 78436
+      },
+      "agent_turns": 11,
+      "summarizations": 0,
+      "receipts": {
+        "result.json": "3f554179f305a62034026f7b1def0c92edd281171e631d63966899e193b445ec",
+        "agent/trajectory.json": "282bf7bd4f02c8b48a816e8736a7c6c49c0dace5b8d979781bbb309265f0121b",
+        "verifier/ctrf.json": "b44681818ed4726ad47e113375980219f1b419a555a220554a6a0be68c66409f",
+        "artifacts/manifest.json": "9a1100de0403d60b2f83cc5d4645b28e915b1323a66c6a13e5407107cd82592c",
+        "agent-boundary.json": "afc350c77357c12f3c83cba81dc0a5119e6473322e081bf389377fdf0cbe55cb"
+      }
+    },
+    {
+      "task": "fix-git",
+      "trial": "h78-fix-git-terminus-001",
+      "task_checksum": "8c3c0a0d0c5f68966d4924f18442cc8d246f7e12602610e0fa85c6b56054dc00",
+      "assertions_sha256": "6ae4dd70595cf7d1eb81bc342be319de338dc0e7fd67aab8645700047e31fb37",
+      "overlay_task_toml_sha256": "bdbfee7312f9e45fcaa8b97ad8abf106cb7afbcf60c434387985502dbbac9266",
+      "agent_image": "sha256:744ce3ffdfd5385f8a9507bc2fd9043c512b530cddcd6a7fa01d9d1c492fb10a",
+      "verifier_image": "sha256:5cdd31462e38527d3c3b8d261fdf985ee47aef82acf1805f605f79c70bd51321",
+      "reward": 1.0,
+      "reward_valid": true,
+      "tests_passed": 2,
+      "tests_total": 2,
+      "final_step_tools": [
+        "mark_task_complete"
+      ],
+      "exception": null,
+      "wall_seconds": 189.574,
+      "phase_seconds": {
+        "environment_setup": 3.812,
+        "agent_setup": 0.33,
+        "agent_execution": 157.741,
+        "verifier": 16.145
+      },
+      "warmup_seconds": 5.06,
+      "warmup_prompt_tokens": 769,
+      "first_scored_prompt_tokens": 794,
+      "first_scored_cached_tokens": 253,
+      "usage": {
+        "total_prompt_tokens": 124055,
+        "total_completion_tokens": 12503,
+        "total_cached_tokens": 111042
+      },
+      "agent_turns": 15,
+      "summarizations": 0,
+      "receipts": {
+        "result.json": "21372de5ab256aa3cd48e2a395cbb6a0343b71493c58ee0f23f4abdf64131995",
+        "agent/trajectory.json": "78290bdf52a9a01dfa3d4ee0800e68cdc03206fa4dc07dc691b1181c7e946013",
+        "verifier/ctrf.json": "ea9cdf98cf0a547756523c260824cc873d2940829e5777439eb9acdb6c4c521f",
+        "artifacts/manifest.json": "44755479aa7661eb1b27b76caa1b5ecae796b4afe30bc3c65c7c11a4b93aea66",
+        "agent-boundary.json": "d10c7b00e7b48f11b56821b8cfec2447888379f7a070ed2a6e924038dac19bf1"
+      }
+    }
+  ],
+  "trace_root": "research/harbor-terminus-078 under the reference workstation project bulk store",
+  "control_repair": "The initial polyglot oracle could not write its logs. The repaired preflight creates /logs/agent and /logs/artifacts inside the disposable environment. The original result and trace were retained.",
+  "trace_layout": "trials/<trial>/result.json, agent/trajectory.json, verifier/ctrf.json and artifacts/manifest.json. Paths in each receipts object are relative to that trial.",
+  "phase_accounting": "Harbor wall time includes collection, teardown and other lifecycle overhead outside the four reported phases. Backend startup and prompt warming preceded the trials.",
+  "git_graph_review": {
+    "scope": "Post-hoc, read-only check in a fresh offline container. The upstream verifier checks the contents of two files.",
+    "checked_out_branch": "master",
+    "entry_master_is_ancestor": true,
+    "initially_detached_tip_is_ancestor": true,
+    "receipt_sha256": "ad3cc5c9f1795209ec9554b43b8a9f523f5a3b9cf9aeb935afc139d203e3b2c6"
+  },
+  "recipe_rehearsal": {
+    "cpu_trial": "recipe-rehearsal/trials/h78-public-oracle",
+    "reward": 1,
+    "note": "Both overlay TOMLs, Dockerfiles and offline test launchers matched byte for byte. The public runner explicitly disables automatic mounts using the Harbor option; its oracle had zero host mounts. The scored runner also suppressed the default agent output directory list and recreated the directories it needed."
+  },
+  "paired_images": {
+    "archive": "task-images-linux-amd64.tar",
+    "sha256": "9c47fcebca364d1a1a07042780c00343844b5bb4d58588214748f8c60b4db9d8",
+    "bytes": 369625088,
+    "linux_amd64_manifests": {
+      "polyglot-c-py-agent": "sha256:2743a7e32717f4099e0228bfb1e86086e82ae30ab05bf0e7e11ba5e09bce7ac7",
+      "polyglot-c-py-verifier": "sha256:2ca213bfd5fd32cdc0cc1fb0c50a5da932895dfc3c3b1532deb6d061ddce18af",
+      "fix-git-agent": "sha256:ec58c4c0df9d9314105df111ce69b2a7c5a99acf7854c71ec32cd7f0e9de0b6a",
+      "fix-git-verifier": "sha256:87b2bdffb97d5e9ad05ebd20f454cd72f7cf8bfc65a19b2f39a799f80a0a7adf"
+    },
+    "note": "A cached rebuild generated new build-attestation index IDs. All four runnable platform manifests matched the scored build. The local archive preserves those manifests and layers for #79."
+  },
+  "lifecycle": {
+    "server_exit": 0,
+    "memory_scope_passed": true,
+    "scope_cleanup_verified": true,
+    "ollama_wrapper_ok": true,
+    "session_restoration_verified": true,
+    "harbor_containers_remaining_after_rehearsal": 0
+  },
+  "scored_controller_snapshot": {
+    "inputs-001/controls.sh": "a6dda7dd3f7b2876820b0d6b6991d5c22d6ba8c6815b581121c3b6b90aff9bbc",
+    "inputs-001/gpu078.py": "d87035703db722931449baf427a2f3228d3916dfbabb4101693cd0311eac3720",
+    "inputs-001/harbor-environment.txt": "fc4e4f9093360cecbed0c78cd90209f266496170b827f02c7a58059e7edbb43b",
+    "inputs-001/launch.sh": "b6764c901ed07d9cd01a139ed3188a8e0a6cc46905c8e636e1f9dc9775239cec",
+    "inputs-001/prepare.py": "74f155b799842a726c86ffe92e8d48986d837957d6fb8ed8c2ee55c752bda628",
+    "inputs-001/session.py": "8640e6ef322fcfebb115cd0adcd616ac99125eccde33310b45176fa2dc237fa9",
+    "inputs-001/trial078.py": "ffeb32b3fcc3f71a4ee5454a2b49fbbe5f88eefc3da80ab5b4f4ce51bd442025"
+  }
+}
