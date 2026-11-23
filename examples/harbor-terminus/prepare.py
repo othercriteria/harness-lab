@@ -9,6 +9,11 @@ from pathlib import Path
 REVISION = "12b7565679ce5006230b820666353673a133db93"
 PYTHON_IMAGE = "python:3.13-slim-bookworm@sha256:a5a7017efc5969e00ae2b91c8eb0631049a569652aa4ffc4501769049ae45c72"
 TASKS = {
+    "raman-fitting": (
+        "20251031",
+        "401fa95d5d491f44a473eda9d2c52930f9565cc889c796eabcb6e20fec26852e",
+        ["/app/results.json"],
+    ),
     "prove-plus-comm": (
         "20251031",
         "e26741d01681a9da1beeff8b7b7b65fe2b921b8b122a306a3707a81ebd051f73",
@@ -48,6 +53,7 @@ CONTROL_FILE = {
     "polyglot-c-py": "polyglot/harbor-control.txt",
     "fix-git": "harbor-control.txt",
     "prove-plus-comm": "plus_comm.vo",
+    "raman-fitting": "results.json",
     **{task: Path(TASKS[task][2][0]).name for task in FOLLOWUP},
 }
 
@@ -73,9 +79,17 @@ def prepare_task(root, task, source):
     build = root / "build" / task
     shutil.copytree(source / "tests", build / "tests")
     base = f"alexgshaw/{task}@sha256:{digest}"
+    # The upstream reference installs these at runtime. Make the same wheels
+    # available to both scored agents and the reference before network isolation.
+    agent_dependencies = (
+        "RUN python -m pip install --no-cache-dir numpy==2.3.1 scipy==1.16.0\n"
+        if task == "raman-fitting"
+        else ""
+    )
     (build / "Dockerfile").write_text(
         f"FROM {base} AS agent\n"
         "RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tmux asciinema && rm -rf /var/lib/apt/lists/*\n"
+        f"{agent_dependencies}"
         f"FROM {PYTHON_IMAGE} AS deps\n"
         "RUN python -m pip install --no-cache-dir pytest==8.4.1 pytest-json-ctrf==0.3.5\n"
         f"FROM {base} AS verifier\nCOPY --from=deps /usr/local /usr/local\n"

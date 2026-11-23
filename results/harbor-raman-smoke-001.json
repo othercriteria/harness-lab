@@ -1,0 +1,221 @@
+{
+  "task": "terminal-bench/raman-fitting",
+  "design": "One warm smoke per agent, Worker then Terminus-2 on the pinned Harbor Hub raman-fitting package. Seed 19550, ordinary 32k/2k resident Qwen3.8-27B RANA-layout profile, task-declared agent and verifier ceilings of 900 seconds. Three isolated CPU controls before scoring. Identical image IDs for the pair. Retain the original task brief, data, oracle and upstream assertions. Preinstall the reference-pinned NumPy and SciPy on both agent paths for offline operation. Transfer only results.json to a separate verifier. Preserve first scored outcomes and distinguish clean completion, numerical checks, and phase times. Compare numeric errors and fit residuals to the oracle on its own two fit intervals after sealing.",
+  "protocol_parent": "results/harbor-coq-smoke-001.json",
+  "workstation_bulk_root": "research/harbor-raman-panel-001",
+  "harbor": "0.27.0",
+  "terminal_bench_revision": "12b7565679ce5006230b820666353673a133db93",
+  "package_digest": "sha256:97ca4025332b20739da553cab0658f2ead925d1b5b3b9b7664dc9eb5e7fbeab7",
+  "model_profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "session_deviation": "The Worker exhausted its total token allowance before handoff. The controller stopped on the resulting adapter exception and restored services. Terminus received its usual warm-up on a newly loaded copy of the same backend. Each agent had one scored attempt.",
+  "sessions": [
+    {
+      "name": "raman-001",
+      "ready_seconds": 17.05,
+      "server_exit": 0,
+      "restored": true
+    },
+    {
+      "name": "raman-002",
+      "ready_seconds": 16.917,
+      "server_exit": 0,
+      "restored": true
+    }
+  ],
+  "task_inputs_sha256": {
+    "instruction.md": "1fa59a89d88daf6a4b2d422955f53779b461880b527f40d79c71b16e0ee52433",
+    "environment/task-deps/graphene.dat": "cac96a29e73251e625cb2d17b5079250071b148e6792e0aa349632953dbfa094",
+    "tests/test_outputs.py": "171fae772ccf262aec8ddac5bd2c6c731eed842421f5d8439a330b158c9f8c13",
+    "solution/solve.sh": "cc803d3c254063f82ab1da5b59f276951d50d1f307657606027a45dc035a53ee"
+  },
+  "implementation_sha256": {
+    "check_raman_fit.py": "a636d846bd6822a879421eb40c2e5e9712dbe62d015441b97686b8a49cb78165",
+    "container_tool.py": "2659e764cbe33f84ba34c667ac4686c89abfadc29c74eb43ebe23abd9d34c751",
+    "harbor_worker.py": "fe810266300584cbff753f2107626fae0db333af8fb247e0496b322a727435e3",
+    "pair-terminus.py": "d52d7f6ee18f4b8ab2943894c4c681165f73f354d97e1b24ddbba2cf4e7e9e93",
+    "pair.py": "256629ac6be29df952e9fae684deb617c47c1e7315c3feb3c7e838c0985269c5",
+    "prepare.py": "705b8d27f61d95198ce146b9017616c7c956733f4be860cc8edb053845b3cef5",
+    "requirements.txt": "fc4e4f9093360cecbed0c78cd90209f266496170b827f02c7a58059e7edbb43b",
+    "run_trial.py": "190a4420388a6d6df2c4bdce38d3ee1a4d7190bd1ea742ca2493b5e110e0daa3",
+    "setup_tasks.py": "7f6381e05de7f87d5c782c10ebcbd642cca75ffd5fc21e44c4598e421619bbc3",
+    "trial.py": "bd9b657907e1d742ff85861c610efa9e5e43dff32bb0d23b07b1f21f1dc7f1f0",
+    "worker_loop.py": "9ca70ae29c1457689ba754bf26e72ec905a976ffab60e96f166d0b95b67eb261"
+  },
+  "image_ids": {
+    "agent": "sha256:39d8b5d432ba55b28f797cac3737c2a5a4ea629a11c4f1c067b9abb8ad6859c2",
+    "verifier": "sha256:9cdf639a26f88e4b54835977d76f8baf6c2cd4dfb23225fcaabf8d03672fda9f"
+  },
+  "controls": [
+    {
+      "agent": "oracle",
+      "trial": "hx-raman-fitting-oracle-2e0578bd62",
+      "upstream_reward": 1.0,
+      "reward_valid": true,
+      "exception_type": null,
+      "result_sha256": "49c22dfa1525d89ed69edc4d49dda500aee9506cf6e09cdae2091e8c1f36f7fa",
+      "submitted_parameters": {
+        "G": {
+          "x0": 1580.2973906254435,
+          "gamma": 9.06095278593438,
+          "amplitude": 8382.692468228159,
+          "offset": 5561.034747638293
+        },
+        "2D": {
+          "x0": 2670.0817756407405,
+          "gamma": 17.52000412725446,
+          "amplitude": 12314.417359546822,
+          "offset": 1239.0916280784004
+        }
+      },
+      "submission_sha256": "81ac76d0cf41e5f7e5f046fc47d11c2a07ff06c8cda00cea45be72a4bd046a6c",
+      "residuals": {
+        "G": {
+          "points": 89,
+          "rmse": 356.57618915461
+        },
+        "2D": {
+          "points": 210,
+          "rmse": 358.53299672776075
+        }
+      }
+    },
+    {
+      "agent": "nop",
+      "trial": "hx-raman-fitting-nop-2e0578bd62",
+      "upstream_reward": 0.0,
+      "reward_valid": true,
+      "exception_type": null,
+      "result_sha256": "8f056c7d3ad8872ce10aac3a940035600f29fbe2b5005309a61257665f358b43"
+    },
+    {
+      "agent": "worker-control",
+      "trial": "hx-raman-fitting-worker-control-2e0578bd62",
+      "upstream_reward": 0.0,
+      "reward_valid": true,
+      "exception_type": null,
+      "result_sha256": "c6f4b13082d6a723c654e54836f78e1d082a58beb50990e90dd25086cb47f46e",
+      "control_transfer": {
+        "returncode": 0,
+        "output": "after\n"
+      }
+    }
+  ],
+  "attempts": [
+    {
+      "agent": "Worker",
+      "trial": "h79-raman-fitting-raman-001",
+      "upstream_reward": 0.0,
+      "reward_valid": true,
+      "exception_type": "RuntimeError",
+      "result_sha256": "5af8a693f878e132afc69babfc8362c0f275b9d06886aaddaff08735496fa618",
+      "task_checksum": "2d1dd6ac291368631070f51806d408ee66aece0b9c8355f609fb2e199af90c3a",
+      "phase_seconds": {
+        "environment_setup": 3.927,
+        "agent_setup": 0.622,
+        "agent_execution": 782.899,
+        "verifier": 15.588
+      },
+      "timing": {
+        "run_monotonic_seconds": 814.8518771738745,
+        "agent_limit_seconds": 900.0,
+        "verifier_limit_seconds": 900.0,
+        "agent_setup_limit_seconds": 360.0,
+        "environment_build_limit_seconds": 600.0
+      },
+      "client": {
+        "dispatch_through_client_exit_seconds": 821.617438049987,
+        "returncode": 0
+      },
+      "upstream_checks": {
+        "test_result_file_exists": "failed",
+        "test_G_Peak": "failed",
+        "test_2D_Peak": "failed"
+      },
+      "clean_completion": false,
+      "worker_stop": "Completion-token budget exhausted",
+      "outcome_receipt_present": false,
+      "completion_token_limit": 65536,
+      "completion_tokens": 65536,
+      "model_responses": 40,
+      "tool_calls": 39,
+      "checkpoint_records": 4,
+      "submission_present": false
+    },
+    {
+      "agent": "Terminus-2",
+      "trial": "h78-raman-fitting-raman-002",
+      "upstream_reward": 0.0,
+      "reward_valid": true,
+      "exception_type": null,
+      "result_sha256": "389eb5cdf922449a2ccdf4d7db8c4e4fd2b7505b06fe8e42dc760cf995dff002",
+      "task_checksum": "2d1dd6ac291368631070f51806d408ee66aece0b9c8355f609fb2e199af90c3a",
+      "phase_seconds": {
+        "environment_setup": 3.957,
+        "agent_setup": 0.317,
+        "agent_execution": 149.88,
+        "verifier": 15.774
+      },
+      "timing": {
+        "run_monotonic_seconds": 181.49172311881557,
+        "agent_limit_seconds": 900.0,
+        "verifier_limit_seconds": 900.0,
+        "agent_setup_limit_seconds": 360.0,
+        "environment_build_limit_seconds": 600.0
+      },
+      "client": {
+        "dispatch_through_client_exit_seconds": 186.9601694359444,
+        "returncode": 0
+      },
+      "upstream_checks": {
+        "test_result_file_exists": "passed",
+        "test_G_Peak": "failed",
+        "test_2D_Peak": "failed"
+      },
+      "agent_turns": 8,
+      "submitted_parameters": {
+        "G": {
+          "x0": 10436.738807777525,
+          "gamma": 359.2417965526125,
+          "amplitude": 10867.594534722259,
+          "offset": 8820.249770448927
+        },
+        "2D": {
+          "x0": 19197.878887970288,
+          "gamma": 412.81180280083635,
+          "amplitude": 74079.6470843167,
+          "offset": 11334.762962432447
+        }
+      },
+      "submission_sha256": "5444b2a95b8457c1dd18ffd015d8c9e967767637dbdbce10bf148230d02d44ac",
+      "residuals": {
+        "G": {
+          "points": 89,
+          "rmse": 2918.0602669242808
+        },
+        "2D": {
+          "points": 210,
+          "rmse": 9002.23894531302
+        }
+      },
+      "clean_completion": true,
+      "submission_present": true
+    }
+  ],
+  "residual_diagnostic": "Root mean squared intensity error in the upstream reference's open intervals, 1500 to 1700 for G and 2500 to 2900 for 2D, using the reference parameterization and reciprocal axis. The diagnostic reads the transferred JSON. It does not affect Harbor's reward.",
+  "post_run_budget_reporting_control": {
+    "exit_status": "BudgetExceeded",
+    "reason": "Completion-token budget exhausted",
+    "calls": 0,
+    "tool_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "fresh_context_resets": 0
+  },
+  "model_authors": [
+    {
+      "model": "OpenAI Codex (GPT-6, release unknown)",
+      "contribution": "Raman task preparation, paired Harbor smoke and fit diagnostics"
+    }
+  ],
+  "interpretation": "Worker found multiple real features and continued investigating their identities until it exhausted its total completion allowance. Terminus chose two prominent raw-axis features, returned structured parameters for both and confirmed completion. Only file existence passed. Both upstream rewards are valid. These are one-seed observations on an underspecified public brief."
+}

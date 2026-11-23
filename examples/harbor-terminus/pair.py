@@ -38,7 +38,7 @@ def run_client(argv, env, log_path, timing_path):
     result.check_returncode()
 
 
-def run(root, label, agent="terminus-2"):
+def run(root, label, agent="terminus-2", single_runner=None):
     from control import cancellation, defer_launch_signals
     from serve_trial import (
         local_json,
@@ -50,6 +50,10 @@ def run(root, label, agent="terminus-2"):
     from with_ollama_released import gpu_experiment_lock
 
     single_task = agent in TASKS
+    if single_runner is not None and (
+        not single_task or single_runner not in {"worker", "terminus-2"}
+    ):
+        raise ValueError("A runner selection requires a task and worker or terminus-2")
     if not single_task and agent not in {"terminus-2", "worker", "followup", "timing"}:
         raise ValueError("Unknown Harbor agent")
     if "BIG_MODELS_GPU_LOCK_FD" not in os.environ:
@@ -125,7 +129,10 @@ def run(root, label, agent="terminus-2"):
             timing = agent == "timing" or single_task
             followup = agent == "followup" or timing
             if single_task:
-                schedule = [(agent, runner) for runner in ("worker", "terminus-2")]
+                runners = (
+                    (single_runner,) if single_runner else ("worker", "terminus-2")
+                )
+                schedule = [(agent, runner) for runner in runners]
             elif followup:
                 first, second = (
                     ("fix-git", "log-summary-date-ranges") if timing else FOLLOWUP

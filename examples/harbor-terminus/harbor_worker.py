@@ -126,7 +126,9 @@ chown -R 10001:10001 "{cwd}" /tmp/worker-home
         context.n_input_tokens = outcome["input_tokens"]
         context.n_output_tokens = outcome["output_tokens"]
         if outcome["exit_status"] not in ("Submitted", "Blocked"):
-            raise RuntimeError("Worker ended with " + outcome["exit_status"])
+            raise RuntimeError(
+                f"Worker stopped: {outcome.get('reason') or outcome['exit_status']}"
+            )
 
 
 class ControlVerifier(Verifier):

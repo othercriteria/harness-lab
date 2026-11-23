@@ -15,7 +15,7 @@ LAB = EXAMPLE.parents[1]
 sys.path.insert(0, str(LAB / "scripts"))
 
 from coding_agent import IsolatedEnvironment, LocalModel
-from control import deadline
+from control import DeadlineExceeded, deadline
 from fresh_context import FreshContext
 from mini_bootstrap import DefaultAgent
 from observations import ObservationHistory
@@ -312,10 +312,15 @@ def main():
         if mode == "warm":
             return
         raise
+    except DeadlineExceeded as error:
+        if mode != "model":
+            raise
+        outcome = {"exit_status": "BudgetExceeded", "reason": str(error)}
     write_json(
         output / "outcome.json",
         {
             "exit_status": outcome.get("exit_status"),
+            **({"reason": outcome["reason"]} if "reason" in outcome else {}),
             "calls": model.calls,
             "tool_calls": env.calls,
             "input_tokens": model.prompt_tokens,
