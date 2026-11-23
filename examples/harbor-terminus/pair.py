@@ -10,7 +10,7 @@ import sys
 import time
 from pathlib import Path
 
-from prepare import FOLLOWUP, ORIGINAL
+from prepare import FOLLOWUP, ORIGINAL, TASKS
 
 EXAMPLE = Path(__file__).resolve().parent
 LAB = EXAMPLE.parents[1]
@@ -49,7 +49,8 @@ def run(root, label, agent="terminus-2"):
     from server_endpoint import owned_listener, process_identity
     from with_ollama_released import gpu_experiment_lock
 
-    if agent not in {"terminus-2", "worker", "followup", "timing"}:
+    single_task = agent in TASKS
+    if not single_task and agent not in {"terminus-2", "worker", "followup", "timing"}:
         raise ValueError("Unknown Harbor agent")
     if "BIG_MODELS_GPU_LOCK_FD" not in os.environ:
         raise RuntimeError("Launch through the restoring GPU transaction")
@@ -121,9 +122,11 @@ def run(root, label, agent="terminus-2"):
                 },
             )
             schedule = [(task, agent) for task in ORIGINAL]
-            timing = agent == "timing"
+            timing = agent == "timing" or single_task
             followup = agent == "followup" or timing
-            if followup:
+            if single_task:
+                schedule = [(agent, runner) for runner in ("worker", "terminus-2")]
+            elif followup:
                 first, second = (
                     ("fix-git", "log-summary-date-ranges") if timing else FOLLOWUP
                 )
@@ -147,6 +150,7 @@ def run(root, label, agent="terminus-2"):
                         name,
                         origin,
                         *(["--task-timeout"] if timing else []),
+                        *(["--prepared-images"] if single_task else []),
                     ],
                     client_env,
                     output / f"{log_name}.log",

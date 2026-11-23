@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 from harbor.models.trial.config import TrialConfig
 from harbor.trial.hooks import TrialEvent
 from harbor.trial.trial import Trial
-from prepare import FOLLOWUP, TASKS
+from prepare import ORIGINAL, TASKS
 
 MODEL = "qwen38-27b-ranalayout-q4"
 SMOKE_SECONDS = 600
@@ -81,7 +81,7 @@ async def main():
     )
     args = parser.parse_args()
     task, agent, name = args.task, args.agent, args.name
-    prepared_images = args.prepared_images or task in FOLLOWUP
+    prepared_images = args.prepared_images or task not in ORIGINAL
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
         parser.error("Use a lowercase alphanumeric trial name with optional hyphens")
     directory = root / "trials" / name

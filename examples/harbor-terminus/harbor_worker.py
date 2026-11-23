@@ -35,11 +35,16 @@ class Worker(BaseAgent):
         # The committed upstream fixture uses the image's Git identity. Give the unprivileged
         # task account that same task-local identity, without forwarding the operator's Git config.
         command = f"""set -eu
-test ! -e /tests && test ! -e /solution && test ! -e /workspace
-test "$(pwd)" = "{cwd}"
+test ! -e /tests
+test ! -e /solution
+test "$(pwd -P)" = "{cwd}"
 command -v setpriv >/dev/null
 mkdir -p /opt/harness-worker /checks /tmp/worker-home
-ln -s "{cwd}" /workspace
+if test "{cwd}" != /workspace; then
+    test ! -e /workspace
+    test ! -L /workspace
+    ln -sT "{cwd}" /workspace
+fi
 if test -f /root/.gitconfig; then cp /root/.gitconfig /tmp/worker-home/.gitconfig; fi
 chown -R 10001:10001 "{cwd}" /tmp/worker-home
 """

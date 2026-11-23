@@ -1,0 +1,141 @@
+{
+  "task": "terminal-bench/prove-plus-comm",
+  "harbor": "0.27.0",
+  "design": "Development smoke on the previously untried prove-plus-comm fixture at Terminal-Bench 2.1 revision 12b7565679ce5006230b820666353673a133db93. Oracle, unchanged workspace, and scripted Worker artifact-transfer controls before the scored run. Worker then Terminus-2, one attempt each, seed 19550, pinned Qwen3.8-27B RANA-layout 32k/2k, one-token prompt warm-up, one resident backend, 900 s for agent and 900 s for verifier. Freeze public brief and pytest assertions unchanged. Transfer both plus_comm.v and plus_comm.vo. Record upstream reward, handoff, whole-trial and client dispatch clocks separately. Independently type-check theorem and print assumptions for the transferred object and a clean rebuild of the source. No retry of a model miss.",
+  "model_profile": "qwen38-27b-ranalayout-32k-temp06-dflash3-fit2304-dio",
+  "backend_ready_seconds": 16.94,
+  "terminal_bench_revision": "12b7565679ce5006230b820666353673a133db93",
+  "harbor_package_digest": "sha256:d5ae25720df1f7cd619ed8408cda4b87b79a3d8b0ff4f1919e2c96e9547339c2",
+  "public_instruction_sha256": "7618ac930d942f27376189fe6535d0e69150fa3eba2db24759ae86b2675d21fe",
+  "upstream_assertions_sha256": "02df5d8f2ab15eb9ec39493c5ce57b8699853304cd8dd5b853e1dcb8c4a13327",
+  "scored_inputs_sha256": {
+    "check_proof.sh": "1ea976f208e932aaf38ef75f039ef86bfee57fcc233da2805af6c8a53d00328c",
+    "container_tool.py": "2659e764cbe33f84ba34c667ac4686c89abfadc29c74eb43ebe23abd9d34c751",
+    "dataset.toml": "d90b4389992d07ed6f4ab8de963a70241eaa4b60072eeaec4c3b261b6c4a6dd8",
+    "harbor_worker.py": "fe810266300584cbff753f2107626fae0db333af8fb247e0496b322a727435e3",
+    "pair.py": "814e37d8bb4d748f479e66c86d986a17509c29eed8d25a396997cc5413703449",
+    "prepare.py": "14b6873f00b910082bffe49e036e840e1878688992668e580868da142a12a342",
+    "run_trial.py": "190a4420388a6d6df2c4bdce38d3ee1a4d7190bd1ea742ca2493b5e110e0daa3",
+    "setup_tasks.py": "25c5fb4e1d94eeae89050b85881985cd64b6336fb290df181fa1ca3c0c0e7a1e",
+    "trial.py": "bd9b657907e1d742ff85861c610efa9e5e43dff32bb0d23b07b1f21f1dc7f1f0",
+    "worker_loop.py": "9ca70ae29c1457689ba754bf26e72ec905a976ffab60e96f166d0b95b67eb261"
+  },
+  "protocol_parent": "results/harbor-timing-083.json",
+  "preparation": "Scored images came from the pinned Git checkout. The registry rehearsal used a separate build. Every published file matched the checkout byte for byte. The registry package omitted .gitignore.",
+  "preparations": [
+    {
+      "workstation_bulk_root": "research/harbor-coq-panel-001",
+      "images": {
+        "agent": "sha256:81fb6703f32ba4bc7f7c51b85c419b98527cf02d9bbf66e974702514250555d6",
+        "verifier": "sha256:1965c8ccc32ca13bb6c82030a0c147257736c20e94c75c4d01e39f27c0764ebd"
+      },
+      "controls": [
+        {
+          "trial": "hx-prove-plus-comm-nop-bf809040b6",
+          "reward": 0.0,
+          "result_sha256": "95e0633f3a5f5dfbac795191d6040aa78f1c973014abcef936d0d8a384ee02da"
+        },
+        {
+          "trial": "hx-prove-plus-comm-oracle-bf809040b6",
+          "reward": 1.0,
+          "result_sha256": "248246a79d7b87e3ac882272ce11031513e513c65db939b87fe5c64db734ef7f"
+        },
+        {
+          "trial": "hx-prove-plus-comm-worker-control-bf809040b6",
+          "reward": 0.0,
+          "result_sha256": "0b73189187160bf01c8071a4789d41fdfa6db5282f121d06b5c79f47f73857a4"
+        }
+      ]
+    },
+    {
+      "workstation_bulk_root": "research/harbor-coq-hub-002",
+      "images": {
+        "agent": "sha256:ff9a1a89ef38c1fcba74ba7545a0af49f76b9c68e1816f79c44686167dc13892",
+        "verifier": "sha256:428902d1895aa7e6f0d8da1737578d02836d4f8439b7cefbcac71f28245fba8e"
+      },
+      "controls": [
+        {
+          "trial": "hx-prove-plus-comm-nop-7928de13ff",
+          "reward": 0.0,
+          "result_sha256": "51523d79c7859df972aa100478fd9def04e7bb500d3adf8305716a570fd242c7"
+        },
+        {
+          "trial": "hx-prove-plus-comm-oracle-7928de13ff",
+          "reward": 1.0,
+          "result_sha256": "20b3ec490cb52d8822b8c7e6d2c17bf3071ac618e2dd9156edef9a7a72d36485"
+        },
+        {
+          "trial": "hx-prove-plus-comm-worker-control-7928de13ff",
+          "reward": 0.0,
+          "result_sha256": "f05e5bcee82235a8528098309a08c18ad54a7594b31239568a92973adcdea349"
+        }
+      ]
+    }
+  ],
+  "attempts": [
+    {
+      "agent": "Worker",
+      "trial": "h79-prove-plus-comm-coq-001",
+      "task_checksum": "abad7c2d6494a32c6fa2eaa473471b480be7593879abe64e3964d6199aa8ba66",
+      "reward": 1.0,
+      "passed": 4,
+      "tests": 4,
+      "clean_completion": true,
+      "phase_seconds": {
+        "environment_setup": 3.931,
+        "agent_setup": 0.606,
+        "agent_execution": 17.817,
+        "verifier": 16.24
+      },
+      "harbor_seconds": 50.204,
+      "dispatch_through_client_exit_seconds": 56.786,
+      "artifacts_sha256": {
+        "plus_comm.v": "cd492d47acdc6d078e6d09f46317fee4acaa7601e5526f4f4d29a2d1af1114b7",
+        "plus_comm.vo": "1f50186588df5d952a070c18b2e1f83203420265529ac199a6075978f5f84da3"
+      },
+      "result_sha256": "c9bdec3fec59b6d66df7de0024d04d2bf2ac79779a8ef4597658fcf8319ce44a",
+      "proof_audit_log_sha256": "5692bad2d1f0d349c35e59e924fd47c39865634e92b1bef18edadd4fd65c2faf",
+      "worker_outcome": {
+        "exit_status": "Submitted",
+        "calls": 4,
+        "tool_calls": 5,
+        "input_tokens": 19482,
+        "output_tokens": 1536,
+        "fresh_context_resets": 0
+      }
+    },
+    {
+      "agent": "Terminus-2",
+      "trial": "h78-prove-plus-comm-coq-001",
+      "task_checksum": "abad7c2d6494a32c6fa2eaa473471b480be7593879abe64e3964d6199aa8ba66",
+      "reward": 1.0,
+      "passed": 4,
+      "tests": 4,
+      "clean_completion": true,
+      "phase_seconds": {
+        "environment_setup": 4.949,
+        "agent_setup": 0.325,
+        "agent_execution": 44.367,
+        "verifier": 16.315
+      },
+      "harbor_seconds": 77.647,
+      "dispatch_through_client_exit_seconds": 84.385,
+      "artifacts_sha256": {
+        "plus_comm.v": "403914c8d36cef94fad2a3f901007b2caec796085355e61f3ffef1381ff362b6",
+        "plus_comm.vo": "02e538c858ea81c903d69ee496219c1607ad1c654853df09949b31c5b9cb0506"
+      },
+      "result_sha256": "229de14c32cc3ef0127b6c6a7f879060786c6d90d4d21529414e43abf3e5a267",
+      "proof_audit_log_sha256": "5692bad2d1f0d349c35e59e924fd47c39865634e92b1bef18edadd4fd65c2faf",
+      "agent_turns": 5
+    }
+  ],
+  "proof_audit": "Offline Coq 8.18.0 checked the transferred object in isolation and independently rebuilt the transferred source. For each path, coqchk succeeded, the theorem had the required universally quantified type, and Print Assumptions reported closure under the global context.",
+  "server_exit_code": 0,
+  "service_restoration_receipt": "sessions/2026-11-23-harbor-coq-001/restoration-verification.json",
+  "model_authors": [
+    {
+      "model": "OpenAI Codex (GPT-6, release unknown)",
+      "contribution": "Harbor task setup automation, paired smoke run and submitted-proof audit"
+    }
+  ]
+}

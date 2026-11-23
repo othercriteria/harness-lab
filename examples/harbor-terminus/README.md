@@ -4,7 +4,24 @@ Harbor runs two coding agents against the same local Qwen model and small panels
 
 Read the [timing comparison](timing.md) for task-declared limits, warm execution, whole-trial elapsed time and the CPU timeout controls.
 
-## Prepare and check the tasks on CPU
+## Set up a task by name
+
+From the Lab dev shell on Linux with Docker Compose, prepare the locked Worker environment once, then give the setup command a bulk directory and one or more task names.
+
+```sh
+uv sync --locked
+example="$PWD/examples/harbor-terminus"
+export HARBOR_SMOKE_ROOT=/bulk/dlk/local-harness/research/my-coq-smoke
+poe harbor-setup "$HARBOR_SMOKE_ROOT" prove-plus-comm
+```
+
+The command installs the pinned Harbor controller in the experiment directory, resolves short names against the pinned Terminal-Bench 2.1 manifest, downloads the packages from Harbor Hub, verifies their content hashes, builds the offline images and runs three CPU controls. Expect reward 1 for the upstream reference, 0 for the unchanged workspace, and 0 plus a verified edit transfer for the scripted Worker. Results live under `trials/`. The reference and tests stay outside the scored agent workspace.
+
+The prepared overlays cover `prove-plus-comm`, `fix-git`, `polyglot-c-py`, `log-summary-date-ranges`, and `cancel-async-tasks`. For another task, `--fetch-only` downloads it for inspection. This also accepts a fully qualified public Harbor package such as `org/name@sha256:<digest>`. A new runnable overlay needs its upstream image, work directory, submitted paths and offline verifier dependencies established first. Use `--controls-only` to repeat the CPU checks under fresh trial IDs. A fresh root preserves earlier preparations when rebuilding images.
+
+For a scored run of a single supported task, append its name after the label in the [restoring GPU command](#run-one-warm-attempt-per-task). This runs Worker then Terminus-2 on the locally prepared images with task-declared timeouts. Size the outer session budgets for both attempts and their verification phases.
+
+## Reproduce the original Git-based preparation
 
 Use Linux, Docker with Compose, Python 3.13, uv, Git and a fresh bulk directory. The commands below start at the Lab repository root. Docker needs network access to build the images. The task and verifier run offline. The two controls for each task should produce rewards of 1 for the reference and 0 for the unchanged workspace.
 
@@ -127,3 +144,16 @@ Both agents submitted byte-identical CSVs with the required header, row order an
 - **Terminus-2** treated jobs waiting in the queue as also needing cleanup and started them during shutdown. Its last recorded turn requested completion. Harbor requested confirmation, performed proactive summarization and hit the agent ceiling. Harbor still transferred and graded the file. The whole trial took 646.4 seconds, including 30.6 seconds in verification.
 
 A separate probe cancelled the caller while two of four jobs were running and kept the event loop alive to observe the result. The upstream reference started and cleaned up two jobs. Terminus started and cleaned up four. Both Worker jobs recorded a cancellation count of two when their cleanup was interrupted. All three implementations also supported factories returning already-resolved futures. The probe ran on sealed submissions and leaves the original rewards intact. [Probe source](probe_cancellation.py) · [Timings, hashes and observations](../../results/harbor-followup-smoke-001.json) · [Timing follow-up](https://github.com/othercriteria/harness-lab/issues/83)
+
+### Coq proof results
+
+On `prove-plus-comm`, both agents proved commutativity of natural-number addition by induction, compiled the proof and submitted both the source and its compiled object. Worker took four model responses and five tool calls. Terminus-2 took five turns including its completion confirmation.
+
+| Agent | Agent execution | Whole Harbor trial | Client dispatch to exit | Upstream checks |
+| --- | ---: | ---: | ---: | ---: |
+| Worker | 17.8 s | 50.2 s | 56.8 s | 4 of 4 |
+| Terminus-2 | 44.4 s | 77.6 s | 84.4 s | 4 of 4 |
+
+The model stayed resident. Worker ran first and each agent received its usual one-token warm-up. The task allowed 900 seconds each for execution and verification. With one paired seed, the times describe these two traces.
+
+An independent audit loaded each submitted object and then rebuilt each source in a fresh directory. Coq 8.18.0 checked the compiled proofs and the exact theorem type on both paths. All four assumption checks reported `Closed under the global context`. The scored trials used the pinned Git fixture. A separate rehearsal of the Harbor Hub setup command verified the package digest and passed all three CPU controls. [Proof audit](check_proof.sh) · [Results, artifact hashes and image identities](../../results/harbor-coq-smoke-001.json)

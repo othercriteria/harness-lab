@@ -233,9 +233,12 @@ def configure_agent(config, limits, protocol, *, node=False, harbor_workspace=No
     config["step_limit"] = limits["step_limit"]
     config["wall_time_limit_seconds"] = limits["agent_wall_seconds"]
     if harbor_workspace is not None:
+        workspace = "/workspace"
+        if harbor_workspace != workspace:
+            workspace += f", an alias for {harbor_workspace}"
         config["system_template"] += (
-            "\n\nThe disposable offline task container starts each bash call in /workspace,"
-            f" an alias for {harbor_workspace}. Workspace tools take paths relative to this directory."
+            f"\n\nThe disposable offline task container starts each bash call in {workspace}."
+            " Workspace tools take paths relative to this directory."
             " Files and /tmp persist during the attempt. Each command uses a fresh shell;"
             " its background processes are stopped before the next call. Every response must include a tool call."
         )
